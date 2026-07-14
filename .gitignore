@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+target/
+build/
+coverage/
+
+# Local environment and secrets
+.env
+.env.*
+*.local
+backend/src/main/resources/application.properties
+
+# Logs and runtime data
+*.log
+logs/
+backend/uploads/
+
+# IDE and OS files
+.DS_Store
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Python/Java/TypeScript caches
+__pycache__/
+*.py[cod]
+*.class
+*.tsbuildinfo

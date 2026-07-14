@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.postgresql.XunliMapper">
+    <resultMap id="xunliResultMap" type="com.example.demo.com.Xunli">
+        <result property="maingeo" column="maingeo" typeHandler="com.example.demo.handler.PgArrayToListTypeHandler"/>
+    </resultMap>
+    <resultMap id="xunlipointMap" type="com.example.demo.com.XunliPoint">
+        <result property="geopoint" column="geopoint" typeHandler="com.example.demo.handler.PgArrayToListTypeHandler"/>
+        <result property="pointXunliname" column="point_xunliname"/>
+        <result property="city" column="city"/>
+    </resultMap>
+    <insert id="addnew" parameterType="com.example.demo.com.XunliPoint">
+        INSERT INTO acgn0721_gis.tb_xunlipoint (
+        id,
+        xunliid,
+        xunliname,
+        gaoqingpic,
+        ep,
+        time,
+        geopoint
+        ) VALUES (
+        #{id},
+        #{xunliid},
+        #{xunliname},
+        #{gaoqingpic},
+        #{ep},
+        #{time},
+        ST_SetSRID(ST_MakePoint(#{geopoint[1]}, #{geopoint[0]}), 4326)
+        )
+    </insert>
+    <select id="getXunli" resultMap="xunliResultMap">
+        SELECT
+            id,
+            xunliname,
+            japanname,
+            city,
+            bcimg,
+            xunlicolor,
+            ARRAY[ST_X(maingeo), ST_Y(maingeo)] AS maingeo,
+            zoom,
+            count,
+            hengpic,
+            xunliid
+        FROM
+            acgn0721_gis.tb_xunli
+        WHERE
+            zoom &lt;= #{zoom}
+    </select>
+    <select id="getXunliPoint" resultMap="xunlipointMap">
+        SELECT * FROM (
+        SELECT * FROM (
+        SELECT
+        b.xunliname,
+        b.xunlicolor,
+        a.id,
+        a.xunliid,
+        a.xunliname AS point_xunliname,
+        a.xunlipic,
+        a.gaoqingpic,
+        a.ep,
+        a.time,
+        ARRAY[ST_X(a.geopoint), ST_Y(a.geopoint)] AS geopoint,
+        ROW_NUMBER() OVER (
+        PARTITION BY a.xunliid
+        ORDER BY a.id DESC  -- 按ID倒序确保取最新数据
+        ) AS rn
+        FROM
+            acgn0721_gis.tb_xunlipoint AS a
+        INNER JOIN
+            acgn0721_gis.tb_xunli AS b
+        ON
+        b.xunliid = a.xunliid
+        WHERE
+        b.zoom &lt;= #{zoom}
+        ) AS subquery
+        WHERE rn &lt;= 10  -- 每个分组保留最新5条
+        ) AS final_data
+        LIMIT 400;          -- 最多返回100条随机记录
+    </select>
+    <select id="UpdateXunliPoint" resultMap="xunlipointMap">
+        WITH final_data AS (
+        SELECT
+        *,
+        -- 计算每个点所在的网格ID（将区域划分为20x20的网格）
+        FLOOR((geopoint[1] - #{WsLng}) / ((#{NeLng} - #{WsLng}) / 20)) AS grid_x,
+        FLOOR((geopoint[2] - #{WsLat}) / ((#{NeLat} - #{WsLat}) / 20)) AS grid_y
+        FROM (
+        SELECT * FROM (
+        SELECT
+        b.xunliname,
+        b.xunlicolor,
+        a.id,
+        a.xunliid,
+        a.xunliname AS point_xunliname,  -- 别名避免字段冲突
+        a.xunlipic,
+        a.gaoqingpic,
+        a.ep,
+        a.time,
+        ARRAY[ST_X(a.geopoint), ST_Y(a.geopoint)] AS geopoint,
+        ROW_NUMBER() OVER (
+        PARTITION BY a.xunliid
+        ORDER BY a.id DESC
+        ) AS rn
+        FROM
+            acgn0721_gis.tb_xunlipoint AS a
+        INNER JOIN acgn0721_gis.tb_xunli AS b ON b.xunliid = a.xunliid
+        WHERE
+        b.zoom &lt;= #{Zoom}
+        AND a.geopoint &amp;&amp; ST_MakeEnvelope(
+        #{WsLng}, #{WsLat},
+        #{NeLng}, #{NeLat},
+        4326
+        )
+        ) AS subquery
+        WHERE rn &lt;= 10
+        ) AS t
+        ),
+        sampled_data AS (
+        SELECT
+        *,
+        ROW_NUMBER() OVER (
+        PARTITION BY grid_x, grid_y  -- 按网格分组
+        ORDER BY random()  -- 网格内随机排序
+        ) AS grid_rn
+        FROM final_data
+        )
+        SELECT * FROM sampled_data
+        WHERE grid_rn &lt;= 20  -- 每个网格最多取4个点
+        LIMIT 2000;
+    </select>
+    <select id="UpdateXunli" resultMap="xunliResultMap">
+        WITH view_bounds AS (
+            SELECT
+                ST_MakeEnvelope(#{WsLng}, #{WsLat}, #{NeLng}, #{NeLat}, 4326) AS envelope,
+                (#{NeLng} - #{WsLng}) / 12 AS grid_width,
+                (#{NeLat} - #{WsLat}) / 12 AS grid_height
+        ),
+             raw_points AS (
+                 SELECT
+                     id,
+                     xunliname,
+                     japanname,
+                     city,
+                     bcimg,
+                     xunlicolor,
+                     maingeo,
+                     zoom,
+                     count,
+                     hengpic,
+                     xunliid,
+                     ST_X(maingeo) AS lng,
+                     ST_Y(maingeo) AS lat
+                 FROM acgn0721_gis.tb_xunli
+                 WHERE
+                     zoom &lt;= #{Zoom}
+                   AND maingeo &amp;&amp; (SELECT envelope FROM view_bounds)
+            ),
+            grid_points AS (
+        SELECT
+            *,
+            FLOOR((lng - #{WsLng}) / (SELECT grid_width FROM view_bounds)) AS grid_x,
+            FLOOR((lat - #{WsLat}) / (SELECT grid_height FROM view_bounds)) AS grid_y,
+            ROW_NUMBER() OVER (
+            PARTITION BY
+            FLOOR((lng - #{WsLng}) / (SELECT grid_width FROM view_bounds)),
+            FLOOR((lat - #{WsLat}) / (SELECT grid_height FROM view_bounds))
+                ORDER BY RANDOM()
+                ) AS rn
+        FROM raw_points
+            ),
+            main_results AS (
+        SELECT
+            id,
+            xunliname,
+            japanname,
+            city,
+            bcimg,
+            xunlicolor,
+            ARRAY[lng, lat] AS maingeo,
+            zoom,
+            count,
+            hengpic,
+            xunliid,
+            1 AS result_type  -- 标记为主结果
+        FROM grid_points
+        WHERE rn = 1
+            ),
+            backup_results AS (
+        SELECT
+            id,
+            xunliname,
+            japanname,
+            city,
+            bcimg,
+            xunlicolor,
+            ARRAY[lng, lat] AS maingeo,
+            zoom,
+            count,
+            hengpic,
+            xunliid,
+            2 AS result_type,  -- 标记为备用结果
+            ROW_NUMBER() OVER (ORDER BY RANDOM()) AS backup_rn
+        FROM raw_points
+        WHERE NOT EXISTS (SELECT 1 FROM main_results)  -- 仅当主结果为空时执行
+            )
+        -- 合并结果并应用排序/限制
+        SELECT
+            id,
+            xunliname,
+            japanname,
+            city,
+            bcimg,
+            xunlicolor,
+            maingeo,
+            zoom,
+            count,
+            hengpic,
+            xunliid
+        FROM (
+                 -- 主结果集
+                 SELECT * FROM main_results
+
+                 UNION ALL
+
+                 -- 备用结果集（最多100条）
+                 SELECT
+                     id,
+                     xunliname,
+                     japanname,
+                     city,
+                     bcimg,
+                     xunlicolor,
+                     maingeo,
+                     zoom,
+                     count,
+                     hengpic,
+                     xunliid,
+                     result_type
+                 FROM backup_results
+                 WHERE backup_rn &lt;= 100  -- 限制100条
+             ) AS final_results
+        ORDER BY result_type;  -- 确保主结果在前
+    </select>
+    <select id="getXunliByid" resultMap="xunliResultMap">
+        SELECT
+            xunliname,
+            japanname,
+            city,
+            bcimg,
+            xunlicolor,
+            ARRAY[ST_X(maingeo), ST_Y(maingeo)] AS maingeo,
+            zoom,
+            count,
+            hengpic,
+            xunliid
+        FROM
+            acgn0721_gis.tb_xunli
+        WHERE
+            xunliid = #{xunliid}
+    </select>
+    <select id="getXunliPointByid" resultMap="xunlipointMap">
+        SELECT
+            id,
+            xunliid,
+            xunliname,
+            xunlipic,
+            gaoqingpic,
+            ep,
+            time,
+            ARRAY[ST_X(geopoint), ST_Y(geopoint)] AS geopoint
+        FROM
+            acgn0721_gis.tb_xunlipoint
+        WHERE
+            xunliid = #{xunliid}
+    </select>
+    <select id="SearchXunli" resultMap="xunliResultMap">
+        SELECT
+            xunliname,
+            japanname,
+            city,
+            bcimg,
+            xunlicolor,
+            ARRAY[ST_X(maingeo), ST_Y(maingeo)] AS maingeo,
+            zoom,
+            count,
+            hengpic,
+            xunliid
+        From
+            acgn0721_gis.tb_xunli
+        WHERE
+            xunliname ILIKE '%' || TRIM(#{information}) || '%'
+           OR city ILIKE '%' || TRIM(#{information}) || '%'
+    </select>
+    <select id="SearchXunlinew" resultMap="xunliResultMap">
+        SELECT
+            xunliname,
+            japanname,
+            city,
+            bcimg,
+            xunlicolor,
+            ARRAY[ST_X(maingeo), ST_Y(maingeo)] AS maingeo,
+            zoom,
+            count,
+            hengpic,
+            xunliid
+        From
+            acgn0721_gis.tb_xunli
+        WHERE
+            bcimg is not null
+        ORDER BY
+            xunliid DESC  -- 按 xunliid 倒序排序
+        LIMIT 7
+    </select>
+    <select id="SearchXunlihot" resultMap="xunliResultMap">
+        SELECT
+            xunliname,
+            japanname,
+            city,
+            bcimg,
+            xunlicolor,
+            ARRAY[ST_X(maingeo), ST_Y(maingeo)] AS maingeo,
+            zoom,
+            count,
+            hengpic,
+            xunliid
+        From
+            acgn0721_gis.tb_xunli
+        WHERE
+            bcimg is not null
+        ORDER BY
+            count DESC  -- 按 xunliid 倒序排序
+        LIMIT 7
+    </select>
+    <select id="SearchXunlirange" resultMap="xunliResultMap">
+        SELECT
+            xunliname,
+            japanname,
+            city,
+            bcimg,
+            xunlicolor,
+            ARRAY[ST_X(maingeo), ST_Y(maingeo)] AS maingeo,
+            zoom,
+            count,
+            hengpic,
+            xunliid
+        From
+            acgn0721_gis.tb_xunli
+        WHERE
+            bcimg is not null
+        ORDER BY
+            RANDOM()   -- 按 xunliid 倒序排序
+        LIMIT 7
+    </select>
+    <select id="Clickgetpoint" resultMap="xunlipointMap">
+        SELECT
+            sub.id,
+            sub.xunliid,
+            sub.xunliname,
+            sub.xunlipic,
+            sub.gaoqingpic,
+            sub.ep,
+            sub.time,
+            sub.distancemeters,  -- 子查询中的距离字段（唯一来源）
+            ARRAY[ST_X(sub.geopoint_geom), ST_Y(sub.geopoint_geom)] AS geopoint
+        FROM (
+            SELECT
+            id,
+            xunliid,
+            xunliname,
+            xunlipic,
+            gaoqingpic,
+            ep,
+            time,
+            ARRAY[ST_X(geopoint), ST_Y(geopoint)] AS geopoint_array,
+            geopoint AS geopoint_geom,
+            -- 子查询中计算距离并命名为distance_meters（唯一）
+            ST_Distance(
+            geopoint::geography,
+            ST_SetSRID(ST_MakePoint(#{lng}, #{lat}), 4326)::geography
+            ) AS distancemeters
+            FROM acgn0721_gis.tb_xunlipoint
+            ) AS sub
+        WHERE xunliname IS NOT NULL
+        ORDER BY sub.distancemeters  -- 明确引用子查询的别名，消除歧义
+            LIMIT 3;
+    </select>
+    <select id="getmaxid" resultType="java.lang.Integer">
+        SELECT COALESCE(MAX(id), 0)
+            AS max_id
+        FROM acgn0721_gis.tb_xunlipoint
+    </select>
+
+    <!-- 全站：途经点导入用，不按地图视口裁剪（条数封顶避免一次过大） -->
+    <select id="getPickerXunliList" resultMap="xunliResultMap">
+        SELECT id,
+               xunliname,
+               japanname,
+               city,
+               bcimg,
+               xunlicolor,
+               ARRAY [ST_X(maingeo), ST_Y(maingeo)] AS maingeo,
+               zoom,
+               count,
+               hengpic,
+               xunliid
+        FROM acgn0721_gis.tb_xunli
+        WHERE maingeo IS NOT NULL
+        ORDER BY xunliid
+        LIMIT 8000;
+    </select>
+
+    <select id="getPickerXunliPointList" resultMap="xunlipointMap">
+        SELECT b.xunliname,
+               b.xunlicolor,
+               b.city,
+               a.id,
+               a.xunliid,
+               a.xunliname AS point_xunliname,
+               a.xunlipic,
+               a.gaoqingpic,
+               a.ep,
+               a.time,
+               ARRAY [ST_X(a.geopoint), ST_Y(a.geopoint)] AS geopoint
+        FROM acgn0721_gis.tb_xunlipoint a
+                 INNER JOIN acgn0721_gis.tb_xunli b ON b.xunliid = a.xunliid
+        ORDER BY a.id DESC
+        LIMIT 28000;
+    </select>
+
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.mysql.AcgnUserMapper">
+    <select id="selectByRandom">
+        select id, name,birthday,talent,avatarurl,sex from 0721acgn.tb_acgnuser where id = #{id}
+    </select>
+    <select id="selectOneRandom" resultType="com.example.demo.com.AcgnUser">
+        select id, name, birthday, talent, avatarurl, sex from 0721acgn.tb_acgnuser order by rand() limit 1
+    </select>
+    <select id="shujucount" resultType="java.lang.Integer">
+        select count(*) from 0721acgn.tb_acgnuser
+    </select>
+    <select id="selectBybirth" resultType="com.example.demo.com.AcgnUser">
+        select name, avatarurl, sex, birthday, talent
+        from 0721acgn.tb_acgnuser
+        where trim(birthday) != ''
+        and (
+            (
+                month(
+                    coalesce(
+                        str_to_date(trim(birthday), '%Y-%m-%d'),
+                        str_to_date(trim(birthday), '%Y/%m/%d'),
+                        str_to_date(trim(birthday), '%m-%d'),
+                        str_to_date(trim(birthday), '%m/%d'),
+                        str_to_date(trim(birthday), '%c-%e'),
+                        str_to_date(
+                            replace(replace(replace(trim(birthday), '月', '-'), '日', ''), '.', '-'),
+                            '%c-%e'
+                        )
+                    )
+                ) = #{month}
+                and day(
+                    coalesce(
+                        str_to_date(trim(birthday), '%Y-%m-%d'),
+                        str_to_date(trim(birthday), '%Y/%m/%d'),
+                        str_to_date(trim(birthday), '%m-%d'),
+                        str_to_date(trim(birthday), '%m/%d'),
+                        str_to_date(trim(birthday), '%c-%e'),
+                        str_to_date(
+                            replace(replace(replace(trim(birthday), '月', '-'), '日', ''), '.', '-'),
+                            '%c-%e'
+                        )
+                    )
+                ) = #{day}
+            )
+            or trim(birthday) in (
+                concat(lpad(#{month}, 2, '0'), '-', lpad(#{day}, 2, '0')),
+                concat(#{month}, '-', #{day}),
+                concat(lpad(#{month}, 2, '0'), '-', #{day}),
+                concat(#{month}, '-', lpad(#{day}, 2, '0'))
+            )
+            or right(trim(birthday), 5) in (
+                concat(lpad(#{month}, 2, '0'), '-', lpad(#{day}, 2, '0')),
+                concat(#{month}, '-', #{day}),
+                concat(lpad(#{month}, 2, '0'), '-', #{day}),
+                concat(#{month}, '-', lpad(#{day}, 2, '0'))
+            )
+        )
+        limit 1
+    </select>
+
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.postgresql.WarGridMapper">
+
+    <resultMap id="WarGridMap" type="com.example.demo.com.WarGrid">
+        <id property="id" column="id"/>
+        <result property="q" column="q"/>
+        <result property="r" column="r"/>
+        <result property="elevation" column="elevation"/>
+        <result property="eleclass" column="eleclass"/>
+        <result property="bigmap" column="bigmap"/>
+        <result property="center" column="center"
+                typeHandler="com.example.demo.handler.PgArrayToListTypeHandler"/>
+        <result property="gridgeometry" column="gridgeometry"
+                typeHandler="com.example.demo.handler.PgArrayToListListTypeHandler"/>
+    </resultMap>
+
+    <select id="getWarGrid" resultMap="WarGridMap">
+        SELECT
+            t.id, t.q, t.r, t.elevation, t.eleclass, t.bigmap,
+            ARRAY[ST_X(t.center), ST_Y(t.center)] AS center,
+            ARRAY(SELECT ARRAY[ST_X((d).geom), ST_Y((d).geom)]
+              FROM ST_DumpPoints(ST_ExteriorRing(t.gridgeometry)) AS d) AS gridgeometry
+        FROM acgn0721_gis.tb_kesk_grid t
+    </select>
+
+    <select id="selectByQAndR" resultMap="WarGridMap">
+        SELECT
+        q,
+        r,
+        id,
+        elevation,
+        eleclass,
+        bigmap,
+        ARRAY[ST_X(t.center), ST_Y(t.center)] AS center
+        FROM acgn0721_gis.tb_kesk_grid t  <!-- ✅ 加上别名 t -->
+        WHERE q = #{q}
+        AND r = #{r}
+        AND bigmap = 1
+    </select>
+</mapper>

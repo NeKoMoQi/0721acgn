@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.mysql.SearchResultMapper">
+    <sql id="genreCond">
+        <if test="genre != null and genre != ''">
+            AND (
+                `genre` = #{genre}
+                OR LOCATE(#{genre}, IFNULL(`genre`, '')) &gt; 0
+            )
+        </if>
+    </sql>
+    <sql id="statusCond">
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+    </sql>
+    <sql id="yearMinCond">
+        <if test="yearMin != null">
+            AND LENGTH(TRIM(IFNULL(releasedate,''))) &gt;= 4
+            AND CAST(LEFT(TRIM(releasedate), 4) AS UNSIGNED) &gt;= #{yearMin}
+        </if>
+    </sql>
+    <sql id="yearMaxCond">
+        <if test="yearMax != null">
+            AND LENGTH(TRIM(IFNULL(releasedate,''))) &gt;= 4
+            AND CAST(LEFT(TRIM(releasedate), 4) AS UNSIGNED) &lt;= #{yearMax}
+        </if>
+    </sql>
+    <sql id="searchNameCond">
+        <if test="search != null and search != ''">
+            AND name LIKE CONCAT('%', TRIM(#{search}), '%')
+        </if>
+    </sql>
+
+    <select id="getSearchResult" resultType="com.example.demo.com.SearchResult">
+        SELECT
+            '漫画' AS sourcetype,
+            comicid AS id,
+            name,
+            picurl AS picurl,
+            rating,
+            updated_at AS updatedAt
+        FROM 0721acgn.tb_cartoons
+        WHERE name LIKE CONCAT('%', TRIM(#{search}), '%')
+        UNION ALL
+        SELECT
+            '动漫' AS sourcetype,
+            id,
+            name,
+            bcimg AS picurl,
+            rating,
+            updated_at AS updatedAt
+        FROM 0721acgn.tb_animation
+        WHERE name LIKE CONCAT('%', TRIM(#{search}), '%')
+        UNION ALL
+        SELECT
+            '轻小说' AS sourcetype,
+            novelid AS id,
+            name,
+            picurl AS picurl,
+            rating,
+            updated_at AS updatedAt
+        FROM 0721acgn.tb_novel
+        WHERE name LIKE CONCAT('%', TRIM(#{search}), '%')
+        ORDER BY sourcetype, id;
+    </select>
+
+    <select id="searchComicsGlobal" resultType="com.example.demo.com.SearchResult">
+        SELECT
+            '漫画' AS sourcetype,
+            comicid AS id,
+            name,
+            picurl AS picurl,
+            rating,
+            updated_at AS updatedAt
+        FROM 0721acgn.tb_cartoons
+        <where>
+            <include refid="searchNameCond"/>
+            <include refid="genreCond"/>
+            <include refid="statusCond"/>
+            <include refid="yearMinCond"/>
+            <include refid="yearMaxCond"/>
+        </where>
+        LIMIT 220
+    </select>
+
+    <select id="searchAnimationGlobal" resultType="com.example.demo.com.SearchResult">
+        SELECT
+            '动漫' AS sourcetype,
+            id,
+            name,
+            bcimg AS picurl,
+            rating,
+            updated_at AS updatedAt
+        FROM 0721acgn.tb_animation
+        <where>
+            <include refid="searchNameCond"/>
+            <include refid="genreCond"/>
+            <include refid="statusCond"/>
+            <include refid="yearMinCond"/>
+            <include refid="yearMaxCond"/>
+        </where>
+        LIMIT 220
+    </select>
+
+    <select id="searchNovelGlobal" resultType="com.example.demo.com.SearchResult">
+        SELECT
+            '轻小说' AS sourcetype,
+            novelid AS id,
+            name,
+            picurl AS picurl,
+            rating,
+            updated_at AS updatedAt
+        FROM 0721acgn.tb_novel
+        <where>
+            <include refid="searchNameCond"/>
+            <include refid="genreCond"/>
+            <include refid="statusCond"/>
+            <include refid="yearMinCond"/>
+            <include refid="yearMaxCond"/>
+        </where>
+        LIMIT 220
+    </select>
+</mapper>

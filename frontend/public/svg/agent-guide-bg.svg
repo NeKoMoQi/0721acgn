@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="620" viewBox="0 0 900 620">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff7fb"/>
+      <stop offset="0.48" stop-color="#f8fbff"/>
+      <stop offset="1" stop-color="#eef4ff"/>
+    </linearGradient>
+    <radialGradient id="sakura" cx="0.12" cy="0.18" r="0.42">
+      <stop offset="0" stop-color="#ffc2da" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#ffc2da" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="blue" cx="0.88" cy="0.06" r="0.38">
+      <stop offset="0" stop-color="#8ab0ff" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#8ab0ff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="26" height="26" patternUnits="userSpaceOnUse">
+      <path d="M26 0H0V26" fill="none" stroke="#6b7899" stroke-width="1" opacity="0.08"/>
+    </pattern>
+    <pattern id="route" width="160" height="120" patternUnits="userSpaceOnUse">
+      <path d="M12 82C44 24 78 112 124 48" fill="none" stroke="#ff7fb0" stroke-width="4" stroke-linecap="round" stroke-dasharray="10 12" opacity="0.18"/>
+      <circle cx="12" cy="82" r="6" fill="#ff7fb0" opacity="0.22"/>
+      <circle cx="124" cy="48" r="6" fill="#7aa7ff" opacity="0.22"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="620" fill="url(#base)"/>
+  <rect width="900" height="620" fill="url(#sakura)"/>
+  <rect width="900" height="620" fill="url(#blue)"/>
+  <rect width="900" height="620" fill="url(#grid)"/>
+  <rect width="900" height="620" fill="url(#route)"/>
+  <path d="M-40 520C160 410 315 560 510 458C650 385 744 410 940 300" fill="none" stroke="#7aa7ff" stroke-width="42" stroke-linecap="round" opacity="0.08"/>
+  <path d="M-20 126C160 22 306 190 470 92C600 15 720 76 920 42" fill="none" stroke="#ff7fb0" stroke-width="36" stroke-linecap="round" opacity="0.08"/>
+</svg>

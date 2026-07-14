@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.postgresql.WarChessingMapper">
+    <resultMap id="WarGridMap" type="com.example.demo.com.WarGrid">
+        <id property="id" column="id"/>
+        <result property="q" column="q"/>
+        <result property="r" column="r"/>
+        <result property="elevation" column="elevation"/>
+        <result property="eleclass" column="eleclass"/>
+        <result property="bigmap" column="bigmap"/>
+        <result property="center" column="center"
+                typeHandler="com.example.demo.handler.PgArrayToListTypeHandler"/>
+        <result property="gridgeometry" column="gridgeometry"
+                typeHandler="com.example.demo.handler.PgArrayToListListTypeHandler"/>
+    </resultMap>
+
+    <select id="getWarChessing" resultType="com.example.demo.com.Chessing">
+        SELECT
+            c.id,
+            c.battleid,
+            c.chessname,
+            c.hexid,
+            c.q,
+            c.r,
+            -- 从hexgrid获取中心坐标
+            ST_X(h.center) as centerlng,
+            ST_Y(h.center) as centerlat,
+            -- 棋子类型信息
+            COALESCE(ct.name, c.type) as type,
+            COALESCE(ct.pic_url) as chessurl,
+            -- 属性（优先用棋子当前值，可用COALESCE取类型默认值）
+            c.hp,
+            c.maxhp,
+            c.move,
+            c.atk,
+            c.range,
+            c.moved,
+            c.fired,
+            c.player,
+            c.createdat,
+            c.updatedat
+        FROM acgn0721_gis.tb_chessing c
+                 LEFT JOIN acgn0721_gis.tb_kesk_grid h
+                           ON c.q = h.q
+                               AND c.r = h.r
+                               AND h.bigmap = 1
+                 LEFT JOIN acgn0721_gis.tb_chessing_pic ct
+                           ON c.type = ct.id
+        WHERE c.battleid = #{id};
+    </select>
+
+    <!-- 新增：根据ID查询单个棋子 -->
+    <select id="selectById" resultType="com.example.demo.com.Chessing">
+        SELECT
+            c.id,
+            c.battleid,
+            c.chessname,
+            c.hexid,
+            c.q,
+            c.r,
+            ST_X(h.center) as centerlng,
+            ST_Y(h.center) as centerlat,
+            COALESCE(ct.name, c.type) as type,
+            COALESCE(ct.pic_url) as chessurl,
+            c.hp,
+            c.maxhp,
+            c.move,
+            c.atk,
+            c.range,
+            c.moved,
+            c.fired,
+            c.player,
+            c.createdat,
+            c.updatedat
+        FROM acgn0721_gis.tb_chessing c
+                 LEFT JOIN acgn0721_gis.tb_kesk_grid h
+                           ON c.q = h.q AND c.r = h.r AND h.bigmap = 1
+                 LEFT JOIN acgn0721_gis.tb_chessing_pic ct
+                           ON c.type = ct.id
+        WHERE c.id = #{id}
+    </select>
+
+    <!-- 新增：更新棋子位置和状态 -->
+    <update id="updateById" parameterType="com.example.demo.com.Chessing">
+        UPDATE acgn0721_gis.tb_chessing
+        SET
+            q = #{q},
+            r = #{r},
+            moved = #{moved},
+            updatedat = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 攻击：更新目标血量 -->
+    <update id="updateHp">
+        UPDATE acgn0721_gis.tb_chessing
+        SET hp = #{hp},
+            updatedat = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 攻击：标记攻击者本回合已开火 -->
+    <update id="updateFired">
+        UPDATE acgn0721_gis.tb_chessing
+        SET fired = #{fired},
+            updatedat = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 回合结束：把指定阵营所有存活棋子的 moved / fired 复位 -->
+    <update id="resetTurnFlags">
+        UPDATE acgn0721_gis.tb_chessing
+        SET moved = FALSE,
+            fired = FALSE,
+            updatedat = NOW()
+        WHERE battleid = #{battleId}
+          AND player   = #{player}
+          AND hp &gt; 0
+    </update>
+
+    <!-- 统计某阵营存活棋子数 -->
+    <select id="countAlive" resultType="int">
+        SELECT COUNT(*)
+        FROM acgn0721_gis.tb_chessing
+        WHERE battleid = #{battleId}
+          AND player   = #{player}
+          AND hp &gt; 0
+    </select>
+
+    <!-- 重置：清掉 live 表内某 battle 的所有棋子 -->
+    <delete id="deleteByBattleId">
+        DELETE FROM acgn0721_gis.tb_chessing
+        WHERE battleid = #{battleId}
+    </delete>
+
+    <!-- 重置：从 backup 表把某 battle 的初始棋子拷回 live 表 -->
+    <insert id="restoreFromBackup">
+        INSERT INTO acgn0721_gis.tb_chessing
+        SELECT *
+        FROM acgn0721_gis.tb_chessing_backup
+        WHERE battleid = #{battleId}
+    </insert>
+
+    <select id="selectGridByQAndR" resultMap="WarGridMap">
+        SELECT
+        q,
+        r,
+        id,
+        elevation,
+        eleclass,
+        bigmap,
+        ARRAY[ST_X(t.center), ST_Y(t.center)] AS center
+        FROM acgn0721_gis.tb_kesk_grid t  <!-- ✅ 加上别名 t -->
+        WHERE q = #{q}
+        AND r = #{r}
+        AND bigmap = 1
+    </select>
+</mapper>

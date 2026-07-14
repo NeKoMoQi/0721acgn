@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.postgresql.BattleStateMapper">
+
+    <resultMap id="BattleStateMap" type="com.example.demo.com.BattleState">
+        <id     property="battleId"      column="battle_id"/>
+        <result property="currentPlayer" column="current_player"/>
+        <result property="roundNo"       column="round_no"/>
+        <result property="status"        column="status"/>
+        <result property="winner"        column="winner"/>
+        <result property="createdAt"     column="created_at"/>
+        <result property="updatedAt"     column="updated_at"/>
+    </resultMap>
+
+    <select id="selectByBattleId" resultMap="BattleStateMap">
+        SELECT battle_id, current_player, round_no, status, winner, created_at, updated_at
+        FROM acgn0721_gis.tb_battle_state
+        WHERE battle_id = #{battleId}
+    </select>
+
+    <insert id="insertInitial" parameterType="com.example.demo.com.BattleState">
+        INSERT INTO acgn0721_gis.tb_battle_state
+            (battle_id, current_player, round_no, status, winner, created_at, updated_at)
+        VALUES
+            (#{battleId},
+             COALESCE(#{currentPlayer}, 0),
+             COALESCE(#{roundNo}, 1),
+             COALESCE(#{status}, 'ONGOING'),
+             #{winner},
+             NOW(), NOW())
+        ON CONFLICT (battle_id) DO NOTHING
+    </insert>
+
+    <update id="updateState" parameterType="com.example.demo.com.BattleState">
+        UPDATE acgn0721_gis.tb_battle_state
+        SET current_player = #{currentPlayer},
+            round_no       = #{roundNo},
+            status         = #{status},
+            winner         = #{winner},
+            updated_at     = NOW()
+        WHERE battle_id = #{battleId}
+    </update>
+
+    <update id="switchTurn">
+        UPDATE acgn0721_gis.tb_battle_state
+        SET current_player = #{nextPlayer},
+            round_no       = #{nextRound},
+            updated_at     = NOW()
+        WHERE battle_id = #{battleId}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE acgn0721_gis.tb_battle_state
+        SET status     = #{status},
+            winner     = #{winner},
+            updated_at = NOW()
+        WHERE battle_id = #{battleId}
+    </update>
+
+    <!-- 重置：清掉 live 表内某 battle 的回合状态 -->
+    <delete id="deleteByBattleId">
+        DELETE FROM acgn0721_gis.tb_battle_state
+        WHERE battle_id = #{battleId}
+    </delete>
+
+    <!-- 重置：从 backup 表把某 battle 的初始回合状态拷回 live 表 -->
+    <insert id="restoreFromBackup">
+        INSERT INTO acgn0721_gis.tb_battle_state
+        SELECT *
+        FROM acgn0721_gis.tb_battle_state_backup
+        WHERE battle_id = #{battleId}
+    </insert>
+
+    <update id="setHumanFirstTurn">
+        UPDATE acgn0721_gis.tb_battle_state
+        SET current_player = #{humanPlayer},
+            round_no       = 1,
+            status         = 'ONGOING',
+            winner         = NULL,
+            updated_at     = NOW()
+        WHERE battle_id = #{battleId}
+    </update>
+</mapper>

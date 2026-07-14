@@ -1,0 +1,22 @@
+package com.example.demo.com;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class Shengdi {
+    private int id;
+    private String fanju;
+    private LocalDate createtime;
+    private LocalDateTime updatetime;
+    private int xunlicount;
+    private int click;
+}

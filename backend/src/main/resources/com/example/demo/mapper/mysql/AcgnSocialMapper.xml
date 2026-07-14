@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.mysql.AcgnSocialMapper">
+
+    <select id="selectMyVote" resultType="java.lang.Integer">
+        SELECT vote FROM 0721acgn.tb_acgn_vote
+        WHERE client_id = #{clientId}
+          AND media_type = #{mediaType}
+          AND media_id = #{mediaId}
+    </select>
+
+    <delete id="deleteMyVote">
+        DELETE FROM 0721acgn.tb_acgn_vote
+        WHERE client_id = #{clientId}
+          AND media_type = #{mediaType}
+          AND media_id = #{mediaId}
+    </delete>
+
+    <insert id="insertVote">
+        INSERT INTO 0721acgn.tb_acgn_vote (client_id, media_type, media_id, vote)
+        VALUES (#{clientId}, #{mediaType}, #{mediaId}, #{vote})
+    </insert>
+
+    <update id="updateMyVote">
+        UPDATE 0721acgn.tb_acgn_vote
+        SET vote = #{vote}
+        WHERE client_id = #{clientId}
+          AND media_type = #{mediaType}
+          AND media_id = #{mediaId}
+    </update>
+
+    <select id="countVotes" resultType="int">
+        SELECT COUNT(*) FROM 0721acgn.tb_acgn_vote
+        WHERE media_type = #{mediaType}
+          AND media_id = #{mediaId}
+          AND vote = #{vote}
+    </select>
+
+    <select id="listComments" resultType="com.example.demo.com.AcgnSocialCommentRow">
+        SELECT id, nickname, avatar, body, created_at AS createdAt
+        FROM 0721acgn.tb_acgn_comment
+        WHERE media_type = #{mediaType}
+          AND media_id = #{mediaId}
+        ORDER BY id DESC
+        LIMIT #{limit}
+    </select>
+
+    <insert id="insertComment">
+        INSERT INTO 0721acgn.tb_acgn_comment (media_type, media_id, nickname, avatar, body)
+        VALUES (#{mediaType}, #{mediaId}, #{nickname}, #{avatar}, #{body})
+    </insert>
+</mapper>
