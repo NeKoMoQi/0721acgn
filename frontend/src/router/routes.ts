@@ -23,6 +23,7 @@ export const constantRoute = [
     component: () => import('@/view/Messages/index.vue'),
     meta: {
       title: '消息',
+      requiresAuth: true,
       name: 'Messages',
     },
   },
@@ -32,6 +33,7 @@ export const constantRoute = [
     component: () => import('@/view/User/Center.vue'),
     meta: {
       title: '个人中心',
+      requiresAuth: true,
       name: 'UserCenter',
     },
   },
@@ -41,6 +43,7 @@ export const constantRoute = [
     component: () => import('@/view/User/Upload.vue'),
     meta: {
       title: '我要上传',
+      requiresAuth: true,
       name: 'UserUpload',
     },
   },
@@ -50,6 +53,7 @@ export const constantRoute = [
     component: () => import('@/view/User/Activity.vue'),
     meta: {
       title: '我的动态',
+      requiresAuth: true,
       name: 'UserActivity',
     },
   },
@@ -68,6 +72,7 @@ export const constantRoute = [
     component: () => import('@/view/WarFlag/Start.vue'),
     meta: {
       title: '战旗',
+      requiresAuth: true,
       name: 'warflagi',
     },
   },
@@ -77,6 +82,7 @@ export const constantRoute = [
     component: () => import('@/view/WarFlag/index.vue'),
     meta: {
       title: '战旗 · 战场',
+      requiresAuth: true,
       name: 'warflagBattle',
     },
   },
@@ -95,6 +101,7 @@ export const constantRoute = [
     component: () => import('@/view/shengdi/addnew.vue'),
     meta: {
       title: '新增地标',
+      requiresAuth: true,
       name: 'addnew',
     },
   },

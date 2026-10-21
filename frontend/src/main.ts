@@ -19,19 +19,19 @@ import './assets/reset.css'
 const pinia = createPinia()
 app.use(pinia)
 
-/** 刷新页面后 localStorage 仍有 TOKEN，但 Pinia 里头像/昵称为空；按需拉一次资料恢复登录态 */
-if (GET_TOKEN()) {
-  const userStore = useUserStore(pinia)
-  userStore.userinfo().catch(() => {
-    /* token 失效等：保持现状，接口层或后续请求会处理 */
-  })
-}
-
 ensureAcgnUserHydrated().catch(() => {
   /* 后端未就绪时足迹等仍可在后续页面重试加载 */
 })
 
 app.use(router)
+/** 等路由就绪后恢复资料，使凭证失效时能记住当前受保护页面。 */
+router.isReady().then(() => {
+  if (GET_TOKEN()) {
+    useUserStore(pinia).userinfo().catch(() => {
+      // 网络故障保留凭证；确认失效时由请求层清理并提示重新登录。
+    })
+  }
+})
 app.use(ElementPlus,{
     locale: zhCn
 })

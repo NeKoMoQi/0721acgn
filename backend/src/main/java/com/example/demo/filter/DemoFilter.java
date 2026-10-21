@@ -1,13 +1,11 @@
 package com.example.demo.filter;
 
-import com.alibaba.fastjson.JSONObject;
-import com.example.demo.com.Result;
 import com.example.demo.utils.JwtUtils;
+import com.example.demo.utils.PublicAccessPolicy;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import netscape.javascript.JSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -42,25 +40,17 @@ public class DemoFilter implements Filter {
             return;
         }
 
-        //获取请求url
-        String url = request.getRequestURI().toString();
-        log.info(request.getRequestURI());
-        //判断是否为登录操作
-        if(url.contains("login")||url.contains("/activity")||url.contains("/peoplecount")||url.contains("/acgn")||url.contains("/api/animation")||url.contains("/shengdi/hot")||url.contains("/api/media/")){
-            log.info("登录请求，放行");
+        String path = request.getRequestURI().substring(request.getContextPath().length());
+        if (PublicAccessPolicy.isPublic(request.getMethod(), path)) {
             filterChain.doFilter(request, response);
             return;
         }
         //获取令牌
         String Jwt =  request.getHeader("Token");
-        System.out.println(Jwt);
         //判断是否存在令牌
         if(!StringUtils.hasLength(Jwt)){
             log.info("请求头token为空，返回未登录信息");
-            Result error = Result.error("NOT_LOGIN");
-            //手动转换
-            String notLogin = JSONObject.toJSONString(error);
-            response.getWriter().write(notLogin);
+            PublicAccessPolicy.rejectUnauthorized(response);
             return;
         }
         //校验token
@@ -69,10 +59,7 @@ public class DemoFilter implements Filter {
        }catch (Exception e){
            e.printStackTrace();
            log.info("解析令牌失败，返回未登录错误信息");
-           Result error = Result.error("NOT_LOGIN");
-           //手动转换
-           String notLogin = JSONObject.toJSONString(error);
-           response.getWriter().write(notLogin);
+           PublicAccessPolicy.rejectUnauthorized(response);
            return;
        }
 

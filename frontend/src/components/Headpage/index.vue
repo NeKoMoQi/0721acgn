@@ -56,8 +56,8 @@
     <div class="user-wrap">
       <div class="avatar-wrapper">
         <img
-          v-if="useStore.avatar"
-          :src="useStore.avatar"
+          v-if="useStore.token"
+          :src="useStore.avatar || '/enter.jpg'"
           class="avatar"
           @mouseenter="userenter"
           @mouseleave="userleave"
@@ -325,122 +325,24 @@ style="
     </template>
   </el-dialog>
 
-<div v-if="loading_page == 1" class="overlay"></div>
-<div v-if="loading_page == 1" class="loading_page">
-  <div class="chaijun">
-    <div style="display: flex;justify-content: center; top: 10%; position: relative; margin-bottom: 40px;">
-      <div class="erwei">扫描二维码登录</div>
-      <div style="top: 20%; position: fixed;">
-        <img src="/qer.jpg" alt="" style="width: 168px; height: 168px;">
-      </div>
-      <p style="top: 65%; position: fixed;" class="weixin">请使用微信扫码登录</p>
-      <p style="top: 70%; position: fixed;" class="weixin">我的微信扫码登录果然有问题</p>
-      </div>
-      <div>
-      <img v-if="chaijun == true" src="/tantou.png" alt="" style="width: 100px;  left:0%; top: 84.3%; position: fixed;">
-      <img v-if="chaijun == false" src="/tantou2.png" alt="" style="width: 100px;  left:0%; top: 90.6%; position: fixed;">
-    </div>
-  </div>
-  <div style="width: 1px; height: 90%; background-color: #cccccc; margin: 20px 0;"></div>
-  <div class="load">
-    <div @click="close">
-      <img src="/关闭.png" alt="" style="width: 20px; height: 20px; position: fixed; left: 97%;top: 2%;">
-    </div>
-    <div style="display: flex;justify-content: center; top: 10%; position: relative; margin-bottom: 40px;">
-      <div style="font-weight: 500;font-size: 18px;line-height: 20px; margin-right: 12px;" @click="phones1">密码登录</div>
-      <div>|</div>
-      <div style="font-weight: 500;font-size: 18px;line-height: 20px; margin-left: 12px;" @click="phones">手机登录</div>
-    </div>
-    <div v-if="phone == 0" style="top: 15%; position: relative; justify-content: center; display: flex;">
-    <el-input
-      v-model="loginForm.username"
-      style="max-width: 400px;height: 50px; "
-      placeholder="请输入账号"
-    >
-      <template #prepend>账号</template>
-    </el-input>
-  </div>
-  <div v-if="phone == 1" style="top: 15%; position: relative; justify-content: center; display: flex;">
-    <el-input
-    v-model="telephone"
-      style="max-width: 400px;height: 50px; "
-      placeholder="请输入手机号"
-    >
-      <template #prepend>手机号</template>
-      <template #append >
-        <div @click="yanzheng">
-          发送验证码
-        </div>
-      </template>
-    </el-input>
-  </div>
-   <div v-if="phone == 0" style="display: flex;justify-content: center;  position: relative;margin-top: 43px; top: 4.5%;">
-    <el-input
-       @focus="handleFocus1"
-       @blur = "handleFocus2"
-       v-model="loginForm.password"
-      style="max-width: 400px;height: 50px;"
-      placeholder="请输入密码"
-      
-    >
-      <template #prepend>密码</template>
-    </el-input>
-    
-   </div>
-   <div v-if="phone == 1" style="display: flex;justify-content: center;  position: relative;margin-top: 43px; top: 4.5%;">
-    <el-input
-       v-model="yanzheng1"
-       @focus="handleFocus1"
-       @blur = "handleFocus2"
-      style="max-width: 400px;height: 50px;"
-      placeholder="请输入验证码"
-    >
-      <template #prepend>验证码</template>
-    </el-input>
-   </div>
-   
-   <div style="position: relative; top: 12%; justify-content: center; display: flex;">
-    <button style="width: 194px; height: 40px; z-index: 1002; margin-right: 5px;" class="zhuce" @click="phones">注册</button>
-    <button  class="denglu" @click="entering">登录</button>
-   </div>
-   <div  style="position: relative; top: 15%; justify-content: center; display: flex;">
-    <p class="weixin"> 未注册过的手机号，我们将自动帮你注册账号</p>
-   </div>
-    <div>
-      <img v-if="chaijun == true" src="/tantou2 left.png" alt="" style="width: 100px;  left: 88%; top: 84.3%; position: fixed;">
-      <img v-if="chaijun == false" src="/tantou left.png" alt="" style="width: 100px;  left: 88%; top: 90.6%; position: fixed;">
-    </div>
-  </div>
-  
-</div>
 </template>
 
 <script setup lang="ts">
 defineOptions({ inheritAttrs: false })
 import { Search, CaretTop, Grid, InfoFilled } from '@element-plus/icons-vue';
-import { onMounted, onUnmounted, ref, reactive, watch, nextTick } from 'vue';
+import { onMounted, onUnmounted, ref, watch, nextTick } from 'vue';
 import useUserStore from '@/stores/modules/users';
-import { ElNotification } from 'element-plus'
-import { getTime } from '@/utils/time'
+import { ElMessage } from 'element-plus'
 import { useRouter,useRoute } from 'vue-router'
 import { getAllSearch } from '@/api/AllSearch'
 import { unreadNotificationCount } from '@/utils/acgnNotifications'
 let $router = useRouter()
-let times = getTime()
 const showResults = ref(false)
 const searchResults = ref([])
 const searchText = ref("")
-const account = ref("")
-const password = ref("")
-const telephone = ref("")
-const yanzheng1 = ref()
-const loading_page = ref(0)
-const phone = ref(0)
 const route = useRoute()
 let useStore = useUserStore()
-let loginForm = reactive({ username: 'moqi', password: '123456' })
 const showBox = ref<boolean>(false)
-const chaijun = ref<boolean>(true)
 const isUserHovering = ref(false)
 const aboutLegalVisible = ref(false)
 const msgUnread = ref(0)
@@ -449,15 +351,6 @@ function refreshMsgUnread() {
 }
 let unreadPoll: ReturnType<typeof setInterval> | null = null
 
-watch(
-  () => useStore.loginWallTrigger,
-  (v) => {
-    if (v > 0) {
-      loading_page.value = 1
-      showBox.value = false
-    }
-  }
-)
 watch(() => useStore.token, () => refreshMsgUnread())
 const allsearch = async (search: string) => {
   if (!search?.trim()) {
@@ -600,31 +493,9 @@ const loadleave = () => {
   console.log(showBox.value)
 }
 const Loading = () => {
-loading_page.value = 1
-showBox.value = false
+  useStore.triggerLoginWall()
+  showBox.value = false
 }
-const entering = async() => {
-try{
-  await useStore.userLogin(loginForm)
-  ElNotification({
-      type: 'success',
-      message: '欢迎回来',
-      title: `Hi,${times}`,
-      duration: 3000,
-    })
-    await useStore.userinfo()
-    loading_page.value = 0
-    console.log(useStore.avatar)
-}catch (error) {
-    console.log(error)
-    ElNotification({
-      type: 'error',
-      message: (error as Error).message,
-    })
-  }
-
-}
-
 
 const userenter = () => {
   isUserHovering.value = true
@@ -632,29 +503,14 @@ const userenter = () => {
 const userleave = () => {
   isUserHovering.value = false
 }
-const yanzheng = () => {
-  console.log(111)
-}
-const phones1 = () => {
-phone.value = 0
-}
-const phones = () => {
-phone.value = 1
-}
-const close = () => {
-  loading_page.value = 0
-  console.log(loading_page.value)
-}
-const handleFocus1 = () => {
-  chaijun.value = false
-}
-const handleFocus2 = () => {
-  chaijun.value = true
-}
-const logout  = async() => {
-  await useStore.userLogout()
-  // window.location.reload();
-  $router.replace('/')
+const logout = async () => {
+  try {
+    await useStore.userLogout()
+  } catch {
+    ElMessage.info('已退出本机登录，服务器暂未响应')
+  }
+  isUserHovering.value = false
+  if (route.meta.requiresAuth) await $router.replace('/')
 }
 const handleClickOutside = (event: MouseEvent) => {
   const searchEl = document.querySelector('.search');

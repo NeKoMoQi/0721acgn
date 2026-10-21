@@ -1,11 +1,13 @@
 <template>
   <router-view :key="route.fullPath"></router-view>
+  <LoginDialog />
   <canvas v-if="showGlobalLive2D" id="live2d" class="live2d-canvas"></canvas>
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import LoginDialog from '@/components/LoginDialog.vue';
 
 const route = useRoute();
 const live2dInitialized = ref(false);
