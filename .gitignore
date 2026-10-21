@@ -37,3 +37,11 @@ __pycache__/
 *.py[cod]
 *.class
 *.tsbuildinfo
+# temp backups from repair/deploy
+*.orig
+*.damaged
+*.repaired-attempt
+*.original-from-github
+
+# generated WebP copies (regenerate with scripts/convert-webp.mjs)
+frontend/public/**/*.webp
