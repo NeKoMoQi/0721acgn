@@ -8,11 +8,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")  // 对当前路径下的所有请求都应用当前的跨域配置
-                .allowedOrigins("*")  // 允许的跨域源
-                .allowedMethods("*")  // 允许的请求方法
-                .allowedHeaders("*")  // 允许的请求头
-                .allowCredentials(true)  // 是否允许发送 Cookie
-                .maxAge(3600);  // 设置请求最大有效时长
+        // 跨域响应头统一由 DemoFilter 输出。
+        // 这里原本是 allowedOrigins("*") + allowCredentials(true)，
+        // Spring 6 下该组合会直接抛 IllegalArgumentException（登录 500），故留空。
     }
 }

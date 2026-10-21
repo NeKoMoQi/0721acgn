@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",
+    "convert-webp": "node scripts/convert-webp.mjs",
     "type-check": "vue-tsc --build",
     "prepare": "husky install"
   },
@@ -52,6 +53,7 @@
     "sass": "^1.85.1",
     "sass-embedded": "^1.85.1",
     "sass-loader": "^16.0.5",
+    "terser": "^5.51.2",
     "typescript": "~5.7.3",
     "vite": "^6.1.0",
     "vite-plugin-svg-icons": "^2.0.1",

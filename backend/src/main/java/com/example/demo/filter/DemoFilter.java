@@ -27,7 +27,7 @@ public class DemoFilter implements Filter {
       HttpServletRequest request = (HttpServletRequest) Request;
       HttpServletResponse response = (HttpServletResponse) Response;
         String origin = request.getHeader("Origin");
-        if (origin != null && (origin.startsWith("http://localhost:") || origin.startsWith("http://127.0.0.1:"))) {
+        if (origin != null) {
             response.setHeader("Access-Control-Allow-Origin", origin);
         }
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");

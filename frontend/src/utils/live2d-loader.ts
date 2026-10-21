@@ -8,11 +8,11 @@ export interface Live2DRenderApi {
   revealMessageBox?: () => void
 }
 
-// 动态加载 UMD 模块的辅助函数
+// 动�?�加�?UMD 模块的辅助函�
 export function loadLive2DScript(): Promise<Live2DRenderApi> {
   return new Promise((resolve, reject) => {
-    // 如果已经加载，直接返回
-    if (window.Live2dRender) {
+    // 如果已经加载，直接返�
+if (window.Live2dRender) {
       resolve(window.Live2dRender);
       return;
     }
@@ -31,8 +31,8 @@ export function loadLive2DScript(): Promise<Live2DRenderApi> {
     script.src = LIVE2D_SCRIPT_URL;
     script.type = 'text/javascript';
     
-    // 关键：添加 crossorigin 和正确处理加载
-    script.onload = () => {
+    // 关键：添�?crossorigin 和正确处理加�
+script.onload = () => {
       if (window.Live2dRender) {
         resolve(window.Live2dRender);
       } else {
@@ -61,7 +61,7 @@ export async function mountShengdiLive2D(): Promise<void> {
     ShowToolBox: false,
     LoadFromCache: true,
     Live2dCubismcoreUrl: '/live2dcubismcore.min.js',
-    AgentChatUrl: 'http://localhost:8080/acgn/live2d/agent/chat',
+    AgentChatUrl: '/acgn/live2d/agent/chat',
   })
 }
 

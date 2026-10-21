@@ -2,30 +2,15 @@
 <html lang="">
   <head>
     <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap" rel="stylesheet">
     <link rel="icon" href="/LOGO.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/forJavaScript/web/libs/iclient8c/libs/SuperMap.Include.js"></script>
     <title>0721Acgn (ﾉ>ω<)ﾉ :｡･::･ﾟ'★,｡･:･ﾟ'☆</title>
   </head>
   <body>
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.css" type="text/css">
+    <script defer src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.js"></script>
     <div id="app">
     </div>
     <script type="module" src="/src/main.ts"></script>
-
-    <script>
-        console.log('=== Live2D SDK 加载检查 ===')
-  console.log('window 所有属性:', Object.keys(window).sort())
-  
-  // 检查特定对象
-  const candidates = ['Live2DCubismCore', 'CubismCore', 'csm', 'u', 'Live2D']
-  candidates.forEach(name => {
-    if (window[name]) {
-      console.log(`✅ 找到: window.${name}`, window[name])
-    }
-  })
-    </script>
   </body>
 </html>

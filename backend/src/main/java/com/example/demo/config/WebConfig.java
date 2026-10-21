@@ -14,18 +14,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOriginPatterns(
-                        "http://localhost:*",
-                        "http://127.0.0.1:*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders(
-                        "Authorization",
-                        "Content-Type",
-                        "Token",
-                        "token",
-                        "X-Acgn-Client")
-                .allowCredentials(true);
+        // CORS headers are emitted by DemoFilter for every response; keep Spring's own
+        // CORS processing out of the way so it can never reject a valid request with
+        // "Invalid CORS request" (403) when the site is served from a public IP/domain.
     }
 
     @Override

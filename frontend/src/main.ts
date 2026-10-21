@@ -10,6 +10,9 @@ import router from './router'
 import useUserStore from '@/stores/modules/users'
 import { GET_TOKEN } from '@/utils/token'
 import { ensureAcgnUserHydrated } from '@/utils/acgnLocal'
+import { installImageOptimizer } from '@/utils/imageOptimizer'
+
+installImageOptimizer()
 
 const app = createApp(App)
 import './assets/reset.css'
