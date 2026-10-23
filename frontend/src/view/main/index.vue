@@ -50,6 +50,12 @@
               </div>
               <div style="width: 80%; margin-left: 10%; margin-left: 10%; margin-top: 30px;"><button style="background-color: rgb(241,241,241); border: none; width: 100%; height: 40px;">随机文章？？ => Go</button></div>
               </div>
+              <div class="character sidebar-note">
+                <div class="hottitle">🌸欢迎来到小窝🌸</div>
+                <p class="sidebar-note-copy">这里放着喜欢的作品、随手写的推荐，还有想去看看的地方。</p>
+                <p class="sidebar-note-copy">从一部番剧、一本漫画或一卷轻小说开始，找到属于自己的小小快乐。欢迎来坐坐，慢慢看，慢慢逛～</p>
+                <p class="sidebar-note-author">—— NeKoMoQi</p>
+              </div>
               <div class="character">
                 <div class="hottitle">🎲随机介绍🎲</div>
                 <div style="display: flex; justify-content: center; margin-top: 15px;">
@@ -154,6 +160,12 @@
     </div>
   </div>
 </div>
+              <div class="character sidebar-note">
+                <div class="hottitle">📌小窝公告📌</div>
+                <p class="sidebar-note-copy">游客可以直接浏览和搜索作品，挑一部感兴趣的慢慢看吧。</p>
+                <p class="sidebar-note-copy">想接着上次的进度？到「个人中心 · 继续观看 / 阅读」，就能找到上次看到的集数、章节或卷数。</p>
+                <p class="sidebar-note-copy">小窝的内容会逐步补充。遇到缺章、链接失效或资料有误，欢迎带上作品名和章节反馈。</p>
+              </div>
               <div class="fenlei">
                 <div class="hottitle">🔀分类🔀</div>
                 <div style="display: flex;   justify-content: space-between; margin-top:10px ;">
@@ -719,7 +731,7 @@ const scrollDown = () => {
   overflow-y: auto; /* 启用垂直滚动 */
   padding-right: 15px; /* 避免滚动条遮挡内容 */
   width: 65%;
-  height: 100%;
+  height: 2587px;
   border-radius: 10px;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
@@ -727,7 +739,22 @@ const scrollDown = () => {
 }
 .meiriuser{
   width: 30%;
-  height: 100%;
+  height: auto;
+}
+.sidebar-note{
+  height: auto;
+}
+.sidebar-note-copy{
+  margin: 10px 0 0;
+  color: #666;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.sidebar-note-author{
+  margin: 12px 0 0;
+  text-align: right;
+  color: #666;
+  font-size: 14px;
 }
 .scrolling {
   animation: none !important;
@@ -834,7 +861,8 @@ const scrollDown = () => {
   gap: 40px; /* 元素间距 */
   width: min(1440px, calc(100vw - 64px));
   left: 50%;
-  height: 2667px;
+  min-height: 2667px;
+  height: auto;
   margin-left: auto;
   margin-right: auto;
   padding: 40px 0;
@@ -948,6 +976,7 @@ const scrollDown = () => {
 
   .zixun{
     width: 63%;
+    height: 2603px;
   }
 
   .meiriuser{
@@ -970,7 +999,8 @@ const scrollDown = () => {
 @media (max-width: 1100px) {
   .behinds{
     width: calc(100vw - 32px);
-    height: 2400px;
+    min-height: 2400px;
+    height: auto;
     gap: 20px;
     padding: 28px 0;
     margin-bottom: 140px;
@@ -978,6 +1008,7 @@ const scrollDown = () => {
 
   .zixun{
     width: 60%;
+    height: 2344px;
   }
 
   .meiriuser{
@@ -1030,6 +1061,7 @@ const scrollDown = () => {
   .behinds{
     flex-direction: column;
     width: calc(100vw - 24px);
+    min-height: 0;
     height: auto;
     gap: 20px;
     padding: 24px 0 32px;
