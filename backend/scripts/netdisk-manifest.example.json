@@ -1,0 +1,34 @@
+{
+  "pcs_executable": "C:/tools/BaiduPCS-Go/BaiduPCS-Go.exe",
+  "work_dir": "../uploads/netdisk-ingest",
+  "playback_base_url": "https://acgn0721.oss-cn-hangzhou.aliyuncs.com",
+  "min_free_gb": 8,
+  "download_timeout_seconds": 7200,
+  "cleanup_local": false,
+  "jobs": [
+    {
+      "enabled": true,
+      "animation_id": 10941,
+      "animation_name": "葬送的芙莉莲",
+      "episode_no": 3,
+      "netdisk_path": "/0721acgn-ingest/03.mp4",
+      "expected_size": 462656944,
+      "expected_duration_seconds": 1470,
+      "duration_tolerance_seconds": 30,
+      "subtitle_language": "zh-Hant",
+      "subtitle_kind": "burned_in",
+      "subtitles_verified": true
+    },
+    {
+      "enabled": false,
+      "animation_id": 10941,
+      "animation_name": "葬送的芙莉莲",
+      "episode_no": 4,
+      "netdisk_path": "/REPLACE_WITH_VERIFIED_PATH/04.mp4",
+      "expected_size": null,
+      "subtitle_language": "zh-Hant",
+      "subtitle_kind": "burned_in",
+      "subtitles_verified": false
+    }
+  ]
+}

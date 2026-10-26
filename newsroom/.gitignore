@@ -1,0 +1,6 @@
+config.json
+secrets.env
+data/
+__pycache__/
+.venv/
+browser-cache/

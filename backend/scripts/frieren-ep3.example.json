@@ -1,0 +1,15 @@
+{
+  "qbit_url": "http://127.0.0.1:8081",
+  "work_dir": "../uploads/frieren-ep3",
+  "playback_base_url": "https://YOUR_BUCKET.oss-cn-hangzhou.aliyuncs.com",
+  "min_free_gb": 8,
+  "require_burned_in_subtitles": true,
+  "subscriptions": [
+    {
+      "animation_id": 10941,
+      "episode_no": 3,
+      "title": "[桜都字幕组] 葬送的芙莉莲 / Sousou no Frieren [03][1080p][简体内嵌]",
+      "page_url": "https://www.dongmanhuayuan.com/detail/DQ55x.html"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.mysql.EmpMapper">
+    <sql id="imitate">
+        select id,username,password,name,gender,job,entryday,createtime,updatetime,dpt_id
+        from
+            0721acgn.tb_emp
+    </sql>
+    <delete id="delete">
+        delete from 0721acgn.tb_emp where id = #{id}
+    </delete>
+    <delete id="Deletes">
+        delete from 0721acgn.tb_emp where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="findByName" resultType="com.example.demo.com.Emp">
+        <include refid="imitate"></include>
+        <where>
+        <if test="name != null">
+            name like concat('%',#{name},'%')
+        </if>
+        <if test="gender != null">
+            and gender=#{gender}
+        </if>
+        <if test="entryday1 != null and entryday2 != null ">
+            and entryday between #{entryday1} and #{entryday2}
+        </if>
+        </where>
+        order by updatetime desc
+    </select>
+<update id="update">
+    update 0721acgn.tb_emp
+    <set>
+        <if test="username != null">
+            username=#{username},
+        </if>
+        <if test="password != null">
+            password=#{password},
+        </if>
+        <if test="name != null">
+            name=#{name},
+        </if>
+        <if test="gender != null">
+            gender=#{gender},
+        </if>
+        <if test="job != null">
+            job=#{job},
+        </if>
+        <if test="entryday != null">
+            entryday=#{entryday},
+        </if>
+        <if test="createtime != null">
+            createtime=#{createtime},
+        </if>
+         <if test="updatetime != null">
+             updatetime=#{updatetime},
+         </if>
+         <if test="dpt_id != null">
+             dpt_id=#{dpt_id}
+         </if>
+    </set>
+        where id =#{id}
+</update>
+</mapper>

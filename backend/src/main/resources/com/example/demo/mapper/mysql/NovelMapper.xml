@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.mysql.NovelMapper">
+    <select id="getNovelAll" resultType="com.example.demo.com.Novel">
+        SELECT * FROM 0721acgn.tb_novel
+        <where>
+            <if test="genre != null and genre != ''">
+                AND (
+                    `genre` = #{genre}
+                    OR LOCATE(#{genre}, IFNULL(`genre`, '')) &gt; 0
+                )
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="yearMin != null">
+                AND LENGTH(TRIM(IFNULL(releasedate,''))) &gt;= 4
+                AND CAST(LEFT(TRIM(releasedate), 4) AS UNSIGNED) &gt;= #{yearMin}
+            </if>
+            <if test="yearMax != null">
+                AND LENGTH(TRIM(IFNULL(releasedate,''))) &gt;= 4
+                AND CAST(LEFT(TRIM(releasedate), 4) AS UNSIGNED) &lt;= #{yearMax}
+            </if>
+        </where>
+        <choose>
+            <when test="sortBy == 'hot'">
+                ORDER BY rating DESC, novelid DESC
+            </when>
+            <when test="sortBy == 'update'">
+                ORDER BY updated_at DESC, novelid DESC
+            </when>
+            <otherwise>
+                ORDER BY novelid DESC
+            </otherwise>
+        </choose>
+        LIMIT #{offset}, 40
+    </select>
+    <select id="getNovelById" resultType="com.example.demo.com.Novel">
+        select * from 0721acgn.tb_novel where novelid = #{id}
+    </select>
+    <select id="NovelCount" resultType="java.lang.Integer">
+        select count(*) from tb_novelchapter where novelid = #{id}
+    </select>
+    <select id="getNovelUrlById" resultType="java.lang.String">
+        select novelurl from tb_novelchapter where novelid = #{id} and chapterno = #{no}
+    </select>
+    <select id="getNovelHot" resultType="com.example.demo.com.Novel">
+        select * from 0721acgn.tb_novel where hengpic is not null order by RAND() LIMIT 4
+    </select>
+
+    <select id="listByExactTrimmedName" resultType="com.example.demo.com.Novel">
+        SELECT * FROM 0721acgn.tb_novel
+        WHERE TRIM(IFNULL(name, '')) = TRIM(#{name})
+        <if test="excludeId != null">
+            AND novelid != #{excludeId}
+        </if>
+        ORDER BY novelid DESC
+        LIMIT 30
+    </select>
+
+    <select id="listSameSeriesCandidates" resultType="com.example.demo.com.Novel">
+        SELECT * FROM 0721acgn.tb_novel
+        WHERE CHAR_LENGTH(#{seriesPrefix}) &gt;= 3
+        <if test="excludeId != null">
+            AND novelid != #{excludeId}
+        </if>
+        AND TRIM(IFNULL(name, '')) LIKE CONCAT(#{seriesPrefixEsc}, '%') ESCAPE '!'
+        ORDER BY novelid DESC
+        LIMIT 200
+    </select>
+</mapper>

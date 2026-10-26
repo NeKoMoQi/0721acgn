@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.mysql.AcgnUserDataMapper">
+
+    <select id="listLibrary" resultType="com.example.demo.com.AcgnLibraryRow">
+        SELECT client_id   AS clientId,
+               media_type  AS mediaType,
+               media_id    AS mediaId,
+               title,
+               pic,
+               starred,
+               starred_at  AS starredAt,
+               last_visit_at AS lastVisitAt
+        FROM 0721acgn.tb_acgn_library
+        WHERE client_id = #{clientId}
+        ORDER BY last_visit_at DESC
+        LIMIT 300
+    </select>
+
+    <select id="selectLibrary" resultType="com.example.demo.com.AcgnLibraryRow">
+        SELECT client_id   AS clientId,
+               media_type  AS mediaType,
+               media_id    AS mediaId,
+               title,
+               pic,
+               starred,
+               starred_at  AS starredAt,
+               last_visit_at AS lastVisitAt
+        FROM 0721acgn.tb_acgn_library
+        WHERE client_id = #{clientId}
+          AND media_type = #{mediaType}
+          AND media_id = #{mediaId}
+    </select>
+
+    <insert id="insertLibrary">
+        INSERT INTO 0721acgn.tb_acgn_library (
+            client_id, media_type, media_id, title, pic, starred, starred_at, last_visit_at
+        ) VALUES (
+            #{clientId}, #{mediaType}, #{mediaId}, #{title}, #{pic},
+            #{starred}, #{starredAt}, #{lastVisitAt}
+        )
+    </insert>
+
+    <insert id="upsertVisit">
+        INSERT INTO 0721acgn.tb_acgn_library (
+            client_id, media_type, media_id, title, pic, starred, starred_at, last_visit_at
+        ) VALUES (
+            #{clientId}, #{mediaType}, #{mediaId}, #{title}, #{pic}, 0, NULL, #{now}
+        )
+        ON DUPLICATE KEY UPDATE
+            last_visit_at = VALUES(last_visit_at),
+            title = IFNULL(VALUES(title), title),
+            pic = IFNULL(VALUES(pic), pic)
+    </insert>
+
+    <update id="updateStar">
+        UPDATE 0721acgn.tb_acgn_library
+        SET starred = #{starred}, starred_at = #{starredAt}
+        WHERE client_id = #{clientId}
+          AND media_type = #{mediaType}
+          AND media_id = #{mediaId}
+    </update>
+
+    <select id="listSubscribe" resultType="com.example.demo.com.AcgnSubscribeRow">
+        SELECT client_id    AS clientId,
+               media_type   AS mediaType,
+               media_id     AS mediaId,
+               title,
+               pic,
+               subscribed_at AS subscribedAt
+        FROM 0721acgn.tb_acgn_subscribe
+        WHERE client_id = #{clientId}
+        ORDER BY subscribed_at DESC
+        LIMIT 400
+    </select>
+
+    <insert id="insertSubscribe">
+        INSERT INTO 0721acgn.tb_acgn_subscribe (client_id, media_type, media_id, title, pic, subscribed_at)
+        VALUES (#{clientId}, #{mediaType}, #{mediaId}, #{title}, #{pic}, #{subscribedAt})
+    </insert>
+
+    <delete id="deleteSubscribe">
+        DELETE FROM 0721acgn.tb_acgn_subscribe
+        WHERE client_id = #{clientId}
+          AND media_type = #{mediaType}
+          AND media_id = #{mediaId}
+    </delete>
+
+    <select id="countSubscribe" resultType="int">
+        SELECT COUNT(*)
+        FROM 0721acgn.tb_acgn_subscribe
+        WHERE client_id = #{clientId}
+          AND media_type = #{mediaType}
+          AND media_id = #{mediaId}
+    </select>
+
+    <select id="listProgress" resultType="com.example.demo.com.AcgnProgressRow">
+        SELECT client_id    AS clientId,
+               media_type   AS mediaType,
+               media_id     AS mediaId,
+               payload_json AS payloadJson,
+               updated_at   AS updatedAt
+        FROM 0721acgn.tb_acgn_progress
+        WHERE client_id = #{clientId}
+        LIMIT 2000
+    </select>
+
+    <insert id="upsertProgress">
+        INSERT INTO 0721acgn.tb_acgn_progress (client_id, media_type, media_id, payload_json, updated_at)
+        VALUES (#{clientId}, #{mediaType}, #{mediaId}, #{payloadJson}, #{updatedAt})
+        ON DUPLICATE KEY UPDATE
+            payload_json = VALUES(payload_json),
+            updated_at = VALUES(updated_at)
+    </insert>
+</mapper>

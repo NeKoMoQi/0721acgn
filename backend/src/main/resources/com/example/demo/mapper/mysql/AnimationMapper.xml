@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.mysql.AnimationMapper">
+    <select id="getAnimation" resultType="com.example.demo.com.Animation">
+        SELECT * FROM 0721acgn.tb_animation
+        <where>
+            <if test="genre != null and genre != ''">
+                AND (
+                    `genre` = #{genre}
+                    OR LOCATE(#{genre}, IFNULL(`genre`, '')) &gt; 0
+                )
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="yearMin != null">
+                AND LENGTH(TRIM(IFNULL(releasedate,''))) &gt;= 4
+                AND CAST(LEFT(TRIM(releasedate), 4) AS UNSIGNED) &gt;= #{yearMin}
+            </if>
+            <if test="yearMax != null">
+                AND LENGTH(TRIM(IFNULL(releasedate,''))) &gt;= 4
+                AND CAST(LEFT(TRIM(releasedate), 4) AS UNSIGNED) &lt;= #{yearMax}
+            </if>
+        </where>
+        <choose>
+            <when test="sortBy == 'hot'">
+                ORDER BY rating DESC, id DESC
+            </when>
+            <when test="sortBy == 'update'">
+                ORDER BY updated_at DESC, id DESC
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        LIMIT #{offset}, 20
+    </select>
+    <select id="getAnimationHot" resultType="com.example.demo.com.Animation">
+        select * from 0721acgn.tb_animation where hengpic is not null order by RAND() LIMIT 6
+    </select>
+    <select id="getAnimationbyid" resultType="com.example.demo.com.Animation">
+        SELECT
+            id,
+            name,
+            shortcomment,
+            longcomment,
+            rating,
+            releasedate,
+            status,
+            bcimg,
+            preview_video_url AS previewVideoUrl,
+            countpage,
+            voicer,
+            hengpic,
+            genre,
+            updated_at AS updatedAt
+        FROM 0721acgn.tb_animation
+        WHERE id = #{id}
+    </select>
+
+    <update id="updatePreviewVideoUrl">
+        UPDATE 0721acgn.tb_animation
+        SET preview_video_url = #{url}
+        WHERE id = #{id}
+    </update>
+
+    <select id="listEpisodesByAnimationId" resultType="com.example.demo.com.AnimationEpisode">
+        SELECT
+            id,
+            animation_id AS animationId,
+            episode_no AS episodeNo,
+            title,
+            video_url AS videoUrl,
+            created_at AS createdAt,
+            updated_at AS updatedAt
+        FROM 0721acgn.tb_animation_episode
+        WHERE animation_id = #{animationId}
+        ORDER BY episode_no ASC, id ASC
+    </select>
+
+    <select id="getEpisodeById" resultType="com.example.demo.com.AnimationEpisode">
+        SELECT
+            id,
+            animation_id AS animationId,
+            episode_no AS episodeNo,
+            title,
+            video_url AS videoUrl,
+            created_at AS createdAt,
+            updated_at AS updatedAt
+        FROM 0721acgn.tb_animation_episode
+        WHERE id = #{id}
+    </select>
+
+    <insert id="upsertEpisodeVideo">
+        INSERT INTO 0721acgn.tb_animation_episode (animation_id, episode_no, title, video_url)
+        VALUES (#{animationId}, #{episodeNo}, #{title}, #{videoUrl})
+        ON DUPLICATE KEY UPDATE
+            title = VALUES(title),
+            video_url = VALUES(video_url),
+            updated_at = CURRENT_TIMESTAMP
+    </insert>
+
+    <select id="listByExactTrimmedName" resultType="com.example.demo.com.Animation">
+        SELECT * FROM 0721acgn.tb_animation
+        WHERE TRIM(IFNULL(name, '')) = TRIM(#{name})
+        <if test="excludeId != null">
+            AND id != #{excludeId}
+        </if>
+        ORDER BY id DESC
+        LIMIT 30
+    </select>
+
+    <select id="listSameSeriesCandidates" resultType="com.example.demo.com.Animation">
+        SELECT * FROM 0721acgn.tb_animation
+        WHERE CHAR_LENGTH(#{seriesPrefix}) &gt;= 3
+        <if test="excludeId != null">
+            AND id != #{excludeId}
+        </if>
+        AND TRIM(IFNULL(name, '')) LIKE CONCAT(#{seriesPrefixEsc}, '%') ESCAPE '!'
+        ORDER BY id DESC
+        LIMIT 200
+    </select>
+</mapper>

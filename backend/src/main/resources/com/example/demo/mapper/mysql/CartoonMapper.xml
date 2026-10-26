@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.example.demo.mapper.mysql.CartoonMapper">
+    <select id="getCartoons" resultType="com.example.demo.com.Cartoons">
+        SELECT * FROM 0721acgn.tb_cartoons
+        <where>
+            <if test="genre != null and genre != ''">
+                AND (
+                    `genre` = #{genre}
+                    OR LOCATE(#{genre}, IFNULL(`genre`, '')) &gt; 0
+                )
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="yearMin != null">
+                AND LENGTH(TRIM(IFNULL(releasedate,''))) &gt;= 4
+                AND CAST(LEFT(TRIM(releasedate), 4) AS UNSIGNED) &gt;= #{yearMin}
+            </if>
+            <if test="yearMax != null">
+                AND LENGTH(TRIM(IFNULL(releasedate,''))) &gt;= 4
+                AND CAST(LEFT(TRIM(releasedate), 4) AS UNSIGNED) &lt;= #{yearMax}
+            </if>
+        </where>
+        <choose>
+            <when test="sortBy == 'hot'">
+                ORDER BY rating DESC, comicid DESC
+            </when>
+            <when test="sortBy == 'update'">
+                ORDER BY updated_at DESC, comicid DESC
+            </when>
+            <otherwise>
+                ORDER BY comicid DESC
+            </otherwise>
+        </choose>
+        LIMIT #{offset}, 20
+    </select>
+    <select id="getCartoonsbyid" resultType="com.example.demo.com.Cartoons">
+        select * from 0721acgn.tb_cartoons where comicid = #{id}
+    </select>
+    <select id="getCartoonpages" resultType="com.example.demo.com.CartoonPage">
+        select fileurl from  0721acgn.tb_cartoonpage where chapterid = #{chapter} order by pageorder asc LIMIT #{page},4
+    </select>
+    <select id="getCartoonsHot" resultType="com.example.demo.com.Cartoons">
+        select * from 0721acgn.tb_cartoons where hengpic is not null order by RAND() LIMIT 4
+    </select>
+
+    <select id="listByExactTrimmedName" resultType="com.example.demo.com.Cartoons">
+        SELECT * FROM 0721acgn.tb_cartoons
+        WHERE TRIM(IFNULL(name, '')) = TRIM(#{name})
+        <if test="excludeId != null">
+            AND comicid != #{excludeId}
+        </if>
+        ORDER BY comicid DESC
+        LIMIT 30
+    </select>
+
+    <select id="listSameSeriesCandidates" resultType="com.example.demo.com.Cartoons">
+        SELECT * FROM 0721acgn.tb_cartoons
+        WHERE CHAR_LENGTH(#{seriesPrefix}) &gt;= 3
+        <if test="excludeId != null">
+            AND comicid != #{excludeId}
+        </if>
+        AND TRIM(IFNULL(name, '')) LIKE CONCAT(#{seriesPrefixEsc}, '%') ESCAPE '!'
+        ORDER BY comicid DESC
+        LIMIT 200
+    </select>
+    </mapper>

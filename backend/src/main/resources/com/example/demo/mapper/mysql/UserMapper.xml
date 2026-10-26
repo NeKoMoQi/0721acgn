@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.mysql.UserMapper">
+    <update id="changetime">
+        UPDATE 0721acgn.tb_user set loadingtime = now() where username = #{username} and password = #{password}
+    </update>
+    <select id="selectloaduser">
+        select * from 0721acgn.tb_user where username = #{username} and password = #{password}
+    </select>
+    <select id="gerByUsernameAndPassword">
+        select * from 0721acgn.tb_user where username = #{username} and password = #{password}
+    </select>
+    <select id="finduser" resultType="com.example.demo.com.User">
+        select * from 0721acgn.tb_user where username = #{username} and password = #{password}
+    </select>
+</mapper>

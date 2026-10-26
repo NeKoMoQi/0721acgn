@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.mysql.ShengDiMapper">
+    <select id="selectALLhot" resultType="com.example.demo.com.Shengdi">
+        select id,fanju,xunlicount,click from 0721acgn.tb_shengdi
+        order by click desc, xunlicount desc LIMIT 9
+    </select>
+</mapper>

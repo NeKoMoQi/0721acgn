@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+frontend/dist-backup-*/
+target/
+build/
+coverage/
+
+# pip 临时目录（安装中断留下的）
+pip-*/
+backend/scripts/pip-*/
+
+# Local environment and secrets
+.env
+.env.*
+*.local
+backend/src/main/resources/application.properties
+
+# Logs and runtime data
+*.log
+logs/
+backend/uploads/
+
+# IDE and OS files
+.DS_Store
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Python/Java/TypeScript caches
+__pycache__/
+*.py[cod]
+*.class
+*.tsbuildinfo
+# temp backups from repair/deploy
+*.orig
+*.damaged
+*.repaired-attempt
+*.original-from-github
+
+# generated WebP copies (regenerate with scripts/convert-webp.mjs)
+frontend/public/**/*.webp
+
+# 本机私有配置（含本机路径）
+*.local.json
+*.bak-before-*
+
+# 本地临时目录（截图/构建缓存）
+.tmp/
