@@ -341,7 +341,6 @@ const getpage=async()=>{
 }
 const loadpage = () => {
   if(isloading.value||!hasmore.value) return
-  console.log('到底了')
   isloading.value = true
   getpage()
 }
@@ -433,7 +432,6 @@ onMounted(async () => {
     liulan.value = p.liulan
     wenzhang.value = p.wenzhang
   }
-  console.log(rea.value)
 })
 const getDocumentHeight = () => {
   return Math.max(

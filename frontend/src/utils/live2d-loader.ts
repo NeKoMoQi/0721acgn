@@ -8,13 +8,12 @@ export interface Live2DRenderApi {
   revealMessageBox?: () => void
 }
 
-// 动�?�加�?UMD 模块的辅助函�
+/** 动态挂载 live2d-render 的 UMD bundle，加载好之后把 Live2dRender 交回去。 */
 export function loadLive2DScript(): Promise<Live2DRenderApi> {
   return new Promise((resolve, reject) => {
-    // 如果已经加载，直接返�
-if (window.Live2dRender) {
-      resolve(window.Live2dRender);
-      return;
+    if (window.Live2dRender) {
+      resolve(window.Live2dRender)
+      return
     }
 
     const existingScript = document.getElementById(LIVE2D_SCRIPT_ID) as HTMLScriptElement | null
@@ -26,24 +25,23 @@ if (window.Live2dRender) {
       return
     }
 
-    const script = document.createElement('script');
-    script.id = LIVE2D_SCRIPT_ID;
-    script.src = LIVE2D_SCRIPT_URL;
-    script.type = 'text/javascript';
-    
-    // 关键：添�?crossorigin 和正确处理加�
-script.onload = () => {
+    const script = document.createElement('script')
+    script.id = LIVE2D_SCRIPT_ID
+    script.src = LIVE2D_SCRIPT_URL
+    script.type = 'text/javascript'
+
+    script.onload = () => {
       if (window.Live2dRender) {
-        resolve(window.Live2dRender);
+        resolve(window.Live2dRender)
       } else {
-        reject(new Error('Live2dRender 未挂载到 window'));
+        reject(new Error('Live2dRender 未挂载到 window'))
       }
-    };
-    
-    script.onerror = () => reject(new Error('加载 live2d-render.bundle.js 失败'));
-    
-    document.head.appendChild(script);
-  });
+    }
+
+    script.onerror = () => reject(new Error('加载 live2d-render.bundle.js 失败'))
+
+    document.head.appendChild(script)
+  })
 }
 
 export async function mountShengdiLive2D(): Promise<void> {
@@ -84,6 +82,6 @@ export function cleanupLive2D(): void {
 // 类型声明
 declare global {
   interface Window {
-    Live2dRender?: Live2DRenderApi;
+    Live2dRender?: Live2DRenderApi
   }
 }

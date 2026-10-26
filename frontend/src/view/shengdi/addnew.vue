@@ -421,7 +421,6 @@ const save = () =>{
   position: relative;
 }
 
-<style scoped>
 /* 修改搜索框样式 */
 .search-input {
   padding-left: 45px !important;

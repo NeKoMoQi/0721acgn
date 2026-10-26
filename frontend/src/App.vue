@@ -8,11 +8,15 @@
 import { computed, nextTick, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import LoginDialog from '@/components/LoginDialog.vue';
+import { loadLive2DScript } from '@/utils/live2d-loader';
 
 const route = useRoute();
 const live2dInitialized = ref(false);
+/** SDK 或模型加载失败时不再显示空画布，也不再往控制台抛错。 */
+const live2dAvailable = ref(true);
 
 const showGlobalLive2D = computed(() => {
+  if (!live2dAvailable.value) return false;
   return !route.path.startsWith('/warflag') && !route.path.startsWith('/shengdi');
 });
 
@@ -31,26 +35,13 @@ function cleanupGlobalLive2D({ includeCanvas = false } = {}) {
 }
 
 async function mountGlobalLive2D() {
-  if (live2dInitialized.value) return;
+  if (live2dInitialized.value || !live2dAvailable.value) return;
   await nextTick();
   if (!document.getElementById('live2d')) return;
 
-  const live2dWindow = window as typeof window & {
-    initializeLive2D?: (config: Record<string, unknown>) => Promise<void>;
-    hideMessageBox?: unknown;
-    revealMessageBox?: unknown;
-    setExpression?: unknown;
-    setRandomExpression?: unknown;
-    setMessageBox?: unknown;
-  };
-
-  if (!live2dWindow.initializeLive2D) {
-    console.error('Live2D SDK is not loaded. Check index.html script imports.');
-    return;
-  }
-
   try {
-    await live2dWindow.initializeLive2D({
+    const live2d = await loadLive2DScript();
+    await live2d.initializeLive2D({
       CanvasId: 'live2d',
       BackgroundRGBA: [0.0, 0.0, 0.0, 0.0],
       ResourcesPath: './models/cat/sdwhite cat free.model3.json',
@@ -61,18 +52,13 @@ async function mountGlobalLive2D() {
       ShowToolBox: true,
       CanvasPosition: 'right',
       LoadFromCache: true,
+      Live2dCubismcoreUrl: '/live2dcubismcore.min.js',
     });
 
     live2dInitialized.value = true;
-    console.log('Global Live2D initialized.', {
-      hideMessageBox: live2dWindow.hideMessageBox,
-      revealMessageBox: live2dWindow.revealMessageBox,
-      setExpression: live2dWindow.setExpression,
-      setRandomExpression: live2dWindow.setRandomExpression,
-      setMessageBox: live2dWindow.setMessageBox,
-    });
   } catch (error) {
-    console.error('Global Live2D initialization failed:', error);
+    live2dAvailable.value = false;
+    console.warn('看板娘没能加载，已隐藏画布：', error);
   }
 }
 
