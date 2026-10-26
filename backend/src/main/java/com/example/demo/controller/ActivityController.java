@@ -21,6 +21,13 @@ public class ActivityController {
         List<Activity> activity = activityService.getActivity(a);
         return Result.success(activity);
     }
+    @GetMapping("/api/activity/byid")
+    public Result getActivityDetail(@RequestParam int id){
+        if (id < 1) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST);
+        Activity activity = activityService.getActivityDetail(id);
+        if (activity == null) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "活动不存在");
+        return Result.success(activity);
+    }
     @GetMapping("/api/activity/all")
     public Result getAllActivity(){
         List<Activity> activities = activityService.getallActivity();
@@ -37,3 +44,4 @@ public class ActivityController {
         return Result.success(activitiesleibie);
     }
 }
+

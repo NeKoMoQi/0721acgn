@@ -2,9 +2,9 @@
   <div class="acgn-filters">
     <el-select v-model="genre" placeholder="题材" clearable class="sel" @change="fire">
       <el-option label="不限题材" value="" />
-      <el-option v-for="g in ACGN_GENRES" :key="g" :label="g" :value="g" />
+      <el-option v-for="g in props.genres" :key="g" :label="g" :value="g" />
     </el-select>
-    <el-select v-model="status" placeholder="状态" clearable class="sel" @change="fire">
+    <el-select v-if="props.showStatus" v-model="status" placeholder="状态" clearable class="sel" @change="fire">
       <el-option label="不限状态" value="" />
       <el-option label="连载" value="连载" />
       <el-option label="完结" value="完结" />
@@ -18,9 +18,7 @@
       <el-option label="更早" value="earlier" />
     </el-select>
     <el-select v-model="sortBy" placeholder="排序" class="sel" @change="fire">
-      <el-option label="默认" value="default" />
-      <el-option label="热度（评分）" value="hot" />
-      <el-option label="更新时间" value="update" />
+      <el-option v-for="opt in props.sortOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
     </el-select>
   </div>
 </template>
@@ -29,10 +27,29 @@
 import { ref, onMounted } from 'vue'
 import { ACGN_GENRES } from '@/utils/acgnConstants'
 
+const props = defineProps({
+  genres: {
+    type: Array,
+    default: () => ACGN_GENRES,
+  },
+  showStatus: {
+    type: Boolean,
+    default: true,
+  },
+  sortOptions: {
+    type: Array,
+    default: () => [
+      { label: '默认', value: 'default' },
+      { label: '热度（评分）', value: 'hot' },
+      { label: '更新时间', value: 'update' },
+    ],
+  },
+})
+
 const genre = ref('')
 const status = ref('')
 const decade = ref('')
-const sortBy = ref('default')
+const sortBy = ref(props.sortOptions[0]?.value || 'default')
 
 const emit = defineEmits(['change'])
 

@@ -1,5 +1,7 @@
-"""Create real, local PNG assets for every article; never hotlink community images."""
+﻿"""Create local PNG assets: prefer the original post cover, fall back to generated art."""
 import hashlib
+import urllib.request
+from urllib.parse import urlsplit
 from pathlib import Path
 
 
@@ -35,7 +37,7 @@ def wrap(draw, text, font, width, lines=3):
     return rows
 
 
-def make_images(cfg, root, ident, article, sources):
+def make_images(cfg, root, ident, article, sources, skip_cover=False):
     from PIL import Image, ImageDraw, ImageFont
     root = Path(root) / "media"
     root.mkdir(parents=True, exist_ok=True)
@@ -80,9 +82,11 @@ def make_images(cfg, root, ident, article, sources):
                 image = ImageOps.fit(original.convert("RGB"), (1280, 720))
             credit = entry["credit"] + " · " + entry["license"]
             break
-    save_png(image, root / (ident + "-cover.png"))
-    result = [{"role": "cover", "url": "/api/news/image?id=" + ident + "&role=cover",
-               "caption": "封面", "credit": credit}]
+    result = []
+    if not skip_cover:
+        save_png(image, root / (ident + "-cover.png"))
+        result.append({"role": "cover", "url": "/api/news/image?id=" + ident + "&role=cover",
+                       "caption": "封面", "credit": credit})
     metrics_source = next((s for s in sources if any(v is not None for v in (s.get("metrics") or {}).values())), None)
     if metrics_source:
         chart = Image.new("RGB", (1280, 560), "#f1f7f4")
@@ -101,3 +105,84 @@ def make_images(cfg, root, ident, article, sources):
         result.append({"role": "stats", "url": "/api/news/image?id=" + ident + "&role=stats",
                        "caption": "原内容的采集时统计", "credit": "0721ACGN 制图；来源：" + metrics_source["url"]})
     return result
+
+def source_cover(cfg, root, ident, sources):
+    """用原帖/原视频封面，不再自己画；拿不到就返回 None 让调用方回退。"""
+    if cfg.get("cover_mode", "source") != "source":
+        return None
+    picture = next((source.get("picture") for source in sources if source.get("picture")), "")
+    if not picture:
+        return None
+    try:
+        request = urllib.request.Request(picture, headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                          "(KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+            "Referer": "https://www.bilibili.com/",
+        })
+        with urllib.request.urlopen(request, timeout=20) as response:
+            if not response.headers.get("Content-Type", "").startswith("image/"):
+                return None
+            data = response.read(8_000_001)
+        if not data or len(data) > 8_000_000:
+            return None
+        from io import BytesIO
+        from PIL import Image, ImageOps
+        with Image.open(BytesIO(data)) as original:
+            original.load()
+            image = ImageOps.fit(original.convert("RGB"), (1280, 720))
+        media_root = Path(root) / "media"
+        media_root.mkdir(parents=True, exist_ok=True)
+        save_png(image, media_root / (ident + "-cover.png"))
+        host = urlsplit(picture).hostname or ""
+        return {"role": "cover", "url": "/api/news/image?id=" + ident + "&role=cover",
+                "caption": "原帖配图", "credit": "图片来源：原帖（" + host + "），版权归原作者"}
+    except Exception:
+        return None
+
+CATEGORY_RULES = (
+    ("esports", ("赛事", "联赛", "战队", "夺冠", "选手", "季后赛", "决赛", "LPL", "KPL", "S赛", "比分")),
+    ("anime", ("番剧", "新番", "动画", "剧场版", "OVA", "第二季", "作画", "声优")),
+    ("comic", ("漫画", "条漫", "连载", "单行本")),
+    ("novel", ("轻小说", "小说", "文库", "新刊", "上架")),
+    ("game", ("游戏", "手游", "Steam", "赛季", "版本", "实机", "测试", "公测", "联动", "卡池",
+              "干员", "实装", "副本", "抽卡", "更新", "预注册")),
+)
+
+
+def pick_category(article):
+    """按关键词命中次数选类别，平手时按规则顺序。"""
+    text = " ".join(str(article.get(key, "")) for key in ("title", "summary", "category"))
+    best, best_score = "default", 0
+    for key, words in CATEGORY_RULES:
+        score = sum(1 for word in words if word in text)
+        if score > best_score:
+            best, best_score = key, score
+    return best
+
+
+def category_cover(cfg, root, ident, article):
+    """按内容类别用统一配图（原帖没图时），图库由 category_covers 配置。"""
+    covers = cfg.get("category_covers") or {}
+    if not covers:
+        return None
+    key = pick_category(article)
+    path = None
+    for candidate in (covers.get(key), covers.get("default")):
+        if candidate and Path(candidate).is_file():
+            path = Path(candidate)
+            break
+    if path is None:
+        return None
+    try:
+        from PIL import Image, ImageOps
+        with Image.open(path) as original:
+            original.load()
+            image = ImageOps.fit(original.convert("RGB"), (1280, 720))
+        media_root = Path(root) / "media"
+        media_root.mkdir(parents=True, exist_ok=True)
+        save_png(image, media_root / (ident + "-cover.png"))
+        return {"role": "cover", "url": "/api/news/image?id=" + ident + "&role=cover",
+                "caption": "类别配图", "credit": "站内类别配图（" + key + "）"}
+    except Exception:
+        return None
+

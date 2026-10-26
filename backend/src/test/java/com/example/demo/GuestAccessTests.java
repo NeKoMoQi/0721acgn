@@ -18,6 +18,7 @@ class GuestAccessTests {
     @ParameterizedTest
     @CsvSource({
         "GET,/api/animation", "GET,/api/animation/byid", "GET,/api/animation/episodes",
+        "GET,/api/galgame", "GET,/api/galgame/hot", "GET,/api/galgame/byid",
         "GET,/api/cartoon", "GET,/api/cartoon/chapter", "GET,/api/cartoonpage",
         "GET,/api/novel", "GET,/api/novel/chapter/byid", "GET,/api/searchresult",
         "GET,/api/related", "GET,/api/acgn/user/state", "GET,/api/acgn/social/comments",

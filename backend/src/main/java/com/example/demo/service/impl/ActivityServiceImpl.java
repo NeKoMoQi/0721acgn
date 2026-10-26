@@ -19,6 +19,9 @@ public class ActivityServiceImpl implements ActivityService {
     {
         return activityMapper.getActivityById(a);
     }
+    public Activity getActivityDetail(int id){
+        return activityMapper.getActivityDetail(id);
+    }
     public List<Activity> getallActivity(){
         return activityMapper.getallActivity();
     }
@@ -29,3 +32,4 @@ public class ActivityServiceImpl implements ActivityService {
         return activityMapper.getLiebieActivity();
     }
 }
+

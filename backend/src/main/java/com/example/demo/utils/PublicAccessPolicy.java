@@ -11,10 +11,11 @@ public final class PublicAccessPolicy {
     private PublicAccessPolicy() {}
 
     private static final Set<String> READ_PATHS = Set.of(
-            "/api/activity", "/api/activity/all", "/api/activity/hot", "/api/activity/leibie",
+            "/api/activity", "/api/activity/byid", "/api/activity/all", "/api/activity/hot", "/api/activity/leibie",
             "/api/peoplecount", "/api/searchresult", "/api/related",
             "/api/animation", "/api/animation/hot", "/api/animation/byid",
             "/api/animation/episodes", "/api/animation/episode", "/api/animation/public-clips",
+            "/api/galgame", "/api/galgame/hot", "/api/galgame/byid",
             "/api/cartoon", "/api/cartoon/byid", "/api/cartoonpage", "/api/cartoon/hot", "/api/cartoon/chapter",
             "/api/novel", "/api/novel/chapter", "/api/novel/byid", "/api/novel/count",
             "/api/novel/chapter/byid", "/api/novel/hot", "/api/news", "/api/news/byid", "/api/news/image", "/api/shengdi/hot",
@@ -49,3 +50,4 @@ public final class PublicAccessPolicy {
         response.getWriter().write(JSONObject.toJSONString(Result.error("NOT_LOGIN")));
     }
 }
+

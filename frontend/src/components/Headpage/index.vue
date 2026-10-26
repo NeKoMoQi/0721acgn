@@ -4,10 +4,11 @@
     <div class="logo" @click="back">
         <img src="/LOGO.png" alt="" style="height: 60px; width: 100px; padding: 4px;">
     </div>
-    <div style="display: flex; gap: 20px; margin-left: 20px;">
+    <div class="main-nav">
       <div @click="animation" :style="{ color: route.path === '/animation' ? '#00aeec' : '' }" class="acgn">番剧</div>
       <div @click="comic"  :style="{ color: route.path === '/comic' ? '#00aeec' : '' }" class="acgn">漫画</div>
       <div @click="novel" :style="{ color: route.path === '/novel' ? '#00aeec' : '' }" class="acgn">轻小说</div>
+      <div @click="galagame" :style="{ color: route.path === '/Galagame' || route.path === '/GalgameIntroduce' ? '#00aeec' : '' }" class="acgn">Galgame</div>
       <div @click="zhanqi" :style="{ color: route.path.startsWith('/warflag') ? '#00aeec' : '' }" class="acgn">战旗</div>
       <div @click="$router.push('/news')" :style="{ color: route.path.startsWith('/news') ? '#00aeec' : '' }" class="acgn">资讯</div>
       <div @click="gotosd" :style="{ color: route.path === '/shengdi' ? '#00aeec' : '' }" class="acgn">圣地巡礼</div>
@@ -450,7 +451,7 @@ function scrollTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 function randomBrowse() {
-  const paths = ['/animation', '/comic', '/novel', '/shengdi', '/warflag'] as const
+  const paths = ['/animation', '/comic', '/novel', '/Galagame', '/shengdi', '/warflag'] as const
   const p = paths[Math.floor(Math.random() * paths.length)]
   $router.push(p)
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -464,7 +465,7 @@ const zhanqi = () => {
   $router.push('/warflag')
 }
 const galagame = () => {
-  $router.push('/galagame')
+  $router.push('/Galagame')
   window.scrollTo({
     top: 0,
     behavior: 'smooth' // 平滑滚动效果，可根据需要改为 'auto' 实现瞬间滚动
@@ -723,6 +724,43 @@ button:hover {
   display: flex;
   align-items: center;
   gap: 1rem;          /* logo 与导航之间的间距 */
+  min-width: 0;
+  flex: 0 0 auto;
+}
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: 20px;
+  min-width: 0;
+  flex: 0 0 auto;
+}
+.acgn {
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+@media (max-width: 1400px) {
+  .main-nav {
+    gap: 12px;
+    margin-left: 10px;
+  }
+}
+@media (max-width: 1100px) {
+  .main-nav {
+    gap: 8px;
+    max-width: 42vw;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .main-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .acgn {
+    font-size: 14px;
+  }
+  .search {
+    max-width: 30vw;
+  }
 }
 .heads {
   display: flex;
@@ -754,7 +792,7 @@ button:active {
 }
 .search{
   flex: 1 1 auto;
-  max-width: clamp(300px, 40%, 620px);
+  max-width: clamp(280px, 34%, 560px);
   margin: 0 auto;          /* 关键：让搜索框自己居中 */
 }
 input:focus{
@@ -891,6 +929,73 @@ input:focus{
     height: 475px;
     z-index: 1000;
 }
+
+/* 小屏：导航横向滚动，搜索独占一行，避免 7 个入口把标题挤成竖排 */
+@media (max-width: 768px) {
+  .heads {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    min-height: 0;
+  }
+  .left-group {
+    flex: 1 1 auto;
+    gap: 6px;
+    min-width: 0;
+  }
+  .logo img {
+    height: 42px !important;
+    width: 76px !important;
+    padding: 0 !important;
+  }
+  .main-nav {
+    flex: 1 1 auto;
+    max-width: none;
+    margin-left: 4px;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+  .acgn {
+    font-size: 12px;
+  }
+  .search {
+    order: 3;
+    flex: 1 1 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+  .kuang {
+    height: 38px !important;
+    width: 100% !important;
+    padding: 6px 10px !important;
+  }
+  .user-wrap {
+    order: 2;
+    flex: 0 0 auto;
+    margin-left: auto;
+    max-width: none;
+    gap: 6px;
+  }
+  .head-quick,
+  .msg-quick {
+    display: none;
+  }
+  .nav-history {
+    font-size: 13px;
+    line-height: 36px;
+  }
+  .avatar {
+    width: 34px;
+    height: 34px;
+  }
+  .search-results-dropdown {
+    left: 0;
+    width: 100%;
+  }
+}
+
 </style>
 
 <style lang="scss">

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.mysql.GalgameMapper">
+
+    <sql id="GalgameColumns">
+        id,
+        slug,
+        name_zh AS nameZh,
+        name_original AS nameOriginal,
+        aliases,
+        short_intro AS shortIntro,
+        intro,
+        cover,
+        developer,
+        release_date AS releaseDate,
+        release_year AS releaseYear,
+        release_note AS releaseNote,
+        platforms,
+        genres,
+        rating,
+        rating_count AS ratingCount,
+        rating_source AS ratingSource,
+        rating_source_url AS ratingSourceUrl,
+        moegirl_url AS moegirlUrl,
+        bangumi_url AS bangumiUrl,
+        vndb_url AS vndbUrl,
+        official_url AS officialUrl,
+        steam_url AS steamUrl,
+        sources_json AS sourcesJson,
+        source_note AS sourceNote,
+        featured,
+        sort_order AS sortOrder,
+        fetched_at AS fetchedAt,
+        updated_at AS updatedAt
+    </sql>
+
+    <select id="getGalgame" resultType="com.example.demo.com.Galgame">
+        SELECT <include refid="GalgameColumns"/>
+        FROM 0721acgn.tb_galgame
+        <where>
+            <if test="genre != null and genre != ''">
+                AND (
+                    genres = #{genre}
+                    OR LOCATE(#{genre}, IFNULL(genres, '')) &gt; 0
+                )
+            </if>
+            <if test="yearMin != null">
+                AND release_year &gt;= #{yearMin}
+            </if>
+            <if test="yearMax != null">
+                AND release_year &lt;= #{yearMax}
+            </if>
+        </where>
+        <choose>
+            <when test="sortBy == 'rating'">
+                ORDER BY rating IS NULL ASC, rating DESC, rating_count DESC, id ASC
+            </when>
+            <when test="sortBy == 'release'">
+                ORDER BY release_year IS NULL ASC, release_year DESC, release_date DESC, id ASC
+            </when>
+            <otherwise>
+                ORDER BY sort_order ASC, id ASC
+            </otherwise>
+        </choose>
+        LIMIT #{offset}, 20
+    </select>
+
+    <select id="getGalgameHot" resultType="com.example.demo.com.Galgame">
+        SELECT <include refid="GalgameColumns"/>
+        FROM 0721acgn.tb_galgame
+        WHERE cover IS NOT NULL AND cover &lt;&gt; ''
+        ORDER BY featured DESC, rating DESC, sort_order ASC
+        LIMIT 6
+    </select>
+
+    <select id="getGalgameById" resultType="com.example.demo.com.Galgame">
+        SELECT <include refid="GalgameColumns"/>
+        FROM 0721acgn.tb_galgame
+        WHERE id = #{id}
+    </select>
+</mapper>

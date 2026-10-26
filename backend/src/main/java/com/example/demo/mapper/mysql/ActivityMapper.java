@@ -9,7 +9,9 @@ import java.util.List;
 @Mapper
 public interface ActivityMapper {
     List<Activity> getActivityById(int a);
+    Activity getActivityDetail(@org.apache.ibatis.annotations.Param("id") int id);
     List<Activity> getallActivity();
     List<Activity> gethotActivity();
     List<LeiBie> getLiebieActivity();
 }
+

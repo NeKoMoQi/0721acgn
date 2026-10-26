@@ -55,5 +55,6 @@ frontend/public/**/*.webp
 *.local.json
 *.bak-before-*
 
-# 本地临时目录（截图/构建缓存）
+# Local temporary directories (screenshots/build cache)
 .tmp/
+backend/.cache/

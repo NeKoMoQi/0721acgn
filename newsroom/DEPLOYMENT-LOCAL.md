@@ -18,7 +18,9 @@
 
 - 平台直读采集器 `platforms.py` + `platform_cli.py`：B站（热门/分区榜/关键词，读信息、字幕、一页评论）、小黑盒（独立 Chromium 会话读信息流与帖子）。
 - 稿件分三类：正常社区观察默认自动发布；爆料/争议/未核实的公告进待审区。
-- `media.py` 生成真实 PNG 封面与统计图（本机用微软雅黑），也支持 `image_library` 里你授权过的本地图片。
+- 封面优先级：**原帖/原视频封面**（`cover_mode: "source"`）→ 类别配图（`art/` 目录，见 `art/README.md`）→ 程序插画兜底；统计图仍然程序生成。
+- 所有平台图片都会校验域名白名单（`hdslb.com`/`bilibili.com`/`xiaoheihe.cn`/heybox CDN），下载到 `data/media/`，不热链。
+- `media.py` 生成统计图（本机用微软雅黑），也支持 `image_library` 里你授权过的本地图片。
 - 后端新增 `GET /api/news/image`（只服务已发布稿件的 cover/stats PNG，待审和撤稿的读不到）；`/api/news`、`/api/news/byid` 继续游客可读。
 - 前端 `/#/news` 支持封面图、统计图、图片加载失败回退、三类稿件标签。
 

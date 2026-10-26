@@ -61,6 +61,22 @@ def safe_error(exc):
     return type(exc).__name__ + ("(code=" + str(code) + ")" if isinstance(code, int) else "")
 
 
+IMAGE_HOSTS = ("hdslb.com", "bilibili.com", "xiaoheihe.cn", "heybox", "max-c.com")
+
+
+def safe_image(url, hosts=IMAGE_HOSTS):
+    """只接受白名单域名的图片地址，http 一律升级到 https。"""
+    url = (url or "").strip()
+    if url.startswith("//"):
+        url = "https:" + url
+    if url.startswith("http://"):
+        url = "https://" + url[len("http://"):]
+    if not url.startswith("https://"):
+        return ""
+    host = (urlsplit(url).hostname or "").lower()
+    return url if any(host.endswith(suffix) for suffix in hosts) else ""
+
+
 def bili_item(item, origin):
     bvid = item.get("bvid", "")
     if not re.fullmatch(r"BV[a-zA-Z0-9]{10}", bvid):
@@ -74,7 +90,8 @@ def bili_item(item, origin):
         "metrics": {"views": number(field(stat, "view") if "view" in stat else item.get("play")),
                     "comments": number(field(stat, "reply") if "reply" in stat else item.get("review")),
                     "likes": number(stat.get("like"))},
-        "origin": origin, "category": item.get("tname", ""), "warnings": []}
+        "origin": origin, "category": item.get("tname", ""), "warnings": [],
+        "picture": safe_image(item.get("pic"))}
 
 
 class BiliCollector:
@@ -405,6 +422,12 @@ class XhhCollector:
             title = page.locator('.bbs-content__title, h1')
             if title.count():
                 result["title"] = title.first.inner_text()[:200]
+            try:
+                images = page.locator('.bbs-content__content img, .article-content img, .link-content img')
+                if images.count():
+                    result["picture"] = safe_image(images.first.get_attribute("src") or "")
+            except Exception:
+                pass
             result["comments"] = comments[:self.cfg["max_comments"]]
             result["comments_state"] = "read" if comments else "unavailable_or_empty"
             result["warnings"] = result.get("warnings", []) + [e["error"] for e in errors]

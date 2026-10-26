@@ -1,5 +1,13 @@
-export const constantRoute = [
+﻿export const constantRoute = [
   {
+    path: '/activity/:id',
+    name: 'ActivityDetail',
+    component: () => import('@/view/ActivityDetail/index.vue'),
+    meta: {
+      title: '活动详情',
+      name: 'ActivityDetail',
+    },
+  },  {
     path: '/character/:id',
     name: 'Character',
     component: () => import('@/view/Character/index.vue'),
@@ -219,8 +227,17 @@ export const constantRoute = [
     name: 'Galagame',
     component: () => import('@/view/GalaGame/index.vue'),
     meta: {
-      title: 'galagame',
+      title: 'Galgame',
       name: 'Galagame',
+    },
+  },
+  {
+    path: '/GalgameIntroduce',
+    name: 'GalgameIntroduce',
+    component: () => import('@/view/GalaGame/GalgameIntroduce/index.vue'),
+    meta: {
+      title: 'Galgame 简介',
+      name: 'GalgameIntroduce',
     },
   },
 ]

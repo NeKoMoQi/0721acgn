@@ -27,7 +27,10 @@
                 data-news-item
               >
                 <div class="zifont1">
-                  <div class="headfont">{{ item.title }}</div>
+                  <div class="titleline">
+                    <span class="badge" :class="freshnessClass(item)">{{ freshnessLabel(item) }}</span>
+                    <span class="headfont">{{ item.title }}</span>
+                  </div>
                   <div class="desfont">{{ item.summary }}</div>
                   <div class="newsmeta">{{ newsKind(item.kind) }} · {{ formatDate(item.published_at) }} · AI 辅助整理</div>
                 </div>
@@ -36,14 +39,23 @@
                   <div v-else class="newscover-fallback">{{ item.title }}</div>
                 </div>
               </RouterLink>
-              <div class="zi1" v-for="(item,index) in rea">
+              <RouterLink
+                v-for="(item,index) in rea"
+                :key="'activity-' + item.id"
+                :to="`/activity/${item.id}`"
+                class="zi1 activity-zi"
+                data-activity-item
+              >
                 <div class="zifont1">
-                  <div class="headfont">{{item.activityname}}</div>
-                  <div class="desfont">{{item.activitydescribe}}</div>
-                  <div class="newsmeta activity-meta">{{ dateLabel(item.createtime) ? dateLabel(item.createtime) + ' · ' : '' }}站内推荐</div>
+                  <div class="titleline">
+                    <span class="badge badge-recommend">推荐</span>
+                    <span class="headfont">{{item.activityname}}</span>
+                  </div>
+                  <div class="desfont">{{ shortText(item.activitydescribe) }}</div>
+                  <div class="newsmeta activity-meta">{{ dateLabel(item.createtime) ? dateLabel(item.createtime) + ' · ' : '' }}站内推荐 · 点开看完整介绍</div>
               </div>
                 <div class="ziimg1"><img :src=item.activityimg alt="" style="height: 100%; width: 100%;" class="imgs"></div>
-              </div>
+              </RouterLink>
               <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
               <div v-if="!hasmore"  class="tishi">已经到底啦~亲(๑•̀ㅂ•́)و✧</div>
             </div>
@@ -287,8 +299,15 @@ const publishTime = (value?: string) => {
   const time = Date.parse(value || '')
   return Number.isNaN(time) ? 0 : time
 }
-const pickFeatured = (items: any[]) => [...items].sort((a, b) =>
-  newsScore(b) - newsScore(a) || publishTime(b?.published_at) - publishTime(a?.published_at))
+const pickFeatured = (items: any[]) => {
+  // 后端会按 ACGN 相关度打 acgn_score 并标 featured；有标记就用标记，其余留在资讯页。
+  const flagged = items.filter((item) => item?.featured === true)
+  const pool = flagged.length ? flagged : items
+  return [...pool].sort((a, b) =>
+    (Number(b?.acgn_score) || 0) - (Number(a?.acgn_score) || 0) ||
+    newsScore(b) - newsScore(a) ||
+    publishTime(b?.published_at) - publishTime(a?.published_at))
+}
 const newsCover = (item: any) => {
   const url = item?.images?.find((image: any) => image.role === 'cover')?.url || ''
   return /^\/api\/news\/image\?id=[a-f0-9]{24}&role=cover$/.test(url) ? url : ''
@@ -304,6 +323,23 @@ const formatDate = (value?: string) => {
   return date.toLocaleDateString('zh-CN', { timeZone: 'Asia/Shanghai' })
 }
 const dateLabel = (value?: string) => formatDate(value)
+/** 3 天以内算新闻，更早的标成旧闻，避免新旧混在一起看不出时间。 */
+const freshnessClass = (item: any) => {
+  const time = Date.parse(item?.published_at || '')
+  if (Number.isNaN(time) || Date.now() - time > 3 * 86400000) return 'badge-old'
+  return 'badge-fresh'
+}
+const freshnessLabel = (item: any) => (freshnessClass(item) === 'badge-fresh' ? '新闻' : '旧闻')
+/** 首页只留两三句，完整介绍在详情页。 */
+const shortText = (text?: string) => {
+  const flat = String(text || '').replace(/\s+/g, ' ').trim()
+  if (!flat) return ''
+  const sentences = flat.split(/(?<=[。！？!?])/).filter(Boolean)
+  const head = sentences.slice(0, 3).join('') || flat
+  return head.length > 140 ? head.slice(0, 140) + '…' : head + (sentences.length > 3 ? '…' : '')
+}
+// 显式暴露模板中使用的三个纯函数，避免 vue-tsc 在首页模板类型推导时漏掉它们。
+defineExpose({ freshnessClass, freshnessLabel, shortText })
 const hotlist = ref([])
 const bianjizhe = ref()
 const wenzhang = ref()
@@ -373,7 +409,7 @@ const blleave = () => {
 }
 onMounted(async () => {
   // 站内资讯并入下面的快讯流，失败就当作没有，不影响首页其它区块。
-  request.get('/news', { params: { page: 1 } })
+  request.get('/news', { params: { page: 1, featured: 1 } })
     .then((result: any) => {
       if (result?.code === 200) {
         newsPool.value = result.data?.items || []
@@ -804,10 +840,40 @@ const scrollDown = () => {
   transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 /* 站内资讯卡片：与快讯条目同一套样式，只是整张卡可点 */
-.news-zi {
+.news-zi,
+.activity-zi {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+}
+.titleline {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.titleline .headfont {
+  padding-left: 0;
+}
+.badge {
+  flex: 0 0 auto;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.badge-fresh {
+  background: #e6f6ee;
+  color: #1f7a55;
+}
+.badge-old {
+  background: #eef0ef;
+  color: #7d8a85;
+}
+.badge-recommend {
+  background: #fff2e0;
+  color: #a2631b;
 }
 .news-zi .ziimg1 img {
   width: 100%;

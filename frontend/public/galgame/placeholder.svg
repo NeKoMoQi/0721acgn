@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800" role="img" aria-label="封面暂缺">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eaf6ff"/>
+      <stop offset="0.55" stop-color="#d7ecfb"/>
+      <stop offset="1" stop-color="#c5e2f6"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="800" fill="url(#g)"/>
+  <circle cx="300" cy="330" r="118" fill="none" stroke="#8ec9ea" stroke-width="3" stroke-dasharray="10 10" opacity="0.8"/>
+  <rect x="232" y="300" width="136" height="96" rx="8" fill="none" stroke="#5fa9d6" stroke-width="6"/>
+  <circle cx="268" cy="336" r="14" fill="#5fa9d6" opacity="0.75"/>
+  <path d="M236 382l38-34 34 28 28-22 32 28" fill="none" stroke="#5fa9d6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="300" y="540" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="38" fill="#3f7fa6" font-weight="600">GALGAME</text>
+  <text x="300" y="592" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26" fill="#6b9fbd">封面暂缺</text>
+  <text x="300" y="700" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#8ab5cd">0721ACGN</text>
+</svg>

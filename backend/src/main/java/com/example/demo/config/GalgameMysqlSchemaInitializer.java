@@ -1,0 +1,81 @@
+package com.example.demo.config;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+/**
+ * Galgame 表结构初始化。数据由 backend/scripts/collect_galgame.py 采集后写入，
+ * 应用启动时只保证表存在，不写入任何虚构数据。
+ */
+@Slf4j
+@Order(Ordered.HIGHEST_PRECEDENCE + 2)
+@Component
+public class GalgameMysqlSchemaInitializer implements ApplicationRunner {
+
+    private static final String DDL_GALGAME =
+            """
+                    CREATE TABLE IF NOT EXISTS `tb_galgame` (
+                      `id` INT NOT NULL AUTO_INCREMENT,
+                      `slug` VARCHAR(64) NOT NULL COMMENT '稳定标识，用于去重与封面文件名',
+                      `name_zh` VARCHAR(255) NOT NULL COMMENT '中文名',
+                      `name_original` VARCHAR(255) DEFAULT NULL COMMENT '原名',
+                      `aliases` VARCHAR(512) DEFAULT NULL COMMENT '别名，/ 分隔',
+                      `short_intro` VARCHAR(500) DEFAULT NULL COMMENT '列表用简短介绍',
+                      `intro` TEXT COMMENT '详情用无剧透简介',
+                      `cover` VARCHAR(512) DEFAULT NULL COMMENT '封面地址',
+                      `developer` VARCHAR(255) DEFAULT NULL COMMENT '开发商',
+                      `release_date` VARCHAR(32) DEFAULT NULL COMMENT '首发日期',
+                      `release_year` INT DEFAULT NULL COMMENT '发行年份，用于年代筛选',
+                      `release_note` VARCHAR(255) DEFAULT NULL COMMENT '版本/平台发行说明',
+                      `platforms` VARCHAR(255) DEFAULT NULL COMMENT '支持平台',
+                      `genres` VARCHAR(512) DEFAULT NULL COMMENT '题材/标签，逗号分隔',
+                      `rating` DECIMAL(3,1) DEFAULT NULL COMMENT '评分（十分制）',
+                      `rating_count` INT DEFAULT NULL COMMENT '评分人数',
+                      `rating_source` VARCHAR(64) DEFAULT NULL COMMENT '评分来源',
+                      `rating_source_url` VARCHAR(512) DEFAULT NULL COMMENT '评分来源链接',
+                      `moegirl_url` VARCHAR(512) DEFAULT NULL,
+                      `bangumi_url` VARCHAR(512) DEFAULT NULL,
+                      `vndb_url` VARCHAR(512) DEFAULT NULL,
+                      `official_url` VARCHAR(512) DEFAULT NULL,
+                      `steam_url` VARCHAR(512) DEFAULT NULL,
+                      `sources_json` TEXT COMMENT '来源链接、采集时间与字段说明',
+                      `source_note` VARCHAR(500) DEFAULT NULL COMMENT '来源限制/版本说明',
+                      `featured` TINYINT NOT NULL DEFAULT 0 COMMENT '首页轮播推荐',
+                      `sort_order` INT NOT NULL DEFAULT 0 COMMENT '默认排序',
+                      `fetched_at` DATETIME DEFAULT NULL,
+                      `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                      `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                      PRIMARY KEY (`id`),
+                      UNIQUE KEY `uk_galgame_slug` (`slug`),
+                      KEY `idx_galgame_year` (`release_year`),
+                      KEY `idx_galgame_rating` (`rating`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Galgame 作品资料（VNDB/萌娘百科公开资料整理）'
+                    """;
+
+    private final DataSource mysqlDataSource;
+
+    public GalgameMysqlSchemaInitializer(@Qualifier("mysqlDataSource") DataSource mysqlDataSource) {
+        this.mysqlDataSource = mysqlDataSource;
+    }
+
+    @Override
+    public void run(ApplicationArguments args) {
+        try (Connection c = mysqlDataSource.getConnection();
+                Statement st = c.createStatement()) {
+            st.execute(DDL_GALGAME);
+            log.info("Galgame table ready: tb_galgame");
+        } catch (SQLException e) {
+            log.warn("Galgame schema init failed: {}", e.getMessage());
+        }
+    }
+}

@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-10-26T12:17:01+08:00",
+  "catalog_version": 1,
+  "requested": 20,
+  "collected": 20,
+  "sources": {
+    "vndb": {
+      "ok": 20,
+      "url": "https://vndb.org/"
+    },
+    "moegirl": {
+      "ok": 20,
+      "url": "https://zh.moegirl.org.cn/"
+    },
+    "bangumi": {
+      "ok": false,
+      "url": "https://api.bgm.tv/v0/search/subjects",
+      "error": "ConnectTimeout: HTTPSConnectionPool(host='api.bgm.tv', port=443): Max retries exceeded with url: /v0/search/subjects?limit=1 (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.bgm.tv', port=443) at 0x2b4e4abd2b0>, 'Connection to api.bgm.tv timed out. (connect timeout=10)'))"
+    },
+    "steam": {
+      "ok": 17
+    }
+  },
+  "missing_fields": {
+    "cover": [],
+    "developer": [],
+    "release_date": [],
+    "rating": [],
+    "moegirl": []
+  },
+  "errors": [],
+  "limitations": [
+    "Bangumi：api.bgm.tv / bgm.tv 在当前网络连接超时，未使用其条目与评分。",
+    "Key、07th Expansion、AQUAPLUS 等日文官网与 Fandom 专题 Wiki 在当前网络连接超时，未作为来源；可访问的 Steam 商店页用于核对。",
+    "露西 -她所期望的一切- 的萌娘百科页面摘要为空，简介依据 VNDB 与公开商店页整理。",
+    "ATRI 的发行日期在 VNDB/Steam 为 2020-06-18，萌娘百科记为 2020-06-19，已在 release_note 保留差异。"
+  ],
+  "note": "评分统一为 VNDB 十分制，并保留评分人数；Bangumi 未接入时不展示 Bangumi 评分。"
+}

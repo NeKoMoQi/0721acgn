@@ -6,6 +6,10 @@
     <select id="getActivityById">
         select * from 0721acgn.tb_activity LIMIT #{a},9
     </select>
+    <select id="getActivityDetail" resultType="com.example.demo.com.Activity">
+        select id, activityname, activityimg, activitydescribe, createtime, createname, click
+        from 0721acgn.tb_activity where id = #{id}
+    </select>
     <select id="getallActivity" resultType="com.example.demo.com.Activity">
         select * from 0721acgn.tb_activity LIMIT 9
     </select>

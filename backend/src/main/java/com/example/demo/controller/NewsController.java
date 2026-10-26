@@ -44,19 +44,26 @@ public class NewsController {
     }
 
     @GetMapping("/api/news")
-    public Result<Map<String, Object>> list(@RequestParam(defaultValue = "1") int page) {
+    public Result<Map<String, Object>> list(@RequestParam(defaultValue = "1") int page,
+                                            @RequestParam(defaultValue = "") String featured) {
         if (page < 1 || page > 10000) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         JsonNode all = articles();
+        List<JsonNode> pool = new ArrayList<>();
+        for (JsonNode article : all) {
+            // featured=1 只返回精选（按 ACGN 相关度打过标的），其余仍走普通分页。
+            if ("1".equals(featured) && !article.path("featured").asBoolean(false)) continue;
+            pool.add(article);
+        }
         List<JsonNode> items = new ArrayList<>();
         int start = (page - 1) * 12;
-        for (int i = start; i < Math.min(start + 12, all.size()); i++) {
-            var summary = all.get(i).deepCopy();
+        for (int i = start; i < Math.min(start + 12, pool.size()); i++) {
+            var summary = pool.get(i).deepCopy();
             if (summary.isObject()) ((com.fasterxml.jackson.databind.node.ObjectNode) summary).remove("paragraphs");
             items.add(summary);
         }
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("items", items);
-        data.put("total", all.size());
+        data.put("total", pool.size());
         return Result.success(data);
     }
 

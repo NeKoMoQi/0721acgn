@@ -28,6 +28,21 @@ mvnw.cmd spring-boot:run
 
 Fill `backend/src/main/resources/application.properties` with your local database, OSS, and agent credentials before running the backend.
 
+## Galgame 板块
+
+- 页面：`/#/Galagame`（列表与推荐轮播）、`/#/GalgameIntroduce?galgameid=1`（详情）。
+- 接口：`GET /api/galgame`、`GET /api/galgame/hot`、`GET /api/galgame/byid?id=`。
+- 数据表：`tb_galgame`，应用启动时由 `GalgameMysqlSchemaInitializer` 自动建表。
+- 首批 20 部真实作品资料，结构化字段来自 VNDB，中文名/背景参考萌娘百科；Bangumi 在采集环境连接超时，未使用其数据。
+- 采集脚本：`backend/scripts/collect_galgame.py`，说明见 `backend/scripts/GALGAME-INGEST.md`。
+
+```powershell
+# 采集并写入本地 MySQL（使用 backend 自带 venv）
+backend\scripts\.venv\Scripts\python.exe backend\scripts\collect_galgame.py --apply --refresh
+```
+
+前端构建后会写入 `frontend/dist`；本地 `npm run dev` 已通过 Vite proxy 把 `/api`、`/acgn` 转发到 `127.0.0.1:8080`。页面不会在访客打开时抓取外部站点。
+
 ## 游客与登录
 
 - 游客可访问首页、搜索、作品列表与详情、观看与阅读页面、历史与收藏，以及巡礼浏览入口。
