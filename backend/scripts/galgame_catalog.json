@@ -1,121 +1,24 @@
 {
-  "version": 1,
+  "version": 2,
   "note": "Galgame 首批 20 部作品名单与人工整理的中文简介。结构化字段由 collect_galgame.py 从 VNDB / 萌娘百科拉取，简介只介绍题材、背景和故事开端，不含关键剧情。",
   "items": [
-    {
-      "slug": "clannad",
-      "name_zh": "CLANNAD",
-      "moegirl_title": "CLANNAD",
-      "vndb_id": "v4",
-      "steam_appid": 324160,
-      "aliases": ["CLANNAD -クラナド-", "CL"],
-      "genres": ["恋爱", "校园", "剧情", "治愈"],
-      "developer": "Key",
-      "release_date": "2004-04-28",
-      "release_note": "PC 初版；Steam HD 版于 2015-11-23 发行",
-      "short_intro": "在樱花坡道下，失去生活热情的高中生冈崎朋也遇见了独自伫立的古河渚。",
-      "intro": "在樱花飘落的坡道下，对校园生活感到疏离的高中生冈崎朋也，遇见了独自伫立的少女古河渚。故事以学校、家庭和小镇居民为中心展开群像叙事，围绕“家族”这一主题，描写少年少女在相遇、相处与离别中逐渐找回生活温度的过程。作品包含恋爱、校园与亲情线，整体基调温暖而带有泪水。",
-      "official_url": "https://store.steampowered.com/app/324160/"
-    },
-    {
-      "slug": "air",
-      "name_zh": "AIR",
-      "moegirl_title": "AIR",
-      "vndb_id": "v36",
-      "steam_appid": 2983250,
-      "aliases": ["AIR ～エア～", "青空"],
-      "genres": ["恋爱", "奇幻", "剧情", "治愈"],
-      "developer": "Key",
-      "release_date": "2000-09-08",
-      "release_note": "PC 初版",
-      "short_intro": "旅行人偶师国崎往人来到海边小镇，寻找传说中“天空中的女孩”。",
-      "intro": "以人偶表演为生的旅行者国崎往人，带着一个不会说话的旧人偶来到海边小镇，寻找传说中“天空中的女孩”。他在夏日的小镇里结识了神尾观铃等少女，并在日常相处中逐渐接近一段与翼人传说相连的古老因缘。作品以夏日、海风与天空为背景，恋爱与奇幻交织，基调温柔而感伤。",
-      "official_url": "https://store.steampowered.com/app/2983250/"
-    },
-    {
-      "slug": "kanon",
-      "name_zh": "Kanon",
-      "moegirl_title": "Kanon",
-      "vndb_id": "v33",
-      "steam_appid": 2850310,
-      "aliases": ["カノン", "華音"],
-      "genres": ["恋爱", "校园", "剧情", "治愈"],
-      "developer": "Key",
-      "release_date": "1999-06-04",
-      "release_note": "PC 初版；后续推出全年龄版并移植多平台",
-      "short_intro": "七年未归的少年回到北方雪国小镇，与表妹和数位少女重逢。",
-      "intro": "时隔七年，少年相泽祐一回到被大雪覆盖的北方小镇，暂住在表妹水濑名雪家中。他陆续与数位少女重逢，也在熟悉的街景里拾起一些模糊的童年记忆。随着冬日日常推进，少女们各自怀抱的“奇迹”与祐一遗忘的过去逐渐浮现。作品以雪国小镇为舞台，描写恋爱、校园与离别。",
-      "official_url": "https://store.steampowered.com/app/2850310/"
-    },
-    {
-      "slug": "rewrite",
-      "name_zh": "Rewrite",
-      "moegirl_title": "Rewrite(游戏)",
-      "vndb_id": "v751",
-      "steam_appid": 1680000,
-      "aliases": ["リライト", "Rewrite+"],
-      "genres": ["奇幻", "悬疑", "校园", "恋爱"],
-      "developer": "Key",
-      "release_date": "2011-06-24",
-      "release_note": "PC 初版；Rewrite+ 为后续强化版",
-      "short_intro": "在绿化覆盖的风祭市，高中生天王寺瑚太朗与伙伴调查超自然事件。",
-      "intro": "故事发生在被树木与花草覆盖的都市风祭市。高中生天王寺瑚太朗拥有改写自身身体的能力，他同几位少女一起调查城市里的超自然传闻。随着调查深入，看似平静的校园生活与城市背后的组织、能力和“改写”的真相逐渐交错。作品融合奇幻、悬疑与恋爱，并带有Key社少见的严肃氛围。",
-      "official_url": "https://store.steampowered.com/app/1680000/"
-    },
-    {
-      "slug": "summer-pockets",
-      "name_zh": "Summer Pockets",
-      "moegirl_title": "Summer Pockets",
-      "vndb_id": "v20424",
-      "steam_appid": 897220,
-      "aliases": ["サマーポケッツ", "夏日口袋", "サマポケ"],
-      "genres": ["恋爱", "治愈", "剧情", "日常"],
-      "developer": "Key",
-      "release_date": "2018-06-29",
-      "release_note": "PC 初版",
-      "short_intro": "少年为整理祖母遗物来到濑户内海的孤岛，度过一个充满谜团的夏天。",
-      "intro": "高中生鹰原羽依里离开城市，来到濑户内海的孤岛鸟白岛，替祖母整理遗物。他在岛上遇见了失去暑假记忆的鸣濑白羽、追寻岛屿传说的空门苍等少女，并在蝉鸣、海风与祭典中度过一段悠闲夏日。随着假期推进，岛上流传的古老习俗与少女们的心事慢慢浮出水面。作品以夏日孤岛为舞台，基调清新而治愈。",
-      "official_url": "https://store.steampowered.com/app/897220/"
-    },
-    {
-      "slug": "planetarian",
-      "name_zh": "星之梦",
-      "moegirl_title": "Planetarian",
-      "vndb_id": "v34",
-      "steam_appid": 623080,
-      "aliases": ["planetarian～小小的星之梦～", "planetarian ～ちいさなほしのゆめ～"],
-      "genres": ["科幻", "剧情", "治愈", "视觉小说"],
-      "developer": "Key",
-      "release_date": "2004-11-29",
-      "release_note": "PC 初版；Steam HD 版于 2016 年发行",
-      "short_intro": "末日废墟中的猎人闯入无人天文馆，遇见仍在等待客人的机器人星野梦美。",
-      "intro": "在人类文明近乎终结的未来，一名靠搜刮废墟为生的“废墟猎人”潜入被称作“棺之城”的危险都市。他在一座废弃天文馆里遇见了机器人星野梦美。她仍坚信自己是解说员，并等待了三十年未至的客人。为了修复损坏的投影仪，两人开始一段短暂而安静的相处。作品是线性短篇视觉小说，以末世与星空为背景。",
-      "official_url": "https://store.steampowered.com/app/623080/"
-    },
-    {
-      "slug": "harmonia",
-      "name_zh": "Harmonia",
-      "moegirl_title": "Harmonia(Key)",
-      "vndb_id": "v16510",
-      "steam_appid": 421660,
-      "aliases": ["ハルモニア"],
-      "genres": ["科幻", "剧情", "治愈", "视觉小说"],
-      "developer": "Key",
-      "release_date": "2016-09-23",
-      "release_note": "PC 初版",
-      "short_intro": "大战后的荒芜世界，拥有情感的人形机器人在废弃设施中苏醒，开始学习人类的心。",
-      "intro": "在遥远未来的大战之后，被污染的天空降下灰烬，水源枯竭，人类人口大幅减少。一台被称为“Phiroid”的情感型人形机器人在废弃设施中醒来，却发现自己尚未完成，右手还露着机械结构。他渴望理解人类的情感，在荒芜世界中流浪，直到一位少女把他当作人类收留。作品以末日后的安静小镇为舞台，描写机器人学习喜怒哀乐的过程。",
-      "official_url": "https://store.steampowered.com/app/421660/"
-    },
     {
       "slug": "atri",
       "name_zh": "ATRI -My Dear Moments-",
       "moegirl_title": "ATRI -My Dear Moments-",
       "vndb_id": "v27448",
       "steam_appid": 1230140,
-      "aliases": ["ATRI", "亚托莉 -我挚爱的时光-"],
-      "genres": ["科幻", "恋爱", "治愈", "剧情"],
-      "developer": "Frontwing / ANIPLEX.EXE",
+      "aliases": [
+        "ATRI",
+        "亚托莉 -我挚爱的时光-"
+      ],
+      "genres": [
+        "科幻",
+        "恋爱",
+        "治愈",
+        "剧情"
+      ],
+      "developer": "Frontwing / 枕",
       "release_date": "2020-06-18",
       "release_note": "Steam / DMM 版首发；萌娘百科记载为 2020-06-19",
       "short_intro": "海面上升后的近未来，少年从海底打捞起机器人少女亚托莉。",
@@ -128,8 +31,17 @@
       "moegirl_title": "命运石之门系列",
       "vndb_id": "v2002",
       "steam_appid": 412830,
-      "aliases": ["STEINS;GATE", "シュタインズ・ゲート", "S;G"],
-      "genres": ["科幻", "悬疑", "剧情", "冒险"],
+      "aliases": [
+        "STEINS;GATE",
+        "シュタインズ・ゲート",
+        "S;G"
+      ],
+      "genres": [
+        "科幻",
+        "悬疑",
+        "剧情",
+        "冒险"
+      ],
       "developer": "5pb. / Nitroplus",
       "release_date": "2009-10-15",
       "release_note": "Xbox 360 初版；PC 版于 2010-08-26 发行",
@@ -138,64 +50,27 @@
       "official_url": "https://steinsgate.jp/"
     },
     {
-      "slug": "steins-gate-0",
-      "name_zh": "命运石之门0",
-      "moegirl_title": "命运石之门0",
-      "vndb_id": "v17102",
-      "steam_appid": 825630,
-      "aliases": ["STEINS;GATE 0", "シュタインズ・ゲート ゼロ", "S;G 0"],
-      "genres": ["科幻", "悬疑", "剧情", "冒险"],
-      "developer": "MAGES. / 5pb.",
-      "release_date": "2015-12-10",
-      "release_note": "PS3 / PS4 / PS Vita 初版；PC 版后续发行",
-      "short_intro": "在未能拯救重要之人的β世界线，冈部伦太郎放弃时间机器，试图回归普通生活。",
-      "intro": "故事发生在“没能拯救她”的β世界线。经历了无数次世界线跳跃的冈部伦太郎陷入绝望，放弃继续使用时间机器，努力扮演一名普通大学生。一次学术发表会让他接触到将记忆数字化的“Amadeus”计划，也让他再次被卷入黑暗组织的阴谋。本作承接《命运石之门》的β世界线，基调比前作更为沉重。",
-      "official_url": "https://store.steampowered.com/app/825630/"
-    },
-    {
-      "slug": "mahoyo",
-      "name_zh": "魔法使之夜",
-      "moegirl_title": "魔法使之夜",
-      "vndb_id": "v777",
-      "steam_appid": 2052410,
-      "aliases": ["魔法使いの夜", "Witch on the Holy Night", "Mahoyo"],
-      "genres": ["奇幻", "剧情", "视觉小说", "日常"],
-      "developer": "TYPE-MOON",
-      "release_date": "2012-04-12",
-      "release_note": "PC 初版；主机版于 2022 年发行",
-      "short_intro": "1980年代末，两名隐居山中宅邸的魔术师与偶然闯入的少年开始了奇妙同居。",
-      "intro": "故事发生在昭和末期的 1980 年代末。刚接触魔术的青子与同为魔术师的久远寺有珠隐居在山中宅邸，过着与世隔绝的生活。少年静希草十郎偶然闯入她们的世界，三人从此开始一段奇妙而同居的日子。作品以魔术师的世界为背景，描写三人之间的日常与冲突，是 TYPE-MOON 月世界体系中的独立篇章。",
-      "official_url": "https://typemoon.com/products/mahoyo/"
-    },
-    {
-      "slug": "428",
-      "name_zh": "428 ～被封锁的涩谷～",
-      "moegirl_title": "428 ～被封锁的涩谷～",
-      "vndb_id": "v1299",
-      "steam_appid": 648580,
-      "aliases": ["428 〜封鎖された渋谷で〜", "428: Shibuya Scramble"],
-      "genres": ["悬疑", "剧情", "冒险", "视觉小说"],
-      "developer": "Chunsoft / Spike Chunsoft",
-      "release_date": "2008-12-04",
-      "release_note": "Wii 初版；PS3 / PSP 版于 2009 年发行，PC 版于 2018 年发行",
-      "short_intro": "涩谷街头，侦探、青年、病毒研究员、自由撰稿人和一只猫吉祥物被一连串事件联系起来。",
-      "intro": "故事发生在东京涩谷。一名侦探、一名青年、一名病毒研究员、一名自由撰稿人和一只猫吉祥物，因为一连串看似无关的突发事件被联系在一起。玩家以多线并行的方式推进不同主角的视角，在有限时间内逐步拼出事件全貌。作品采用真人照片与影像素材，融合悬疑、群像剧与多结局结构。",
-      "official_url": "https://store.steampowered.com/app/648580/"
-    },
-    {
-      "slug": "999",
-      "name_zh": "极限脱出：9小时9人9扇门",
-      "moegirl_title": "极限脱出：9小时9人9扇门",
-      "vndb_id": "v3112",
-      "steam_appid": null,
-      "aliases": ["極限脱出 9時間9人9の扉", "Zero Escape: Nine Hours, Nine Persons, Nine Doors", "999"],
-      "genres": ["悬疑", "剧情", "冒险", "视觉小说"],
-      "developer": "Chunsoft / Spike Chunsoft",
-      "release_date": "2009-12-10",
-      "release_note": "Nintendo DS 初版；后续推出 iOS 与合集版",
-      "short_intro": "九名互不相识的人被自称“零”的人绑架，囚禁在一艘船上参加九人游戏。",
-      "intro": "九名互不相识的人被自称“零”的神秘人绑架，囚禁在一艘正在下沉的船上。他们被迫参加“九人游戏”，必须在九小时内解开密室谜题，穿过编号门才能到达出口。每个人手腕上的编号既是通行证，也是彼此合作的筹码。作品将密室逃脱、推理解谜与多结局叙事结合，是“极限脱出”系列的第一作。",
-      "official_url": null
+      "slug": "clannad",
+      "name_zh": "CLANNAD",
+      "moegirl_title": "CLANNAD",
+      "vndb_id": "v4",
+      "steam_appid": 324160,
+      "aliases": [
+        "CLANNAD -クラナド-",
+        "CL"
+      ],
+      "genres": [
+        "恋爱",
+        "校园",
+        "剧情",
+        "治愈"
+      ],
+      "developer": "Key",
+      "release_date": "2004-04-28",
+      "release_note": "PC 初版；Steam HD 版于 2015-11-23 发行",
+      "short_intro": "在樱花坡道下，失去生活热情的高中生冈崎朋也遇见了独自伫立的古河渚。",
+      "intro": "在樱花飘落的坡道下，对校园生活感到疏离的高中生冈崎朋也，遇见了独自伫立的少女古河渚。故事以学校、家庭和小镇居民为中心展开群像叙事，围绕“家族”这一主题，描写少年少女在相遇、相处与离别中逐渐找回生活温度的过程。作品包含恋爱、校园与亲情线，整体基调温暖而带有泪水。",
+      "official_url": "https://store.steampowered.com/app/324160/"
     },
     {
       "slug": "fata-morgana",
@@ -203,8 +78,17 @@
       "moegirl_title": "海市蜃楼之馆",
       "vndb_id": "v12402",
       "steam_appid": 303310,
-      "aliases": ["ファタモルガーナの館", "The House in Fata Morgana", "Fata Moru"],
-      "genres": ["悬疑", "剧情", "恋爱", "视觉小说"],
+      "aliases": [
+        "ファタモルガーナの館",
+        "The House in Fata Morgana",
+        "Fata Moru"
+      ],
+      "genres": [
+        "悬疑",
+        "剧情",
+        "恋爱",
+        "视觉小说"
+      ],
       "developer": "Novectacle",
       "release_date": "2012-12-31",
       "release_note": "PC 初版；Steam 版后续发行",
@@ -218,8 +102,17 @@
       "moegirl_title": "高考恋爱一百天",
       "vndb_id": "v17716",
       "steam_appid": 347620,
-      "aliases": ["高考恋爱一百天", "Gaokao Love 100Days", "高恋"],
-      "genres": ["恋爱", "校园", "剧情", "日常"],
+      "aliases": [
+        "高考恋爱一百天",
+        "Gaokao Love 100Days",
+        "高恋"
+      ],
+      "genres": [
+        "恋爱",
+        "校园",
+        "剧情",
+        "日常"
+      ],
       "developer": "落叶岛项目组",
       "release_date": "2014-07-20",
       "release_note": "实体版初版；Steam 版于 2015-05-30 发行，Switch 版于 2018 年发行",
@@ -228,19 +121,100 @@
       "official_url": "https://store.steampowered.com/app/347620/"
     },
     {
-      "slug": "lucy",
-      "name_zh": "露西 -她所期望的一切-",
-      "moegirl_title": "露西 -她所期望的一切-",
-      "vndb_id": "v16743",
-      "steam_appid": 430960,
-      "aliases": ["루시 - 그녀가 바라던 것 -", "Lucy -The Eternity She Wished For-", "露西"],
-      "genres": ["科幻", "恋爱", "剧情", "治愈"],
-      "developer": "M-Vizlab",
-      "release_date": "2010",
-      "release_note": "韩文初版于 2010 年；Steam 中文版后续发行",
-      "short_intro": "在仿生人已融入社会的近未来，少年在垃圾场捡到一台会笑会哭的机器人少女。",
-      "intro": "在近未来，仿生人已经成为人类社会的一部分，但少年并不喜欢这些没有感情的金属造物。某天，他在垃圾场捡到一台与众不同的机器人少女露西：她会笑、会哭，也会做梦，像人类一样表达情感。少年把她带回家，开始一段关于人与机器人如何相处的故事。作品以近未来为背景，探讨情感、记忆与“何以为人”。",
-      "official_url": "https://store.steampowered.com/app/430960/"
+      "slug": "mahoyo",
+      "name_zh": "魔法使之夜",
+      "moegirl_title": "魔法使之夜",
+      "vndb_id": "v777",
+      "steam_appid": 2052410,
+      "aliases": [
+        "魔法使いの夜",
+        "Witch on the Holy Night",
+        "Mahoyo"
+      ],
+      "genres": [
+        "奇幻",
+        "剧情",
+        "视觉小说",
+        "日常"
+      ],
+      "developer": "TYPE-MOON",
+      "release_date": "2012-04-12",
+      "release_note": "PC 初版；主机版于 2022 年发行",
+      "short_intro": "1980年代末，两名隐居山中宅邸的魔术师与偶然闯入的少年开始了奇妙同居。",
+      "intro": "故事发生在昭和末期的 1980 年代末。刚接触魔术的青子与同为魔术师的久远寺有珠隐居在山中宅邸，过着与世隔绝的生活。少年静希草十郎偶然闯入她们的世界，三人从此开始一段奇妙而同居的日子。作品以魔术师的世界为背景，描写三人之间的日常与冲突，是 TYPE-MOON 月世界体系中的独立篇章。",
+      "official_url": "https://typemoon.com/products/mahoyo/"
+    },
+    {
+      "slug": "summer-pockets",
+      "name_zh": "Summer Pockets",
+      "moegirl_title": "Summer Pockets",
+      "vndb_id": "v20424",
+      "steam_appid": 897220,
+      "aliases": [
+        "サマーポケッツ",
+        "夏日口袋",
+        "サマポケ"
+      ],
+      "genres": [
+        "恋爱",
+        "治愈",
+        "剧情",
+        "日常"
+      ],
+      "developer": "Key",
+      "release_date": "2018-06-29",
+      "release_note": "PC 初版",
+      "short_intro": "少年为整理祖母遗物来到濑户内海的孤岛，度过一个充满谜团的夏天。",
+      "intro": "高中生鹰原羽依里离开城市，来到濑户内海的孤岛鸟白岛，替祖母整理遗物。他在岛上遇见了失去暑假记忆的鸣濑白羽、追寻岛屿传说的空门苍等少女，并在蝉鸣、海风与祭典中度过一段悠闲夏日。随着假期推进，岛上流传的古老习俗与少女们的心事慢慢浮出水面。作品以夏日孤岛为舞台，基调清新而治愈。",
+      "official_url": "https://store.steampowered.com/app/897220/"
+    },
+    {
+      "slug": "999",
+      "name_zh": "极限脱出：9小时9人9扇门",
+      "moegirl_title": "极限脱出：9小时9人9扇门",
+      "vndb_id": "v3112",
+      "steam_appid": null,
+      "aliases": [
+        "極限脱出 9時間9人9の扉",
+        "Zero Escape: Nine Hours, Nine Persons, Nine Doors",
+        "999"
+      ],
+      "genres": [
+        "悬疑",
+        "剧情",
+        "冒险",
+        "视觉小说"
+      ],
+      "developer": "Chunsoft / Spike Chunsoft",
+      "release_date": "2009-12-10",
+      "release_note": "Nintendo DS 初版；后续推出 iOS 与合集版",
+      "short_intro": "九名互不相识的人被自称“零”的人绑架，囚禁在一艘船上参加九人游戏。",
+      "intro": "九名互不相识的人被自称“零”的神秘人绑架，囚禁在一艘正在下沉的船上。他们被迫参加“九人游戏”，必须在九小时内解开密室谜题，穿过编号门才能到达出口。每个人手腕上的编号既是通行证，也是彼此合作的筹码。作品将密室逃脱、推理解谜与多结局叙事结合，是“极限脱出”系列的第一作。",
+      "official_url": null
+    },
+    {
+      "slug": "white-album-2",
+      "name_zh": "白色相簿2",
+      "moegirl_title": "白色相簿2",
+      "vndb_id": "v7771",
+      "steam_appid": null,
+      "aliases": [
+        "WHITE ALBUM2",
+        "ホワイトアルバム2",
+        "WA2"
+      ],
+      "genres": [
+        "恋爱",
+        "剧情",
+        "校园",
+        "视觉小说"
+      ],
+      "developer": "Leaf / AQUAPLUS",
+      "release_date": "2010-03-26",
+      "release_note": "Introductory Chapter 初版；Closing Chapter 于 2011-12-22 发行",
+      "short_intro": "高中轻音乐同好会里，三名少年少女因一首歌相遇，在爱情与友情之间走向选择。",
+      "intro": "高中轻音乐同好会里，北原春希、小木曾雪菜与冬马和纱因一首歌走到一起。三人度过了一段短暂而耀眼的青春时光，也在这段关系里埋下无法回避的情感纠葛。故事从学园祭前后的相遇开始，逐渐延伸到大学与成年后的选择。作品以细腻的心理描写和音乐场景著称，是恋爱视觉小说中常被讨论的代表作。",
+      "official_url": null
     },
     {
       "slug": "narcissu",
@@ -248,8 +222,16 @@
       "moegirl_title": "Narcissu",
       "vndb_id": "v10",
       "steam_appid": 264380,
-      "aliases": ["ナルキッソス", "narcissu", "Narcissu"],
-      "genres": ["剧情", "治愈", "视觉小说"],
+      "aliases": [
+        "ナルキッソス",
+        "narcissu",
+        "Narcissu"
+      ],
+      "genres": [
+        "剧情",
+        "治愈",
+        "视觉小说"
+      ],
       "developer": "Stage-nana",
       "release_date": "2005-08-02",
       "release_note": "同人版初版；Steam 版后续发行",
@@ -258,13 +240,115 @@
       "official_url": "https://store.steampowered.com/app/264380/"
     },
     {
+      "slug": "rewrite",
+      "name_zh": "Rewrite",
+      "moegirl_title": "Rewrite(游戏)",
+      "vndb_id": "v751",
+      "steam_appid": 1680000,
+      "aliases": [
+        "リライト",
+        "Rewrite+"
+      ],
+      "genres": [
+        "奇幻",
+        "悬疑",
+        "校园",
+        "恋爱"
+      ],
+      "developer": "Key",
+      "release_date": "2011-06-24",
+      "release_note": "PC 初版；Rewrite+ 为后续强化版",
+      "short_intro": "在绿化覆盖的风祭市，高中生天王寺瑚太朗与伙伴调查超自然事件。",
+      "intro": "故事发生在被树木与花草覆盖的都市风祭市。高中生天王寺瑚太朗拥有改写自身身体的能力，他同几位少女一起调查城市里的超自然传闻。随着调查深入，看似平静的校园生活与城市背后的组织、能力和“改写”的真相逐渐交错。作品融合奇幻、悬疑与恋爱，并带有Key社少见的严肃氛围。",
+      "official_url": "https://store.steampowered.com/app/1680000/"
+    },
+    {
+      "slug": "428",
+      "name_zh": "428 ～被封锁的涩谷～",
+      "moegirl_title": "428 ～被封锁的涩谷～",
+      "vndb_id": "v1299",
+      "steam_appid": 648580,
+      "aliases": [
+        "428 〜封鎖された渋谷で〜",
+        "428: Shibuya Scramble"
+      ],
+      "genres": [
+        "悬疑",
+        "剧情",
+        "冒险",
+        "视觉小说"
+      ],
+      "developer": "Chunsoft / Spike Chunsoft",
+      "release_date": "2008-12-04",
+      "release_note": "Wii 初版；PS3 / PSP 版于 2009 年发行，PC 版于 2018 年发行",
+      "short_intro": "涩谷街头，侦探、青年、病毒研究员、自由撰稿人和一只猫吉祥物被一连串事件联系起来。",
+      "intro": "故事发生在东京涩谷。一名侦探、一名青年、一名病毒研究员、一名自由撰稿人和一只猫吉祥物，因为一连串看似无关的突发事件被联系在一起。玩家以多线并行的方式推进不同主角的视角，在有限时间内逐步拼出事件全貌。作品采用真人照片与影像素材，融合悬疑、群像剧与多结局结构。",
+      "official_url": "https://store.steampowered.com/app/648580/"
+    },
+    {
+      "slug": "lucy",
+      "name_zh": "露西 -她所期望的一切-",
+      "moegirl_title": "露西 -她所期望的一切-",
+      "vndb_id": "v16743",
+      "steam_appid": 430960,
+      "aliases": [
+        "루시 - 그녀가 바라던 것 -",
+        "Lucy -The Eternity She Wished For-",
+        "露西"
+      ],
+      "genres": [
+        "科幻",
+        "恋爱",
+        "剧情",
+        "治愈"
+      ],
+      "developer": "M-Vizlab",
+      "release_date": "2010",
+      "release_note": "韩文初版于 2010 年；Steam 中文版后续发行",
+      "short_intro": "在仿生人已融入社会的近未来，少年在垃圾场捡到一台会笑会哭的机器人少女。",
+      "intro": "在近未来，仿生人已经成为人类社会的一部分，但少年并不喜欢这些没有感情的金属造物。某天，他在垃圾场捡到一台与众不同的机器人少女露西：她会笑、会哭，也会做梦，像人类一样表达情感。少年把她带回家，开始一段关于人与机器人如何相处的故事。作品以近未来为背景，探讨情感、记忆与“何以为人”。",
+      "official_url": "https://store.steampowered.com/app/430960/"
+    },
+    {
+      "slug": "air",
+      "name_zh": "AIR",
+      "moegirl_title": "AIR",
+      "vndb_id": "v36",
+      "steam_appid": 2983250,
+      "aliases": [
+        "AIR ～エア～",
+        "青空"
+      ],
+      "genres": [
+        "恋爱",
+        "奇幻",
+        "剧情",
+        "治愈"
+      ],
+      "developer": "Key",
+      "release_date": "2000-09-08",
+      "release_note": "PC 初版",
+      "short_intro": "旅行人偶师国崎往人来到海边小镇，寻找传说中“天空中的女孩”。",
+      "intro": "以人偶表演为生的旅行者国崎往人，带着一个不会说话的旧人偶来到海边小镇，寻找传说中“天空中的女孩”。他在夏日的小镇里结识了神尾观铃等少女，并在日常相处中逐渐接近一段与翼人传说相连的古老因缘。作品以夏日、海风与天空为背景，恋爱与奇幻交织，基调温柔而感伤。",
+      "official_url": "https://store.steampowered.com/app/2983250/"
+    },
+    {
       "slug": "higurashi",
       "name_zh": "寒蝉鸣泣之时",
       "moegirl_title": "寒蝉鸣泣之时",
       "vndb_id": "v67",
       "steam_appid": null,
-      "aliases": ["ひぐらしのなく頃に", "Higurashi When They Cry", "寒蝉鸣泣之时 出题篇"],
-      "genres": ["悬疑", "剧情", "奇幻", "视觉小说"],
+      "aliases": [
+        "ひぐらしのなく頃に",
+        "Higurashi When They Cry",
+        "寒蝉鸣泣之时 出题篇"
+      ],
+      "genres": [
+        "悬疑",
+        "剧情",
+        "奇幻",
+        "视觉小说"
+      ],
       "developer": "07th Expansion",
       "release_date": "2002-08-10",
       "release_note": "出题篇第一作初版；系列于 2002-2006 年陆续发售",
@@ -273,13 +357,92 @@
       "official_url": null
     },
     {
+      "slug": "planetarian",
+      "name_zh": "星之梦",
+      "moegirl_title": "Planetarian",
+      "vndb_id": "v34",
+      "steam_appid": 623080,
+      "aliases": [
+        "planetarian～小小的星之梦～",
+        "planetarian ～ちいさなほしのゆめ～"
+      ],
+      "genres": [
+        "科幻",
+        "剧情",
+        "治愈",
+        "视觉小说"
+      ],
+      "developer": "Key",
+      "release_date": "2004-11-29",
+      "release_note": "PC 初版；Steam HD 版于 2016 年发行",
+      "short_intro": "末日废墟中的猎人闯入无人天文馆，遇见仍在等待客人的机器人星野梦美。",
+      "intro": "在人类文明近乎终结的未来，一名靠搜刮废墟为生的“废墟猎人”潜入被称作“棺之城”的危险都市。他在一座废弃天文馆里遇见了机器人星野梦美。她仍坚信自己是解说员，并等待了三十年未至的客人。为了修复损坏的投影仪，两人开始一段短暂而安静的相处。作品是线性短篇视觉小说，以末世与星空为背景。",
+      "official_url": "https://store.steampowered.com/app/623080/"
+    },
+    {
+      "slug": "steins-gate-0",
+      "name_zh": "命运石之门0",
+      "moegirl_title": "命运石之门0",
+      "vndb_id": "v17102",
+      "steam_appid": 825630,
+      "aliases": [
+        "STEINS;GATE 0",
+        "シュタインズ・ゲート ゼロ",
+        "S;G 0"
+      ],
+      "genres": [
+        "科幻",
+        "悬疑",
+        "剧情",
+        "冒险"
+      ],
+      "developer": "MAGES. / 5pb.",
+      "release_date": "2015-12-10",
+      "release_note": "PS3 / PS4 / PS Vita 初版；PC 版后续发行",
+      "short_intro": "在未能拯救重要之人的β世界线，冈部伦太郎放弃时间机器，试图回归普通生活。",
+      "intro": "故事发生在“没能拯救她”的β世界线。经历了无数次世界线跳跃的冈部伦太郎陷入绝望，放弃继续使用时间机器，努力扮演一名普通大学生。一次学术发表会让他接触到将记忆数字化的“Amadeus”计划，也让他再次被卷入黑暗组织的阴谋。本作承接《命运石之门》的β世界线，基调比前作更为沉重。",
+      "official_url": "https://store.steampowered.com/app/825630/"
+    },
+    {
+      "slug": "kanon",
+      "name_zh": "Kanon",
+      "moegirl_title": "Kanon",
+      "vndb_id": "v33",
+      "steam_appid": 2850310,
+      "aliases": [
+        "カノン",
+        "華音"
+      ],
+      "genres": [
+        "恋爱",
+        "校园",
+        "剧情",
+        "治愈"
+      ],
+      "developer": "Key",
+      "release_date": "1999-06-04",
+      "release_note": "PC 初版；后续推出全年龄版并移植多平台",
+      "short_intro": "七年未归的少年回到北方雪国小镇，与表妹和数位少女重逢。",
+      "intro": "时隔七年，少年相泽祐一回到被大雪覆盖的北方小镇，暂住在表妹水濑名雪家中。他陆续与数位少女重逢，也在熟悉的街景里拾起一些模糊的童年记忆。随着冬日日常推进，少女们各自怀抱的“奇迹”与祐一遗忘的过去逐渐浮现。作品以雪国小镇为舞台，描写恋爱、校园与离别。",
+      "official_url": "https://store.steampowered.com/app/2850310/"
+    },
+    {
       "slug": "umineko",
       "name_zh": "海猫鸣泣之时",
       "moegirl_title": "海猫鸣泣之时",
       "vndb_id": "v24",
       "steam_appid": 406550,
-      "aliases": ["うみねこのなく頃に", "Umineko When They Cry", "海猫鸣泣之时 出题篇"],
-      "genres": ["悬疑", "奇幻", "剧情", "视觉小说"],
+      "aliases": [
+        "うみねこのなく頃に",
+        "Umineko When They Cry",
+        "海猫鸣泣之时 出题篇"
+      ],
+      "genres": [
+        "悬疑",
+        "奇幻",
+        "剧情",
+        "视觉小说"
+      ],
       "developer": "07th Expansion",
       "release_date": "2007-08-17",
       "release_note": "出题篇第一作初版；系列于 2007-2010 年陆续发售",
@@ -288,19 +451,26 @@
       "official_url": "https://store.steampowered.com/app/406550/"
     },
     {
-      "slug": "white-album-2",
-      "name_zh": "白色相簿2",
-      "moegirl_title": "白色相簿2",
-      "vndb_id": "v7771",
-      "steam_appid": null,
-      "aliases": ["WHITE ALBUM2", "ホワイトアルバム2", "WA2"],
-      "genres": ["恋爱", "剧情", "校园", "视觉小说"],
-      "developer": "Leaf / AQUAPLUS",
-      "release_date": "2010-03-26",
-      "release_note": "Introductory Chapter 初版；Closing Chapter 于 2011-12-22 发行",
-      "short_intro": "高中轻音乐同好会里，三名少年少女因一首歌相遇，在爱情与友情之间走向选择。",
-      "intro": "高中轻音乐同好会里，北原春希、小木曾雪菜与冬马和纱因一首歌走到一起。三人度过了一段短暂而耀眼的青春时光，也在这段关系里埋下无法回避的情感纠葛。故事从学园祭前后的相遇开始，逐渐延伸到大学与成年后的选择。作品以细腻的心理描写和音乐场景著称，是恋爱视觉小说中常被讨论的代表作。",
-      "official_url": null
+      "slug": "harmonia",
+      "name_zh": "Harmonia",
+      "moegirl_title": "Harmonia(Key)",
+      "vndb_id": "v16510",
+      "steam_appid": 421660,
+      "aliases": [
+        "ハルモニア"
+      ],
+      "genres": [
+        "科幻",
+        "剧情",
+        "治愈",
+        "视觉小说"
+      ],
+      "developer": "Key",
+      "release_date": "2016-09-23",
+      "release_note": "PC 初版",
+      "short_intro": "大战后的荒芜世界，拥有情感的人形机器人在废弃设施中苏醒，开始学习人类的心。",
+      "intro": "在遥远未来的大战之后，被污染的天空降下灰烬，水源枯竭，人类人口大幅减少。一台被称为“Phiroid”的情感型人形机器人在废弃设施中醒来，却发现自己尚未完成，右手还露着机械结构。他渴望理解人类的情感，在荒芜世界中流浪，直到一位少女把他当作人类收留。作品以末日后的安静小镇为舞台，描写机器人学习喜怒哀乐的过程。",
+      "official_url": "https://store.steampowered.com/app/421660/"
     }
   ]
 }

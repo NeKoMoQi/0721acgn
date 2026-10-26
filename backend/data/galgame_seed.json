@@ -25,7 +25,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v4\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/CLANNAD\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/324160/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：PC 初版；Steam HD 版于 2015-11-23 发行。",
     "featured": 1,
-    "sort_order": 1,
+    "sort_order": 3,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -54,7 +54,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v36\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/AIR\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/2983250/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：PC 初版。",
     "featured": 0,
-    "sort_order": 2,
+    "sort_order": 14,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -83,7 +83,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v33\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/Kanon\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/2850310/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：PC 初版；后续推出全年龄版并移植多平台。",
     "featured": 0,
-    "sort_order": 3,
+    "sort_order": 18,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -112,7 +112,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v751\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/Rewrite(%E6%B8%B8%E6%88%8F)\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/1680000/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：PC 初版；Rewrite+ 为后续强化版。",
     "featured": 0,
-    "sort_order": 4,
+    "sort_order": 11,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -141,7 +141,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v20424\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/Summer_Pockets\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/897220/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：PC 初版。",
     "featured": 1,
-    "sort_order": 5,
+    "sort_order": 7,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -170,7 +170,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v34\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/%E6%98%9F%E4%B9%8B%E6%A2%A6(%E6%B8%B8%E6%88%8F)\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/623080/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：PC 初版；Steam HD 版于 2016 年发行。",
     "featured": 0,
-    "sort_order": 6,
+    "sort_order": 16,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -199,7 +199,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v16510\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/Harmonia(Key)\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/421660/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：PC 初版。",
     "featured": 0,
-    "sort_order": 7,
+    "sort_order": 20,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -210,7 +210,7 @@
     "short_intro": "海面上升后的近未来，少年从海底打捞起机器人少女亚托莉。",
     "intro": "近未来，海面上升淹没了大片陆地，少年斑鸠夏生回到海边小镇，靠打捞海底物资维持生活。一次潜水作业中，他打捞起一台机器人少女亚托莉。她声称要执行“主人的命令”，并执意陪伴夏生度过这个暑假。两人在小镇里认识居民、修复设备，也逐渐面对亚托莉身上未解的谜团。作品以海洋与校园为背景，恋爱与科幻元素并重。",
     "cover": "/galgame/atri.jpg",
-    "developer": "Frontwing / ANIPLEX.EXE",
+    "developer": "Frontwing / 枕",
     "release_date": "2020-06-18",
     "release_year": 2020,
     "release_note": "Steam / DMM 版首发；萌娘百科记载为 2020-06-19",
@@ -228,7 +228,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v27448\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/ATRI_-My_Dear_Moments-\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/1230140/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：Steam / DMM 版首发；萌娘百科记载为 2020-06-19。",
     "featured": 1,
-    "sort_order": 8,
+    "sort_order": 1,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -245,7 +245,7 @@
     "release_note": "Xbox 360 初版；PC 版于 2010-08-26 发行",
     "platforms": "PC (Windows) / Linux / iOS / Android / PSP / PS3 / PS4 / PS5 / PS Vita / Nintendo Switch / Nintendo Switch 2 / Xbox 360",
     "genres": "科幻,悬疑,剧情,冒险",
-    "rating": 9.0,
+    "rating": 9,
     "rating_count": 17083,
     "rating_source": "VNDB",
     "rating_source_url": "https://vndb.org/v2002",
@@ -257,7 +257,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v2002\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/%E5%91%BD%E8%BF%90%E7%9F%B3%E4%B9%8B%E9%97%A8%E7%B3%BB%E5%88%97\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/412830/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：Xbox 360 初版；PC 版于 2010-08-26 发行。",
     "featured": 1,
-    "sort_order": 9,
+    "sort_order": 2,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -286,7 +286,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v17102\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/%E5%91%BD%E8%BF%90%E7%9F%B3%E4%B9%8B%E9%97%A80\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/825630/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：PS3 / PS4 / PS Vita 初版；PC 版后续发行。",
     "featured": 0,
-    "sort_order": 10,
+    "sort_order": 17,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -315,7 +315,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v777\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/%E9%AD%94%E6%B3%95%E4%BD%BF%E4%B9%8B%E5%A4%9C\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/2052410/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：PC 初版；主机版于 2022 年发行。",
     "featured": 0,
-    "sort_order": 11,
+    "sort_order": 6,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -373,7 +373,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v3112\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/%E6%9E%81%E9%99%90%E8%84%B1%E5%87%BA%EF%BC%9A9%E5%B0%8F%E6%97%B69%E4%BA%BA9%E6%89%87%E9%97%A8\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：Nintendo DS 初版；后续推出 iOS 与合集版。",
     "featured": 0,
-    "sort_order": 13,
+    "sort_order": 8,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -402,7 +402,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v12402\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/%E6%B5%B7%E5%B8%82%E8%9C%83%E6%A5%BC%E4%B9%8B%E9%A6%86\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/303310/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：PC 初版；Steam 版后续发行。",
     "featured": 1,
-    "sort_order": 14,
+    "sort_order": 4,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -431,7 +431,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v17716\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/%E9%AB%98%E8%80%83%E6%81%8B%E7%88%B1%E4%B8%80%E7%99%BE%E5%A4%A9\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/347620/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：实体版初版；Steam 版于 2015-05-30 发行，Switch 版于 2018 年发行。",
     "featured": 0,
-    "sort_order": 15,
+    "sort_order": 5,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -460,7 +460,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v16743\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/%E9%9C%B2%E8%A5%BF_-%E5%A5%B9%E6%89%80%E6%9C%9F%E6%9C%9B%E7%9A%84%E4%B8%80%E5%88%87-\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/430960/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：韩文初版于 2010 年；Steam 中文版后续发行。 萌娘百科页面摘要为空，简介依据 VNDB 与公开商店页整理。",
     "featured": 0,
-    "sort_order": 16,
+    "sort_order": 13,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -489,7 +489,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v10\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/Narcissu\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}, {\"name\": \"Steam 商店页\", \"url\": \"https://store.steampowered.com/app/264380/\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"发行信息核对\", \"开发商核对\", \"平台核对\"]}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：同人版初版；Steam 版后续发行。",
     "featured": 0,
-    "sort_order": 17,
+    "sort_order": 10,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -518,7 +518,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v67\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/%E5%AF%92%E8%9D%89%E9%B8%A3%E6%B3%A3%E4%B9%8B%E6%97%B6\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：出题篇第一作初版；系列于 2002-2006 年陆续发售。",
     "featured": 0,
-    "sort_order": 18,
+    "sort_order": 15,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   },
   {
@@ -564,7 +564,7 @@
     "release_note": "Introductory Chapter 初版；Closing Chapter 于 2011-12-22 发行",
     "platforms": "PC (Windows) / PSP / PS3 / PS Vita",
     "genres": "恋爱,剧情,校园,视觉小说",
-    "rating": 9.0,
+    "rating": 9,
     "rating_count": 4649,
     "rating_source": "VNDB",
     "rating_source_url": "https://vndb.org/v7771",
@@ -576,7 +576,7 @@
     "sources_json": "[{\"name\": \"VNDB\", \"url\": \"https://vndb.org/v7771\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"原名\", \"发行日期\", \"开发商\", \"支持平台\", \"评分\", \"评分人数\"]}, {\"name\": \"萌娘百科\", \"url\": \"https://zh.moegirl.org.cn/%E7%99%BD%E8%89%B2%E7%9B%B8%E7%B0%BF2\", \"retrieved_at\": \"2026-10-26T12:17:01+08:00\", \"fields\": [\"中文名\", \"别名\", \"背景介绍\"], \"license\": \"萌娘百科内容适用 CC BY-NC-SA 3.0 CN\"}]",
     "source_note": "结构化资料取自 VNDB；中文名、别名与背景参考萌娘百科；题材标签根据 VNDB 标签与萌娘百科介绍人工整理。 版本说明：Introductory Chapter 初版；Closing Chapter 于 2011-12-22 发行。",
     "featured": 1,
-    "sort_order": 20,
+    "sort_order": 9,
     "fetched_at": "2026-10-26T12:17:01+08:00"
   }
 ]

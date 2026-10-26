@@ -1,0 +1,19 @@
+/* Only the two Galgame views import these scoped rules. */
+.root-container { width: 100%; min-width: 0; overflow-x: clip; }
+.root-container :deep(.header) { position: sticky !important; top: 0; box-sizing: border-box; width: 100%; height: auto !important; min-height: 80px; flex: 0 0 auto; }
+.root-container :deep(.header .acgn) { white-space: nowrap; }
+.root-container :deep(.header .user-wrap) { flex-shrink: 0; white-space: nowrap; }
+.root-container :deep(.header .kuang) { box-sizing: border-box; width: 100%; height: 44px; padding: 4px; }
+.root-container :deep(.bottom) { box-sizing: border-box; }
+@media (max-width: 1200px) {
+  .root-container :deep(.header) { flex-wrap: wrap; gap: 8px; padding: 8px 16px; }
+  .root-container :deep(.header .left-group) { width: 100%; min-width: 0; gap: 0; }
+  .root-container :deep(.header .logo) { flex-shrink: 0; }
+  .root-container :deep(.header .main-nav) { min-width: 0; overflow-x: auto; padding: 8px 0; }
+  .root-container :deep(.header .search) { flex: 1; min-width: 100px; max-width: none; }
+  .root-container :deep(.header .user-wrap) { max-width: none; gap: 10px; }
+  .root-container :deep(.header .head-quick) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .root-container *, .root-container :deep(*) { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

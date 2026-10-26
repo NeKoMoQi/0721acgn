@@ -5,7 +5,7 @@
     <!-- 与番剧页一致的背景层 -->
     <div class="background-layer"></div>
 
-    <div class="acgn_container" ref="maintain" @scroll="handscroll">
+    <main class="acgn_container">
       <!-- 编辑推荐轮播 -->
       <div v-if="hotLoading" class="hero-skeleton">
         <div class="hero-skeleton-cover"></div>
@@ -14,13 +14,13 @@
         </div>
       </div>
       <div v-else-if="hotList.length" class="block text-center">
-        <el-carousel height="480px" motion-blur indicator-position="outside">
+        <el-carousel height="340px" :autoplay="false" indicator-position="outside">
           <el-carousel-item
             v-for="item in hotList"
             :key="'hot-' + item.id"
             @click="gotoDetail(item.id)"
           >
-            <div class="hero-slide">
+            <div class="hero-slide" role="link" tabindex="0" @keydown.enter.prevent="gotoDetail(item.id)">
               <div class="hero-bg" :style="{ backgroundImage: `url(${coverOf(item)})` }"></div>
               <div class="hero-shade"></div>
               <div class="hero-body">
@@ -35,8 +35,8 @@
                   <div class="hero-meta">
                     <span v-if="item.releaseYear">{{ item.releaseYear }} 年</span>
                     <span v-if="item.developer">{{ item.developer }}</span>
-                    <span v-if="item.rating != null" class="hero-rating">
-                      VNDB {{ formatRating(item.rating) }} / 10
+                    <span v-if="item.rating != null && ratingAllowed(item.slug)" class="hero-rating">
+                      {{ item.ratingSource || '评分' }} {{ formatRating(item.rating) }} / 10
                       <em v-if="item.ratingCount">· {{ formatCount(item.ratingCount) }} 人评分</em>
                     </span>
                   </div>
@@ -52,13 +52,14 @@
 
       <div class="section-head">
         <div>
-          <h1>猜你喜欢</h1>
-          <p>资料来自 VNDB 与萌娘百科，评分均注明来源与评分人数</p>
+          <h1>Galgame 作品库</h1>
+          <p>剧情简介、玩法特点与版本资料。</p>
         </div>
-        <span class="section-count" v-if="!initialLoading && !loadError">共 {{ list.length }} 部</span>
+        <span class="section-count" v-if="!initialLoading && !loadError">已载入 {{ list.length }} 部</span>
       </div>
 
       <AcgnFilterBar
+        :key="filterResetKey"
         :genres="GALGAME_GENRES"
         :show-status="false"
         :sort-options="GALGAME_SORT_OPTIONS"
@@ -90,7 +91,7 @@
       <div v-else-if="!list.length" class="state-card">
         <div class="state-icon">∅</div>
         <h3>暂无符合条件的作品</h3>
-        <p>可以换一个题材或年代试试。作品资料由采集脚本写入数据库，页面不会实时抓取外部站点。</p>
+        <p>换一个题材或年代，看看还有哪些故事。</p>
         <el-button round @click="resetFilters">清除筛选</el-button>
       </div>
 
@@ -115,14 +116,15 @@
                 @error="onImgError"
               >
               <span v-if="item.releaseYear" class="cover-badge">{{ item.releaseYear }}</span>
-              <span v-if="item.rating != null" class="cover-rating">★ {{ formatRating(item.rating) }}</span>
+              <span v-if="item.rating != null && ratingAllowed(item.slug)" class="cover-rating">{{ item.ratingSource || '评分' }} ★ {{ formatRating(item.rating) }}</span>
             </div>
             <div class="content-wrapper">
               <h4 class="title">{{ item.nameZh }}</h4>
               <div v-if="item.nameOriginal && item.nameOriginal !== item.nameZh" class="original">
                 {{ item.nameOriginal }}
               </div>
-              <p class="description">{{ item.shortIntro || '暂无简介' }}</p>
+              <p class="description">{{ guideFor(item.slug)?.tagline || item.shortIntro || '暂无简介' }}</p>
+              <p v-if="item.rating != null && ratingAllowed(item.slug) && item.ratingCount != null" class="rating-count">{{ formatCount(item.ratingCount) }} 人评分</p>
               <div class="meta-row">
                 <span v-if="item.developer" class="meta-item">{{ item.developer }}</span>
                 <span v-if="item.platforms" class="meta-item platform">{{ platformShort(item.platforms) }}</span>
@@ -138,9 +140,12 @@
         </div>
       </div>
 
-      <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
-      <div v-else-if="list.length && !hasMore" class="tishi">已经到底啦~亲(๑•̀ㅂ•́)و✧</div>
-    </div>
+      <div v-if="list.length" class="tishi">
+        <el-button v-if="hasMore" :loading="isloading" @click="loadMore">{{ moreError ? '重试加载更多' : '加载更多作品' }}</el-button>
+        <span v-else>已显示全部作品</span>
+        <p v-if="moreError" role="alert">{{ moreError }}</p>
+      </div>
+    </main>
 
     <Behind class="bottom" />
   </div>
@@ -154,6 +159,7 @@ import Behind from '@/components/behind/index.vue'
 import AcgnFilterBar from '@/components/AcgnFilterBar.vue'
 import { getGalgame, getGalgameHot, type GalgameListParams } from '@/api/galgame'
 import { GALGAME_GENRES, GALGAME_SORT_OPTIONS, decadeRange } from '@/utils/acgnConstants'
+import { guideFor, ratingAllowed } from '@/data/galgameGuides'
 
 interface Galgame {
   id: number
@@ -187,7 +193,9 @@ interface Galgame {
 
 const PLACEHOLDER = '/galgame/placeholder.svg'
 const router = useRouter()
-const maintain = ref<HTMLElement | null>(null)
+const filterResetKey = ref(0)
+let listRequest = 0
+const moreError = ref('')
 const list = ref<Galgame[]>([])
 const hotList = ref<Galgame[]>([])
 const params = ref<GalgameListParams>({})
@@ -249,6 +257,8 @@ async function loadHot() {
 }
 
 async function reloadList() {
+  const requestId = ++listRequest
+  moreError.value = ''
   initialLoading.value = true
   loadError.value = ''
   isloading.value = false
@@ -257,13 +267,15 @@ async function reloadList() {
   list.value = []
   try {
     const res = await getGalgame(1, params.value)
+    if (requestId !== listRequest) return
     const rows = Array.isArray(res?.data) ? res.data : []
     list.value = rows
     hasMore.value = rows.length >= 20
   } catch (e: any) {
+    if (requestId !== listRequest) return
     loadError.value = e?.message || '网络连接失败，请稍后重试'
   } finally {
-    initialLoading.value = false
+    if (requestId === listRequest) initialLoading.value = false
   }
 }
 
@@ -279,30 +291,26 @@ function onFilterChange(f: { genre?: string; decade?: string; sortBy?: string })
 
 function resetFilters() {
   params.value = {}
-  reloadList()
+  filterResetKey.value += 1
 }
 
 async function loadMore() {
   if (isloading.value || !hasMore.value || initialLoading.value || loadError.value) return
   isloading.value = true
+  moreError.value = ''
+  const requestId = listRequest
   try {
     const res = await getGalgame(page.value, params.value)
+    if (requestId !== listRequest) return
     const rows = Array.isArray(res?.data) ? res.data : []
     hasMore.value = rows.length >= 20
     if (rows.length) list.value.push(...rows)
     page.value += 1
   } catch {
-    // 保留已加载内容，滚动时会再次尝试
+    if (requestId === listRequest) moreError.value = '暂时没能加载更多，已显示的作品仍可浏览。'
   } finally {
-    isloading.value = false
+    if (requestId === listRequest) isloading.value = false
   }
-}
-
-function handscroll() {
-  const el = maintain.value
-  if (!el) return
-  const distanceToBottom = el.scrollHeight - el.scrollTop - el.clientHeight
-  if (distanceToBottom <= 120) loadMore()
 }
 
 onMounted(() => {
@@ -315,6 +323,8 @@ onMounted(() => {
 .root-container {
   position: relative;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
@@ -338,19 +348,16 @@ onMounted(() => {
 }
 
 .acgn_container {
-  top: 100px;
-  width: 62%;
-  margin: 100px auto 0;
+  box-sizing: border-box;
+  width: min(1200px, 92%);
+  margin: 32px auto 40px;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(211, 211, 211, 0.8);
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  padding: 40px;
+  padding: 28px;
   min-height: 60vh;
-  max-height: calc(100vh - 130px);
   position: relative;
-  margin-bottom: 40px;
-  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #cfe6f3 transparent;
 }
@@ -394,13 +401,14 @@ onMounted(() => {
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 28px;
   height: 100%;
-  padding: 42px 56px;
+  padding: 24px 36px;
+  box-sizing: border-box;
 }
 
 .hero-cover {
-  width: 230px;
+  width: 180px;
   aspect-ratio: 3 / 4;
   object-fit: cover;
   border-radius: 12px;
@@ -508,8 +516,9 @@ onMounted(() => {
   display: flex;
   gap: 40px;
   align-items: center;
-  height: 480px;
-  padding: 42px 56px;
+  box-sizing: border-box;
+  height: 340px;
+  padding: 24px 36px;
   margin-bottom: 20px;
   border-radius: 20px;
   background: linear-gradient(110deg, #e8f4fb 8%, #f5fbff 18%, #e8f4fb 33%);
@@ -827,7 +836,7 @@ onMounted(() => {
 
 .bottom {
   position: relative;
-  top: 200px;
+  margin-top: auto;
 }
 
 @keyframes shimmer {
@@ -872,7 +881,7 @@ onMounted(() => {
 @media (max-width: 768px) {
   .acgn_container {
     width: 94%;
-    margin-top: 112px;
+    margin-top: 24px;
     padding: 18px;
     max-height: none;
     overflow-y: visible;
@@ -942,5 +951,17 @@ onMounted(() => {
   .hero-desc {
     -webkit-line-clamp: 3;
   }
+}
+</style>
+
+<style scoped src="./layout.css"></style>
+
+<style scoped>
+.rating-count { margin: 0 0 10px; color: #697d8c; font-size: 11px; }
+@media (max-width: 520px) {
+  .hero-body { align-items: center; }
+  .hero-meta { gap: 6px 14px; }
+  .section-head { align-items: flex-start; }
+  .section-head p { line-height: 1.7; }
 }
 </style>

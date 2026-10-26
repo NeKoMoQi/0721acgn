@@ -65,18 +65,19 @@
             </div>
             <div class="status-item rating-item">
               <span class="status-label">作品评分</span>
-              <span v-if="game.rating != null" class="status-value rating-value">
+              <span v-if="game.rating != null && ratingAllowed(game.slug)" class="status-value rating-value">
                 {{ game.ratingSource || '评分' }} {{ formatRating(game.rating) }} / 10
               </span>
-              <span v-else class="status-value muted-value">暂无评分</span>
+              <span v-else class="status-value muted-value">{{ ratingAllowed(game.slug) ? '暂无评分' : '评分信息核对中' }}</span>
               <span class="status-note">
-                <template v-if="game.rating != null">
-                  <a v-if="game.ratingSourceUrl" :href="game.ratingSourceUrl" target="_blank" rel="noopener noreferrer">
+                <template v-if="game.rating != null && ratingAllowed(game.slug)">
+                  <a v-if="game.ratingSourceUrl && game.ratingCount != null" :href="game.ratingSourceUrl" target="_blank" rel="noopener noreferrer">
                     {{ formatCount(game.ratingCount) }} 人评分
                   </a>
-                  <template v-else>{{ formatCount(game.ratingCount) }} 人评分</template>
+                  <template v-else-if="game.ratingCount != null">{{ formatCount(game.ratingCount) }} 人评分</template>
+                  <template v-else>评分人数未提供</template>
                 </template>
-                <template v-else>来源未提供评分</template>
+                <template v-else>{{ ratingAllowed(game.slug) ? '来源未提供评分' : '确认对应篇章后再展示' }}</template>
               </span>
             </div>
           </div>
@@ -86,7 +87,8 @@
             <span v-if="!tags.length" class="tag muted">暂无标签</span>
           </div>
 
-          <p class="description-text">{{ game.intro || game.shortIntro || '暂无简介。' }}</p>
+          <p v-if="guide" class="guide-tagline">{{ guide.tagline }}</p>
+          <p v-else class="description-text">{{ game.intro || game.shortIntro || '暂无简介。' }}</p>
 
           <div class="button-group">
             <a
@@ -114,52 +116,54 @@
         </div>
       </div>
 
-      <div class="combined-container">
-        <div class="detail-section">
-          <h2 class="section-title">作品资料</h2>
-          <div class="info-grid">
-            <div class="info-row">
-              <span class="info-label">中文名</span>
-              <span class="info-value">{{ game.nameZh || '暂无资料' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">原名</span>
-              <span class="info-value">{{ game.nameOriginal || '暂无资料' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">开发商</span>
-              <span class="info-value">{{ game.developer || '暂无资料' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">发行日期</span>
-              <span class="info-value">
-                {{ game.releaseDate || '暂无资料' }}
-                <em v-if="game.releaseNote" class="info-note">{{ game.releaseNote }}</em>
-              </span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">支持平台</span>
-              <span class="info-value">{{ game.platforms || '暂无资料' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">作品类型</span>
-              <span class="info-value">{{ tags.length ? tags.join(' / ') : '暂无标签' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">评分</span>
-              <span class="info-value">
-                <template v-if="game.rating != null">
-                  {{ game.ratingSource || '来源' }} {{ formatRating(game.rating) }} / 10
-                  <em class="info-note">{{ formatCount(game.ratingCount) }} 人评分</em>
-                </template>
-                <template v-else>暂无评分</template>
-              </span>
+      <article v-if="guide" class="reading-panel">
+        <nav class="reading-nav" aria-label="作品导读目录">
+          <button type="button" @click="scrollToSection('story')">剧情简介</button>
+          <button type="button" @click="scrollToSection('features')">作品看点</button>
+          <button type="button" @click="scrollToSection('reading')">游玩参考</button>
+          <button type="button" @click="scrollToSection('versions')">版本说明</button>
+        </nav>
+        <section id="guide-story" class="reading-section">
+          <span class="reading-eyebrow">STORY</span>
+          <h2 class="section-title">剧情简介</h2>
+          <p v-for="paragraph in guide.story" :key="paragraph">{{ paragraph }}</p>
+        </section>
+        <section id="guide-features" class="reading-section">
+          <h2 class="section-title">作品看点</h2>
+          <div class="feature-grid">
+            <div v-for="(feature, index) in guide.highlights" :key="feature.title" class="feature-card">
+              <span class="feature-number">0{{ index + 1 }}</span>
+              <h3>{{ feature.title }}</h3>
+              <p>{{ feature.text }}</p>
             </div>
           </div>
-        </div>
+        </section>
+        <section id="guide-reading" class="reading-section">
+          <h2 class="section-title">游玩参考</h2>
+          <div class="reading-pair">
+            <div><h3>玩法</h3><p>{{ guide.playStyle }}</p></div>
+            <div><h3>适合人群</h3><p>{{ guide.fitFor }}</p></div>
+          </div>
+          <p class="reading-note">{{ guide.readingNote }}</p>
+        </section>
+        <section id="guide-versions" class="reading-section">
+          <h2 class="section-title">版本说明</h2>
+          <p>{{ guide.versionNote }}</p>
+        </section>
+      </article>
 
-        <div class="source-section">
-          <h2 class="section-title">资料来源</h2>
+      <details class="source-details">
+          <summary>资料来源与更新时间</summary>
+          <p class="source-note">简介根据以下资料整理，游玩建议为本站观点。版本与语言信息对应具体商品。</p>
+          <h2 v-if="guide" class="sources-heading">介绍参考</h2>
+          <ul v-if="guide" class="source-list guide-sources">
+            <li v-for="source in guide.sources" :key="source.url" class="source-item">
+              <a :href="source.url" target="_blank" rel="noopener noreferrer">{{ source.name }}</a>
+              <span class="source-time">{{ source.checkedAt }} · {{ source.status === 'verified' ? '已核对' : '待核对' }}</span>
+              <div class="source-fields">{{ source.supports.join('、') }}</div>
+            </li>
+          </ul>
+          <h2 class="sources-heading">基础资料来源</h2>
           <ul v-if="sources.length" class="source-list">
             <li v-for="(source, index) in sources" :key="'source-' + index" class="source-item">
               <a :href="source.url" target="_blank" rel="noopener noreferrer">{{ source.name }}</a>
@@ -169,16 +173,14 @@
             </li>
           </ul>
           <p v-else class="source-empty">暂无结构化来源记录。</p>
-          <p v-if="game.sourceNote" class="source-note">{{ game.sourceNote }}</p>
           <p class="source-note">
-            评分来自 VNDB，页面已注明评分人数；Bangumi 在本次采集环境中连接超时，未使用其评分或条目数据。
-            封面仅用于作品识别，版权归原发行方所有；如权利方有异议，可替换为默认封面。
+            评分对应所链接的来源条目，支持平台可能涵盖多个历史发行版本，具体内容与语言以所选商品为准。
+            封面版权归原权利人，原始资料遵循各来源许可。
           </p>
-        </div>
-      </div>
+      </details>
 
       <div class="collected-line">
-        采集时间：{{ formatDate(game.fetchedAt) }} · 本页仅提供作品介绍，不提供任何下载链接
+        基础资料更新：{{ formatDate(game.fetchedAt) }}<template v-if="guide"> · 介绍更新：{{ guide.sources[0]?.checkedAt }}</template>
       </div>
     </div>
 
@@ -187,11 +189,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Headpage from '@/components/Headpage/index.vue'
 import Behind from '@/components/behind/index.vue'
 import { getGalgameById } from '@/api/galgame'
+import { guideFor, ratingAllowed } from '@/data/galgameGuides'
 
 interface Galgame {
   id: number
@@ -235,6 +238,12 @@ const router = useRouter()
 const game = ref<Galgame | null>(null)
 const loading = ref(true)
 const error = ref('')
+let detailRequest = 0
+const guide = computed(() => guideFor(game.value?.slug))
+
+function scrollToSection(section: string) {
+  document.getElementById(`guide-${section}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
 
 const coverOf = computed(() => game.value?.cover || PLACEHOLDER)
 const officialLink = computed(() => game.value?.officialUrl || game.value?.steamUrl || '')
@@ -261,7 +270,7 @@ function onImgError(e: Event) {
 }
 
 function formatCount(n: number | null | undefined) {
-  if (n == null) return '0'
+  if (n == null) return ''
   return Number(n).toLocaleString('zh-CN')
 }
 
@@ -285,8 +294,9 @@ function backToList() {
 }
 
 async function loadDetail() {
+  const requestId = ++detailRequest
   const id = Number(route.query.galgameid)
-  if (!id) {
+  if (!Number.isSafeInteger(id) || id <= 0) {
     loading.value = false
     error.value = '链接中缺少作品编号，请从 Galgame 列表进入。'
     return
@@ -295,6 +305,7 @@ async function loadDetail() {
   error.value = ''
   try {
     const res = await getGalgameById(id)
+    if (requestId !== detailRequest) return
     if (!res?.data) {
       error.value = '没有找到这部作品的资料，可能已被移除。'
       game.value = null
@@ -302,13 +313,19 @@ async function loadDetail() {
     }
     game.value = res.data
   } catch (e: any) {
+    if (requestId !== detailRequest) return
     error.value = e?.message || '网络连接失败，请稍后重试'
   } finally {
-    loading.value = false
+    if (requestId === detailRequest) loading.value = false
   }
 }
 
 onMounted(() => {
+  window.scrollTo({ top: 0, behavior: 'auto' })
+  loadDetail()
+})
+
+watch(() => route.query.galgameid, () => {
   window.scrollTo({ top: 0, behavior: 'auto' })
   loadDetail()
 })
@@ -340,9 +357,9 @@ onMounted(() => {
 }
 
 .content-wrapper {
-  flex: 1;
-  max-width: 1200px;
-  margin: 100px auto 50px;
+  box-sizing: border-box;
+  width: min(1200px, 100%);
+  margin: 32px auto 40px;
   padding: 0 20px;
 }
 
@@ -362,12 +379,13 @@ onMounted(() => {
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   background: #f1f8fc;
+  align-self: flex-start;
 }
 
 .cover-image {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
   display: block;
 }
 
@@ -545,68 +563,12 @@ onMounted(() => {
   box-shadow: 0 6px 14px rgba(52, 152, 219, 0.18);
 }
 
-.combined-container {
-  display: flex;
-  gap: 30px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 15px;
-  padding: 30px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-}
-
-.detail-section {
-  flex: 1;
-  min-width: 0;
-}
-
-.source-section {
-  flex: 0 0 340px;
-  border-left: 1px solid #eee;
-  padding-left: 30px;
-}
-
 .section-title {
   font-size: 1.35rem;
   color: #2c3e50;
   margin: 0 0 18px;
   padding-bottom: 10px;
   border-bottom: 2px solid #3498db;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px 24px;
-}
-
-.info-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: #f8fbfd;
-  border: 1px solid #eef5f9;
-}
-
-.info-label {
-  font-size: 12px;
-  color: #95a5a6;
-}
-
-.info-value {
-  color: #34495e;
-  font-size: 14px;
-  line-height: 1.6;
-  word-break: break-word;
-}
-
-.info-note {
-  display: block;
-  margin-top: 2px;
-  font-style: normal;
-  color: #9aa9b4;
-  font-size: 12px;
 }
 
 .source-list {
@@ -760,7 +722,7 @@ onMounted(() => {
 
 .footer {
   position: relative;
-  top: 200px;
+  margin-top: auto;
 }
 
 @keyframes shimmer {
@@ -769,22 +731,9 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 1024px) {
-  .combined-container {
-    flex-direction: column;
-  }
-  .source-section {
-    border-left: none;
-    border-top: 1px solid #eee;
-    padding-left: 0;
-    padding-top: 26px;
-    flex: none;
-  }
-}
-
 @media (max-width: 768px) {
   .content-wrapper {
-    margin-top: 112px;
+    margin-top: 24px;
     padding: 0 15px;
   }
   .info-container {
@@ -807,12 +756,6 @@ onMounted(() => {
     min-width: 100px;
     max-width: 100%;
   }
-  .combined-container {
-    padding: 22px;
-  }
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 520px) {
@@ -829,5 +772,34 @@ onMounted(() => {
   .secondary-button {
     justify-content: center;
   }
+}
+</style>
+
+<style scoped src="../layout.css"></style>
+
+<style scoped>
+.guide-tagline { margin: 6px 0 0; color: #2385b4; font-size: 16px; line-height: 1.8; font-weight: 500; }
+.reading-panel, .source-details { padding: 30px; margin-bottom: 24px; background: rgba(255,255,255,.97); border: 1px solid #e8edf0; border-radius: 15px; }
+.reading-nav { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 24px; border-bottom: 1px solid #e7edf1; }
+.reading-nav button { border: 1px solid #d7e6ef; border-radius: 999px; padding: 8px 14px; color: #287da5; background: #f3faff; cursor: pointer; font: inherit; font-size: 13px; }
+.reading-nav button:hover, .reading-nav button:focus-visible { background: #e1f3fc; outline: 2px solid #68b7de; outline-offset: 2px; }
+.reading-section { padding-top: 30px; scroll-margin-top: 160px; }
+.reading-eyebrow { color: #658da2; font-size: 11px; letter-spacing: 1.5px; }
+.reading-section .section-title { margin-top: 10px; border: none; padding: 0; }
+.reading-section p { font-size: 15px; color: #465a68; line-height: 1.95; margin: 12px 0; overflow-wrap: anywhere; }
+.feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.feature-card { background: #f5fafc; border-radius: 12px; border: 1px solid #e2eff5; padding: 18px; }
+.feature-number { color: #4898be; font-size: 12px; letter-spacing: 2px; }
+.feature-card h3, .reading-pair h3 { margin: 10px 0; color: #2c4c60; font-size: 16px; }
+.feature-card p, .reading-pair p { font-size: 14px; }
+.reading-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.reading-section .reading-note { padding: 14px 18px; border-left: 3px solid #78b9d9; background: #f3f9fc; font-size: 14px; }
+.source-details summary { color: #35596e; font-size: 15px; font-weight: 600; cursor: pointer; }
+.sources-heading { margin: 22px 0 14px; font-size: 15px; color: #46677b; }
+.source-details:not([open]) { padding: 20px 30px; }
+@media (max-width: 768px) {
+  .reading-panel, .source-details { padding: 22px; }
+  .feature-grid, .reading-pair { grid-template-columns: 1fr; gap: 12px; }
+  .reading-section p { font-size: 14px; }
 }
 </style>
