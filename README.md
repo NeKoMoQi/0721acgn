@@ -52,6 +52,7 @@ backend\scripts\.venv\Scripts\python.exe backend\scripts\collect_galgame.py --ap
 - 接口：`POST /acgn/live2d/agent/stream`（SSE）、`GET|POST /api/xunli/agent/routes`（账号行程，需登录 token）、`POST /acgn/live2d/agent/chat`（旧 Live2D bundle 兼容）。
 - 数据：沿用现有 PostgreSQL，在原库执行 `backend/sql/pilgrimage_agent_v2.sql` 新增 4 张辅助表；`tb_xunli` / `tb_xunlipoint` 不变。
 - 配置：环境变量 `DEEPSEEK_API_KEY`，可选 `live2d.agent.assets-dir` 外置角色卡与知识目录。详见 [部署说明](DEPLOY.md)。
+- 前端商户搜索使用 `VITE_FOURSQUARE_API_KEY`，放在未提交的 `frontend/.env.local`，构建时注入；未配置时地图与站内巡礼仍可用，商户搜索降级。
 
 ## 游客与登录
 
