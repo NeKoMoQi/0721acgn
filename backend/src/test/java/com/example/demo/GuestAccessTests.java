@@ -18,12 +18,12 @@ class GuestAccessTests {
     @ParameterizedTest
     @CsvSource({
         "GET,/api/animation", "GET,/api/animation/byid", "GET,/api/animation/episodes",
-        "GET,/api/galgame", "GET,/api/galgame/hot", "GET,/api/galgame/byid",
         "GET,/api/cartoon", "GET,/api/cartoon/chapter", "GET,/api/cartoonpage",
-        "GET,/api/novel", "GET,/api/novel/chapter/byid", "GET,/api/searchresult",
+        "GET,/api/novel", "GET,/api/novel/chapter/byid", "GET,/api/novel/content", "GET,/api/searchresult",
         "GET,/api/related", "GET,/api/acgn/user/state", "GET,/api/acgn/social/comments",
         "POST,/api/acgn/user/library/visit", "POST,/api/acgn/user/progress",
         "POST,/api/acgn/user/library/favorite-toggle", "POST,/api/admin/acl/index/login",
+        "POST,/acgn/live2d/agent/chat", "POST,/acgn/live2d/agent/stream",
         "GET,/api/media/video.mp4", "HEAD,/api/media/video.mp4"
     })
     void guestBrowsingPassesBothLayers(String method, String path) throws Exception {
@@ -40,6 +40,8 @@ class GuestAccessTests {
         "POST,/api/animation/preview-video", "POST,/api/animation/preview-video/local",
         "POST,/api/animation/episode-video", "POST,/api/animation/episode-video/local",
         "POST,/api/updatepicbyoss", "POST,/api/xunli/addnew", "POST,/api/battle/reset",
+        "GET,/api/xunli/agent/routes", "POST,/api/xunli/agent/routes",
+        "GET,/api/xunli/agent/routes/fixture", "DELETE,/api/xunli/agent/routes/fixture",
         "GET,/api/admin/acl/index/info", "POST,/api/admin/acl/index/logout",
         "GET,/depts", "GET,/api/animation/private", "GET,/api/private/login-bypass",
         "POST,/api/media/video.mp4", "DELETE,/api/cartoon"
@@ -56,6 +58,17 @@ class GuestAccessTests {
         var mvcResponse = new MockHttpServletResponse();
         assertFalse(new LoginCheakInterceptor().preHandle(request, mvcResponse, new Object()));
         assertEquals(401, mvcResponse.getStatus());
+    }
+
+    @Test
+    void localGalgameAndErrorRulesSurviveTheAgentMerge() {
+        // 本地新增的 Galgame 板块与 /error 透传规则，不能被圣地巡礼更新包覆盖掉。
+        assertTrue(PublicAccessPolicy.isPublic("GET", "/api/galgame"));
+        assertTrue(PublicAccessPolicy.isPublic("GET", "/api/galgame/hot"));
+        assertTrue(PublicAccessPolicy.isPublic("GET", "/api/galgame/byid"));
+        assertTrue(PublicAccessPolicy.isPublic("GET", "/api/activity/byid"));
+        assertTrue(PublicAccessPolicy.isPublic("GET", "/api/acgn/user/byid"));
+        assertTrue(PublicAccessPolicy.isPublic("POST", "/error"));
     }
 
     @Test

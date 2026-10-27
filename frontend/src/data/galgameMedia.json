@@ -1,0 +1,1467 @@
+[
+  {
+    "slug": "atri",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "亚托莉",
+        "summary": "从海底打捞上来的机器人少女。感情丰富，自称“高性能”，却遗失了部分记忆。",
+        "sourceUrl": "https://store.steampowered.com/app/1230140/",
+        "image": "/galgame/media/atri/character-1.avif",
+        "imageOriginalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/extras/e52fe7abf4b0350033e91c80b2366efa.avif?t=1761759369",
+        "imagePosition": "20% center"
+      },
+      {
+        "name": "斑鸠夏生",
+        "summary": "回到沿海故乡的少年。为了偿还债务，乘祖母留下的潜水艇寻找海底的遗物。",
+        "sourceUrl": "https://store.steampowered.com/app/1230140/",
+        "image": "/galgame/media/atri/character-2.avif",
+        "imageOriginalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/extras/5b0c0b1ee2783b49beb170fdee8e96c1.avif?t=1761759369",
+        "imagePosition": "20% center"
+      },
+      {
+        "name": "神白水菜萌",
+        "summary": "夏生儿时的朋友，住在同一座小镇。性格开朗，经常来照顾独自生活的他。",
+        "sourceUrl": "https://store.steampowered.com/app/1230140/",
+        "image": "/galgame/media/atri/character-3.avif",
+        "imageOriginalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/extras/63bb0651b18d989358ab80bbe6ad0a7a.avif?t=1761759369",
+        "imagePosition": "20% center"
+      },
+      {
+        "name": "野岛龙司",
+        "summary": "小镇上的高年级学生，身材结实，做事直来直往，也有可靠的一面。",
+        "sourceUrl": "https://store.steampowered.com/app/1230140/",
+        "image": "/galgame/media/atri/character-4.avif",
+        "imageOriginalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/extras/4b30a744035d8abcc4d0b58f25fa09ec.avif?t=1761759369",
+        "imagePosition": "20% center"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/atri/preview-1.jpg",
+        "alt": "ATRI -My Dear Moments- 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/1230140/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/ss_f9b78a7bbb22cf933a73877b58149aa61f2b1a48.1920x1080.jpg?t=1761759369"
+      },
+      {
+        "src": "/galgame/media/atri/preview-2.jpg",
+        "alt": "ATRI -My Dear Moments- 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/1230140/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/ss_47e1f809fa56ab6d48de3c66e3147585b4ee30a2.1920x1080.jpg?t=1761759369"
+      },
+      {
+        "src": "/galgame/media/atri/preview-3.jpg",
+        "alt": "ATRI -My Dear Moments- 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/1230140/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/ss_b1398d1db33b83830d9055d5df79f120bad9110d.1920x1080.jpg?t=1761759369"
+      },
+      {
+        "src": "/galgame/media/atri/preview-4.jpg",
+        "alt": "ATRI -My Dear Moments- 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/1230140/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/ss_15b6e7f77df0c250efc751769c6ced3c47119a4d.1920x1080.jpg?t=1761759369"
+      }
+    ],
+    "offers": [
+      {
+        "label": "ATRI -My Dear Moments-",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/1230140/",
+        "priceLabel": "¥73",
+        "currency": "CNY"
+      },
+      {
+        "label": "免费试玩",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/1230140/",
+        "priceLabel": "商店提供"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/1230140/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览",
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "steins-gate",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "冈部伦太郎",
+        "summary": "“未来道具研究所”的发起人，给自己起了“凤凰院凶真”这个名字。",
+        "sourceUrl": "https://steinsgate.jp/elite/"
+      },
+      {
+        "name": "牧濑红莉栖",
+        "summary": "研究脑科学的年轻学者，与冈部相遇后参与研究所的实验。",
+        "sourceUrl": "https://steinsgate.jp/elite/"
+      },
+      {
+        "name": "椎名真由理",
+        "summary": "冈部的青梅竹马，也是研究所的成员，喜欢制作角色扮演服装。",
+        "sourceUrl": "https://steinsgate.jp/elite/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/steins-gate/preview-1.jpg",
+        "alt": "命运石之门 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/412830/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/412830/ss_48523dbba66bc7ea79c8bc46eabaee6190e005e9.1920x1080.jpg?t=1715703398"
+      },
+      {
+        "src": "/galgame/media/steins-gate/preview-2.jpg",
+        "alt": "命运石之门 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/412830/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/412830/ss_56d0a07b2ca57c72eb9c74ca918d49e3cf7a06a6.1920x1080.jpg?t=1715703398"
+      },
+      {
+        "src": "/galgame/media/steins-gate/preview-3.jpg",
+        "alt": "命运石之门 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/412830/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/412830/ss_18e33276a72437c7728c969fe079e7bda6b7fb08.1920x1080.jpg?t=1715703398"
+      },
+      {
+        "src": "/galgame/media/steins-gate/preview-4.jpg",
+        "alt": "命运石之门 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/412830/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/412830/ss_2335b7b8d7b5adc666e38443468b4c73ae69e9a3.1920x1080.jpg?t=1715703398"
+      }
+    ],
+    "offers": [
+      {
+        "label": "STEINS;GATE",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/412830/",
+        "priceLabel": "¥90",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/412830/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览"
+        ]
+      },
+      {
+        "name": "官方角色与作品介绍",
+        "url": "https://steinsgate.jp/elite/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ],
+    "durationLabel": "约 30–50 小时（发行方说明）"
+  },
+  {
+    "slug": "clannad",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "古河渚",
+        "summary": "因病休学后重回校园的高三学生。想重建演剧部，却一直没能迈出第一步。",
+        "sourceUrl": "https://key.visualarts.gr.jp/product/clannad/character/"
+      },
+      {
+        "name": "冈崎朋也",
+        "summary": "对学校生活提不起兴趣的高三学生。在上学的坡道上，遇到了独自站着的渚。",
+        "sourceUrl": "https://key.visualarts.gr.jp/product/clannad/character/"
+      },
+      {
+        "name": "藤林杏",
+        "summary": "朋也隔壁班的班长，说话直接，行事大大咧咧，却也很会照顾身边的人。",
+        "sourceUrl": "https://key.visualarts.gr.jp/product/clannad/character/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/clannad/preview-1.jpg",
+        "alt": "CLANNAD 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/324160/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/324160/ss_820eb3b554040d3829bbf3b511988480ca2ca521.1920x1080.jpg?t=1777413875"
+      },
+      {
+        "src": "/galgame/media/clannad/preview-2.jpg",
+        "alt": "CLANNAD 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/324160/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/324160/ss_0ea83794c5f87b402f2975ad4000ce7eac42544f.1920x1080.jpg?t=1777413875"
+      },
+      {
+        "src": "/galgame/media/clannad/preview-3.jpg",
+        "alt": "CLANNAD 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/324160/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/324160/ss_716847e23309f7d93262084931c07209771b8c58.1920x1080.jpg?t=1777413875"
+      },
+      {
+        "src": "/galgame/media/clannad/preview-4.jpg",
+        "alt": "CLANNAD 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/324160/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/324160/ss_6ca454c62bc73a59afbd67227f70d8e8f74ad39b.1920x1080.jpg?t=1777413875"
+      }
+    ],
+    "offers": [
+      {
+        "label": "CLANNAD",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/324160/",
+        "priceLabel": "¥53.2",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/324160/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览"
+        ]
+      },
+      {
+        "name": "官方角色与作品介绍",
+        "url": "https://key.visualarts.gr.jp/product/clannad/character/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "fata-morgana",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "你",
+        "originalName": "You",
+        "summary": "在破败宅邸醒来的失忆者，连自身身份也无法确定，被女仆称为这里的主人。",
+        "sourceUrl": "https://store.steampowered.com/app/303310/"
+      },
+      {
+        "name": "女仆",
+        "originalName": "The Maid",
+        "summary": "有着碧绿眼眸的女仆，邀请你观看历代住客的经历，寻找遗失的自我线索。",
+        "sourceUrl": "https://store.steampowered.com/app/303310/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/fata-morgana/preview-1.jpg",
+        "alt": "海市蜃楼之馆 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/303310/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/303310/ss_2ddb5a4d33cd114b95fb6b81089d3948bf096fd7.1920x1080.jpg?t=1790274178"
+      },
+      {
+        "src": "/galgame/media/fata-morgana/preview-2.jpg",
+        "alt": "海市蜃楼之馆 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/303310/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/303310/ss_3862acfe790bcad2538d59be31a6f8c2cf4fde1a.1920x1080.jpg?t=1790274178"
+      },
+      {
+        "src": "/galgame/media/fata-morgana/preview-3.jpg",
+        "alt": "海市蜃楼之馆 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/303310/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/303310/ss_ef7919b076eafe3a8ab9620b5db719b83d076ad3.1920x1080.jpg?t=1790274178"
+      },
+      {
+        "src": "/galgame/media/fata-morgana/preview-4.jpg",
+        "alt": "海市蜃楼之馆 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/303310/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/303310/ss_ffc10ea7a466aebb1127c470800c74a88c796750.1920x1080.jpg?t=1790274178"
+      }
+    ],
+    "offers": [
+      {
+        "label": "The House in Fata Morgana",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/303310/",
+        "priceLabel": "¥50.7",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/303310/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览",
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "gaokao",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "木馨",
+        "summary": "喜爱美食与小动物、擅长制作甜点的同班少女，在高考前一百天接受告白。",
+        "sourceUrl": "https://zh.wikipedia.org/wiki/高考恋爱100天"
+      },
+      {
+        "name": "罗小涵",
+        "summary": "性格平和坚定的黑发少女，习惯独立生活，也有需要他人理解的脆弱时刻。",
+        "sourceUrl": "https://zh.wikipedia.org/wiki/高考恋爱100天"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/gaokao/preview-1.jpg",
+        "alt": "高考恋爱100天 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/347620/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347620/d146863b571614ca5d090884490fd015006bf50f/ss_d146863b571614ca5d090884490fd015006bf50f.1920x1080.jpg?t=1763694727"
+      },
+      {
+        "src": "/galgame/media/gaokao/preview-2.jpg",
+        "alt": "高考恋爱100天 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/347620/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347620/6ede9cb3df2009dffa0994b49a72d783613492e4/ss_6ede9cb3df2009dffa0994b49a72d783613492e4.1920x1080.jpg?t=1763694727"
+      },
+      {
+        "src": "/galgame/media/gaokao/preview-3.jpg",
+        "alt": "高考恋爱100天 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/347620/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347620/31c1a1dadc189cc7e65f9080bf8787ff83e08d8e/ss_31c1a1dadc189cc7e65f9080bf8787ff83e08d8e.1920x1080.jpg?t=1763694727"
+      },
+      {
+        "src": "/galgame/media/gaokao/preview-4.jpg",
+        "alt": "高考恋爱100天 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/347620/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347620/1c8a845faefd56208426b6f676dfe102964b4b8b/ss_1c8a845faefd56208426b6f676dfe102964b4b8b.1920x1080.jpg?t=1763694727"
+      }
+    ],
+    "offers": [
+      {
+        "label": "Gaokao.Love.100Days",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/347620/",
+        "priceLabel": "¥45",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/347620/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览"
+        ]
+      },
+      {
+        "name": "维基百科：高考恋爱100天主要登场人物",
+        "url": "https://zh.wikipedia.org/wiki/高考恋爱100天",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "mahoyo",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "苍崎青子",
+        "originalName": "蒼崎青子",
+        "summary": "高中起继承祖父的魔术遗产，性格好强，正在适应魔术师生活的少女。",
+        "sourceUrl": "https://typemoon.com/products/mahoyo/character/"
+      },
+      {
+        "name": "久远寺有珠",
+        "originalName": "久遠寺有珠",
+        "summary": "从小生活在魔术世界的魔女，寡言且不爱与人来往，现居日本地方城市。",
+        "sourceUrl": "https://typemoon.com/products/mahoyo/character/"
+      },
+      {
+        "name": "静希草十郎",
+        "originalName": "静希草十郎",
+        "summary": "从乡下来到城市的高中生，话不多却容易亲近他人，逐渐适应新的生活。",
+        "sourceUrl": "https://typemoon.com/products/mahoyo/character/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/mahoyo/preview-1.jpg",
+        "alt": "魔法使之夜 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/2052410/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2052410/ss_cb5774706384c0bd6e21f83979167cb54d9a4e77.1920x1080.jpg?t=1753952335"
+      },
+      {
+        "src": "/galgame/media/mahoyo/preview-2.jpg",
+        "alt": "魔法使之夜 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/2052410/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2052410/ss_8d4f4929594b0f666e9e36971f3085fe9c17f38f.1920x1080.jpg?t=1753952335"
+      },
+      {
+        "src": "/galgame/media/mahoyo/preview-3.jpg",
+        "alt": "魔法使之夜 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/2052410/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2052410/ss_9fe33923585b286c80bea857acf8ac2686edacce.1920x1080.jpg?t=1753952335"
+      },
+      {
+        "src": "/galgame/media/mahoyo/preview-4.jpg",
+        "alt": "魔法使之夜 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/2052410/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2052410/ss_1b1452d52fd994995ce62792c37c2ef95428bff1.1920x1080.jpg?t=1753952335"
+      }
+    ],
+    "offers": [
+      {
+        "label": "WITCH ON THE HOLY NIGHT",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/2052410/",
+        "priceLabel": "¥198",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/2052410/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览"
+        ]
+      },
+      {
+        "name": "TYPE-MOON官方：魔法使いの夜角色介绍",
+        "url": "https://typemoon.com/products/mahoyo/character/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "summer-pockets",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "鸣濑白羽",
+        "summary": "有些怕生的岛上少女，常独自待在海边。除了祖父，很少与别人亲近。",
+        "sourceUrl": "https://summerpockets-anime.jp/"
+      },
+      {
+        "name": "空门苍",
+        "summary": "在岛上粗点心店打工的少女，待人随和，常在岛上各处睡着，大家早已习以为常。",
+        "sourceUrl": "https://summerpockets-anime.jp/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/summer-pockets/preview-1.jpg",
+        "alt": "Summer Pockets 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/897220/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/897220/ss_fe132f9d90df8fdfa85092565b71f9e5cde2220f.1920x1080.jpg?t=1732683225"
+      },
+      {
+        "src": "/galgame/media/summer-pockets/preview-2.jpg",
+        "alt": "Summer Pockets 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/897220/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/897220/ss_9ef478c0c92da6690a007c22404a2729650496c7.1920x1080.jpg?t=1732683225"
+      },
+      {
+        "src": "/galgame/media/summer-pockets/preview-3.jpg",
+        "alt": "Summer Pockets 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/897220/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/897220/ss_a5f7ed62057d3b2ccec77e81162a3135007f6958.1920x1080.jpg?t=1732683225"
+      },
+      {
+        "src": "/galgame/media/summer-pockets/preview-4.jpg",
+        "alt": "Summer Pockets 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/897220/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/897220/ss_c68e29f056bd0fba0ced84c4191476631333d784.1920x1080.jpg?t=1732683225"
+      }
+    ],
+    "offers": [
+      {
+        "label": "Summer Pockets",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/897220/",
+        "priceLabel": "¥126",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/897220/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览",
+          "角色姓名",
+          "角色介绍"
+        ]
+      },
+      {
+        "name": "官方动画角色资料（共同的出场设定）",
+        "url": "https://summerpockets-anime.jp/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色性格与出场身份"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "999",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "淳平",
+        "originalName": "Junpei",
+        "summary": "遭绑架后被迫参加九人游戏的大学生，也是玩家探索船舱与谜题的视角人物。",
+        "sourceUrl": "https://en.wikipedia.org/wiki/999:_Nine_Hours,_Nine_Persons,_Nine_Doors"
+      },
+      {
+        "name": "June",
+        "originalName": "June",
+        "summary": "与淳平自幼相识、同样卷入九人游戏的少女，在陌生环境中显得紧张不安。",
+        "sourceUrl": "https://en.wikipedia.org/wiki/999:_Nine_Hours,_Nine_Persons,_Nine_Doors"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/999/preview-1.jpg",
+        "alt": "极限脱出：9小时9人9扇门 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/477740/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/477740/ss_c240213c771d8e1b1e0cb70044aef5648f4b1967.1920x1080.jpg?t=1715699741"
+      },
+      {
+        "src": "/galgame/media/999/preview-2.jpg",
+        "alt": "极限脱出：9小时9人9扇门 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/477740/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/477740/ss_aac9432c5f90ad76feac59f024206a0396b4dc72.1920x1080.jpg?t=1715699741"
+      },
+      {
+        "src": "/galgame/media/999/preview-3.jpg",
+        "alt": "极限脱出：9小时9人9扇门 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/477740/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/477740/ss_1a22b8251f307da905a4d4fa156d417f1e5ecb3e.1920x1080.jpg?t=1715699741"
+      },
+      {
+        "src": "/galgame/media/999/preview-4.jpg",
+        "alt": "极限脱出：9小时9人9扇门 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/477740/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/477740/ss_1595cdc2b9f100b014be226caa48e79b6b50387f.1920x1080.jpg?t=1715699741"
+      }
+    ],
+    "offers": [
+      {
+        "label": "Zero Escape: The Nonary Games",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/477740/",
+        "priceLabel": "¥99",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/477740/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览"
+        ]
+      },
+      {
+        "name": "Wikipedia：999 Characters and setting（仅开场身份）",
+        "url": "https://en.wikipedia.org/wiki/999:_Nine_Hours,_Nine_Persons,_Nine_Doors",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "white-album-2",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "北原春希",
+        "originalName": "北原春希",
+        "summary": "成绩优秀却爱操心的高三学生，属于轻音乐同好会，想在学园祭舞台留下回忆。",
+        "sourceUrl": "https://aquaplus.jp/wa2/character.html"
+      },
+      {
+        "name": "小木曾雪菜",
+        "originalName": "小木曽雪菜",
+        "summary": "连续获选校园小姐的高三少女，待人温和低调，私下喜欢独自去唱卡拉OK。",
+        "sourceUrl": "https://aquaplus.jp/wa2/character02.html"
+      },
+      {
+        "name": "冬马和纱",
+        "originalName": "冬馬かずさ",
+        "summary": "坐在春希同班窗边的黑发少女，常迟到或打瞌睡，孤傲的态度让人难以接近。",
+        "sourceUrl": "https://aquaplus.jp/wa2/character03.html"
+      }
+    ],
+    "screenshots": [],
+    "offers": [],
+    "sources": [
+      {
+        "name": "AQUAPLUS官方：北原春希（序章）",
+        "url": "https://aquaplus.jp/wa2/character.html",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      },
+      {
+        "name": "AQUAPLUS官方：小木曾雪菜（序章）",
+        "url": "https://aquaplus.jp/wa2/character02.html",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      },
+      {
+        "name": "AQUAPLUS官方：冬马和纱（序章）",
+        "url": "https://aquaplus.jp/wa2/character03.html",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ],
+    "officialGalleryUrl": "https://aquaplus.jp/wa2/"
+  },
+  {
+    "slug": "narcissu",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "濑津美",
+        "originalName": "佐倉 瀬津美",
+        "summary": "二十二岁的住院少女，性格安静且熟悉汽车，不愿在病房或家中迎来终点。",
+        "sourceUrl": "https://en.wikipedia.org/wiki/Narcissu"
+      },
+      {
+        "name": "主人公",
+        "originalName": "The Protagonist",
+        "summary": "二十岁的年轻学生，拿到驾照后不久因重病入院，在那里与濑津美相遇。",
+        "sourceUrl": "https://en.wikipedia.org/wiki/Narcissu"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/narcissu/preview-1.jpg",
+        "alt": "水仙 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/264380/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/264380/ss_ea8f19f5316d315d513babc2429d2ec2ffb57e63.1920x1080.jpg?t=1726604657"
+      },
+      {
+        "src": "/galgame/media/narcissu/preview-2.jpg",
+        "alt": "水仙 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/264380/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/264380/ss_ccb3fa65a8aa507f91e91e7a24a1b471fac8bb20.1920x1080.jpg?t=1726604657"
+      },
+      {
+        "src": "/galgame/media/narcissu/preview-3.jpg",
+        "alt": "水仙 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/264380/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/264380/ss_9447c2cac91747090148660190650a1f5c5a1b51.1920x1080.jpg?t=1726604657"
+      },
+      {
+        "src": "/galgame/media/narcissu/preview-4.jpg",
+        "alt": "水仙 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/264380/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/264380/ss_5876272dd4b46cb9aa3b80567a1fc2e00c6f8fe0.1920x1080.jpg?t=1726604657"
+      }
+    ],
+    "offers": [
+      {
+        "label": "Narcissu 1st & 2nd",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/264380/",
+        "priceLabel": "免费"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/264380/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览"
+        ]
+      },
+      {
+        "name": "Wikipedia：Narcissu Characters（仅首篇开场设定）",
+        "url": "https://en.wikipedia.org/wiki/Narcissu",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "rewrite",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "天王寺瑚太朗",
+        "summary": "在风祭市读书的高中生。身边发生怪事后，他找上了学校的超自然研究会。",
+        "sourceUrl": "https://store.steampowered.com/app/1680000/"
+      },
+      {
+        "name": "千里朱音",
+        "summary": "超自然研究会的部长。在瑚太朗的求助下，和部员们一起调查风祭市的怪事。",
+        "sourceUrl": "https://store.steampowered.com/app/1680000/"
+      },
+      {
+        "name": "神户小鸟",
+        "summary": "瑚太朗身边的少女，也是超自然研究会聚集起来的伙伴之一。",
+        "sourceUrl": "https://store.steampowered.com/app/1680000/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/rewrite/preview-1.jpg",
+        "alt": "Rewrite 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/1680000/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_47c954880d19a167b73c0670f7396ba33f556d0d.1920x1080.jpg?t=1755892946"
+      },
+      {
+        "src": "/galgame/media/rewrite/preview-2.jpg",
+        "alt": "Rewrite 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/1680000/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_b4f17df3f40e474cec40ea158af4d0ee324e6f3a.1920x1080.jpg?t=1755892946"
+      },
+      {
+        "src": "/galgame/media/rewrite/preview-3.jpg",
+        "alt": "Rewrite 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/1680000/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_6a21d464ff8764d6ee3ab37c5d9ced8295cba819.1920x1080.jpg?t=1755892946"
+      },
+      {
+        "src": "/galgame/media/rewrite/preview-4.jpg",
+        "alt": "Rewrite 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/1680000/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_42d8aaf9349cb898a2cf9d4696eb22aecc2bc68d.1920x1080.jpg?t=1755892946"
+      }
+    ],
+    "offers": [
+      {
+        "label": "Rewrite+",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/1680000/",
+        "priceLabel": "¥58.8",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/1680000/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览",
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "428",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "加纳慎也",
+        "originalName": "Shinya Kano",
+        "summary": "投身绑架案调查的新人刑警，责任心强，却也得面对未婚妻家人的考验。",
+        "sourceUrl": "https://www.spike-chunsoft.com/428/"
+      },
+      {
+        "name": "远藤亚智",
+        "originalName": "Achi Endo",
+        "summary": "在涩谷长大的前帮派领袖，如今维护街道整洁，过去的人际关系仍影响着他。",
+        "sourceUrl": "https://www.spike-chunsoft.com/428/"
+      },
+      {
+        "name": "小玉",
+        "originalName": "Tama",
+        "summary": "失去记忆、穿着猫咪布偶装推销饮料的打工者，连自己是谁都还没弄清。",
+        "sourceUrl": "https://www.spike-chunsoft.com/428/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/428/preview-1.jpg",
+        "alt": "428 ～被封锁的涩谷～ 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/648580/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/648580/ss_4113b43614179ab5d446153097c065fde4be2710.1920x1080.jpg?t=1715700496"
+      },
+      {
+        "src": "/galgame/media/428/preview-2.jpg",
+        "alt": "428 ～被封锁的涩谷～ 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/648580/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/648580/ss_8c70eb79516c72a18310b5432fd39beecb07e134.1920x1080.jpg?t=1715700496"
+      },
+      {
+        "src": "/galgame/media/428/preview-3.jpg",
+        "alt": "428 ～被封锁的涩谷～ 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/648580/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/648580/ss_17e6b6920479579c06874bc8f83ece33940a6616.1920x1080.jpg?t=1715700496"
+      },
+      {
+        "src": "/galgame/media/428/preview-4.jpg",
+        "alt": "428 ～被封锁的涩谷～ 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/648580/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/648580/ss_2d9c2ccfae82933321499c4ae6578f86b8a84d0f.1920x1080.jpg?t=1715700496"
+      }
+    ],
+    "offers": [
+      {
+        "label": "428: Shibuya Scramble",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/648580/",
+        "priceLabel": "¥138",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/648580/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览"
+        ]
+      },
+      {
+        "name": "Spike Chunsoft官方：428 Cast & Characters",
+        "url": "https://www.spike-chunsoft.com/428/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "lucy",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "露西",
+        "originalName": "Lucy",
+        "summary": "在废弃物堆中被发现的仿生少女，会哭会笑，也像人一样拥有自己的梦想。",
+        "sourceUrl": "https://store.steampowered.com/app/430960/"
+      },
+      {
+        "name": "少年（主人公）",
+        "originalName": "The Boy",
+        "summary": "原本不喜欢社会中的仿生人，发现露西后开始面对人与机器相处的道德难题。",
+        "sourceUrl": "https://store.steampowered.com/app/430960/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/lucy/preview-1.jpg",
+        "alt": "露西 -她所期望的一切- 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/430960/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/430960/ss_04d57d72f0779107cb096065ed297295d8633bcd.1920x1080.jpg?t=1725007683"
+      },
+      {
+        "src": "/galgame/media/lucy/preview-2.jpg",
+        "alt": "露西 -她所期望的一切- 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/430960/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/430960/ss_bef0aafedfb5f715eb8188f92eadf77a12913bed.1920x1080.jpg?t=1725007683"
+      },
+      {
+        "src": "/galgame/media/lucy/preview-3.jpg",
+        "alt": "露西 -她所期望的一切- 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/430960/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/430960/ss_459f2376dadba37319432b372ebd9ee918403840.1920x1080.jpg?t=1725007683"
+      },
+      {
+        "src": "/galgame/media/lucy/preview-4.jpg",
+        "alt": "露西 -她所期望的一切- 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/430960/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/430960/ss_1a9e9a358c195812af6a1f311a4c3d345c6ab1b6.1920x1080.jpg?t=1725007683"
+      }
+    ],
+    "offers": [
+      {
+        "label": "Lucy -The Eternity She Wished For-",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/430960/",
+        "priceLabel": "¥42",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/430960/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览",
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "air",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "神尾观铃",
+        "summary": "海边小镇上的女学生，和晴子一起生活。总是带着笑容，却不擅长结交朋友。",
+        "sourceUrl": "https://key.visualarts.gr.jp/product/air/character/"
+      },
+      {
+        "name": "国崎往人",
+        "summary": "带着人偶四处旅行的青年。能不用手触碰就让人偶活动，受母亲所托寻找一名少女。",
+        "sourceUrl": "https://key.visualarts.gr.jp/product/air/character/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/air/preview-1.jpg",
+        "alt": "AIR 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/2983250/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983250/ss_1b48ded38e81c267c383117457866a6bd5676914.1920x1080.jpg?t=1790333728"
+      },
+      {
+        "src": "/galgame/media/air/preview-2.jpg",
+        "alt": "AIR 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/2983250/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983250/ss_0d696c5ea22f259f3b78e5fff02d7d5451b7977e.1920x1080.jpg?t=1790333728"
+      },
+      {
+        "src": "/galgame/media/air/preview-3.jpg",
+        "alt": "AIR 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/2983250/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983250/ss_f8f095894069a527ffb243e9cfd6b987b1cb7311.1920x1080.jpg?t=1790333728"
+      },
+      {
+        "src": "/galgame/media/air/preview-4.jpg",
+        "alt": "AIR 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/2983250/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983250/ss_6f3cf11dd0886708bc30313758327da72d79297d.1920x1080.jpg?t=1790333728"
+      }
+    ],
+    "offers": [
+      {
+        "label": "AIR",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/2983250/",
+        "priceLabel": "¥108",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/2983250/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览"
+        ]
+      },
+      {
+        "name": "官方角色与作品介绍",
+        "url": "https://key.visualarts.gr.jp/product/air/character/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "higurashi",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "前原圭一",
+        "originalName": "前原 圭一",
+        "summary": "热血却也容易犹豫的转学生，嘴上不肯服输，面对同伴时又常会害羞。",
+        "sourceUrl": "https://07th-expansion.net/Soft/Character.htm",
+        "image": "/galgame/media/higurashi/portrait-1.jpg",
+        "imageOriginalUrl": "https://07th-expansion.net/Graphic/Cut/Chr_Hi_Keiiti_R1.jpg"
+      },
+      {
+        "name": "龙宫礼奈",
+        "originalName": "竜宮 レナ",
+        "summary": "喜欢可爱事物的同班少女，热心照顾刚转学的圭一，也容易因玩笑而脸红。",
+        "sourceUrl": "https://07th-expansion.net/Soft/Character.htm"
+      },
+      {
+        "name": "园崎魅音",
+        "originalName": "園崎 魅音",
+        "summary": "活跃外向的学姐与班长，喜欢桌游和卡牌，常把伙伴们卷进热闹的游戏。",
+        "sourceUrl": "https://07th-expansion.net/Soft/Character.htm"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/higurashi/preview-1.jpg",
+        "alt": "寒蝉鸣泣之时 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/310360/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/310360/ss_6ce3cc2cfd2690e0bb1b66e854b905208f7e13b2.1920x1080.jpg?t=1790274039"
+      },
+      {
+        "src": "/galgame/media/higurashi/preview-2.jpg",
+        "alt": "寒蝉鸣泣之时 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/310360/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/310360/ss_c4eb2f247877ad15584f3a5afbb8eaa87189c970.1920x1080.jpg?t=1790274039"
+      },
+      {
+        "src": "/galgame/media/higurashi/preview-3.jpg",
+        "alt": "寒蝉鸣泣之时 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/310360/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/310360/ss_1c5abedbdab1678bb2cf47e256dd3640039e70b6.1920x1080.jpg?t=1790274039"
+      },
+      {
+        "src": "/galgame/media/higurashi/preview-4.jpg",
+        "alt": "寒蝉鸣泣之时 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/310360/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/310360/ss_acc5140afc691fb5cc4604e9f1b495cf9ed79c0f.1920x1080.jpg?t=1790274039"
+      }
+    ],
+    "offers": [
+      {
+        "label": "Higurashi When They Cry Hou - Ch.1 Onikakushi",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/310360/",
+        "priceLabel": "免费"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/310360/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览"
+        ]
+      },
+      {
+        "name": "07th Expansion官方：寒蝉角色介绍",
+        "url": "https://07th-expansion.net/Soft/Character.htm",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍",
+          "前原圭一官方角色图"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "planetarian",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "星野梦美",
+        "summary": "废弃天象馆的接待机器人。即使三十年没有客人，仍守着岗位，等待下一场放映。",
+        "sourceUrl": "https://store.steampowered.com/app/623080/"
+      },
+      {
+        "name": "废墟猎人",
+        "summary": "为搜寻物资进入废城的旅人。躲进天象馆后遇见梦美，并答应帮她修理投影仪。",
+        "sourceUrl": "https://store.steampowered.com/app/623080/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/planetarian/preview-1.jpg",
+        "alt": "星之梦 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/623080/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/623080/ss_d3e457f7d97a2b45ae3bd9aaabab1759ae495ae3.1920x1080.jpg?t=1732683288"
+      },
+      {
+        "src": "/galgame/media/planetarian/preview-2.jpg",
+        "alt": "星之梦 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/623080/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/623080/ss_5428339767912b5ec93c761ab65c7974331452a7.1920x1080.jpg?t=1732683288"
+      },
+      {
+        "src": "/galgame/media/planetarian/preview-3.jpg",
+        "alt": "星之梦 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/623080/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/623080/ss_6d64e9ea33662932e2938fbdfe51d268d7819582.1920x1080.jpg?t=1732683288"
+      },
+      {
+        "src": "/galgame/media/planetarian/preview-4.jpg",
+        "alt": "星之梦 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/623080/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/623080/ss_3c190229754c156f33f1bb224d286f0adf8fb89e.1920x1080.jpg?t=1732683288"
+      }
+    ],
+    "offers": [
+      {
+        "label": "planetarian HD",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/623080/",
+        "priceLabel": "¥36",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/623080/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览",
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "steins-gate-0",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "冈部伦太郎",
+        "summary": "未来道具研究所的领导者。经历某件事后，他试图放下过去，回到普通的大学生活。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
+      },
+      {
+        "name": "比屋定真帆",
+        "summary": "红莉栖在大学的学姐，同样从事科研工作。随教授来到日本，与冈部相识。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
+      },
+      {
+        "name": "椎名真由理",
+        "summary": "冈部的青梅竹马，也是研究所的成员。仍在关心着变得消沉的他。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/steins-gate-0/preview-1.jpg",
+        "alt": "命运石之门0 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/825630/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/825630/ss_a57fc097c43dc5a1a235835fe092c4fd688f3e6d.1920x1080.jpg?t=1715703408"
+      },
+      {
+        "src": "/galgame/media/steins-gate-0/preview-2.jpg",
+        "alt": "命运石之门0 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/825630/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/825630/ss_9cd655261bc4ff2c583545aa0a822ad9696eb1c1.1920x1080.jpg?t=1715703408"
+      },
+      {
+        "src": "/galgame/media/steins-gate-0/preview-3.jpg",
+        "alt": "命运石之门0 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/825630/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/825630/ss_28e5bd4b8c232259a26aed0d83224c8bf023c7bd.1920x1080.jpg?t=1715703408"
+      },
+      {
+        "src": "/galgame/media/steins-gate-0/preview-4.jpg",
+        "alt": "命运石之门0 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/825630/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/825630/ss_10a4925d86dac7163d813c528840e46b555fec7b.1920x1080.jpg?t=1715703408"
+      }
+    ],
+    "offers": [
+      {
+        "label": "STEINS;GATE 0",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/825630/",
+        "priceLabel": "¥120",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/825630/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览"
+        ]
+      },
+      {
+        "name": "官方角色与作品介绍",
+        "url": "https://steinsgate0.jp/cast/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "kanon",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "月宫亚由",
+        "summary": "祐一回到小镇后，在车站前撞上的少女。此后两人常常在放学后的街头碰面。",
+        "sourceUrl": "https://key.visualarts.gr.jp/product/kanon/character/"
+      },
+      {
+        "name": "水濑名雪",
+        "summary": "祐一的表妹。七年后与他重逢，如今住在同一屋檐下，也成了同班同学。",
+        "sourceUrl": "https://key.visualarts.gr.jp/product/kanon/character/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/kanon/preview-1.jpg",
+        "alt": "Kanon 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/2850310/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2850310/bce234ec44a4e9e22283877f81206f2b46ec888a/ss_bce234ec44a4e9e22283877f81206f2b46ec888a.1920x1080.jpg?t=1789739216"
+      },
+      {
+        "src": "/galgame/media/kanon/preview-2.jpg",
+        "alt": "Kanon 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/2850310/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2850310/87b7315ae9c150728a179495147bfea80a210451/ss_87b7315ae9c150728a179495147bfea80a210451.1920x1080.jpg?t=1789739216"
+      },
+      {
+        "src": "/galgame/media/kanon/preview-3.jpg",
+        "alt": "Kanon 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/2850310/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2850310/367ccb2d7640ff5a753d48666221dff64516fd80/ss_367ccb2d7640ff5a753d48666221dff64516fd80.1920x1080.jpg?t=1789739216"
+      },
+      {
+        "src": "/galgame/media/kanon/preview-4.jpg",
+        "alt": "Kanon 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/2850310/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2850310/7e5517242320c4a4d29daeeadce239ac9e533617/ss_7e5517242320c4a4d29daeeadce239ac9e533617.1920x1080.jpg?t=1789739216"
+      }
+    ],
+    "offers": [
+      {
+        "label": "Kanon",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/2850310/",
+        "priceLabel": "¥108",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/2850310/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览"
+        ]
+      },
+      {
+        "name": "官方角色与作品介绍",
+        "url": "https://key.visualarts.gr.jp/product/kanon/character/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "umineko",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "右代宫战人",
+        "originalName": "右代宮 戦人",
+        "summary": "阔别右代宫家数年后归来的少年，直率热血，面对不合理之事也会认真思考。",
+        "sourceUrl": "https://umine.co/rondo/character/chara04/"
+      },
+      {
+        "name": "贝阿朵莉切",
+        "originalName": "ベアトリーチェ",
+        "summary": "传说住在六轩岛的黄金魔女，喜怒无常，名字与右代宫家的黄金传闻相连。",
+        "sourceUrl": "https://umine.co/rondo/character/chara07/",
+        "image": "/galgame/media/umineko/portrait-2.png",
+        "imageOriginalUrl": "https://umine.co/rondo/character/images/chara_beat.png"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/umineko/preview-1.jpg",
+        "alt": "海猫鸣泣之时 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/406550/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/406550/ss_fd3d8dcd209d25090acb58007d55fac2e390f586.1920x1080.jpg?t=1763623555"
+      },
+      {
+        "src": "/galgame/media/umineko/preview-2.jpg",
+        "alt": "海猫鸣泣之时 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/406550/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/406550/ss_3ad760ed23530c209b61f509efbb72784f78e55b.1920x1080.jpg?t=1763623555"
+      },
+      {
+        "src": "/galgame/media/umineko/preview-3.jpg",
+        "alt": "海猫鸣泣之时 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/406550/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/406550/ss_d43904c04581e1933874087b35e5dcf472db0053.1920x1080.jpg?t=1763623555"
+      },
+      {
+        "src": "/galgame/media/umineko/preview-4.jpg",
+        "alt": "海猫鸣泣之时 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/406550/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/406550/ss_e1166753b3c99763fc264c8b98c55f6395704e63.1920x1080.jpg?t=1763623555"
+      }
+    ],
+    "offers": [
+      {
+        "label": "Umineko When They Cry - Question Arcs",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/406550/",
+        "priceLabel": "¥46.8",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/406550/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览"
+        ]
+      },
+      {
+        "name": "PS3海猫官方：次男一家角色介绍",
+        "url": "https://umine.co/rondo/character/chara04/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍"
+        ]
+      },
+      {
+        "name": "PS3海猫官方：魔女角色介绍",
+        "url": "https://umine.co/rondo/character/chara07/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "角色姓名",
+          "角色介绍",
+          "贝阿朵莉切官方角色图"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "harmonia",
+    "checkedAt": "2026-10-27",
+    "characters": [
+      {
+        "name": "黎",
+        "summary": "在废弃工厂醒来的机器人少年，右手尚未完成。离开工厂后，被一名少女带回小镇。",
+        "sourceUrl": "https://store.steampowered.com/app/421660/"
+      },
+      {
+        "name": "希欧娜",
+        "summary": "住在教堂、喜欢唱歌的少女。收留了流落到小镇的少年，并为他取名。",
+        "sourceUrl": "https://store.steampowered.com/app/421660/"
+      },
+      {
+        "name": "缇比",
+        "summary": "待在图书馆里的少女。遇见黎时总在哭泣，与书籍相伴，守着自己的心事。",
+        "sourceUrl": "https://store.steampowered.com/app/421660/"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/galgame/media/harmonia/preview-1.jpg",
+        "alt": "Harmonia 官方画面 1",
+        "sourceUrl": "https://store.steampowered.com/app/421660/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/421660/ss_74056217b08f0f94a08acb99df0468e0c7b39c49.1920x1080.jpg?t=1732687545"
+      },
+      {
+        "src": "/galgame/media/harmonia/preview-2.jpg",
+        "alt": "Harmonia 官方画面 2",
+        "sourceUrl": "https://store.steampowered.com/app/421660/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/421660/ss_79953fc6f68b3a44dcffc035a2a6dbb952a53707.1920x1080.jpg?t=1732687545"
+      },
+      {
+        "src": "/galgame/media/harmonia/preview-3.jpg",
+        "alt": "Harmonia 官方画面 3",
+        "sourceUrl": "https://store.steampowered.com/app/421660/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/421660/ss_ce2e2aba6a3b6b03b12246b64d867e893770d76d.1920x1080.jpg?t=1732687545"
+      },
+      {
+        "src": "/galgame/media/harmonia/preview-4.jpg",
+        "alt": "Harmonia 官方画面 4",
+        "sourceUrl": "https://store.steampowered.com/app/421660/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/421660/ss_199712c4b792018d0fc9e9b5ffe46e93e33f68f5.1920x1080.jpg?t=1732687545"
+      }
+    ],
+    "offers": [
+      {
+        "label": "Harmonia",
+        "platform": "Steam",
+        "url": "https://store.steampowered.com/app/421660/",
+        "priceLabel": "¥36",
+        "currency": "CNY"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Steam 商店与公开接口",
+        "url": "https://store.steampowered.com/app/421660/",
+        "checkedAt": "2026-10-27",
+        "supports": [
+          "所选版本价格（中国区）",
+          "官方画面预览",
+          "角色姓名",
+          "角色介绍"
+        ]
+      }
+    ]
+  }
+]

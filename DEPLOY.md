@@ -102,6 +102,22 @@ Restart-ScheduledTask -TaskName '0721ACGN API'
    - `config/CorsConfig.java` 又用了 `allowedOrigins("*") + allowCredentials(true)`，这在 Spring 6 下是非法组合，会抛 `IllegalArgumentException`（表现为登录 500）。
    - 现在两处 Spring CORS 配置都置空，统一由 `filter/DemoFilter.java` 回显 `Origin` 输出 CORS 头。
 
+## 圣地巡礼 Agent v2（2026-10-27 合并）
+
+从百度千帆 AppBuilder 换成站内后端直连 DeepSeek 的工具 Agent，并补上角色卡、知识检索、账号行程与会话恢复。沿用现有 Java 17 / Spring Boot 3 / Vue，没有新增生产依赖，也没有另建数据库。
+
+- 角色卡：`backend/src/main/resources/agent/character.md`（猫娘口吻、称呼「主人」、适量「喵~」）；路线与闲聊都实际加载。可用 `live2d.agent.assets-dir` 指向外部完整资源目录，30 秒内热加载。
+- 知识库：`backend/src/main/resources/agent/knowledge/index.json` + 5 份 Markdown（行程编排、复拍礼仪、交通边界、资料核验、多作品主题），每篇带来源与更新时间；按问题检索，前端显示「本次检索参考」。
+- 数据库增量：在**现有 PostgreSQL 业务库**执行 `backend/sql/pilgrimage_agent_v2.sql`，只新增 4 张辅助表（`tb_pilgrimage_alias`、`tb_pilgrimage_spot_info`、`tb_pilgrimage_route`、`tb_pilgrimage_session`），原 `tb_xunli` / `tb_xunlipoint` 不动。脚本可重复执行，不清数据。
+- 行程接口：`/api/xunli/agent/routes`（GET 列表 / POST 保存 / GET `{id}` 读取 / DELETE 删除），要求登录 `token`，按账号隔离。
+- 流式接口：`POST /acgn/live2d/agent/stream`（SSE）；`server.js` 反代需保持流式，不要缓冲整段响应。
+- 配置：设置环境变量 `DEEPSEEK_API_KEY`，可选 `live2d.agent.deepseek.base-url`（默认 `https://api.deepseek.com`）、`live2d.agent.deepseek.model`（默认 `deepseek-flash`）。旧的 `live2d.agent.appbuilder.*` 已不再使用。
+- 注意：SSE 依赖 Servlet 异步，`DemoFilter` 必须 `@WebFilter(..., asyncSupported = true)`，否则流式接口会 500。
+
+上线步骤：备份源码与私有配置 → 执行增量 SQL → `mvn -DskipTests package` 并重启 API → `npm run build-only` 刷新 dist → 检查代理未缓冲 SSE。未执行 SQL 时保存/读取行程会明确提示数据库未就绪，不会静默失败。
+
+本地验证（2026-10-27）：后端定向测试 77 项（76 通过 + 1 项默认跳过的 PostgreSQL 集成测试，该测试已在隔离临时库上单独跑通）、前端 43 项单测全通过；类型检查与生产构建通过；Chromium/Edge 1440×900 与 390×844 实际加载、切换模式、发送、停止/新对话检查通过（未配置密钥时如实提示，不返回假路线）。
+
 ## 性能优化（2026-10-21）
 
 | 项目 | 优化前 | 优化后 |
@@ -126,8 +142,6 @@ Restart-ScheduledTask -TaskName '0721ACGN API'
 
 ## 已知问题
 
-1. **`frontend/src/view/shengdi/index.vue` 已替换为占位页**：仓库里这份文件丢失约 300 个字符（标签闭合、属性引号、字符串引号都有断裂），无法编译。原始文件放回该路径后重新 `npm run build-only` 即可恢复完整的地图巡礼页。备份：
-   - 仓库原版：`frontend/src/view/shengdi/index.vue.original-from-github`
-   - 修复到一半的版本：`frontend/src/view/shengdi/index.vue.repaired-attempt`
+1. **`frontend/src/view/shengdi/index.vue` 占位页已替换**：2026-10-27 合并圣地巡礼 v2 更新包后，该路径已恢复为完整的地图巡礼页（含 DeepSeek Agent、按天预览、保存行程）。原占位页与受损版本的备份仍在同目录：`index.vue.original-from-github`、`index.vue.repaired-attempt`。
 2. **域名 `0721acgn.com` 未完成腾讯云 ICP 备案**：大陆地域对未备案域名在 80/443 上有网关拦截，表现为域名打不开、直接 IP 访问正常。备案通过后即可用域名访问（HTTPS 证书已就绪）。
 3. **服务器已启用 HTTPS**（Let's Encrypt，lego 自动续期），无需再前置 Nginx。

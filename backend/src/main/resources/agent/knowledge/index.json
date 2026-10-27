@@ -1,0 +1,9 @@
+{
+  "documents": [
+    {"id":"route-planning","title":"巡礼行程编排方法","tags":["路线","规划","步行","体力","一天","两天","多日","少走","休闲"],"file":"route-planning.md","source":"小窝站内编辑规范 / 巡礼规划","updatedAt":"2026-10-27"},
+    {"id":"photo-etiquette","title":"取景复拍与现场礼仪","tags":["拍照","拍摄","复刻","机位","学校","居民","神社","禁止","安全"],"file":"photo-etiquette.md","source":"小窝站内编辑规范 / 现场探访","updatedAt":"2026-10-27"},
+    {"id":"transport-limits","title":"交通方式与路线能力边界","tags":["电车","公交","交通","车站","自驾","骑行","导航","公里","耗时","酒店"],"file":"transport-limits.md","source":"本站地图与 Agent 实现约定","updatedAt":"2026-10-27"},
+    {"id":"data-quality","title":"地点核验与资料使用规则","tags":["来源","开放","核验","真实","地点","资料","收录","别名","没找到"],"file":"data-quality.md","source":"小窝站内数据维护规范","updatedAt":"2026-10-27"},
+    {"id":"multi-work","title":"多作品主题与城市范围","tags":["京阿尼","京都动画","京都","多作品","上低音号","冰菓","轻音","CLANNAD","玉子"],"file":"multi-work.md","source":"小窝站内主题检索规范","updatedAt":"2026-10-27"}
+  ]
+}

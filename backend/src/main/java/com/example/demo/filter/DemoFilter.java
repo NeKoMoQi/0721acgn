@@ -11,7 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-@WebFilter(urlPatterns = "/*")
+// asyncSupported 必须开：圣地巡礼 Agent 的 SSE 接口依赖 Servlet 异步，否则启动异步时会 500。
+@WebFilter(urlPatterns = "/*", asyncSupported = true)
 public class DemoFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(DemoFilter.class);
 

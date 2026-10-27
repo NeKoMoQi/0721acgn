@@ -1,0 +1,112 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "search_spots",
+      "description": "检索站内真实巡礼点。短关键词为或匹配，city额外过滤。全部为空返回作品目录。每页32点，最多128个候选。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8
+          },
+          "city": {
+            "type": "string",
+            "description": "城市短名，例如京都；不限则空字符串"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 500
+          }
+        },
+        "required": [
+          "keywords",
+          "city",
+          "offset"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "search_knowledge",
+      "description": "查询站内规划、拍摄礼仪、交通边界与多作品主题参考，返回来源和更新时间；不提供实时营业与班次。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "keywords"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "submit_route",
+      "description": "提交完整新版按天行程，只用已检索或上一版已验证的点ID。服务器校验补齐坐标和图片，失败按错误修正。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "travelMode": {
+            "type": "string",
+            "enum": [
+              "walking",
+              "cycling",
+              "driving"
+            ]
+          },
+          "days": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "note": {
+                  "type": "string",
+                  "description": "推荐理由、顺路逻辑与未核实信息，不编造交通耗时"
+                },
+                "pointIds": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 6,
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "title",
+                "note",
+                "pointIds"
+              ]
+            }
+          }
+        },
+        "required": [
+          "travelMode",
+          "days"
+        ]
+      }
+    }
+  }
+]

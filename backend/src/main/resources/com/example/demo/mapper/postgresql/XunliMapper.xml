@@ -411,7 +411,7 @@
         LIMIT 8000;
     </select>
 
-    <select id="getPickerXunliPointList" resultMap="xunlipointMap">
+    <select id="getPickerXunliPointList" resultMap="xunlipointMap" timeout="10">
         SELECT b.xunliname,
                b.xunlicolor,
                b.city,

@@ -12,6 +12,9 @@ public class Live2dAgentChatResponse {
     private String conversationId;
     private Live2dAgentLive2dHints live2d;
     private JsonNode routePlan;
+    private JsonNode knowledgeSources;
+    public JsonNode getKnowledgeSources() { return knowledgeSources; }
+    public void setKnowledgeSources(JsonNode value) { knowledgeSources = value; }
 
     public String getReply() {
         return reply;

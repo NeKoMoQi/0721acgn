@@ -11,6 +11,7 @@ public final class PublicAccessPolicy {
     private PublicAccessPolicy() {}
 
     private static final Set<String> READ_PATHS = Set.of(
+            "/api/news", "/api/news/byid", "/api/news/image",
             "/api/activity", "/api/activity/byid", "/api/activity/all", "/api/activity/hot", "/api/activity/leibie",
             "/api/peoplecount", "/api/searchresult", "/api/related",
             "/api/animation", "/api/animation/hot", "/api/animation/byid",
@@ -18,7 +19,7 @@ public final class PublicAccessPolicy {
             "/api/galgame", "/api/galgame/hot", "/api/galgame/byid",
             "/api/cartoon", "/api/cartoon/byid", "/api/cartoonpage", "/api/cartoon/hot", "/api/cartoon/chapter",
             "/api/novel", "/api/novel/chapter", "/api/novel/byid", "/api/novel/count",
-            "/api/novel/chapter/byid", "/api/novel/hot", "/api/news", "/api/news/byid", "/api/news/image", "/api/shengdi/hot",
+            "/api/novel/chapter/byid", "/api/novel/content", "/api/novel/hot", "/api/shengdi/hot",
             "/api/xunli", "/api/xunli/point", "/api/xunli/point/update", "/api/xunli/update",
             "/api/xunli/byid", "/api/xunli/point/byid", "/api/xunli/search", "/api/xunli/searchnew",
             "/api/xunli/searchhot", "/api/xunli/searchran", "/api/xunli/picker/works", "/api/xunli/picker/points",
@@ -29,7 +30,7 @@ public final class PublicAccessPolicy {
 
     // 已有的浏览器匿名数据功能保持可用，不将设备标识伪装为账号同步。
     private static final Set<String> ANONYMOUS_POST_PATHS = Set.of(
-            "/api/admin/acl/index/login", "/acgn/live2d/agent/chat",
+            "/api/admin/acl/index/login", "/acgn/live2d/agent/chat", "/acgn/live2d/agent/stream",
             "/api/acgn/user/library/visit", "/api/acgn/user/library/favorite-toggle",
             "/api/acgn/user/subscribe/toggle", "/api/acgn/user/progress", "/api/acgn/user/import-legacy",
             "/api/acgn/social/vote", "/api/acgn/social/comments");
@@ -50,4 +51,3 @@ public final class PublicAccessPolicy {
         response.getWriter().write(JSONObject.toJSONString(Result.error("NOT_LOGIN")));
     }
 }
-

@@ -28,3 +28,7 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# 圣地巡礼更新脚本的备份与临时构建目录
+.shengdi-update-backups/
+.shengdi-update-builds/

@@ -19,6 +19,19 @@ public class XunliAgentSpot {
     private String ep;
     private String time;
     private Integer xunliid;
+    private String accessStatus = "unknown";
+    private String photoNote;
+    private String sourceUrl;
+    private String verifiedAt;
+
+    public String getAccessStatus() { return accessStatus; }
+    public void setAccessStatus(String value) { accessStatus = value; }
+    public String getPhotoNote() { return photoNote; }
+    public void setPhotoNote(String value) { photoNote = value; }
+    public String getSourceUrl() { return sourceUrl; }
+    public void setSourceUrl(String value) { sourceUrl = value; }
+    public String getVerifiedAt() { return verifiedAt; }
+    public void setVerifiedAt(String value) { verifiedAt = value; }
 
     public String getId() {
         return id;

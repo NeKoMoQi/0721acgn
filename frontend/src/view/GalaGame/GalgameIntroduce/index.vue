@@ -31,90 +31,41 @@
 
     <!-- 正常内容 -->
     <div v-else-if="game" class="content-wrapper">
-      <div class="info-container">
-        <div class="cover-wrapper">
-          <img :src="coverOf" class="cover-image" alt="作品封面" @error="onImgError">
-        </div>
-
-        <div class="detail-wrapper">
-          <div class="breadcrumb">
-            <router-link to="/Galagame">Galgame</router-link>
-            <span>/</span>
-            <span>{{ game.nameZh }}</span>
-          </div>
-
-          <h1 class="novel-title">{{ game.nameZh }}</h1>
-          <div v-if="game.nameOriginal && game.nameOriginal !== game.nameZh" class="original-title">
-            {{ game.nameOriginal }}
-          </div>
-          <div v-if="game.aliases" class="alias-line">别名：{{ game.aliases }}</div>
-
-          <div class="status-container">
-            <div class="status-item">
-              <span class="status-label">发行日期</span>
-              <span class="status-value">{{ game.releaseDate || '暂无资料' }}</span>
-              <span v-if="game.releaseNote" class="status-note">{{ game.releaseNote }}</span>
+      <header class="game-hero">
+        <div class="hero-art" :style="{ backgroundImage: `url(${coverOf})` }" aria-hidden="true"></div>
+        <nav class="breadcrumb" aria-label="当前位置"><router-link to="/Galagame">Galgame</router-link><span> / </span><span>{{ game.developer || '作品介绍' }}</span></nav>
+        <div class="hero-content">
+          <div class="cover-wrapper"><img :src="coverOf" class="cover-image" :alt="`${game.nameZh} 封面`" @error="onImgError"></div>
+          <div class="detail-wrapper">
+            <h1 class="novel-title">{{ game.nameZh }}</h1>
+            <p v-if="game.nameOriginal && game.nameOriginal !== game.nameZh" class="original-title">{{ game.nameOriginal }}</p>
+            <p v-if="game.aliases" class="alias-line">别名：{{ game.aliases }}</p>
+            <div v-if="game.rating != null && ratingAllowed(game.slug)" class="hero-rating">
+              <strong>{{ formatRating(game.rating) }}</strong>
+              <span class="rating-stars" aria-hidden="true"><span>★★★★★</span><span class="stars-fill" :style="{ width: `${Math.max(0, Math.min(100, Number(game.rating) * 10))}%` }">★★★★★</span></span>
+              <a v-if="game.ratingSourceUrl" :href="game.ratingSourceUrl" target="_blank" rel="noopener noreferrer">{{ game.ratingSource || '来源评分' }}<template v-if="game.ratingCount != null"> · {{ formatCount(game.ratingCount) }} 人评分</template> ↗</a>
+              <span v-else>{{ game.ratingSource || '来源评分' }} / 10</span>
             </div>
-            <div class="status-item">
-              <span class="status-label">开发商</span>
-              <span class="status-value">{{ game.developer || '暂无资料' }}</span>
+            <p v-else class="rating-pending">{{ ratingAllowed(game.slug) ? '暂无来源评分' : '评分篇章核对中' }}</p>
+            <dl class="hero-facts">
+              <div><dt>发行</dt><dd>{{ game.releaseDate || '暂无资料' }}</dd></div>
+              <div><dt>开发</dt><dd>{{ game.developer || '暂无资料' }}</dd></div>
+              <div><dt>平台</dt><dd>{{ game.platforms || '暂无资料' }}</dd></div>
+              <div v-if="media?.durationLabel"><dt>时长</dt><dd>{{ media.durationLabel }}</dd></div>
+            </dl>
+            <p v-if="game.releaseNote" class="release-note">{{ game.releaseNote }}</p>
+            <div class="tag-row"><span v-for="tag in tags" :key="tag" class="tag">{{ tag }}</span></div>
+            <p v-if="guide" class="guide-tagline">{{ guide.tagline }}</p>
+            <p v-else class="guide-tagline">{{ game.intro || game.shortIntro || '暂无简介。' }}</p>
+            <div class="button-group">
+              <a v-if="officialLink" class="main-button" :href="officialLink" target="_blank" rel="noopener noreferrer">↗ 官方 / 商店页</a>
+              <a v-if="game.vndbUrl" class="secondary-button" :href="game.vndbUrl" target="_blank" rel="noopener noreferrer">VNDB 条目</a>
+              <button type="button" class="secondary-button" @click="backToList">← 返回列表</button>
             </div>
-            <div class="status-item">
-              <span class="status-label">支持平台</span>
-              <span class="status-value platform-value">{{ game.platforms || '暂无资料' }}</span>
-            </div>
-            <div class="status-item rating-item">
-              <span class="status-label">作品评分</span>
-              <span v-if="game.rating != null && ratingAllowed(game.slug)" class="status-value rating-value">
-                {{ game.ratingSource || '评分' }} {{ formatRating(game.rating) }} / 10
-              </span>
-              <span v-else class="status-value muted-value">{{ ratingAllowed(game.slug) ? '暂无评分' : '评分信息核对中' }}</span>
-              <span class="status-note">
-                <template v-if="game.rating != null && ratingAllowed(game.slug)">
-                  <a v-if="game.ratingSourceUrl && game.ratingCount != null" :href="game.ratingSourceUrl" target="_blank" rel="noopener noreferrer">
-                    {{ formatCount(game.ratingCount) }} 人评分
-                  </a>
-                  <template v-else-if="game.ratingCount != null">{{ formatCount(game.ratingCount) }} 人评分</template>
-                  <template v-else>评分人数未提供</template>
-                </template>
-                <template v-else>{{ ratingAllowed(game.slug) ? '来源未提供评分' : '确认对应篇章后再展示' }}</template>
-              </span>
-            </div>
-          </div>
-
-          <div class="tag-row">
-            <span v-for="tag in tags" :key="'detail-tag-' + tag" class="tag">{{ tag }}</span>
-            <span v-if="!tags.length" class="tag muted">暂无标签</span>
-          </div>
-
-          <p v-if="guide" class="guide-tagline">{{ guide.tagline }}</p>
-          <p v-else class="description-text">{{ game.intro || game.shortIntro || '暂无简介。' }}</p>
-
-          <div class="button-group">
-            <a
-              v-if="officialLink"
-              class="main-button"
-              :href="officialLink"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span>↗</span> 官方 / 商店页
-            </a>
-            <a
-              v-if="game.vndbUrl"
-              class="secondary-button"
-              :href="game.vndbUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span>VNDB</span> 条目
-            </a>
-            <button type="button" class="secondary-button" @click="backToList">
-              <span>←</span> 返回列表
-            </button>
           </div>
         </div>
-      </div>
+      </header>
+      <GalgameExtras :media="media" :title="game.nameZh" :official-url="officialLink" />
 
       <article v-if="guide" class="reading-panel">
         <nav class="reading-nav" aria-label="作品导读目录">
@@ -163,6 +114,8 @@
               <div class="source-fields">{{ source.supports.join('、') }}</div>
             </li>
           </ul>
+          <h2 v-if="media" class="sources-heading">角色、画面与商店资料</h2>
+          <ul v-if="media" class="source-list"><li v-for="source in media.sources" :key="source.url" class="source-item"><a :href="source.url" target="_blank" rel="noopener noreferrer">{{ source.name }}</a><span class="source-time">{{ source.checkedAt }}</span><div class="source-fields">{{ source.supports.join('、') }}</div></li></ul>
           <h2 class="sources-heading">基础资料来源</h2>
           <ul v-if="sources.length" class="source-list">
             <li v-for="(source, index) in sources" :key="'source-' + index" class="source-item">
@@ -173,9 +126,11 @@
             </li>
           </ul>
           <p v-else class="source-empty">暂无结构化来源记录。</p>
+          <p v-if="game.sourceNote" class="source-note">{{ game.sourceNote }}</p>
           <p class="source-note">
             评分对应所链接的来源条目，支持平台可能涵盖多个历史发行版本，具体内容与语言以所选商品为准。
-            封面版权归原权利人，原始资料遵循各来源许可。
+            Bangumi 在本次采集环境连接超时，未使用其评分或条目数据。
+            封面版权归原权利人，原始资料遵循各来源许可；封面仅用于作品识别，如权利方有异议可替换为默认封面。
           </p>
       </details>
 
@@ -195,6 +150,8 @@ import Headpage from '@/components/Headpage/index.vue'
 import Behind from '@/components/behind/index.vue'
 import { getGalgameById } from '@/api/galgame'
 import { guideFor, ratingAllowed } from '@/data/galgameGuides'
+import { mediaFor } from '@/data/galgameMedia'
+import GalgameExtras from './GalgameExtras.vue'
 
 interface Galgame {
   id: number
@@ -240,13 +197,14 @@ const loading = ref(true)
 const error = ref('')
 let detailRequest = 0
 const guide = computed(() => guideFor(game.value?.slug))
+const media = computed(() => mediaFor(game.value?.slug))
 
 function scrollToSection(section: string) {
   document.getElementById(`guide-${section}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
 const coverOf = computed(() => game.value?.cover || PLACEHOLDER)
-const officialLink = computed(() => game.value?.officialUrl || game.value?.steamUrl || '')
+const officialLink = computed(() => game.value?.officialUrl || game.value?.steamUrl || media.value?.officialGalleryUrl || '')
 const tags = computed(() =>
   (game.value?.genres || '')
     .split(',')
@@ -332,453 +290,19 @@ watch(() => route.query.galgameid, () => {
 </script>
 
 <style scoped>
-.root-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.background-layer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('/BCPHOTO/bc9.jpg');
-  background-size: cover;
-  background-attachment: fixed;
-  z-index: -1;
-}
-
-.content-wrapper {
-  box-sizing: border-box;
-  width: min(1200px, 100%);
-  margin: 32px auto 40px;
-  padding: 0 20px;
-}
-
-.info-container {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 15px;
-  padding: 30px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-  display: flex;
-  gap: 30px;
-  margin-bottom: 30px;
-}
-
-.cover-wrapper {
-  flex: 0 0 280px;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  background: #f1f8fc;
-  align-self: flex-start;
-}
-
-.cover-image {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
-.detail-wrapper {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-  color: #93a4b1;
-  font-size: 13px;
-}
-
-.breadcrumb a {
-  color: #3498db;
-  text-decoration: none;
-}
-
-.breadcrumb a:hover {
-  text-decoration: underline;
-}
-
-.novel-title {
-  font-size: 2.2rem;
-  color: #2c3e50;
-  margin: 0 0 8px;
-  line-height: 1.2;
-  word-break: break-word;
-}
-
-.original-title {
-  font-size: 1rem;
-  color: #8a9aa6;
-  margin-bottom: 6px;
-  word-break: break-all;
-}
-
-.alias-line {
-  font-size: 13px;
-  color: #9aa9b4;
-  margin-bottom: 14px;
-  line-height: 1.6;
-}
-
-.status-container {
-  display: flex;
-  gap: 30px;
-  padding: 15px 0;
-  border-bottom: 1px solid #ecf0f1;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
-}
-
-.status-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 120px;
-  max-width: 260px;
-}
-
-.status-label {
-  font-size: 0.85rem;
-  color: #95a5a6;
-  margin-bottom: 5px;
-}
-
-.status-value {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #2c3e50;
-  line-height: 1.4;
-}
-
-.platform-value {
-  font-size: 0.92rem;
-  font-weight: 500;
-}
-
-.rating-value {
-  color: #b7791f;
-}
-
-.muted-value {
-  color: #a6b4be;
-  font-weight: 500;
-}
-
-.status-note {
-  margin-top: 4px;
-  font-size: 11px;
-  line-height: 1.5;
-  color: #9aa9b4;
-}
-
-.status-note a {
-  color: #3498db;
-  text-decoration: none;
-}
-
-.status-note a:hover {
-  text-decoration: underline;
-}
-
-.tag-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.tag {
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #f0f8fd;
-  color: #4d91b5;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.tag.muted {
-  color: #a6b4be;
-  background: #f6f8fa;
-}
-
-.description-text {
-  line-height: 1.85;
-  color: #34495e;
-  font-size: 15px;
-  margin: 8px 0 24px;
-  white-space: pre-wrap;
-}
-
-.button-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: auto;
-}
-
-.main-button,
-.secondary-button {
-  padding: 11px 22px;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.main-button {
-  background: #3498db;
-  color: #fff;
-}
-
-.secondary-button {
-  background: #f8f9fa;
-  border: 1px solid #bdc3c7;
-  color: #2c3e50;
-}
-
-.main-button:hover,
-.secondary-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(52, 152, 219, 0.18);
-}
-
-.section-title {
-  font-size: 1.35rem;
-  color: #2c3e50;
-  margin: 0 0 18px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #3498db;
-}
-
-.source-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.source-item {
-  padding: 12px 14px;
-  border-radius: 8px;
-  background: #f8fbfd;
-  border: 1px solid #eef5f9;
-}
-
-.source-item a {
-  color: #3498db;
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.source-item a:hover {
-  text-decoration: underline;
-}
-
-.source-time {
-  margin-left: 8px;
-  color: #9aa9b4;
-  font-size: 11px;
-}
-
-.source-fields {
-  margin-top: 5px;
-  color: #61727f;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.source-license {
-  margin-top: 4px;
-  color: #8a9aa6;
-  font-size: 11px;
-}
-
-.source-note {
-  margin: 12px 0 0;
-  color: #8a9aa6;
-  font-size: 12px;
-  line-height: 1.7;
-}
-
-.source-empty {
-  color: #9aa9b4;
-  font-size: 13px;
-}
-
-.collected-line {
-  margin-top: 18px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid #e9ecef;
-  color: #8a9aa6;
-  font-size: 12px;
-  text-align: center;
-}
-
-/* 状态与骨架 */
-.state-card {
-  margin-top: 30px;
-  padding: 60px 30px;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.96);
-  border-radius: 15px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-  color: #61727f;
-}
-
-.state-card h2 {
-  color: #2c3e50;
-  margin: 14px 0 8px;
-}
-
-.state-card p {
-  max-width: 560px;
-  margin: 0 auto 22px;
-  line-height: 1.7;
-}
-
-.state-icon {
-  width: 52px;
-  height: 52px;
-  line-height: 52px;
-  margin: 0 auto;
-  border-radius: 50%;
-  background: #fdeeee;
-  color: #d96666;
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.skeleton-panel {
-  align-items: stretch;
-}
-
-.cover-skeleton {
-  flex: 0 0 280px;
-  min-height: 380px;
-  border-radius: 10px;
-  background: linear-gradient(110deg, #e8f4fb 8%, #f5fbff 18%, #e8f4fb 33%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s linear infinite;
-}
-
-.detail-skeleton {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding-top: 12px;
-}
-
-.sk-line {
-  height: 14px;
-  width: 70%;
-  border-radius: 7px;
-  background: #eef4f8;
-}
-
-.sk-line.tall {
-  height: 34px;
-  width: 55%;
-}
-
-.sk-line.w80 {
-  width: 80%;
-}
-.sk-line.w70 {
-  width: 70%;
-}
-.sk-line.w50 {
-  width: 50%;
-}
-.sk-line.w40 {
-  width: 40%;
-}
-
-.footer {
-  position: relative;
-  margin-top: auto;
-}
-
-@keyframes shimmer {
-  to {
-    background-position-x: -200%;
-  }
-}
-
-@media (max-width: 768px) {
-  .content-wrapper {
-    margin-top: 24px;
-    padding: 0 15px;
-  }
-  .info-container {
-    flex-direction: column;
-    padding: 22px;
-  }
-  .cover-wrapper {
-    flex: none;
-    max-width: 280px;
-    width: 70%;
-    margin: 0 auto;
-  }
-  .novel-title {
-    font-size: 1.7rem;
-  }
-  .status-container {
-    gap: 16px 22px;
-  }
-  .status-item {
-    min-width: 100px;
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 520px) {
-  .cover-wrapper {
-    width: 62%;
-  }
-  .status-container {
-    flex-direction: column;
-  }
-  .button-group {
-    flex-direction: column;
-  }
-  .main-button,
-  .secondary-button {
-    justify-content: center;
-  }
-}
+.root-container{min-height:100vh;display:flex;flex-direction:column;color:#344e60}.background-layer{position:fixed;inset:0;background:#edf2f6;z-index:-1}.content-wrapper{box-sizing:border-box;width:min(1200px,100%);margin:28px auto 40px;padding:0 24px}
+.game-hero{position:relative;isolation:isolate;overflow:hidden;padding:25px 30px 30px;border-radius:20px;background:linear-gradient(115deg,#213b53,#687e96 65%,#958897);color:white;box-shadow:0 12px 35px #203c531a}.hero-art{position:absolute;inset:-55px;background-size:cover;background-position:center;filter:blur(42px);opacity:.19;z-index:-1}.game-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#172e48b5,#283e5f30);z-index:-1}
+.breadcrumb{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12px;color:#d8e2e8;margin-bottom:23px}.breadcrumb a{color:inherit;text-decoration:none}.hero-content{display:flex;gap:28px;align-items:center}.cover-wrapper{flex:0 0 180px;align-self:flex-start;border-radius:12px;overflow:hidden;box-shadow:0 10px 26px #081c4533;background:#d5e1ec}.cover-image{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}.detail-wrapper{flex:1;min-width:0}.novel-title{font-size:30px;line-height:1.35;margin:0 0 7px;letter-spacing:-.5px;color:#fff}.original-title,.alias-line{font-size:12px;line-height:1.6;color:#d5dfe8;margin:4px 0;overflow-wrap:anywhere}.hero-rating{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:13px 0}.hero-rating>strong{font-size:34px;font-weight:650;line-height:1}.hero-rating>a,.hero-rating>span:not(.rating-stars){font-size:12px;color:#e1e7ed;text-decoration:none}.rating-stars{position:relative;display:inline-block;font-size:22px;letter-spacing:2px;white-space:nowrap;line-height:1.3;color:#b8bdc6}.stars-fill{position:absolute;left:0;top:0;overflow:hidden;color:#ffc955}.rating-pending{font-size:13px;color:#d5dfe8;margin:16px 0}
+.hero-facts{display:flex;gap:12px 22px;flex-wrap:wrap;font-size:13px;margin:18px 0 12px}.hero-facts>div{display:flex;gap:7px}.hero-facts dt{color:#bdcdda;white-space:nowrap}.hero-facts dd{margin:0;color:#f1f5f8;overflow-wrap:anywhere}.release-note{font-size:11px;color:#ccd8e1;line-height:1.6;margin:4px 0 14px}.tag-row{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.tag{display:inline-block;border:1px solid #ffffff54;border-radius:6px;background:#ffffff0e;padding:4px 10px;font-size:12px}.guide-tagline{color:#e1e9ef;font-size:13px;line-height:1.8;margin:13px 0 17px}.button-group{display:flex;flex-wrap:wrap;gap:9px}.main-button,.secondary-button{display:inline-flex;align-items:center;justify-content:center;border-radius:8px;padding:10px 16px;font:inherit;font-size:13px;cursor:pointer;text-decoration:none;line-height:1.4}.main-button{color:#294960;background:#fff;border:1px solid #fff;font-weight:600}.secondary-button{color:#edf3f7;background:#ffffff15;border:1px solid #ffffff54}.main-button:hover{background:#e7f7f5}.secondary-button:hover{background:#ffffff2a}.button-group :focus-visible{outline:2px solid #b9ffed;outline-offset:3px}
+.state-card{padding:50px 25px;text-align:center;background:white;border-radius:16px}.state-card p{line-height:1.8;color:#778c9b}.state-icon{font-size:36px}.skeleton-panel{display:flex;gap:30px;background:#fff;padding:30px;border-radius:16px}.cover-skeleton{width:180px;height:240px;background:#e0e7ed;border-radius:12px}.detail-skeleton{flex:1}.sk-line{display:block;height:18px;background:#e9eef1;margin:20px 0;border-radius:5px}.source-list{list-style:none;padding:0}.source-item{margin:15px 0;padding-bottom:12px;border-bottom:1px solid #edf1f3}.source-item a{font-size:13px;color:#37748e}.source-time{font-size:11px;color:#91a0ab;margin-left:10px}.source-fields,.source-license,.source-note,.source-empty{color:#84959f;font-size:12px;line-height:1.9}.collected-line{text-align:center;color:#8799a5;font-size:11px;line-height:1.8}.section-title{font-size:21px;color:#314d60}
+@media(max-width:680px){.content-wrapper{padding:0 14px;margin-top:18px}.game-hero{padding:20px;border-radius:16px}.breadcrumb{margin-bottom:18px}.hero-content{display:block}.cover-wrapper{float:left;width:95px;margin:0 16px 14px 0}.detail-wrapper{display:block}.hero-facts{clear:both}.novel-title{font-size:22px}.hero-rating{gap:9px;margin:12px 0}.hero-rating>strong{font-size:28px}.rating-stars{font-size:17px}.hero-rating>a{flex-basis:100%;line-height:1.7}.hero-facts{gap:9px;font-size:12px;flex-direction:column;margin-top:14px}.hero-facts>div{gap:10px}.tag-row{gap:6px}.tag{font-size:11px;padding:3px 7px}.guide-tagline{font-size:12px}.button-group{gap:7px}.main-button,.secondary-button{font-size:12px;padding:9px 10px}.original-title,.alias-line{font-size:11px}.source-time{display:block;margin:5px 0 0}.cover-skeleton{width:90px;height:120px}.skeleton-panel{padding:20px;gap:18px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
 
 <style scoped src="../layout.css"></style>
 
 <style scoped>
-.guide-tagline { margin: 6px 0 0; color: #2385b4; font-size: 16px; line-height: 1.8; font-weight: 500; }
+
 .reading-panel, .source-details { padding: 30px; margin-bottom: 24px; background: rgba(255,255,255,.97); border: 1px solid #e8edf0; border-radius: 15px; }
 .reading-nav { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 24px; border-bottom: 1px solid #e7edf1; }
 .reading-nav button { border: 1px solid #d7e6ef; border-radius: 999px; padding: 8px 14px; color: #287da5; background: #f3faff; cursor: pointer; font: inherit; font-size: 13px; }
