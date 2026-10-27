@@ -32,7 +32,7 @@ assert.ok(new Set(catalog.slice(0,6).map(g => g.developer)).size >= 4)
 
 const require = createRequire(path.join(root, 'frontend/package.json'))
 const { parse, compileScript, compileTemplate, compileStyle } = require('@vue/compiler-sfc')
-for (const file of ['frontend/src/view/GalaGame/index.vue', 'frontend/src/view/GalaGame/GalgameIntroduce/index.vue', 'frontend/src/view/GalaGame/GalgameIntroduce/GalgameExtras.vue']) {
+for (const file of ['frontend/src/view/GalaGame/index.vue', 'frontend/src/view/GalaGame/GalgameIntroduce/index.vue', 'frontend/src/view/GalaGame/GalgameIntroduce/GalgameExtras.vue', 'frontend/src/view/GalaGame/GalgameExplore.vue']) {
   const source = fs.readFileSync(path.join(root, file), 'utf8')
   const { descriptor, errors } = parse(source, { filename:file })
   assert.deepEqual(errors, [], file)
@@ -67,13 +67,19 @@ for (const item of media) {
   if (item.slug === 'white-album-2') {
     assert.equal(item.screenshots.length, 0)
     assert.ok(item.officialGalleryUrl)
-  } else assert.equal(item.screenshots.length, 4, item.slug)
+  } else assert.ok(item.screenshots.length >= 4 && item.screenshots.length <= 6, item.slug)
   for (const shot of item.screenshots) {
     imageExists(shot.src)
     assert.ok(shot.alt)
+    assert.ok(shot.category)
     assert.equal(new URL(shot.originalUrl).protocol, 'https:')
     assert.equal(new URL(shot.sourceUrl).hostname,'store.steampowered.com')
     screenshotCount++
+  }
+  if (item.pv) {
+    imageExists(item.pv.poster)
+    assert.equal(new URL(item.pv.watchUrl).hostname, 'store.steampowered.com')
+    assert.ok(item.pv.movieId && item.pv.originalPosterUrl && item.pv.checkedAt)
   }
   for (const offer of item.offers) {
     assert.equal(new URL(offer.url).hostname, 'store.steampowered.com')
@@ -81,6 +87,23 @@ for (const item of media) {
     if (offer.priceLabel.startsWith('¥')) assert.equal(offer.currency,'CNY')
   }
 }
+assert.equal(screenshotCount,87)
+assert.equal(media.filter(m=>m.pv).length,18)
+const discovery = readJSON('frontend/src/data/galgameDiscovery.json')
+assert.equal(discovery.entries.length,20)
+assert.equal(new Set(discovery.entries.map(e=>e.slug)).size,20)
+assert.equal(discovery.topics.length,4)
+assert.ok(discovery.topics.every(t=>discovery.entries.some(e=>e.topics.includes(t.id))))
+for (const entry of discovery.entries) {
+  assert.ok(seeds.some(s=>s.slug===entry.slug))
+  assert.ok(!('id' in entry), 'Do not hardcode database IDs')
+  if (entry.topics.includes('chinese')) {
+    assert.ok(entry.versionLabel && entry.sources.some(s=>s.supports.includes('对应商品的中文支持')))
+    assert.ok(!['rewrite','narcissu','999','428','umineko'].includes(entry.slug))
+  }
+}
+assert.deepEqual(discovery.entries.filter(e=>e.topics.includes('short')).map(e=>e.slug),['planetarian'])
+assert.ok(fs.statSync(path.join(root,'frontend/public/galgame/background-aokana-sky.png')).size>1000)
 console.log(`PASS: ${characterCount} character introductions, ${screenshotCount} local official screenshots, provenance, price currency, gallery fallback, extra component compilation.`)
 console.log(`PASS: 20 unique guides, coverage, source provenance, version-sensitive rating guard, curated ordering, Vue scripts/templates/scoped styles.`)
 console.log(`Verified references: ${guides.flatMap(g=>g.sources).filter(s=>s.status==='verified').length}; unavailable: ${guides.flatMap(g=>g.sources).filter(s=>s.status!=='verified').length}.`)

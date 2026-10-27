@@ -5,6 +5,21 @@
 .root-container :deep(.header .user-wrap) { flex-shrink: 0; white-space: nowrap; }
 .root-container :deep(.header .kuang) { box-sizing: border-box; width: 100%; height: 44px; padding: 4px; }
 .root-container :deep(.bottom) { box-sizing: border-box; }
+.root-container > .background-layer { position: fixed; inset: 0; width: 100%; height: 100%; padding: 0; transform: none; background: #57b5f6 url('/galgame/background-aokana-sky.png') center center / cover no-repeat; z-index: -1; }
+/* Full-height side framing matches the selected preview and keeps all four faces visible. */
+.root-container > .background-layer::before,
+.root-container > .background-layer::after { content: ''; position: absolute; top: 80px; bottom: 0; width: calc((100% - min(1160px, 62.5vw)) / 2); background-image: url('/galgame/background-aokana-sky.png'); background-repeat: no-repeat; background-size: auto 100%; }
+.root-container > .background-layer::before { left: 0; background-position: -5vw center; }
+.root-container > .background-layer::after { right: 0; background-position: calc(100% + 5vw) center; }
+.root-container > .content-wrapper { width: min(1160px, 62.5vw); padding: 0; }
+.root-container > .acgn_container { width: min(1160px, 62.5vw); }
+@media (max-width: 1000px) {
+  .root-container > .content-wrapper { width: 100%; padding: 0 16px; }
+  .root-container > .acgn_container { width: 94%; }
+  .root-container > .background-layer::before,
+  .root-container > .background-layer::after { display: none; }
+  .root-container > .background-layer { background-image: linear-gradient(rgba(242,249,255,.9), rgba(242,249,255,.9)), url('/galgame/background-aokana-sky.png'); background-size: auto 100%; }
+}
 @media (max-width: 1200px) {
   .root-container :deep(.header) { flex-wrap: wrap; gap: 8px; padding: 8px 16px; }
   .root-container :deep(.header .left-group) { width: 100%; min-width: 0; gap: 0; }

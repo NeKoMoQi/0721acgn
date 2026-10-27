@@ -13,7 +13,9 @@ export interface GalgameMedia {
   slug: string
   checkedAt: string
   characters: GalgameCharacter[]
-  screenshots: { src: string; alt: string; sourceUrl: string; originalUrl: string }[]
+  screenshots: { src: string; alt: string; category: string; sourceUrl: string; originalUrl: string }[]
+  galleryNote?: string
+  pv?: { title: string; originalTitle: string; poster: string; watchUrl: string; originalPosterUrl: string; checkedAt: string; movieId: number; videoUrl?: string }
   offers: { label: string; platform: string; url: string; priceLabel: string; currency?: string }[]
   sources: { name: string; url: string; checkedAt: string; supports: string[] }[]
   durationLabel?: string

@@ -58,6 +58,8 @@
         <span class="section-count" v-if="!initialLoading && !loadError">已载入 {{ list.length }} 部</span>
       </div>
 
+      <GalgameExplore />
+
       <AcgnFilterBar
         :key="filterResetKey"
         :genres="GALGAME_GENRES"
@@ -160,6 +162,7 @@ import AcgnFilterBar from '@/components/AcgnFilterBar.vue'
 import { getGalgame, getGalgameHot, type GalgameListParams } from '@/api/galgame'
 import { GALGAME_GENRES, GALGAME_SORT_OPTIONS, decadeRange } from '@/utils/acgnConstants'
 import { guideFor, ratingAllowed } from '@/data/galgameGuides'
+import GalgameExplore from './GalgameExplore.vue'
 
 interface Galgame {
   id: number

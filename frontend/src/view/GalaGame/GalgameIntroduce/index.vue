@@ -67,6 +67,8 @@
       </header>
       <GalgameExtras :media="media" :title="game.nameZh" :official-url="officialLink" />
 
+      <GalgameExplore :slug="game.slug" />
+
       <article v-if="guide" class="reading-panel">
         <nav class="reading-nav" aria-label="作品导读目录">
           <button type="button" @click="scrollToSection('story')">剧情简介</button>
@@ -152,6 +154,8 @@ import { getGalgameById } from '@/api/galgame'
 import { guideFor, ratingAllowed } from '@/data/galgameGuides'
 import { mediaFor } from '@/data/galgameMedia'
 import GalgameExtras from './GalgameExtras.vue'
+import GalgameExplore from '../GalgameExplore.vue'
+import { idForSlug } from '@/data/galgameDiscovery'
 
 interface Galgame {
   id: number
@@ -253,15 +257,17 @@ function backToList() {
 
 async function loadDetail() {
   const requestId = ++detailRequest
-  const id = Number(route.query.galgameid)
-  if (!Number.isSafeInteger(id) || id <= 0) {
-    loading.value = false
-    error.value = '链接中缺少作品编号，请从 Galgame 列表进入。'
-    return
-  }
   loading.value = true
   error.value = ''
   try {
+    let id = Number(route.query.galgameid)
+    if (!Number.isSafeInteger(id) || id <= 0) {
+      const slug = typeof route.query.slug === 'string' ? route.query.slug : ''
+      if (!slug) throw new Error('链接中缺少作品编号，请从 Galgame 列表进入。')
+      id = await idForSlug(slug) || 0
+      if (requestId !== detailRequest) return
+      if (!id) throw new Error('当前作品库暂未找到这部作品，请返回列表查看。')
+    }
     const res = await getGalgameById(id)
     if (requestId !== detailRequest) return
     if (!res?.data) {
@@ -283,7 +289,7 @@ onMounted(() => {
   loadDetail()
 })
 
-watch(() => route.query.galgameid, () => {
+watch(() => [route.query.galgameid, route.query.slug], () => {
   window.scrollTo({ top: 0, behavior: 'auto' })
   loadDetail()
 })

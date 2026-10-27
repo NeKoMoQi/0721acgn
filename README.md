@@ -34,9 +34,9 @@ Fill `backend/src/main/resources/application.properties` with your local databas
 - 接口：`GET /api/galgame`、`GET /api/galgame/hot`、`GET /api/galgame/byid?id=`。
 - 数据表：`tb_galgame`，应用启动时由 `GalgameMysqlSchemaInitializer` 自动建表。
 - 首批 20 部真实作品资料，结构化字段来自 VNDB，中文名/背景参考萌娘百科；Bangumi 在采集环境连接超时，未使用其数据。
-- v3 内容更新：20 篇中文导读、51 条角色介绍、76 张官方 Steam 画面预览、6 张人物图、19 部作品的中国区价格快照（2026-10-27）与试玩入口；白色相簿2改用官网看图入口并隐藏未核实评分。
+- v6 内容更新：20 篇中文导读、51 条角色介绍、87 张官方 Steam 画面预览、18 条官方 PV 入口、6 张人物图、4 个专题、19 部作品的中国区价格快照（2026-10-27）与试玩入口；列表/详情使用选定蓝天四人背景；白色相簿2改用官网看图入口并隐藏未核实评分。
 - 采集脚本：`backend/scripts/collect_galgame.py`，说明见 `backend/scripts/GALGAME-INGEST.md`。
-- v3 内容校验：`node backend/scripts/verify_galgame_content.mjs .`
+- v6 内容校验：`node backend/scripts/verify_galgame_content.mjs .`
 
 ```powershell
 # 采集并写入本地 MySQL（使用 backend 自带 venv）

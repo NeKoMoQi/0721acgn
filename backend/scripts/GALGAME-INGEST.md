@@ -23,30 +23,36 @@
 评分统一换算为十分制（VNDB API 的 87.3 → 8.7），页面上必须同时显示来源与评分人数，
 例如“VNDB 8.7 / 10 · 11,534 人评分”。
 
-## v3 编辑内容（2026-10-27）
+## v6 内容与展示更新（2026-10-27）
 
-v3 是内容与展示层更新，不新增数据库列，数字 ID 不变：
+v6 是最终选定的内容与展示层更新，不新增数据库列，数字 ID 不变：
 
 - `frontend/src/data/galgameGuides.json` / `.ts`：20 部作品的自然中文导读、看点、玩法参考、版本说明和来源。
-- `frontend/src/data/galgameMedia.json` / `.ts`：51 条角色介绍、76 张官方 Steam 商品预览、6 张人物图、
-  19 部作品的中国区价格/免费状态与试玩入口，通过 `slug` 关联既有接口。
-- `frontend/public/galgame/media/`：上述 82 张本地图片；原图版权归权利人，公开来源不等同于新授权。
-- `frontend/src/view/GalaGame/GalgameIntroduce/GalgameExtras.vue`：版本与价格、角色速览、画面预览与弹窗。
-- 白色相簿2官网限制素材转载，因此不下架图片，改为官网看图入口；该作评分未核实，`ratingVerified: false`，
+- `frontend/src/data/galgameMedia.json` / `.ts`：51 条角色介绍、87 张官方 Steam 商品预览、18 张官方 PV 封面、
+  6 张人物图、19 部作品的中国区价格/免费状态与试玩入口，通过 `slug` 关联既有接口。
+- `frontend/src/data/galgameDiscovery.json` / `.ts`、`GalgameExplore.vue`：4 个专题（中文可玩 14 部、短篇入门 1 部、
+  科幻与悬疑 12 部、校园与恋爱 5 部）、系列/同厂商/同专题关联和稳定 slug 路由；真实数据库 ID 由分页接口解析，不写死。
+- `frontend/public/galgame/media/`：87 张预览、6 张人物图、18 张 PV 封面；原图版权归权利人，公开来源不等同于新授权。
+- 选定背景 `frontend/public/galgame/background-aokana-sky.png`（来源记录在同名 `.source.json`），列表与详情共用；
+  桌面两侧全高露出人物，手机隐藏侧边构图层并降低背景对比。
+- `frontend/src/view/GalaGame/GalgameIntroduce/GalgameExtras.vue`：版本与价格、角色速览、按“对白与正文/场景/CG与演出/
+  玩法与系统”分类的画面预览、PV 观看入口与弹窗。
+- 白色相簿2官网限制素材转载，因此不下载其图片，改为官网看图入口；该作评分未核实，`ratingVerified: false`，
   页面显示“评分篇章核对中”，不展示历史评分。
 - 价格为中国区 2026-10-27 快照，页面注明“现价以商品页为准”；999、寒蝉、海猫按合集/第一章/出题篇计价，
-  不改成全系列价格。
+  不改成全系列价格；寒蝉与白色相簿2没有本次核实的官方商店 PV，不填假链接。
 - `backend/sql/galgame_editorial_update.sql`：按 20 个稳定 slug 调整排序并修正 ATRI 开发商。
   本地数据库经核对已处于 v2 更新后的状态（排序 1–20、ATRI 为 `Frontwing / 枕`），本次无需重复变更；
   更新前已将 20 行备份到 `backend/data/galgame_editorial_backup_20261027.json`。
 
-v3 验收：
+v6 验收：
 
 ```powershell
 node backend/scripts/verify_galgame_content.mjs .
 ```
 
-该命令检查 20 部覆盖、51 条角色、76 张本地截图、来源、币种、官网回退、评分保护和 Vue 组件编译。
+该命令检查 20 部覆盖、51 条角色、87 张本地截图、18 条官方 PV、4 个专题与背景文件、来源、币种、官网回退、
+评分保护和 4 个 Vue 组件编译。
 
 ## 目录与文件
 
@@ -54,17 +60,19 @@ node backend/scripts/verify_galgame_content.mjs .
 | --- | --- |
 | `galgame_catalog.json` | 作品名单、中文名、别名、题材、无剧透简介、版本说明、官网/Steam 链接 |
 | `collect_galgame.py` | 采集、清洗、生成 JSON/SQL、可选写入 MySQL |
-| `verify_galgame_content.mjs` | 校验 20 部导读、51 条角色、76 张本地截图、来源、币种、评分保护与 Vue 组件编译 |
+| `verify_galgame_content.mjs` | 校验 20 部导读、51 条角色、87 张本地截图、18 条 PV、专题、背景、来源与 Vue 组件编译 |
 | `../data/galgame_seed.json` | 清洗后的 20 条数据（审计用） |
 | `../data/galgame_collection_report.json` | 采集报告：来源状态、缺失字段、错误 |
 | `../data/galgame_editorial_backup_20261027.json` | v3 SQL 前的 20 行排序/开发商备份 |
 | `../sql/galgame.sql` | 表结构 |
 | `../sql/galgame_seed.sql` | 表结构 + 20 条 `INSERT ... ON DUPLICATE KEY UPDATE` |
-| `../sql/galgame_editorial_update.sql` | v3 排序与 ATRI 开发商增量 SQL |
+| `../sql/galgame_editorial_update.sql` | 排序与 ATRI 开发商增量 SQL |
 | `../.cache/galgame/*.json` | 7 天响应缓存（不入库、不展示） |
 | `../../frontend/src/data/galgameGuides.*` | 20 部编辑导读 |
-| `../../frontend/src/data/galgameMedia.*` | 角色、截图、价格与商店资料 |
-| `../../frontend/public/galgame/media/` | 本地角色图与官方商店预览图 |
+| `../../frontend/src/data/galgameMedia.*` | 角色、截图、分类、PV、价格与商店资料 |
+| `../../frontend/src/data/galgameDiscovery.*` | 专题、关联关系与稳定 slug 解析 |
+| `../../frontend/public/galgame/media/` | 本地角色图、分类预览与 PV 封面 |
+| `../../frontend/public/galgame/background-aokana-sky.*` | 列表/详情背景及来源说明 |
 
 ## 运行
 

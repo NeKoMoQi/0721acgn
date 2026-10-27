@@ -38,28 +38,39 @@
     ],
     "screenshots": [
       {
+        "src": "/galgame/media/atri/preview-6.jpg",
+        "alt": "ATRI -My Dear Moments- · 对白界面",
+        "category": "对白界面",
+        "sourceUrl": "https://store.steampowered.com/app/1230140/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/ss_2602274780cd3cee2e2a6995300cd720e7a77627.1920x1080.jpg?t=1761759369"
+      },
+      {
         "src": "/galgame/media/atri/preview-1.jpg",
-        "alt": "ATRI -My Dear Moments- 官方画面 1",
+        "alt": "ATRI -My Dear Moments- · 标题与海边场景",
+        "category": "标题与海边场景",
         "sourceUrl": "https://store.steampowered.com/app/1230140/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/ss_f9b78a7bbb22cf933a73877b58149aa61f2b1a48.1920x1080.jpg?t=1761759369"
       },
       {
         "src": "/galgame/media/atri/preview-2.jpg",
-        "alt": "ATRI -My Dear Moments- 官方画面 2",
+        "alt": "ATRI -My Dear Moments- · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/1230140/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/ss_47e1f809fa56ab6d48de3c66e3147585b4ee30a2.1920x1080.jpg?t=1761759369"
       },
       {
-        "src": "/galgame/media/atri/preview-3.jpg",
-        "alt": "ATRI -My Dear Moments- 官方画面 3",
-        "sourceUrl": "https://store.steampowered.com/app/1230140/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/ss_b1398d1db33b83830d9055d5df79f120bad9110d.1920x1080.jpg?t=1761759369"
-      },
-      {
         "src": "/galgame/media/atri/preview-4.jpg",
-        "alt": "ATRI -My Dear Moments- 官方画面 4",
+        "alt": "ATRI -My Dear Moments- · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/1230140/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/ss_15b6e7f77df0c250efc751769c6ced3c47119a4d.1920x1080.jpg?t=1761759369"
+      },
+      {
+        "src": "/galgame/media/atri/preview-7.jpg",
+        "alt": "ATRI -My Dear Moments- · 对白界面",
+        "category": "对白界面",
+        "sourceUrl": "https://store.steampowered.com/app/1230140/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/ss_bdbf991588b1589c9efadf9351fc36521ca80e0b.1920x1080.jpg?t=1761759369"
       }
     ],
     "offers": [
@@ -86,10 +97,20 @@
           "所选版本价格（中国区）",
           "官方画面预览",
           "角色姓名",
-          "角色介绍"
+          "角色介绍",
+          "官方PV"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方OP",
+      "originalTitle": "Opening Movie",
+      "poster": "/galgame/media/atri/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/1230140/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256778282/movie.293x165.jpg?t=1584765043",
+      "checkedAt": "2026-10-27",
+      "movieId": 256778282
+    }
   },
   {
     "slug": "steins-gate",
@@ -113,28 +134,32 @@
     ],
     "screenshots": [
       {
-        "src": "/galgame/media/steins-gate/preview-1.jpg",
-        "alt": "命运石之门 官方画面 1",
-        "sourceUrl": "https://store.steampowered.com/app/412830/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/412830/ss_48523dbba66bc7ea79c8bc46eabaee6190e005e9.1920x1080.jpg?t=1715703398"
-      },
-      {
         "src": "/galgame/media/steins-gate/preview-2.jpg",
-        "alt": "命运石之门 官方画面 2",
+        "alt": "命运石之门 · 对白界面",
+        "category": "对白界面",
         "sourceUrl": "https://store.steampowered.com/app/412830/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/412830/ss_56d0a07b2ca57c72eb9c74ca918d49e3cf7a06a6.1920x1080.jpg?t=1715703398"
       },
       {
         "src": "/galgame/media/steins-gate/preview-3.jpg",
-        "alt": "命运石之门 官方画面 3",
+        "alt": "命运石之门 · 街道场景",
+        "category": "街道场景",
         "sourceUrl": "https://store.steampowered.com/app/412830/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/412830/ss_18e33276a72437c7728c969fe079e7bda6b7fb08.1920x1080.jpg?t=1715703398"
       },
       {
         "src": "/galgame/media/steins-gate/preview-4.jpg",
-        "alt": "命运石之门 官方画面 4",
+        "alt": "命运石之门 · 手机界面",
+        "category": "手机界面",
         "sourceUrl": "https://store.steampowered.com/app/412830/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/412830/ss_2335b7b8d7b5adc666e38443468b4c73ae69e9a3.1920x1080.jpg?t=1715703398"
+      },
+      {
+        "src": "/galgame/media/steins-gate/preview-5.jpg",
+        "alt": "命运石之门 · CG画面",
+        "category": "CG画面",
+        "sourceUrl": "https://store.steampowered.com/app/412830/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/412830/ss_a01b4d237570d27a8495a8f96acf55875ddb8ee2.1920x1080.jpg?t=1715703398"
       }
     ],
     "offers": [
@@ -153,7 +178,8 @@
         "checkedAt": "2026-10-27",
         "supports": [
           "所选版本价格（中国区）",
-          "官方画面预览"
+          "官方画面预览",
+          "官方PV"
         ]
       },
       {
@@ -166,7 +192,16 @@
         ]
       }
     ],
-    "durationLabel": "约 30–50 小时（发行方说明）"
+    "durationLabel": "约 30–50 小时（发行方说明）",
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "STEINSGATEPV_Sep2016",
+      "poster": "/galgame/media/steins-gate/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/412830/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256658578/movie.293x165.jpg?t=1473391294",
+      "checkedAt": "2026-10-27",
+      "movieId": 256658578
+    }
   },
   {
     "slug": "clannad",
@@ -190,28 +225,39 @@
     ],
     "screenshots": [
       {
-        "src": "/galgame/media/clannad/preview-1.jpg",
-        "alt": "CLANNAD 官方画面 1",
-        "sourceUrl": "https://store.steampowered.com/app/324160/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/324160/ss_820eb3b554040d3829bbf3b511988480ca2ca521.1920x1080.jpg?t=1777413875"
-      },
-      {
-        "src": "/galgame/media/clannad/preview-2.jpg",
-        "alt": "CLANNAD 官方画面 2",
-        "sourceUrl": "https://store.steampowered.com/app/324160/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/324160/ss_0ea83794c5f87b402f2975ad4000ce7eac42544f.1920x1080.jpg?t=1777413875"
-      },
-      {
         "src": "/galgame/media/clannad/preview-3.jpg",
-        "alt": "CLANNAD 官方画面 3",
+        "alt": "CLANNAD · 对白界面",
+        "category": "对白界面",
         "sourceUrl": "https://store.steampowered.com/app/324160/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/324160/ss_716847e23309f7d93262084931c07209771b8c58.1920x1080.jpg?t=1777413875"
       },
       {
-        "src": "/galgame/media/clannad/preview-4.jpg",
-        "alt": "CLANNAD 官方画面 4",
+        "src": "/galgame/media/clannad/preview-9.jpg",
+        "alt": "CLANNAD · 房间场景",
+        "category": "房间场景",
         "sourceUrl": "https://store.steampowered.com/app/324160/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/324160/ss_6ca454c62bc73a59afbd67227f70d8e8f74ad39b.1920x1080.jpg?t=1777413875"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/324160/ss_4110d5fa2776b78822b1360094676b4881308968.1920x1080.jpg?t=1777413875"
+      },
+      {
+        "src": "/galgame/media/clannad/preview-5.jpg",
+        "alt": "CLANNAD · CG画面",
+        "category": "CG画面",
+        "sourceUrl": "https://store.steampowered.com/app/324160/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/324160/ss_81e1a1e2cad571df1d1d3a9418d3a6e4b85f5b59.1920x1080.jpg?t=1777413875"
+      },
+      {
+        "src": "/galgame/media/clannad/preview-7.jpg",
+        "alt": "CLANNAD · 系统界面",
+        "category": "系统界面",
+        "sourceUrl": "https://store.steampowered.com/app/324160/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/324160/ss_4c6a7cfe4859a3fb939360f30029785c874f9b1f.1920x1080.jpg?t=1777413875"
+      },
+      {
+        "src": "/galgame/media/clannad/preview-6.jpg",
+        "alt": "CLANNAD · 对白界面",
+        "category": "对白界面",
+        "sourceUrl": "https://store.steampowered.com/app/324160/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/324160/ss_dc41bc62311b8273ecdec07e530f6b1ac4bceaa3.1920x1080.jpg?t=1777413875"
       }
     ],
     "offers": [
@@ -230,7 +276,8 @@
         "checkedAt": "2026-10-27",
         "supports": [
           "所选版本价格（中国区）",
-          "官方画面预览"
+          "官方画面预览",
+          "官方PV"
         ]
       },
       {
@@ -242,7 +289,16 @@
           "角色介绍"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "CLANAND English",
+      "poster": "/galgame/media/clannad/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/324160/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256763569/movie.293x165.jpg?t=1711546679",
+      "checkedAt": "2026-10-27",
+      "movieId": 256763569
+    }
   },
   {
     "slug": "fata-morgana",
@@ -263,28 +319,32 @@
     ],
     "screenshots": [
       {
+        "src": "/galgame/media/fata-morgana/preview-9.jpg",
+        "alt": "海市蜃楼之馆 · 对白界面",
+        "category": "对白界面",
+        "sourceUrl": "https://store.steampowered.com/app/303310/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/303310/ss_92193a671baeb9bb6e3653d8d3ca64652f729668.1920x1080.jpg?t=1790274178"
+      },
+      {
         "src": "/galgame/media/fata-morgana/preview-1.jpg",
-        "alt": "海市蜃楼之馆 官方画面 1",
+        "alt": "海市蜃楼之馆 · 宅邸演出",
+        "category": "宅邸演出",
         "sourceUrl": "https://store.steampowered.com/app/303310/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/303310/ss_2ddb5a4d33cd114b95fb6b81089d3948bf096fd7.1920x1080.jpg?t=1790274178"
       },
       {
-        "src": "/galgame/media/fata-morgana/preview-2.jpg",
-        "alt": "海市蜃楼之馆 官方画面 2",
+        "src": "/galgame/media/fata-morgana/preview-5.jpg",
+        "alt": "海市蜃楼之馆 · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/303310/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/303310/ss_3862acfe790bcad2538d59be31a6f8c2cf4fde1a.1920x1080.jpg?t=1790274178"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/303310/ss_2acbbeba5f1fd15a083f0ec657bf18e0d4250392.1920x1080.jpg?t=1790274178"
       },
       {
-        "src": "/galgame/media/fata-morgana/preview-3.jpg",
-        "alt": "海市蜃楼之馆 官方画面 3",
+        "src": "/galgame/media/fata-morgana/preview-10.jpg",
+        "alt": "海市蜃楼之馆 · 对白界面",
+        "category": "对白界面",
         "sourceUrl": "https://store.steampowered.com/app/303310/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/303310/ss_ef7919b076eafe3a8ab9620b5db719b83d076ad3.1920x1080.jpg?t=1790274178"
-      },
-      {
-        "src": "/galgame/media/fata-morgana/preview-4.jpg",
-        "alt": "海市蜃楼之馆 官方画面 4",
-        "sourceUrl": "https://store.steampowered.com/app/303310/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/303310/ss_ffc10ea7a466aebb1127c470800c74a88c796750.1920x1080.jpg?t=1790274178"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/303310/ss_189b5a72dd99f54fc85b9311885f1f0377994cb8.1920x1080.jpg?t=1790274178"
       }
     ],
     "offers": [
@@ -305,10 +365,20 @@
           "所选版本价格（中国区）",
           "官方画面预览",
           "角色姓名",
-          "角色介绍"
+          "角色介绍",
+          "官方PV"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "The House in Fata Morgana Trailer",
+      "poster": "/galgame/media/fata-morgana/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/303310/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2038815/movie.293x165.jpg?t=1459397061",
+      "checkedAt": "2026-10-27",
+      "movieId": 2038815
+    }
   },
   {
     "slug": "gaokao",
@@ -327,26 +397,37 @@
     ],
     "screenshots": [
       {
+        "src": "/galgame/media/gaokao/preview-6.jpg",
+        "alt": "高考恋爱100天 · 对白界面",
+        "category": "对白界面",
+        "sourceUrl": "https://store.steampowered.com/app/347620/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347620/a95950e2e18289a27c8bccbc3158eeda8afbce74/ss_a95950e2e18289a27c8bccbc3158eeda8afbce74.1920x1080.jpg?t=1763694727"
+      },
+      {
+        "src": "/galgame/media/gaokao/preview-10.jpg",
+        "alt": "高考恋爱100天 · 时间安排",
+        "category": "时间安排",
+        "sourceUrl": "https://store.steampowered.com/app/347620/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347620/6f414ce955bc0a35d4c284d509388b251e665fb5/ss_6f414ce955bc0a35d4c284d509388b251e665fb5.1920x1080.jpg?t=1763694727"
+      },
+      {
         "src": "/galgame/media/gaokao/preview-1.jpg",
-        "alt": "高考恋爱100天 官方画面 1",
+        "alt": "高考恋爱100天 · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/347620/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347620/d146863b571614ca5d090884490fd015006bf50f/ss_d146863b571614ca5d090884490fd015006bf50f.1920x1080.jpg?t=1763694727"
       },
       {
-        "src": "/galgame/media/gaokao/preview-2.jpg",
-        "alt": "高考恋爱100天 官方画面 2",
+        "src": "/galgame/media/gaokao/preview-9.jpg",
+        "alt": "高考恋爱100天 · 道具界面",
+        "category": "道具界面",
         "sourceUrl": "https://store.steampowered.com/app/347620/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347620/6ede9cb3df2009dffa0994b49a72d783613492e4/ss_6ede9cb3df2009dffa0994b49a72d783613492e4.1920x1080.jpg?t=1763694727"
-      },
-      {
-        "src": "/galgame/media/gaokao/preview-3.jpg",
-        "alt": "高考恋爱100天 官方画面 3",
-        "sourceUrl": "https://store.steampowered.com/app/347620/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347620/31c1a1dadc189cc7e65f9080bf8787ff83e08d8e/ss_31c1a1dadc189cc7e65f9080bf8787ff83e08d8e.1920x1080.jpg?t=1763694727"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347620/1ac4c120b2acc15865971e8eaa3951bffb01a36b/ss_1ac4c120b2acc15865971e8eaa3951bffb01a36b.1920x1080.jpg?t=1763694727"
       },
       {
         "src": "/galgame/media/gaokao/preview-4.jpg",
-        "alt": "高考恋爱100天 官方画面 4",
+        "alt": "高考恋爱100天 · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/347620/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347620/1c8a845faefd56208426b6f676dfe102964b4b8b/ss_1c8a845faefd56208426b6f676dfe102964b4b8b.1920x1080.jpg?t=1763694727"
       }
@@ -367,7 +448,8 @@
         "checkedAt": "2026-10-27",
         "supports": [
           "所选版本价格（中国区）",
-          "官方画面预览"
+          "官方画面预览",
+          "官方PV"
         ]
       },
       {
@@ -379,7 +461,16 @@
           "角色介绍"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "Promotional Video English",
+      "poster": "/galgame/media/gaokao/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/347620/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2038279/movie.293x165.jpg?t=1447372195",
+      "checkedAt": "2026-10-27",
+      "movieId": 2038279
+    }
   },
   {
     "slug": "mahoyo",
@@ -406,28 +497,39 @@
     ],
     "screenshots": [
       {
-        "src": "/galgame/media/mahoyo/preview-1.jpg",
-        "alt": "魔法使之夜 官方画面 1",
+        "src": "/galgame/media/mahoyo/preview-10.jpg",
+        "alt": "魔法使之夜 · 对白界面",
+        "category": "对白界面",
         "sourceUrl": "https://store.steampowered.com/app/2052410/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2052410/ss_cb5774706384c0bd6e21f83979167cb54d9a4e77.1920x1080.jpg?t=1753952335"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2052410/ss_b2092cf73bb185ce94d08ac375a6bb97521421b3.1920x1080.jpg?t=1753952335"
       },
       {
         "src": "/galgame/media/mahoyo/preview-2.jpg",
-        "alt": "魔法使之夜 官方画面 2",
+        "alt": "魔法使之夜 · 室内演出",
+        "category": "室内演出",
         "sourceUrl": "https://store.steampowered.com/app/2052410/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2052410/ss_8d4f4929594b0f666e9e36971f3085fe9c17f38f.1920x1080.jpg?t=1753952335"
       },
       {
         "src": "/galgame/media/mahoyo/preview-3.jpg",
-        "alt": "魔法使之夜 官方画面 3",
+        "alt": "魔法使之夜 · 夜景演出",
+        "category": "夜景演出",
         "sourceUrl": "https://store.steampowered.com/app/2052410/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2052410/ss_9fe33923585b286c80bea857acf8ac2686edacce.1920x1080.jpg?t=1753952335"
       },
       {
         "src": "/galgame/media/mahoyo/preview-4.jpg",
-        "alt": "魔法使之夜 官方画面 4",
+        "alt": "魔法使之夜 · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/2052410/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2052410/ss_1b1452d52fd994995ce62792c37c2ef95428bff1.1920x1080.jpg?t=1753952335"
+      },
+      {
+        "src": "/galgame/media/mahoyo/preview-9.jpg",
+        "alt": "魔法使之夜 · CG画面",
+        "category": "CG画面",
+        "sourceUrl": "https://store.steampowered.com/app/2052410/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2052410/ss_c2d0b8dc7a6d05918c59b6ae7e3c21b29520c1a4.1920x1080.jpg?t=1753952335"
       }
     ],
     "offers": [
@@ -446,7 +548,8 @@
         "checkedAt": "2026-10-27",
         "supports": [
           "所选版本价格（中国区）",
-          "官方画面预览"
+          "官方画面预览",
+          "官方PV"
         ]
       },
       {
@@ -458,7 +561,16 @@
           "角色介绍"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "PV with English subtitles",
+      "poster": "/galgame/media/mahoyo/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/2052410/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256982466/movie.293x165.jpg?t=1753952332",
+      "checkedAt": "2026-10-27",
+      "movieId": 256982466
+    }
   },
   {
     "slug": "summer-pockets",
@@ -477,28 +589,46 @@
     ],
     "screenshots": [
       {
+        "src": "/galgame/media/summer-pockets/preview-5.jpg",
+        "alt": "Summer Pockets · 对白界面",
+        "category": "对白界面",
+        "sourceUrl": "https://store.steampowered.com/app/897220/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/897220/ss_51d9edd9c820fa0eafd7b6b497e2d1872db0c769.1920x1080.jpg?t=1732683225"
+      },
+      {
+        "src": "/galgame/media/summer-pockets/preview-11.jpg",
+        "alt": "Summer Pockets · 岛屿地图",
+        "category": "岛屿地图",
+        "sourceUrl": "https://store.steampowered.com/app/897220/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/897220/ss_f48d9f80f2801ac01085e2977cd1048ac81a34df.1920x1080.jpg?t=1732683225"
+      },
+      {
+        "src": "/galgame/media/summer-pockets/preview-12.jpg",
+        "alt": "Summer Pockets · 乒乓球玩法",
+        "category": "乒乓球玩法",
+        "sourceUrl": "https://store.steampowered.com/app/897220/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/897220/ss_daeb73d9eadfb41dcd5e9b7f90cce5c86027937c.1920x1080.jpg?t=1732683225"
+      },
+      {
         "src": "/galgame/media/summer-pockets/preview-1.jpg",
-        "alt": "Summer Pockets 官方画面 1",
+        "alt": "Summer Pockets · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/897220/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/897220/ss_fe132f9d90df8fdfa85092565b71f9e5cde2220f.1920x1080.jpg?t=1732683225"
       },
       {
+        "src": "/galgame/media/summer-pockets/preview-6.jpg",
+        "alt": "Summer Pockets · 街道场景",
+        "category": "街道场景",
+        "sourceUrl": "https://store.steampowered.com/app/897220/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/897220/ss_d75ed429c7262deaeba074007683f5856451dfdc.1920x1080.jpg?t=1732683225"
+      },
+      {
         "src": "/galgame/media/summer-pockets/preview-2.jpg",
-        "alt": "Summer Pockets 官方画面 2",
+        "alt": "Summer Pockets · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/897220/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/897220/ss_9ef478c0c92da6690a007c22404a2729650496c7.1920x1080.jpg?t=1732683225"
-      },
-      {
-        "src": "/galgame/media/summer-pockets/preview-3.jpg",
-        "alt": "Summer Pockets 官方画面 3",
-        "sourceUrl": "https://store.steampowered.com/app/897220/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/897220/ss_a5f7ed62057d3b2ccec77e81162a3135007f6958.1920x1080.jpg?t=1732683225"
-      },
-      {
-        "src": "/galgame/media/summer-pockets/preview-4.jpg",
-        "alt": "Summer Pockets 官方画面 4",
-        "sourceUrl": "https://store.steampowered.com/app/897220/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/897220/ss_c68e29f056bd0fba0ced84c4191476631333d784.1920x1080.jpg?t=1732683225"
       }
     ],
     "offers": [
@@ -519,7 +649,8 @@
           "所选版本价格（中国区）",
           "官方画面预览",
           "角色姓名",
-          "角色介绍"
+          "角色介绍",
+          "官方PV"
         ]
       },
       {
@@ -530,7 +661,16 @@
           "角色性格与出场身份"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方OP",
+      "originalTitle": "Summer Pockets英語OP",
+      "poster": "/galgame/media/summer-pockets/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/897220/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256877718/movie.293x165.jpg?t=1647238592",
+      "checkedAt": "2026-10-27",
+      "movieId": 256877718
+    }
   },
   {
     "slug": "999",
@@ -552,27 +692,31 @@
     "screenshots": [
       {
         "src": "/galgame/media/999/preview-1.jpg",
-        "alt": "极限脱出：9小时9人9扇门 官方画面 1",
+        "alt": "极限脱出：9小时9人9扇门 · 对白界面",
+        "category": "对白界面",
         "sourceUrl": "https://store.steampowered.com/app/477740/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/477740/ss_c240213c771d8e1b1e0cb70044aef5648f4b1967.1920x1080.jpg?t=1715699741"
       },
       {
-        "src": "/galgame/media/999/preview-2.jpg",
-        "alt": "极限脱出：9小时9人9扇门 官方画面 2",
-        "sourceUrl": "https://store.steampowered.com/app/477740/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/477740/ss_aac9432c5f90ad76feac59f024206a0396b4dc72.1920x1080.jpg?t=1715699741"
-      },
-      {
         "src": "/galgame/media/999/preview-3.jpg",
-        "alt": "极限脱出：9小时9人9扇门 官方画面 3",
+        "alt": "极限脱出：9小时9人9扇门 · 船舱探索",
+        "category": "船舱探索",
         "sourceUrl": "https://store.steampowered.com/app/477740/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/477740/ss_1a22b8251f307da905a4d4fa156d417f1e5ecb3e.1920x1080.jpg?t=1715699741"
       },
       {
         "src": "/galgame/media/999/preview-4.jpg",
-        "alt": "极限脱出：9小时9人9扇门 官方画面 4",
+        "alt": "极限脱出：9小时9人9扇门 · 道具调查",
+        "category": "道具调查",
         "sourceUrl": "https://store.steampowered.com/app/477740/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/477740/ss_1595cdc2b9f100b014be226caa48e79b6b50387f.1920x1080.jpg?t=1715699741"
+      },
+      {
+        "src": "/galgame/media/999/preview-2.jpg",
+        "alt": "极限脱出：9小时9人9扇门 · 剧情画面",
+        "category": "剧情画面",
+        "sourceUrl": "https://store.steampowered.com/app/477740/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/477740/ss_aac9432c5f90ad76feac59f024206a0396b4dc72.1920x1080.jpg?t=1715699741"
       }
     ],
     "offers": [
@@ -591,7 +735,8 @@
         "checkedAt": "2026-10-27",
         "supports": [
           "所选版本价格（中国区）",
-          "官方画面预览"
+          "官方画面预览",
+          "官方PV"
         ]
       },
       {
@@ -603,7 +748,17 @@
           "角色介绍"
         ]
       }
-    ]
+    ],
+    "galleryNote": "截图来自 The Nonary Games 合集，仅选取 999 部分。",
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "Announcement Trailer",
+      "poster": "/galgame/media/999/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/477740/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256678738/movie.293x165.jpg?t=1485759445",
+      "checkedAt": "2026-10-27",
+      "movieId": 256678738
+    }
   },
   {
     "slug": "white-album-2",
@@ -680,28 +835,32 @@
     ],
     "screenshots": [
       {
-        "src": "/galgame/media/narcissu/preview-1.jpg",
-        "alt": "水仙 官方画面 1",
-        "sourceUrl": "https://store.steampowered.com/app/264380/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/264380/ss_ea8f19f5316d315d513babc2429d2ec2ffb57e63.1920x1080.jpg?t=1726604657"
-      },
-      {
-        "src": "/galgame/media/narcissu/preview-2.jpg",
-        "alt": "水仙 官方画面 2",
-        "sourceUrl": "https://store.steampowered.com/app/264380/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/264380/ss_ccb3fa65a8aa507f91e91e7a24a1b471fac8bb20.1920x1080.jpg?t=1726604657"
-      },
-      {
         "src": "/galgame/media/narcissu/preview-3.jpg",
-        "alt": "水仙 官方画面 3",
+        "alt": "水仙 · 正文界面",
+        "category": "正文界面",
         "sourceUrl": "https://store.steampowered.com/app/264380/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/264380/ss_9447c2cac91747090148660190650a1f5c5a1b51.1920x1080.jpg?t=1726604657"
       },
       {
         "src": "/galgame/media/narcissu/preview-4.jpg",
-        "alt": "水仙 官方画面 4",
+        "alt": "水仙 · 走廊场景",
+        "category": "走廊场景",
         "sourceUrl": "https://store.steampowered.com/app/264380/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/264380/ss_5876272dd4b46cb9aa3b80567a1fc2e00c6f8fe0.1920x1080.jpg?t=1726604657"
+      },
+      {
+        "src": "/galgame/media/narcissu/preview-5.jpg",
+        "alt": "水仙 · 街道场景",
+        "category": "街道场景",
+        "sourceUrl": "https://store.steampowered.com/app/264380/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/264380/ss_e17cee0829b9ede0d5195469482c2cc12053a074.1920x1080.jpg?t=1726604657"
+      },
+      {
+        "src": "/galgame/media/narcissu/preview-1.jpg",
+        "alt": "水仙 · 标题界面",
+        "category": "标题界面",
+        "sourceUrl": "https://store.steampowered.com/app/264380/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/264380/ss_ea8f19f5316d315d513babc2429d2ec2ffb57e63.1920x1080.jpg?t=1726604657"
       }
     ],
     "offers": [
@@ -719,7 +878,8 @@
         "checkedAt": "2026-10-27",
         "supports": [
           "所选版本价格（中国区）",
-          "官方画面预览"
+          "官方画面预览",
+          "官方PV"
         ]
       },
       {
@@ -731,7 +891,16 @@
           "角色介绍"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "trailer",
+      "poster": "/galgame/media/narcissu/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/264380/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2031457/movie.293x165.jpg?t=1447360919",
+      "checkedAt": "2026-10-27",
+      "movieId": 2031457
+    }
   },
   {
     "slug": "rewrite",
@@ -755,28 +924,46 @@
     ],
     "screenshots": [
       {
+        "src": "/galgame/media/rewrite/preview-6.jpg",
+        "alt": "Rewrite · 对白界面",
+        "category": "对白界面",
+        "sourceUrl": "https://store.steampowered.com/app/1680000/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_ac703d872bf867017f32c6203f7ca3743f12f1db.1920x1080.jpg?t=1755892946"
+      },
+      {
+        "src": "/galgame/media/rewrite/preview-7.jpg",
+        "alt": "Rewrite · 城市场景",
+        "category": "城市场景",
+        "sourceUrl": "https://store.steampowered.com/app/1680000/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_8de2f8ffeacd1f59d5a3932099a34723256fd8ab.1920x1080.jpg?t=1755892946"
+      },
+      {
+        "src": "/galgame/media/rewrite/preview-8.jpg",
+        "alt": "Rewrite · CG画面",
+        "category": "CG画面",
+        "sourceUrl": "https://store.steampowered.com/app/1680000/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_e6ae8f6fb54d62d2dde2ee63ef4a0ecf91d3bda9.1920x1080.jpg?t=1755892946"
+      },
+      {
+        "src": "/galgame/media/rewrite/preview-12.jpg",
+        "alt": "Rewrite · 街道场景",
+        "category": "街道场景",
+        "sourceUrl": "https://store.steampowered.com/app/1680000/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_57f9474bf92e3194fe996825a2a99d329f4761e5.1920x1080.jpg?t=1755892946"
+      },
+      {
+        "src": "/galgame/media/rewrite/preview-9.jpg",
+        "alt": "Rewrite · 对白界面",
+        "category": "对白界面",
+        "sourceUrl": "https://store.steampowered.com/app/1680000/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_e05d185e63a4a2b0b0d3161056279097ed25f985.1920x1080.jpg?t=1755892946"
+      },
+      {
         "src": "/galgame/media/rewrite/preview-1.jpg",
-        "alt": "Rewrite 官方画面 1",
+        "alt": "Rewrite · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/1680000/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_47c954880d19a167b73c0670f7396ba33f556d0d.1920x1080.jpg?t=1755892946"
-      },
-      {
-        "src": "/galgame/media/rewrite/preview-2.jpg",
-        "alt": "Rewrite 官方画面 2",
-        "sourceUrl": "https://store.steampowered.com/app/1680000/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_b4f17df3f40e474cec40ea158af4d0ee324e6f3a.1920x1080.jpg?t=1755892946"
-      },
-      {
-        "src": "/galgame/media/rewrite/preview-3.jpg",
-        "alt": "Rewrite 官方画面 3",
-        "sourceUrl": "https://store.steampowered.com/app/1680000/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_6a21d464ff8764d6ee3ab37c5d9ced8295cba819.1920x1080.jpg?t=1755892946"
-      },
-      {
-        "src": "/galgame/media/rewrite/preview-4.jpg",
-        "alt": "Rewrite 官方画面 4",
-        "sourceUrl": "https://store.steampowered.com/app/1680000/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1680000/ss_42d8aaf9349cb898a2cf9d4696eb22aecc2bc68d.1920x1080.jpg?t=1755892946"
       }
     ],
     "offers": [
@@ -797,10 +984,20 @@
           "所选版本价格（中国区）",
           "官方画面预览",
           "角色姓名",
-          "角色介绍"
+          "角色介绍",
+          "官方PV"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方OP",
+      "originalTitle": "OP",
+      "poster": "/galgame/media/rewrite/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/1680000/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256846117/d77c8689169a9f015d9b7c12584ed3175335654d/movie_600x337.jpg?t=1755552027",
+      "checkedAt": "2026-10-27",
+      "movieId": 256846117
+    }
   },
   {
     "slug": "428",
@@ -827,26 +1024,37 @@
     ],
     "screenshots": [
       {
+        "src": "/galgame/media/428/preview-3.jpg",
+        "alt": "428 ～被封锁的涩谷～ · 实拍叙事",
+        "category": "实拍叙事",
+        "sourceUrl": "https://store.steampowered.com/app/648580/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/648580/ss_17e6b6920479579c06874bc8f83ece33940a6616.1920x1080.jpg?t=1715700496"
+      },
+      {
         "src": "/galgame/media/428/preview-1.jpg",
-        "alt": "428 ～被封锁的涩谷～ 官方画面 1",
+        "alt": "428 ～被封锁的涩谷～ · 多主角界面",
+        "category": "多主角界面",
         "sourceUrl": "https://store.steampowered.com/app/648580/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/648580/ss_4113b43614179ab5d446153097c065fde4be2710.1920x1080.jpg?t=1715700496"
       },
       {
         "src": "/galgame/media/428/preview-2.jpg",
-        "alt": "428 ～被封锁的涩谷～ 官方画面 2",
+        "alt": "428 ～被封锁的涩谷～ · 时间图表",
+        "category": "时间图表",
         "sourceUrl": "https://store.steampowered.com/app/648580/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/648580/ss_8c70eb79516c72a18310b5432fd39beecb07e134.1920x1080.jpg?t=1715700496"
       },
       {
-        "src": "/galgame/media/428/preview-3.jpg",
-        "alt": "428 ～被封锁的涩谷～ 官方画面 3",
+        "src": "/galgame/media/428/preview-5.jpg",
+        "alt": "428 ～被封锁的涩谷～ · JUMP界面",
+        "category": "JUMP界面",
         "sourceUrl": "https://store.steampowered.com/app/648580/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/648580/ss_17e6b6920479579c06874bc8f83ece33940a6616.1920x1080.jpg?t=1715700496"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/648580/ss_6cf3ebea2f0b4b35bc5ff4f4f55400ac7e57414b.1920x1080.jpg?t=1715700496"
       },
       {
         "src": "/galgame/media/428/preview-4.jpg",
-        "alt": "428 ～被封锁的涩谷～ 官方画面 4",
+        "alt": "428 ～被封锁的涩谷～ · 实拍叙事",
+        "category": "实拍叙事",
         "sourceUrl": "https://store.steampowered.com/app/648580/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/648580/ss_2d9c2ccfae82933321499c4ae6578f86b8a84d0f.1920x1080.jpg?t=1715700496"
       }
@@ -867,7 +1075,8 @@
         "checkedAt": "2026-10-27",
         "supports": [
           "所选版本价格（中国区）",
-          "官方画面预览"
+          "官方画面预览",
+          "官方PV"
         ]
       },
       {
@@ -879,7 +1088,16 @@
           "角色介绍"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "Announce Trailer",
+      "poster": "/galgame/media/428/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/648580/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256711455/movie.293x165.jpg?t=1521868228",
+      "checkedAt": "2026-10-27",
+      "movieId": 256711455
+    }
   },
   {
     "slug": "lucy",
@@ -900,26 +1118,37 @@
     ],
     "screenshots": [
       {
-        "src": "/galgame/media/lucy/preview-1.jpg",
-        "alt": "露西 -她所期望的一切- 官方画面 1",
+        "src": "/galgame/media/lucy/preview-7.jpg",
+        "alt": "露西 -她所期望的一切- · 对白界面",
+        "category": "对白界面",
         "sourceUrl": "https://store.steampowered.com/app/430960/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/430960/ss_04d57d72f0779107cb096065ed297295d8633bcd.1920x1080.jpg?t=1725007683"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/430960/ss_489484f7731b74d7c81620b4dd06bdcb3c142d72.1920x1080.jpg?t=1725007683"
+      },
+      {
+        "src": "/galgame/media/lucy/preview-5.jpg",
+        "alt": "露西 -她所期望的一切- · 选项界面",
+        "category": "选项界面",
+        "sourceUrl": "https://store.steampowered.com/app/430960/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/430960/ss_e30b8c7bb0955953ac17693d20f8d7b1c6337a6a.1920x1080.jpg?t=1725007683"
       },
       {
         "src": "/galgame/media/lucy/preview-2.jpg",
-        "alt": "露西 -她所期望的一切- 官方画面 2",
+        "alt": "露西 -她所期望的一切- · 室内场景",
+        "category": "室内场景",
         "sourceUrl": "https://store.steampowered.com/app/430960/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/430960/ss_bef0aafedfb5f715eb8188f92eadf77a12913bed.1920x1080.jpg?t=1725007683"
       },
       {
-        "src": "/galgame/media/lucy/preview-3.jpg",
-        "alt": "露西 -她所期望的一切- 官方画面 3",
+        "src": "/galgame/media/lucy/preview-1.jpg",
+        "alt": "露西 -她所期望的一切- · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/430960/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/430960/ss_459f2376dadba37319432b372ebd9ee918403840.1920x1080.jpg?t=1725007683"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/430960/ss_04d57d72f0779107cb096065ed297295d8633bcd.1920x1080.jpg?t=1725007683"
       },
       {
         "src": "/galgame/media/lucy/preview-4.jpg",
-        "alt": "露西 -她所期望的一切- 官方画面 4",
+        "alt": "露西 -她所期望的一切- · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/430960/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/430960/ss_1a9e9a358c195812af6a1f311a4c3d345c6ab1b6.1920x1080.jpg?t=1725007683"
       }
@@ -942,10 +1171,20 @@
           "所选版本价格（中国区）",
           "官方画面预览",
           "角色姓名",
-          "角色介绍"
+          "角色介绍",
+          "官方PV"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "Lucy - The Eternity She Wished For -",
+      "poster": "/galgame/media/lucy/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/430960/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256660512/movie.293x165.jpg?t=1572478502",
+      "checkedAt": "2026-10-27",
+      "movieId": 256660512
+    }
   },
   {
     "slug": "air",
@@ -964,28 +1203,32 @@
     ],
     "screenshots": [
       {
-        "src": "/galgame/media/air/preview-1.jpg",
-        "alt": "AIR 官方画面 1",
-        "sourceUrl": "https://store.steampowered.com/app/2983250/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983250/ss_1b48ded38e81c267c383117457866a6bd5676914.1920x1080.jpg?t=1790333728"
-      },
-      {
         "src": "/galgame/media/air/preview-2.jpg",
-        "alt": "AIR 官方画面 2",
+        "alt": "AIR · 对白界面",
+        "category": "对白界面",
         "sourceUrl": "https://store.steampowered.com/app/2983250/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983250/ss_0d696c5ea22f259f3b78e5fff02d7d5451b7977e.1920x1080.jpg?t=1790333728"
       },
       {
+        "src": "/galgame/media/air/preview-1.jpg",
+        "alt": "AIR · CG画面",
+        "category": "CG画面",
+        "sourceUrl": "https://store.steampowered.com/app/2983250/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983250/ss_1b48ded38e81c267c383117457866a6bd5676914.1920x1080.jpg?t=1790333728"
+      },
+      {
         "src": "/galgame/media/air/preview-3.jpg",
-        "alt": "AIR 官方画面 3",
+        "alt": "AIR · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/2983250/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983250/ss_f8f095894069a527ffb243e9cfd6b987b1cb7311.1920x1080.jpg?t=1790333728"
       },
       {
-        "src": "/galgame/media/air/preview-4.jpg",
-        "alt": "AIR 官方画面 4",
+        "src": "/galgame/media/air/preview-5.jpg",
+        "alt": "AIR · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/2983250/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983250/ss_6f3cf11dd0886708bc30313758327da72d79297d.1920x1080.jpg?t=1790333728"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983250/ss_d4c7fab4b6606060f5906020830b7e5cfcb1ffcd.1920x1080.jpg?t=1790333728"
       }
     ],
     "offers": [
@@ -1004,7 +1247,8 @@
         "checkedAt": "2026-10-27",
         "supports": [
           "所选版本价格（中国区）",
-          "官方画面预览"
+          "官方画面预览",
+          "官方PV"
         ]
       },
       {
@@ -1016,7 +1260,16 @@
           "角色介绍"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "AIR English",
+      "poster": "/galgame/media/air/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/2983250/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257091839/0263211f5a6ce1a85134815f28eed60574bcf655/movie_600x337.jpg?t=1739519467",
+      "checkedAt": "2026-10-27",
+      "movieId": 257091839
+    }
   },
   {
     "slug": "higurashi",
@@ -1045,28 +1298,32 @@
     ],
     "screenshots": [
       {
+        "src": "/galgame/media/higurashi/preview-8.jpg",
+        "alt": "寒蝉鸣泣之时 · 对白界面",
+        "category": "对白界面",
+        "sourceUrl": "https://store.steampowered.com/app/310360/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/310360/ss_8e4cafeceab5ff19701022f7469c2a87471ee4c1.1920x1080.jpg?t=1790274039"
+      },
+      {
+        "src": "/galgame/media/higurashi/preview-6.jpg",
+        "alt": "寒蝉鸣泣之时 · 神社场景",
+        "category": "神社场景",
+        "sourceUrl": "https://store.steampowered.com/app/310360/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/310360/ss_0ad3175412f8dcc58c7228e5add6167abe9e29fb.1920x1080.jpg?t=1790274039"
+      },
+      {
         "src": "/galgame/media/higurashi/preview-1.jpg",
-        "alt": "寒蝉鸣泣之时 官方画面 1",
+        "alt": "寒蝉鸣泣之时 · 人物立绘",
+        "category": "人物立绘",
         "sourceUrl": "https://store.steampowered.com/app/310360/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/310360/ss_6ce3cc2cfd2690e0bb1b66e854b905208f7e13b2.1920x1080.jpg?t=1790274039"
       },
       {
-        "src": "/galgame/media/higurashi/preview-2.jpg",
-        "alt": "寒蝉鸣泣之时 官方画面 2",
+        "src": "/galgame/media/higurashi/preview-10.jpg",
+        "alt": "寒蝉鸣泣之时 · 教室场景",
+        "category": "教室场景",
         "sourceUrl": "https://store.steampowered.com/app/310360/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/310360/ss_c4eb2f247877ad15584f3a5afbb8eaa87189c970.1920x1080.jpg?t=1790274039"
-      },
-      {
-        "src": "/galgame/media/higurashi/preview-3.jpg",
-        "alt": "寒蝉鸣泣之时 官方画面 3",
-        "sourceUrl": "https://store.steampowered.com/app/310360/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/310360/ss_1c5abedbdab1678bb2cf47e256dd3640039e70b6.1920x1080.jpg?t=1790274039"
-      },
-      {
-        "src": "/galgame/media/higurashi/preview-4.jpg",
-        "alt": "寒蝉鸣泣之时 官方画面 4",
-        "sourceUrl": "https://store.steampowered.com/app/310360/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/310360/ss_acc5140afc691fb5cc4604e9f1b495cf9ed79c0f.1920x1080.jpg?t=1790274039"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/310360/ss_2bcc9a4f500b5a5cd6becbf1495765c49284df47.1920x1080.jpg?t=1790274039"
       }
     ],
     "offers": [
@@ -1117,27 +1374,31 @@
     "screenshots": [
       {
         "src": "/galgame/media/planetarian/preview-1.jpg",
-        "alt": "星之梦 官方画面 1",
+        "alt": "星之梦 · 对白界面",
+        "category": "对白界面",
         "sourceUrl": "https://store.steampowered.com/app/623080/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/623080/ss_d3e457f7d97a2b45ae3bd9aaabab1759ae495ae3.1920x1080.jpg?t=1732683288"
       },
       {
-        "src": "/galgame/media/planetarian/preview-2.jpg",
-        "alt": "星之梦 官方画面 2",
-        "sourceUrl": "https://store.steampowered.com/app/623080/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/623080/ss_5428339767912b5ec93c761ab65c7974331452a7.1920x1080.jpg?t=1732683288"
-      },
-      {
         "src": "/galgame/media/planetarian/preview-3.jpg",
-        "alt": "星之梦 官方画面 3",
+        "alt": "星之梦 · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/623080/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/623080/ss_6d64e9ea33662932e2938fbdfe51d268d7819582.1920x1080.jpg?t=1732683288"
       },
       {
-        "src": "/galgame/media/planetarian/preview-4.jpg",
-        "alt": "星之梦 官方画面 4",
+        "src": "/galgame/media/planetarian/preview-5.jpg",
+        "alt": "星之梦 · 设置界面",
+        "category": "设置界面",
         "sourceUrl": "https://store.steampowered.com/app/623080/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/623080/ss_3c190229754c156f33f1bb224d286f0adf8fb89e.1920x1080.jpg?t=1732683288"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/623080/ss_31c369a9acdfea78dd89136bed926bb636633340.1920x1080.jpg?t=1732683288"
+      },
+      {
+        "src": "/galgame/media/planetarian/preview-6.jpg",
+        "alt": "星之梦 · 操作菜单",
+        "category": "操作菜单",
+        "sourceUrl": "https://store.steampowered.com/app/623080/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/623080/ss_df5fc4745ef9bd60b88d6566dd3a41e2872c303a.1920x1080.jpg?t=1732683288"
       }
     ],
     "offers": [
@@ -1158,10 +1419,20 @@
           "所选版本价格（中国区）",
           "官方画面预览",
           "角色姓名",
-          "角色介绍"
+          "角色介绍",
+          "官方PV"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "English",
+      "poster": "/galgame/media/planetarian/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/623080/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256906967/movie.293x165.jpg?t=1663812847",
+      "checkedAt": "2026-10-27",
+      "movieId": 256906967
+    }
   },
   {
     "slug": "steins-gate-0",
@@ -1186,27 +1457,31 @@
     "screenshots": [
       {
         "src": "/galgame/media/steins-gate-0/preview-1.jpg",
-        "alt": "命运石之门0 官方画面 1",
+        "alt": "命运石之门0 · 会场演出",
+        "category": "会场演出",
         "sourceUrl": "https://store.steampowered.com/app/825630/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/825630/ss_a57fc097c43dc5a1a235835fe092c4fd688f3e6d.1920x1080.jpg?t=1715703408"
       },
       {
         "src": "/galgame/media/steins-gate-0/preview-2.jpg",
-        "alt": "命运石之门0 官方画面 2",
+        "alt": "命运石之门0 · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/825630/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/825630/ss_9cd655261bc4ff2c583545aa0a822ad9696eb1c1.1920x1080.jpg?t=1715703408"
       },
       {
-        "src": "/galgame/media/steins-gate-0/preview-3.jpg",
-        "alt": "命运石之门0 官方画面 3",
-        "sourceUrl": "https://store.steampowered.com/app/825630/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/825630/ss_28e5bd4b8c232259a26aed0d83224c8bf023c7bd.1920x1080.jpg?t=1715703408"
-      },
-      {
         "src": "/galgame/media/steins-gate-0/preview-4.jpg",
-        "alt": "命运石之门0 官方画面 4",
+        "alt": "命运石之门0 · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/825630/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/825630/ss_10a4925d86dac7163d813c528840e46b555fec7b.1920x1080.jpg?t=1715703408"
+      },
+      {
+        "src": "/galgame/media/steins-gate-0/preview-6.jpg",
+        "alt": "命运石之门0 · CG画面",
+        "category": "CG画面",
+        "sourceUrl": "https://store.steampowered.com/app/825630/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/825630/ss_f5481057a227455d98fa37aa63a89db780368319.1920x1080.jpg?t=1715703408"
       }
     ],
     "offers": [
@@ -1225,7 +1500,8 @@
         "checkedAt": "2026-10-27",
         "supports": [
           "所选版本价格（中国区）",
-          "官方画面预览"
+          "官方画面预览",
+          "官方PV"
         ]
       },
       {
@@ -1237,7 +1513,17 @@
           "角色介绍"
         ]
       }
-    ]
+    ],
+    "galleryNote": "当前商店公开素材以剧情演出画面为主。",
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "Announce Trailer",
+      "poster": "/galgame/media/steins-gate-0/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/825630/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256711577/movie.293x165.jpg?t=1521868205",
+      "checkedAt": "2026-10-27",
+      "movieId": 256711577
+    }
   },
   {
     "slug": "kanon",
@@ -1256,28 +1542,39 @@
     ],
     "screenshots": [
       {
-        "src": "/galgame/media/kanon/preview-1.jpg",
-        "alt": "Kanon 官方画面 1",
+        "src": "/galgame/media/kanon/preview-7.jpg",
+        "alt": "Kanon · 对白界面",
+        "category": "对白界面",
         "sourceUrl": "https://store.steampowered.com/app/2850310/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2850310/bce234ec44a4e9e22283877f81206f2b46ec888a/ss_bce234ec44a4e9e22283877f81206f2b46ec888a.1920x1080.jpg?t=1789739216"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2850310/5ebe5684b578e50c085390b23f3fe5428088b1c5/ss_5ebe5684b578e50c085390b23f3fe5428088b1c5.1920x1080.jpg?t=1789739216"
       },
       {
         "src": "/galgame/media/kanon/preview-2.jpg",
-        "alt": "Kanon 官方画面 2",
+        "alt": "Kanon · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/2850310/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2850310/87b7315ae9c150728a179495147bfea80a210451/ss_87b7315ae9c150728a179495147bfea80a210451.1920x1080.jpg?t=1789739216"
       },
       {
-        "src": "/galgame/media/kanon/preview-3.jpg",
-        "alt": "Kanon 官方画面 3",
+        "src": "/galgame/media/kanon/preview-1.jpg",
+        "alt": "Kanon · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/2850310/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2850310/367ccb2d7640ff5a753d48666221dff64516fd80/ss_367ccb2d7640ff5a753d48666221dff64516fd80.1920x1080.jpg?t=1789739216"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2850310/bce234ec44a4e9e22283877f81206f2b46ec888a/ss_bce234ec44a4e9e22283877f81206f2b46ec888a.1920x1080.jpg?t=1789739216"
       },
       {
-        "src": "/galgame/media/kanon/preview-4.jpg",
-        "alt": "Kanon 官方画面 4",
+        "src": "/galgame/media/kanon/preview-5.jpg",
+        "alt": "Kanon · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/2850310/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2850310/7e5517242320c4a4d29daeeadce239ac9e533617/ss_7e5517242320c4a4d29daeeadce239ac9e533617.1920x1080.jpg?t=1789739216"
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2850310/0fa84605bb9b9fc46657a356d46a3f6141da4aa4/ss_0fa84605bb9b9fc46657a356d46a3f6141da4aa4.1920x1080.jpg?t=1789739216"
+      },
+      {
+        "src": "/galgame/media/kanon/preview-8.jpg",
+        "alt": "Kanon · 街道场景",
+        "category": "街道场景",
+        "sourceUrl": "https://store.steampowered.com/app/2850310/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2850310/8dc5e0595bc8c5dc060b2102e833ead4b83d3229/ss_8dc5e0595bc8c5dc060b2102e833ead4b83d3229.1920x1080.jpg?t=1789739216"
       }
     ],
     "offers": [
@@ -1296,7 +1593,8 @@
         "checkedAt": "2026-10-27",
         "supports": [
           "所选版本价格（中国区）",
-          "官方画面预览"
+          "官方画面预览",
+          "官方PV"
         ]
       },
       {
@@ -1308,7 +1606,16 @@
           "角色介绍"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "Kanon English",
+      "poster": "/galgame/media/kanon/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/2850310/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257021915/movie.293x165.jpg?t=1718801378",
+      "checkedAt": "2026-10-27",
+      "movieId": 257021915
+    }
   },
   {
     "slug": "umineko",
@@ -1332,27 +1639,31 @@
     "screenshots": [
       {
         "src": "/galgame/media/umineko/preview-1.jpg",
-        "alt": "海猫鸣泣之时 官方画面 1",
+        "alt": "海猫鸣泣之时 · 对白界面",
+        "category": "对白界面",
         "sourceUrl": "https://store.steampowered.com/app/406550/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/406550/ss_fd3d8dcd209d25090acb58007d55fac2e390f586.1920x1080.jpg?t=1763623555"
       },
       {
-        "src": "/galgame/media/umineko/preview-2.jpg",
-        "alt": "海猫鸣泣之时 官方画面 2",
-        "sourceUrl": "https://store.steampowered.com/app/406550/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/406550/ss_3ad760ed23530c209b61f509efbb72784f78e55b.1920x1080.jpg?t=1763623555"
-      },
-      {
         "src": "/galgame/media/umineko/preview-3.jpg",
-        "alt": "海猫鸣泣之时 官方画面 3",
+        "alt": "海猫鸣泣之时 · 人物档案",
+        "category": "人物档案",
         "sourceUrl": "https://store.steampowered.com/app/406550/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/406550/ss_d43904c04581e1933874087b35e5dcf472db0053.1920x1080.jpg?t=1763623555"
       },
       {
         "src": "/galgame/media/umineko/preview-4.jpg",
-        "alt": "海猫鸣泣之时 官方画面 4",
+        "alt": "海猫鸣泣之时 · 演出画面",
+        "category": "演出画面",
         "sourceUrl": "https://store.steampowered.com/app/406550/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/406550/ss_e1166753b3c99763fc264c8b98c55f6395704e63.1920x1080.jpg?t=1763623555"
+      },
+      {
+        "src": "/galgame/media/umineko/preview-8.jpg",
+        "alt": "海猫鸣泣之时 · 对白界面",
+        "category": "对白界面",
+        "sourceUrl": "https://store.steampowered.com/app/406550/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/406550/ss_331dc37b7e80bf5b4ba3cf8dc2cad2b642f3b07f.1920x1080.jpg?t=1763623555"
       }
     ],
     "offers": [
@@ -1371,7 +1682,8 @@
         "checkedAt": "2026-10-27",
         "supports": [
           "所选版本价格（中国区）",
-          "官方画面预览"
+          "官方画面预览",
+          "官方PV"
         ]
       },
       {
@@ -1393,7 +1705,16 @@
           "贝阿朵莉切官方角色图"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "Gameplay Video",
+      "poster": "/galgame/media/umineko/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/406550/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256664220/movie.293x165.jpg?t=1463798339",
+      "checkedAt": "2026-10-27",
+      "movieId": 256664220
+    }
   },
   {
     "slug": "harmonia",
@@ -1418,27 +1739,31 @@
     "screenshots": [
       {
         "src": "/galgame/media/harmonia/preview-1.jpg",
-        "alt": "Harmonia 官方画面 1",
+        "alt": "Harmonia · 对白界面",
+        "category": "对白界面",
         "sourceUrl": "https://store.steampowered.com/app/421660/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/421660/ss_74056217b08f0f94a08acb99df0468e0c7b39c49.1920x1080.jpg?t=1732687545"
       },
       {
         "src": "/galgame/media/harmonia/preview-2.jpg",
-        "alt": "Harmonia 官方画面 2",
+        "alt": "Harmonia · 废城场景",
+        "category": "废城场景",
         "sourceUrl": "https://store.steampowered.com/app/421660/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/421660/ss_79953fc6f68b3a44dcffc035a2a6dbb952a53707.1920x1080.jpg?t=1732687545"
       },
       {
-        "src": "/galgame/media/harmonia/preview-3.jpg",
-        "alt": "Harmonia 官方画面 3",
-        "sourceUrl": "https://store.steampowered.com/app/421660/",
-        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/421660/ss_ce2e2aba6a3b6b03b12246b64d867e893770d76d.1920x1080.jpg?t=1732687545"
-      },
-      {
         "src": "/galgame/media/harmonia/preview-4.jpg",
-        "alt": "Harmonia 官方画面 4",
+        "alt": "Harmonia · CG画面",
+        "category": "CG画面",
         "sourceUrl": "https://store.steampowered.com/app/421660/",
         "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/421660/ss_199712c4b792018d0fc9e9b5ffe46e93e33f68f5.1920x1080.jpg?t=1732687545"
+      },
+      {
+        "src": "/galgame/media/harmonia/preview-6.jpg",
+        "alt": "Harmonia · 对白界面",
+        "category": "对白界面",
+        "sourceUrl": "https://store.steampowered.com/app/421660/",
+        "originalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/421660/ss_1c4f508d1563f1afd3027cba7cc9335b517dabad.1920x1080.jpg?t=1732687545"
       }
     ],
     "offers": [
@@ -1459,9 +1784,19 @@
           "所选版本价格（中国区）",
           "官方画面预览",
           "角色姓名",
-          "角色介绍"
+          "角色介绍",
+          "官方PV"
         ]
       }
-    ]
+    ],
+    "pv": {
+      "title": "官方宣传片",
+      "originalTitle": "Harmonia PV",
+      "poster": "/galgame/media/harmonia/pv-poster.jpg",
+      "watchUrl": "https://store.steampowered.com/app/421660/",
+      "originalPosterUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256670134/movie.293x165.jpg?t=1473900978",
+      "checkedAt": "2026-10-27",
+      "movieId": 256670134
+    }
   }
 ]

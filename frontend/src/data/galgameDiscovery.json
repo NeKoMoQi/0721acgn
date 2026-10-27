@@ -1,0 +1,541 @@
+{
+  "checkedAt": "2026-10-27",
+  "topics": [
+    {
+      "id": "chinese",
+      "title": "中文可玩",
+      "description": "只收录已核对商店提供中文的具体商品，点击版本来源确认语言。"
+    },
+    {
+      "id": "short",
+      "title": "短篇入门",
+      "description": "先从 Key 官方定位为短篇的《星之梦》开始，不用为分支选择烦恼。"
+    },
+    {
+      "id": "science",
+      "title": "科幻与悬疑",
+      "description": "机器人、时间旅行、密室与谜团，按故事题材选编。"
+    },
+    {
+      "id": "campus",
+      "title": "校园与恋爱",
+      "description": "社团、考试、放学后的相遇，从校园生活读起。"
+    }
+  ],
+  "entries": [
+    {
+      "slug": "atri",
+      "name": "ATRI -My Dear Moments-",
+      "cover": "/galgame/atri.jpg",
+      "tagline": "下海寻宝，捞上来一位自称“高性能”的机器人少女。",
+      "studioKeys": [
+        "Frontwing",
+        "枕"
+      ],
+      "topics": [
+        "science",
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/1230140/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/1230140/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "ATRI -My Dear Moments-"
+    },
+    {
+      "slug": "steins-gate",
+      "name": "命运石之门",
+      "cover": "/galgame/steins-gate.jpg",
+      "tagline": "一台改装微波炉，居然能把短信发往过去。",
+      "studioKeys": [
+        "MAGES. Inc."
+      ],
+      "topics": [
+        "science",
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/412830/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/412830/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "STEINS;GATE"
+    },
+    {
+      "slug": "clannad",
+      "name": "CLANNAD",
+      "cover": "/galgame/clannad.jpg",
+      "tagline": "从帮古河渚重建演剧部开始，朋也身边的人渐渐多了起来。",
+      "studioKeys": [
+        "VisualArts/Key"
+      ],
+      "topics": [
+        "campus",
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/324160/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/324160/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "CLANNAD"
+    },
+    {
+      "slug": "fata-morgana",
+      "name": "海市蜃楼之馆",
+      "cover": "/galgame/fata-morgana.jpg",
+      "tagline": "失忆的你，被女仆带着看完这座宅邸里的一桩桩往事。",
+      "studioKeys": [
+        "NOVECT"
+      ],
+      "topics": [
+        "science",
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/303310/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/303310/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "The House in Fata Morgana"
+    },
+    {
+      "slug": "gaokao",
+      "name": "高考恋爱100天",
+      "cover": "/galgame/gaokao.jpg",
+      "tagline": "离高考还有一百天，你却在这时候谈起了恋爱。",
+      "studioKeys": [
+        "高考恋爱委员会",
+        "橘子班"
+      ],
+      "topics": [
+        "campus",
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/347620/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/347620/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "Gaokao.Love.100Days"
+    },
+    {
+      "slug": "mahoyo",
+      "name": "魔法使之夜",
+      "cover": "/galgame/mahoyo.jpg",
+      "tagline": "山丘上的洋馆里，两位魔女与一名普通少年住到了一起。",
+      "studioKeys": [
+        "TYPE-MOON",
+        "Lasengle Inc.",
+        "Hunex"
+      ],
+      "topics": [
+        "science",
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/2052410/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/2052410/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "WITCH ON THE HOLY NIGHT"
+    },
+    {
+      "slug": "summer-pockets",
+      "name": "Summer Pockets",
+      "cover": "/galgame/summer-pockets.jpg",
+      "tagline": "来到鸟白岛，过一个远离城市的暑假。",
+      "studioKeys": [
+        "VisualArts/Key"
+      ],
+      "topics": [
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/897220/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/897220/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "Summer Pockets"
+    },
+    {
+      "slug": "999",
+      "name": "极限脱出：9小时9人9扇门",
+      "cover": "/galgame/999.jpg",
+      "tagline": "九个人被困在船上，被迫参加一场“九人游戏”。",
+      "studioKeys": [
+        "Spike Chunsoft Co., Ltd."
+      ],
+      "topics": [
+        "science"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/477740/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/477740/"
+    },
+    {
+      "slug": "white-album-2",
+      "name": "白色相簿2",
+      "cover": "/galgame/white-album-2.jpg",
+      "tagline": "学园祭前，吉他、钢琴和歌声凑成了三个人的乐队。",
+      "studioKeys": [],
+      "topics": [
+        "campus"
+      ],
+      "sources": [],
+      "officialUrl": "https://aquaplus.jp/wa2/"
+    },
+    {
+      "slug": "narcissu",
+      "name": "水仙",
+      "cover": "/galgame/narcissu.jpg",
+      "tagline": "两个身患重病的年轻人，面对余下的日子。",
+      "studioKeys": [
+        "stage-nana"
+      ],
+      "topics": [],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/264380/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/264380/"
+    },
+    {
+      "slug": "rewrite",
+      "name": "Rewrite",
+      "cover": "/galgame/rewrite.jpg",
+      "tagline": "超自然研究会的调查，把风祭市的校园日常带向了别处。",
+      "studioKeys": [
+        "VisualArts/Key"
+      ],
+      "topics": [
+        "science",
+        "campus"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/1680000/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/1680000/"
+    },
+    {
+      "slug": "428",
+      "name": "428 ～被封锁的涩谷～",
+      "cover": "/galgame/428.jpg",
+      "tagline": "涩谷同一天，五个互不相识的人被一场绑架案卷到了一起。",
+      "studioKeys": [
+        "Spike Chunsoft Co., Ltd.",
+        "Abstraction Games"
+      ],
+      "topics": [],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/648580/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/648580/"
+    },
+    {
+      "slug": "lucy",
+      "name": "露西 -她所期望的一切-",
+      "cover": "/galgame/lucy.jpg",
+      "tagline": "讨厌仿生人的少年，从垃圾堆里捡回了一位机器人少女。",
+      "studioKeys": [
+        "Modern Visual Arts Laboratory",
+        "SEO INSEOK"
+      ],
+      "topics": [
+        "science",
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/430960/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/430960/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "Lucy -The Eternity She Wished For-"
+    },
+    {
+      "slug": "air",
+      "name": "AIR",
+      "cover": "/galgame/air.jpg",
+      "tagline": "旅行的人偶师来到海边小镇，寻找传说中“天空中的女孩”。",
+      "studioKeys": [
+        "VISUAL ARTS/Key"
+      ],
+      "topics": [
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/2983250/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/2983250/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "AIR"
+    },
+    {
+      "slug": "higurashi",
+      "name": "寒蝉鸣泣之时",
+      "cover": "/galgame/higurashi.jpg",
+      "tagline": "雏见泽每年都会发生一人死亡、一人失踪的怪事。",
+      "studioKeys": [
+        "07th Expansion"
+      ],
+      "topics": [
+        "science",
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/310360/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/310360/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "Higurashi When They Cry Hou - Ch.1 Onikakushi"
+    },
+    {
+      "slug": "planetarian",
+      "name": "星之梦",
+      "cover": "/galgame/planetarian.jpg",
+      "tagline": "天象馆停业多年，机器人梦美仍在等待下一位客人。",
+      "studioKeys": [
+        "VisualArts/Key"
+      ],
+      "topics": [
+        "science",
+        "short",
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://key.visualarts.gr.jp/kinetic/about.html",
+          "supports": [
+            "短篇作品定位"
+          ],
+          "checkedAt": "2026-10-27"
+        },
+        {
+          "url": "https://store.steampowered.com/app/623080/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/623080/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "planetarian HD"
+    },
+    {
+      "slug": "steins-gate-0",
+      "name": "命运石之门0",
+      "cover": "/galgame/steins-gate-0.jpg",
+      "tagline": "来到另一条世界线，再看冈部与伙伴们作出选择。",
+      "studioKeys": [
+        "MAGES. Inc."
+      ],
+      "topics": [
+        "science",
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/825630/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/825630/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "STEINS;GATE 0"
+    },
+    {
+      "slug": "kanon",
+      "name": "Kanon",
+      "cover": "/galgame/kanon.jpg",
+      "tagline": "七年后重返雪中的小镇，少年陆续遇见几位与过去有关的少女。",
+      "studioKeys": [
+        "VISUAL ARTS/Key"
+      ],
+      "topics": [
+        "campus",
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/2850310/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/2850310/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "Kanon"
+    },
+    {
+      "slug": "umineko",
+      "name": "海猫鸣泣之时",
+      "cover": "/galgame/umineko.jpg",
+      "tagline": "台风封住六轩岛，遗产会议变成了关于“魔女”的谜案。",
+      "studioKeys": [
+        "07th Expansion"
+      ],
+      "topics": [
+        "science"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/406550/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/406550/"
+    },
+    {
+      "slug": "harmonia",
+      "name": "Harmonia",
+      "cover": "/galgame/harmonia.jpg",
+      "tagline": "战后的荒原上，机器人少年想学会人类的情感。",
+      "studioKeys": [
+        "VisualArts/Key"
+      ],
+      "topics": [
+        "science",
+        "chinese"
+      ],
+      "sources": [
+        {
+          "url": "https://store.steampowered.com/app/421660/",
+          "supports": [
+            "开发商",
+            "对应商品的中文支持"
+          ],
+          "checkedAt": "2026-10-27"
+        }
+      ],
+      "officialUrl": "https://store.steampowered.com/app/421660/",
+      "languageLabel": "商店版含中文",
+      "versionLabel": "Harmonia"
+    }
+  ],
+  "series": [
+    {
+      "from": "steins-gate",
+      "to": "steins-gate-0",
+      "label": "系列后续 · 另一条世界线",
+      "sourceUrl": "https://store.steampowered.com/app/825630/"
+    },
+    {
+      "from": "steins-gate-0",
+      "to": "steins-gate",
+      "label": "系列正篇 · 建议先读",
+      "sourceUrl": "https://store.steampowered.com/app/825630/"
+    }
+  ]
+}
