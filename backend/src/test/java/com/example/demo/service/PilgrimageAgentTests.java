@@ -104,6 +104,29 @@ class PilgrimageAgentTests {
         assertThrows(IllegalArgumentException.class, () -> validator.validate(numeric, candidates()));
     }
 
+    @Test void reasonsAreBoundToTheirPointIdsAndSurviveRevalidation() throws Exception {
+        var input = proposal().deepCopy();
+        var day = (ObjectNode) input.at("/days/0");
+        day.putArray("spotReasons").addObject().put("pointId", "2").put("reason", "与前一站同属宇治主题，可作为沿河候选点。");
+        var plan = validator.validate(input, candidates());
+        assertFalse(plan.at("/days/0/spots/0").has("reason"));
+        assertEquals("与前一站同属宇治主题，可作为沿河候选点。", plan.at("/days/0/spots/1/reason").asText());
+        assertEquals(plan, validator.validate(plan, candidates()));
+        day.withArray("spotReasons").addObject().put("pointId", "999").put("reason", "不属于当天");
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(input, candidates()));
+    }
+
+    @Test void duplicateAndOverlongReasonsAreRejectedAndOldPlansRemainCompatible() throws Exception {
+        assertTrue(validator.validate(proposal(), candidates()).at("/days/0/spotReasons").isEmpty());
+        var input = proposal().deepCopy();
+        var reasons = ((ObjectNode) input.at("/days/0")).putArray("spotReasons");
+        reasons.addObject().put("pointId", "1").put("reason", "同主题地点");
+        reasons.addObject().put("pointId", "1").put("reason", "重复理由");
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(input, candidates()));
+        reasons.removeAll().addObject().put("pointId", "1").put("reason", "长".repeat(241));
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(input, candidates()));
+    }
+
     @Test void duplicateCoordinatesAndImpossibleWalkingLegAreRejected() throws Exception {
         var map = candidates(); map.get("2").setLng(map.get("1").getLng()); map.get("2").setLat(map.get("1").getLat());
         assertThrows(IllegalArgumentException.class, () -> validator.validate(proposal(), map));

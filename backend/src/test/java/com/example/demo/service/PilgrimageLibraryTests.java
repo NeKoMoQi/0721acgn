@@ -32,9 +32,13 @@ class PilgrimageLibraryTests {
             com.fasterxml.jackson.databind.JsonNode saved = invocation.getArgument(2);
             assertEquals("站内真实地点", saved.at("/days/0/spots/0/name").asText());
             assertEquals(135.8, saved.at("/days/0/spots/0/coordinates/0").asDouble());
+            assertEquals("与用户所选作品主题一致", saved.at("/days/0/spots/0/reason").asText());
             return "saved-id";
         });
-        var body = json.createObjectNode().put("title", "我的行程"); body.set("plan", plan());
+        var input = (com.fasterxml.jackson.databind.node.ObjectNode) plan();
+        ((com.fasterxml.jackson.databind.node.ObjectNode) input.at("/days/0")).putArray("spotReasons")
+                .addObject().put("pointId", "1").put("reason", "与用户所选作品主题一致");
+        var body = json.createObjectNode().put("title", "我的行程"); body.set("plan", input);
         assertEquals("saved-id", library.save("user:1", body).get("id"));
     }
     @Test void readAndDeleteAreScopedToOwner() {

@@ -69,56 +69,45 @@
       <el-button size="small" type="danger" plain :disabled="agentLibraryLoading" @click="removeAgentRoute(saved.id)">删除</el-button>
     </div>
   </el-dialog>
-  <section v-if="agentMode === 'route' && (agentGuideText || agentGuideSpots.length)" class="agent-guide-panel">
-    <div class="agent-guide-head">
-      <div>
-        <strong>小窝巡礼讲解</strong>
-        <span>按天预览，确认后导入地图</span>
-      </div>
-      <button class="agent-guide-close" @click="clearAgentGuide">×</button>
-    </div>
-    <div v-if="agentRoutePlan?.days?.length" class="agent-day-controls">
-      <div class="agent-day-tabs" role="tablist" aria-label="巡礼天数">
-        <button v-for="(day, index) in agentRoutePlan.days" :key="day.day" type="button"
-          role="tab" :aria-selected="agentSelectedDay === index" :class="{ active: agentSelectedDay === index }"
-          @click="selectAgentDay(index)">第 {{ day.day }} 天</button>
-      </div>
-      <p v-if="activeAgentDay">{{ activeAgentDay.spots.length }} 个地点 · 直线合计约 {{ activeAgentDay.straightLineKm }} km（非实际路程）</p>
-      <p v-for="warning in activeAgentDay?.warnings || []" :key="warning" class="agent-day-warning">{{ warning }}</p>
-      <button type="button" class="agent-import-day" :disabled="agentImporting || !map || agentRoleSending" @click="importAgentDay">
-        {{ agentImporting ? '正在导入…' : agentGuideSpots.length === 1 ? '在地图查看当天地点' : '将这一天导入地图' }}
-      </button>
-      <div class="agent-save-row">
-        <input v-model="agentRouteTitle" aria-label="行程名称" maxlength="100" placeholder="行程名称" />
-        <button type="button" :disabled="agentSaving || agentRoleSending" @click="saveAgentRoute">{{ agentSaving ? '保存中…' : '保存行程' }}</button>
-      </div>
-    </div>
-    <div v-if="agentGuideSpots.length" class="agent-guide-spots">
-      <button
-        v-for="(spot, index) in agentGuideSpots"
-        :key="spot.dbPointId || spot.id || spot.name || index"
-        class="agent-guide-spot"
-        :class="{ active: agentGuideActiveSpotKey === agentGuideSpotKey(spot, index) }"
-        @click="focusAgentGuideSpot(spot, index)"
-      >
-        <img v-if="spot.imageUrl" :src="spot.imageUrl" alt="" />
-        <div v-else class="agent-guide-spot-placeholder"></div>
-        <div>
-          <b>{{ index + 1 }}. {{ spot.name }}</b>
-          <span>{{ spot.workTitle || spot.address || '站内巡礼点' }}</span>
-          <small>{{ spot.accessStatus === 'public' ? '曾核实可达，现场为准' : '开放状态待核实' }}</small>
-          <small v-if="spot.verifiedAt">最近核验：{{ spot.verifiedAt }}</small>
-          <small v-if="spot.photoNote">{{ spot.photoNote }}</small>
-          <small v-if="spot.sourceUrl">资料来源：{{ spot.sourceUrl }}</small>
+  <section v-if="agentMode === 'route' && (agentGuideText || agentGuideSpots.length)" class="agent-guide-panel" :class="{ 'is-collapsed': agentGuideCollapsed }">
+    <header class="agent-guide-head">
+      <div><span class="agent-eyebrow">PILGRIMAGE / 小窝巡礼</span><strong>{{ agentRoutePlan ? '为你推荐的路线' : '小窝想再了解一下' }}</strong></div>
+      <button type="button" class="agent-guide-close" :aria-label="agentGuideCollapsed ? '展开路线' : '收起路线'" :aria-expanded="!agentGuideCollapsed" @click="agentGuideCollapsed = !agentGuideCollapsed">{{ agentGuideCollapsed ? '+' : '−' }}</button>
+    </header>
+    <div v-show="!agentGuideCollapsed" class="agent-guide-body">
+      <template v-if="activeAgentDay">
+        <div class="agent-day-tabs" role="tablist" aria-label="巡礼天数">
+          <button v-for="(day, index) in agentRoutePlan.days" :key="day.day" type="button" role="tab"
+            :aria-selected="agentSelectedDay === index" :class="{ active: agentSelectedDay === index }" :disabled="agentImporting || agentRoleSending"
+            @click="selectAgentDay(index)">第 {{ day.day }} 天</button>
         </div>
-      </button>
-    </div>
-    <div v-if="agentGuideText" class="agent-guide-text" v-html="agentGuideHtml"></div>
-    <div v-if="agentKnowledgeSources.length" class="agent-knowledge-sources">
-      <strong>本次检索参考 · 站内编辑资料</strong>
-      <p v-for="source in agentKnowledgeSources" :key="source.id">{{ source.title }} · {{ source.updatedAt }}<br /><small>{{ source.source }}</small></p>
+        <div class="agent-day-heading"><h2>{{ activeAgentDay.title }}</h2><p>{{ activeAgentDay.spots.length }} 个地点 <span>·</span> {{ agentTravelModeLabel }} <span>·</span> {{ agentRoutePlan.days.length }} 天行程</p></div>
+        <div class="agent-map-status" role="status"><i></i>{{ agentImporting ? '正在地图上展示…' : agentMapStatus }}</div>
+        <div v-if="activeAgentDay.note" class="agent-recommendation"><span>为什么推荐这条路线</span><p>{{ activeAgentDay.note }}</p></div>
+        <div class="agent-guide-spots">
+          <article v-for="(spot, index) in agentGuideSpots" :key="spot.dbPointId || spot.id || index" class="agent-guide-spot" :class="{ active: agentGuideActiveSpotKey === agentGuideSpotKey(spot, index) }">
+            <button type="button" class="agent-spot-photo" :disabled="!spot.imageUrl" :aria-label="'预览图片：' + spot.name" @click="agentPreviewSpot = spot">
+              <img v-if="spot.imageUrl" :src="spot.imageUrl" :alt="spot.name" /><span v-else class="agent-guide-spot-placeholder">暂无图片</span>
+            </button>
+            <div class="agent-spot-copy"><button type="button" class="agent-spot-location" @click="focusAgentGuideSpot(spot, index)"><span class="agent-spot-number">{{ String(index + 1).padStart(2, '0') }}</span><div><b>{{ spot.name }}</b><span>{{ spot.workTitle || spot.address || '站内巡礼点' }}</span></div><span class="agent-spot-arrow" aria-hidden="true">↗</span></button><p v-if="spot.reason" class="agent-spot-reason">{{ spot.reason }}</p></div>
+          </article>
+        </div>
+        <div class="agent-route-actions"><button type="button" class="agent-import-day" :disabled="agentImporting || !map || agentRoleSending" @click="importAgentDay()">重新展示路线</button><button type="button" :aria-expanded="agentSaveExpanded" @click="agentSaveExpanded = !agentSaveExpanded">保存行程</button></div>
+        <div v-if="agentSaveExpanded" class="agent-save-row"><input v-model="agentRouteTitle" aria-label="行程名称" maxlength="100" placeholder="行程名称" /><button type="button" :disabled="agentSaving || agentRoleSending" @click="saveAgentRoute">{{ agentSaving ? '保存中…' : '确认保存' }}</button></div>
+        <details class="agent-route-details"><summary>路线说明与参考资料</summary>
+          <div class="agent-guide-text" v-html="agentGuideHtml"></div>
+          <p class="agent-distance-note">直线合计约 {{ activeAgentDay.straightLineKm }} km，实际距离以地图为准。</p>
+          <p v-for="warning in activeAgentDay.warnings || []" :key="warning" class="agent-day-warning">{{ warning }}</p>
+          <div v-for="spot in agentGuideSpots" :key="spot.id || spot.dbPointId" class="agent-spot-notes"><b>{{ spot.name }}</b><p>{{ spot.accessStatus === 'public' ? '曾核实可达，现场为准' : '开放状态待核实' }}<span v-if="spot.verifiedAt"> · 最近核验：{{ spot.verifiedAt }}</span></p><p v-if="spot.photoNote">{{ spot.photoNote }}</p><p v-if="spot.sourceUrl">资料来源：{{ spot.sourceUrl }}</p></div>
+          <div v-if="agentKnowledgeSources.length" class="agent-knowledge-sources"><strong>站内编辑资料</strong><p v-for="source in agentKnowledgeSources" :key="source.id">{{ source.title }} · {{ source.updatedAt }}<br /><small>{{ source.source }}</small></p></div>
+        </details>
+      </template>
+      <div v-else class="agent-guide-text" v-html="agentGuideHtml"></div>
     </div>
   </section>
+  <el-dialog :model-value="!!agentPreviewSpot" :title="agentPreviewSpot?.name || '地点图片'" width="min(90vw, 880px)" :z-index="30100" @close="agentPreviewSpot = null">
+    <img v-if="agentPreviewSpot" :src="agentPreviewSpot.imageUrl" :alt="agentPreviewSpot.name" class="agent-preview-image" />
+  </el-dialog>
   <div class="navigation-controls" v-if="navigation && !agentRouteFocused">
         <div class="nav-field">
           <el-input
@@ -342,7 +331,7 @@
           </div>
         </div>
       </el-drawer>
-    <div class="custom-search-container" v-if="searching">
+    <div class="custom-search-container" v-if="searching && !agentRouteFocused">
       <div class="search-box">
         <el-input
           v-model="searchQuery"
@@ -424,7 +413,7 @@
       </div>
 
       <div ref="mapContainer" id="map"></div>
-      <div id="custom-geocoder-container"></div>
+      <div v-show="!agentRouteFocused" id="custom-geocoder-container"></div>
   </div>
 </template>
 
@@ -452,7 +441,7 @@ import { cleanupLive2D, mountShengdiLive2D } from '@/utils/live2d-loader';
 import { streamAgentChat } from '@/api/xunli/agentStream';
 import { listSavedRoutes, saveRoutePlan, loadRoutePlan, deleteRoutePlan } from '@/api/xunli/routeLibrary';
 import { getOrCreateAcgnClientId } from '@/utils/acgnLocal';
-const FOURSQUARE_API_KEY = import.meta.env.VITE_FOURSQUARE_API_KEY || '';
+const FOURSQUARE_API_KEY = 'fsq3f+6iSSunbTbkSdAIzD1aWTueh0nYyR8cLQwd5SuaUNQ=';
 const FOURSQUARE_CATEGORIES = '16000,19001,19002,19003,19004'; 
 mapboxgl.accessToken = 'pk.eyJ1IjoiNHd4bm51dXYiLCJhIjoiY204N25oaGJ3MDk0NzJpcXU1YmtvcGM5OCJ9.05C4KGMpkW1QolRvxwSt_g';
 const $router = useRouter()
@@ -499,6 +488,13 @@ const agentSavedRoutes = ref([])
 const agentSelectedDay = ref(0)
 const activeAgentDay = computed(() => agentRoutePlan.value?.days?.[agentSelectedDay.value] || null)
 const agentImporting = ref(false)
+const agentGuideCollapsed = ref(false)
+const agentSaveExpanded = ref(false)
+const agentPreviewSpot = ref(null)
+const agentMapStatus = ref('')
+const agentTravelModeLabel = computed(() => ({ walking: '步行', cycling: '骑行', driving: '驾车' }[agentRoutePlan.value?.travelMode] || '步行'))
+let pendingAgentMapDraw = null
+let pilgrimageMapLoaded = false
 let agentAbortController = null
 const agentChatScrollRef = ref(null)
 const agentChatMessages = ref([
@@ -991,6 +987,12 @@ function setAgentMode(mode) {
 }
 
 function clearAgentGuide() {
+  if (pendingAgentMapDraw && map.value) map.value.off('idle', pendingAgentMapDraw)
+  pendingAgentMapDraw = null
+  agentPreviewSpot.value = null
+  agentGuideCollapsed.value = false
+  agentSaveExpanded.value = false
+  agentMapStatus.value = ''
   agentKnowledgeSources.value = []
   agentRouteTitle.value = ''
   agentRoutePlan.value = null
@@ -1144,7 +1146,7 @@ async function sendAgentRoleMessage() {
   forceLive2DVisible()
   try {
     const contextPlan = requestMode === 'route' && !agentConversationId.value && agentRoutePlan.value
-      ? { travelMode: agentRoutePlan.value.travelMode, days: agentRoutePlan.value.days.map(day => ({ title: day.title, note: day.note, pointIds: day.pointIds })) }
+      ? { travelMode: agentRoutePlan.value.travelMode, days: agentRoutePlan.value.days.map(day => ({ title: day.title, note: day.note, pointIds: day.pointIds, spotReasons: day.spotReasons })) }
       : undefined
     const result = await streamAgentChat({ query, mode: requestMode, contextPlan,
       conversationId: agentConversationId.value || null,
@@ -1226,7 +1228,7 @@ async function restoreAgentRoute(id) {
     agentKnowledgeSources.value = saved.plan.knowledgeSources || []
     selectAgentDay(0)
     agentLibraryVisible.value = false
-    ElMessage.success('行程已读取并重新核对，可以继续修改或导入地图')
+    ElMessage.success('行程已读取，正在地图上展示第一天')
   } catch (error) {
     if (token === userStore.token) ElMessage.error(error?.message || '读取失败')
   } finally { agentLibraryLoading.value = false }
@@ -1248,16 +1250,29 @@ function selectAgentDay(index) {
   if (agentImporting.value) return
   const day = agentRoutePlan.value?.days?.[index]
   if (!day) return
+  agentGuideCollapsed.value = false
   agentSelectedDay.value = index
   agentGuideSpots.value = (day.spots || []).map(spot => ({ ...spot, sourceType: 'point' }))
   agentGuideText.value = `Day ${day.day} · ${day.title}\n看点：${day.note || ''}`
   agentGuideActiveSpotKey.value = ''
   agentGuideHighlightMarker?.remove()
   agentGuideHighlightMarker = null
+  if (pendingAgentMapDraw && map.value) map.value.off('idle', pendingAgentMapDraw)
+  const plan = agentRoutePlan.value
+  const draw = () => {
+    pendingAgentMapDraw = null
+    if (agentRoutePlan.value === plan && agentSelectedDay.value === index) void importAgentDay({ automatic: true })
+  }
+  if (map.value?.isStyleLoaded()) draw()
+  else if (map.value) {
+    agentMapStatus.value = '地图加载后自动展示'
+    pendingAgentMapDraw = draw
+    map.value.once('idle', draw)
+  }
 }
 
-async function importAgentDay() {
-  if (agentImporting.value || agentRoleSending.value) return
+async function importAgentDay({ automatic = false } = {}) {
+  if (agentImporting.value || (!automatic && agentRoleSending.value)) return
   if (!map.value || !map.value.isStyleLoaded()) {
     ElMessage.warning('地图仍在加载，请稍后导入')
     return
@@ -1266,15 +1281,20 @@ async function importAgentDay() {
   if (!picks.length) return
   if (picks.length === 1) {
     clearRoute({ closePanel: true, resetFields: true })
+    agentRouteFocused.value = true
+    document.body.classList.add('shengdi-navigation-active')
     focusAgentGuideSpot(picks[0])
+    agentMapStatus.value = '当天地点已在地图标出'
     return
   }
   agentImporting.value = true
+  agentMapStatus.value = '正在请求地图路径…'
   try {
     travelMode.value = agentRoutePlan.value.travelMode
     await applyRoutePicksToNavigation(picks)
   } catch (error) {
-    ElMessage.error('导入地图失败，请重试')
+    agentMapStatus.value = '展示失败，请点击重新展示路线'
+    ElMessage.error('地图路线暂时无法展示，请重试')
   } finally {
     agentImporting.value = false
   }
@@ -1528,7 +1548,7 @@ async function applyRoutePicksToNavigation(picks) {
 
   await nextTick()
   await calculateRoute({ agentRoute: true, routePicks: limitedPicks })
-  ElMessage.success('已导入当天 ' + limitedPicks.length + ' 个地点，正在请求地图路径')
+  agentMapStatus.value = '地点已标出，正在计算实际路线…'
 }
 
 function handleLive2DAgentResponse(event) {
@@ -1544,7 +1564,7 @@ function handleLive2DAgentResponse(event) {
     agentRoutePlan.value = data.routePlan
     agentRouteTitle.value = `${data.routePlan.days[0].title} · ${data.routePlan.days.length}天`
     selectAgentDay(0)
-    keepLive2DVisible('主人，路线核对好了喵~ 可以按天预览，确认后导入地图。', { messageDurationMs: 6000 })
+    keepLive2DVisible('主人，推荐路线准备好了喵~ 正在地图上展示第一天，点天数就能切换。', { messageDurationMs: 6000 })
   } else {
     // Clarifying questions remain conversational and cannot move the map.
     agentGuideText.value = reply || '请告诉我想巡礼的作品或城市。'
@@ -1702,15 +1722,21 @@ function fitDirectionsRouteToMap(directionsCtl, routesPayload) {
   let b = new mapboxgl.LngLatBounds(path[0], path[0]);
   for (let i = 1; i < path.length; i += 1) b = b.extend(path[i]);
 
+  const panel = agentRouteFocused.value ? document.querySelector('.agent-guide-panel')?.getBoundingClientRect() : null;
+  const mobile = window.innerWidth <= 600;
   map.value.fitBounds(b, {
-    padding: { top: 88, bottom: 230, left: 72, right: 72 },
-    maxZoom: 11.75,
+    padding: panel
+      ? mobile ? { top: Math.min(panel.bottom + 16, window.innerHeight * .5), bottom: 160, left: 32, right: 32 }
+        : { top: 110, bottom: 160, left: panel.right + 32, right: 80 }
+      : { top: 88, bottom: 230, left: 72, right: 72 },
+    maxZoom: agentRouteFocused.value ? 16 : 11.75,
     duration: 1100,
     essential: true,
   });
 }
 
 const scheduleFitDirectionsRoute = debounce((directionsCtl, routesPayload) => {
+  if (directions.value !== directionsCtl) return;
   fitDirectionsRouteToMap(directionsCtl, routesPayload);
 }, 320);
 
@@ -1750,22 +1776,32 @@ const calculateRoute = async (options = {}) => {
     language: 'zh',
     controls: {
       inputs: false,
-      instructions: true,
+      instructions: !agentRoute,
     },
     interactive: false,
   });
   map.value.addControl(directions.value, 'top-right');
+  const routeControl = directions.value;
+  // Directions 4.x waits for a one-time load event when loaded() is false.
+  // After a day switch, map animation can make loaded() false even though load already fired.
+  if (pilgrimageMapLoaded && map.value.isStyleLoaded() && !map.value.getSource('directions')) {
+    routeControl.mapState();
+  }
   directions.value.on('error', () => {
+    if (directions.value !== routeControl) return;
+    if (agentRoute) agentMapStatus.value = '地点已标出，暂未找到可用道路路线'
     ElMessage.warning('地图暂时无法计算这段路径，地点已保留，请调整出行方式或分段查询')
   });
   directions.value.on('route', (evt) => {
+    if (directions.value !== routeControl) return;
+    if (agentRoute) agentMapStatus.value = '当天路线已在地图展示'
     scheduleFitDirectionsRoute(directions.value, evt?.route);
   });
 
   /** idle + 兜底定时：控件刚挂载时立刻 setOrigin 常会失败 */
   let routed = false;
   const applyOnce = () => {
-    if (routed || !directions.value || !map.value) return;
+    if (routed || directions.value !== routeControl || !map.value) return;
     const ctrl = directions.value;
 
     const wpCoords = waypointStops.value
@@ -2077,6 +2113,7 @@ const init = () => {
     debouncedMapViewportUpdate = debounce(() => updateData(), 720)
     map.value.on('moveend', debouncedMapViewportUpdate)
   map.value.on('load', () => {
+    pilgrimageMapLoaded = true;
     getxunlipoint()
     // 设置中国世界观过滤器
     const setChinaWorldview = (layerId) => {
@@ -2775,166 +2812,59 @@ onBeforeUnmount(() => {
 }
 
 .agent-guide-panel {
-  position: fixed;
-  left: 24px;
-  top: 92px;
-  z-index: 10020;
-  width: min(540px, calc(100vw - 48px));
-  max-height: calc(100vh - 132px);
-  padding: 0;
-  border-radius: 8px;
-  background-color: rgba(248, 251, 255, 0.88);
-  background-image:
-    linear-gradient(90deg, rgba(255,255,255,0.45), rgba(255,255,255,0.12)),
-    url('/svg/agent-guide-bg.svg'),
-    linear-gradient(135deg, rgba(255, 126, 170, 0.16), rgba(122, 167, 255, 0.13)),
-    radial-gradient(circle at 12% 18%, rgba(255, 191, 216, 0.42), transparent 30%),
-    radial-gradient(circle at 92% 4%, rgba(125, 166, 255, 0.25), transparent 28%),
-    linear-gradient(rgba(93, 106, 136, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(93, 106, 136, 0.055) 1px, transparent 1px);
-  background-size: auto, cover, auto, auto, auto, 22px 22px, 22px 22px;
-  background-position: center;
-  box-shadow: 0 18px 48px rgba(38, 49, 72, 0.22);
-  backdrop-filter: blur(14px);
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.78);
+  position: fixed; top: 100px; left: 24px; z-index: 10020;
+  width: 352px; max-height: calc(100dvh - 132px); overflow-y: auto;
+  border: 1px solid #e5eae8; border-radius: 20px; background: #fffffffa;
+  box-shadow: 0 12px 40px #243e3417; color: #273b34;
+  scrollbar-width: thin; box-sizing: border-box;
 }
+.agent-guide-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 20px 14px; }
+.agent-eyebrow { display: block; font-size: 10px; letter-spacing: 1.4px; color: #769087; margin-bottom: 7px; }
+.agent-guide-head strong { display: block; color: #263e35; font-size: 19px; font-weight: 650; }
+.agent-guide-close { width: 30px; height: 30px; flex-shrink: 0; border: 0; border-radius: 50%; color: #61796f; background: #f0f5f2; font-size: 20px; cursor: pointer; }
+.agent-guide-body { padding: 0 20px 8px; }
+.agent-day-tabs { display: flex; gap: 4px; padding: 4px; border-radius: 12px; background: #f0f4f1; overflow-x: auto; scrollbar-width: thin; }
+.agent-day-tabs button { flex: 1 0 auto; white-space: nowrap; border: 0; padding: 8px 10px; background: transparent; color: #76847c; border-radius: 8px; cursor: pointer; font-size: 12px; }
+.agent-day-tabs button.active { background: white; color: #2c6350; box-shadow: 0 2px 6px #244c3510; font-weight: 600; }
+.agent-day-tabs button:disabled { cursor: wait; }
+.agent-day-heading h2 { margin: 18px 0 7px; font-size: 16px; line-height: 1.5; font-weight: 600; }
+.agent-day-heading p { margin: 0; font-size: 12px; color: #829087; }
+.agent-day-heading p span { margin: 0 5px; }
+.agent-map-status { display: flex; gap: 7px; align-items: center; margin: 12px 0 8px; font-size: 11px; color: #5d8772; min-height: 18px; }
+.agent-map-status i { width: 5px; height: 5px; border-radius: 50%; background: #6ea489; flex-shrink: 0; }
+.agent-recommendation { margin: 12px 0 4px; padding: 12px 14px; background: #f1f6f2; border-radius: 12px; }
+.agent-recommendation > span { color: #4f755e; font-size: 11px; font-weight: 600; }
+.agent-recommendation p { margin: 6px 0 0; color: #6d7e72; font-size: 12px; line-height: 1.8; white-space: pre-line; overflow-wrap: anywhere; }
+.agent-spot-copy { flex: 1; min-width: 0; }
+.agent-spot-copy .agent-spot-location { width: 100%; }
+.agent-spot-reason { margin: 7px 0 0 24px; font-size: 11px; color: #788b7e; line-height: 1.7; white-space: pre-line; overflow-wrap: anywhere; }
+.agent-guide-spots { display: flex; flex-direction: column; gap: 0; padding: 0; max-height: 310px; overflow-y: auto; scrollbar-width: thin; }
+.agent-guide-spot { display: flex; align-items: center; gap: 12px; padding: 12px 0; border: 0; border-bottom: 1px solid #eef2ef; background: transparent; box-shadow: none; }
+.agent-guide-spot:last-child { border-bottom: 0; }
+.agent-guide-spot.active { background: #f3f8f5; border-radius: 8px; }
+.agent-spot-photo { width: 64px; height: 64px; flex: 0 0 64px; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: #f0f3ef; cursor: zoom-in; }
+.agent-spot-photo:disabled { cursor: default; }
+.agent-spot-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.agent-guide-spot-placeholder { display: grid; place-items: center; height: 100%; color: #99a79f; font-size: 10px; }
+.agent-spot-location { display: flex; flex: 1; min-width: 0; align-items: center; gap: 9px; border: 0; background: transparent; text-align: left; padding: 0; cursor: pointer; font-family: inherit; }
+.agent-spot-number { color: #8fa89b; font-size: 11px; align-self: flex-start; margin-top: 2px; }
+.agent-spot-location div { flex: 1; min-width: 0; }
+.agent-spot-location b { display: block; color: #30483c; font-size: 13px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
+.agent-spot-location div > span { display: block; margin-top: 4px; color: #8a978e; font-size: 11px; line-height: 1.4; }
+.agent-spot-arrow { color: #8fa89b; font-size: 15px; }
+.agent-route-actions { position: sticky; bottom: 0; z-index: 2; background: #fff; display: flex; gap: 10px; padding: 12px 0 16px; }
+.agent-route-actions button { flex: 1; padding: 10px 8px; border: 1px solid #dce7df; border-radius: 10px; background: white; color: #526e5c; font-size: 12px; cursor: pointer; }
+.agent-route-actions .agent-import-day { background: #315e4b; border-color: #315e4b; color: white; margin: 0; }
+.agent-route-actions button:disabled { opacity: .5; cursor: wait; }
+.agent-route-details { border-top: 1px solid #edf1ee; padding: 14px 0; font-size: 12px; color: #7d8f83; line-height: 1.7; }
+.agent-route-details summary { cursor: pointer; }
+.agent-guide-text { padding: 10px 0; color: #64786b; line-height: 1.8; font-size: 12px; overflow-wrap: anywhere; }
+.agent-spot-notes { padding: 10px 0; border-bottom: 1px solid #edf1ee; overflow-wrap: anywhere; }
+.agent-spot-notes p { margin: 4px 0; }
+.agent-distance-note, .agent-day-warning { font-size: 11px; color: #8c8067; }
+.agent-preview-image { display: block; width: 100%; max-height: 72dvh; object-fit: contain; border-radius: 10px; }
 
-.agent-guide-panel::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, rgba(255,255,255,0.24), rgba(255,255,255,0.08)),
-    repeating-linear-gradient(135deg, rgba(255,255,255,0.16) 0 8px, transparent 8px 18px);
-}
-
-.agent-guide-panel > * {
-  position: relative;
-  z-index: 1;
-}
-
-.agent-guide-head {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 14px 10px;
-  background: linear-gradient(135deg, rgba(255, 127, 176, 0.9), rgba(122, 167, 255, 0.86));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.46);
-}
-
-.agent-guide-head strong {
-  display: block;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 0;
-}
-
-.agent-guide-head span {
-  display: block;
-  margin-top: 2px;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 12px;
-}
-
-.agent-guide-close {
-  width: 28px;
-  height: 28px;
-  border: 0;
-  border-radius: 50%;
-  color: #ff7fb0;
-  background: rgba(255, 255, 255, 0.92);
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 127, 176, 0.28);
-}
-
-.agent-guide-spots {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  max-height: 230px;
-  padding: 12px 14px;
-  overflow: auto;
-  border-bottom: 1px solid rgba(228, 232, 242, 0.76);
-  background: rgba(255, 255, 255, 0.28);
-}
-
-.agent-guide-spot {
-  display: grid;
-  grid-template-columns: 58px 1fr;
-  gap: 9px;
-  align-items: center;
-  min-height: 58px;
-  padding: 6px;
-  border: 1px solid rgba(226, 231, 244, 0.9);
-  border-radius: 7px;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 2px 8px rgba(39, 49, 75, 0.06);
-  text-align: left;
-  cursor: pointer;
-  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-}
-
-.agent-guide-spot:hover,
-.agent-guide-spot.active {
-  transform: translateY(-1px);
-  border-color: rgba(255, 127, 176, 0.72);
-  box-shadow: 0 8px 18px rgba(255, 127, 176, 0.16);
-}
-
-.agent-guide-spot img,
-.agent-guide-spot-placeholder {
-  width: 58px;
-  height: 58px;
-  border-radius: 6px;
-  object-fit: cover;
-  background: linear-gradient(135deg, #eef1f6, #dde3ee);
-}
-
-.agent-guide-spot b {
-  display: block;
-  color: #303446;
-  font-size: 13px;
-  line-height: 1.35;
-}
-
-.agent-guide-spot span {
-  display: block;
-  margin-top: 2px;
-  color: #7f8496;
-  font-size: 12px;
-  line-height: 1.35;
-}
-
-.agent-guide-text {
-  max-height: 390px;
-  margin: 0;
-  padding: 14px;
-  overflow: auto;
-  color: #34394f;
-  font-family: inherit;
-  font-size: 13px;
-  line-height: 1.6;
-  word-break: break-word;
-  background: rgba(255, 255, 255, 0.18);
-}
-
-.agent-guide-text :deep(h3) {
-  margin: 14px 0 8px;
-  padding: 8px 10px;
-  border-radius: 7px;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 800;
-  background: linear-gradient(135deg, rgba(48, 58, 92, 0.9), rgba(122, 167, 255, 0.72));
-  box-shadow: 0 8px 18px rgba(48, 58, 92, 0.14);
-}
+.agent-guide-text :deep(h3) { margin: 8px 0; color: #385744; font-size: 13px; background: none; box-shadow: none; padding: 0; }
 
 .agent-guide-text :deep(h3:first-child) {
   margin-top: 0;
@@ -4082,6 +4012,35 @@ display: none;
 .agent-knowledge-sources { padding: 12px 14px; background: #f8fafce8; font-size: 12px; color: #64748b; line-height: 1.6; }
 .agent-knowledge-sources p { margin: 8px 0 0; }
 .agent-guide-spot small { display: block; font-size: 11px; color: #64748b; line-height: 1.5; overflow-wrap: anywhere; }
+
+.live2d-role-console:not(.live2d-role-console--chat) { width: min(480px, calc(100vw - 48px)); padding: 12px; border: 1px solid #e1e9e3; border-radius: 18px; flex-wrap: wrap; box-sizing: border-box; background: #fffffffa; box-shadow: 0 8px 32px #253e3414; }
+.live2d-mode-switch { background: #f0f4f1; border: 0; }
+.live2d-mode-switch button.active { background: white; color: #315e4b; box-shadow: 0 2px 6px #244c3510; }
+.live2d-role-console:not(.live2d-role-console--chat) .live2d-input-row { flex-basis: 100%; flex-wrap: wrap; }
+.live2d-role-input { border-radius: 10px; border-color: #e1e9e3; background: #f7f9f6; }
+.live2d-role-input:focus { border-color: #7ca68c; box-shadow: none; }
+.live2d-role-send { background: #315e4b; box-shadow: none; border-radius: 10px; }
+.agent-save-row { margin: 0 0 12px; }
+.agent-knowledge-sources { padding: 12px 0 0; background: transparent; font-size: 11px; }
+.agent-guide-panel.is-collapsed { max-height: none; }
+.agent-guide-panel.is-collapsed .agent-guide-head { padding-bottom: 20px; }
+:global(body.shengdi-navigation-active:not(.shengdi-live2d-chat-mode) #live2d) { bottom: 126px !important; right: 24px !important; width: 220px !important; height: 338px !important; }
+:global(body.shengdi-navigation-active:not(.shengdi-live2d-chat-mode) #live2dMessageBox) { bottom: 474px !important; right: 24px !important; max-width: 300px; }
+@media (max-width: 600px) {
+  .agent-guide-panel { top: 82px; left: 12px; right: auto; width: calc(100vw - 24px); max-height: 45dvh; border-radius: 16px; }
+  .agent-guide-head { padding: 14px 16px 10px; }
+  .agent-guide-head strong { font-size: 16px; }
+  .agent-eyebrow { font-size: 9px; margin-bottom: 4px; }
+  .agent-guide-body { padding: 0 16px 4px; }
+  .agent-day-heading h2 { margin-top: 12px; }
+  .agent-guide-spots { max-height: 156px; }
+  .agent-guide-spot { padding: 8px 0; }
+  .agent-spot-photo { width: 48px; height: 48px; flex-basis: 48px; border-radius: 9px; }
+  .live2d-role-console:not(.live2d-role-console--chat) { left: 12px; right: 12px; bottom: 14px; width: auto; padding: 10px; }
+  .agent-route-actions { padding: 10px 0; }
+  :global(body.shengdi-navigation-active:not(.shengdi-live2d-chat-mode) #live2d) { bottom: 124px !important; right: 8px !important; width: 130px !important; height: 200px !important; }
+  :global(body.shengdi-navigation-active:not(.shengdi-live2d-chat-mode) #live2dMessageBox) { bottom: 330px !important; right: 12px !important; max-width: 220px; }
+}
 </style>
 
 <!-- Popover teleport 到 body，必须非 scoped；层级需盖住 Mapbox -->
@@ -4097,22 +4056,4 @@ display: none;
 .agent-progress-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .agent-progress-heading button { flex-shrink: 0; border: 1px solid #ddd; border-radius: 6px; padding: 4px 10px; background: white; cursor: pointer; }
 .agent-partial-reply { white-space: pre-wrap; overflow: auto; max-height: 150px; margin-top: 8px; line-height: 1.6; }
-.agent-day-controls { padding: 12px 14px; background: #ffffffd9; font-size: 12px; color: #475569; }
-.agent-day-tabs { display: flex; gap: 6px; overflow-x: auto; }
-.agent-day-tabs button { white-space: nowrap; border: 1px solid #dce2ed; padding: 6px 12px; background: white; border-radius: 6px; cursor: pointer; }
-.agent-day-tabs button.active { background: #edf5ff; border-color: #7aa7ff; color: #315b9c; }
-.agent-day-warning { color: #856135; line-height: 1.5; margin: 6px 0; }
-.agent-import-day { padding: 8px 12px; margin-top: 6px; border: 0; border-radius: 6px; background: #517fe0; color: white; cursor: pointer; }
-.agent-import-day:disabled, .agent-new-session:disabled { opacity: .55; cursor: not-allowed; }
-.agent-guide-panel { overflow-y: auto; }
-@media (max-width: 600px) {
-  .live2d-role-console:not(.live2d-role-console--chat) { flex-wrap: wrap; }
-  .live2d-role-console:not(.live2d-role-console--chat) .live2d-input-row { flex-basis: 100%; }
-  /* 窄屏把输入框放到单独一行，发送/新对话/我的行程另起一行，避免「我的行程」被裁掉 */
-  .live2d-role-console:not(.live2d-role-console--chat) .live2d-input-row { flex-wrap: wrap; }
-  .live2d-role-console:not(.live2d-role-console--chat) .live2d-role-input { flex: 1 1 100%; }
-  .live2d-role-console:not(.live2d-role-console--chat) .live2d-role-send { flex: 1 1 auto; }
-  .live2d-role-console:not(.live2d-role-console--chat) .agent-new-session { flex: 0 0 auto; }
-  .agent-guide-panel { max-height: calc(100dvh - 240px); }
-}
 </style>

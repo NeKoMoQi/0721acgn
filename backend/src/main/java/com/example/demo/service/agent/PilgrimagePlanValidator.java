@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Locale;
+import java.util.LinkedHashMap;
 
 /** A model proposes IDs; only this validator creates a map-importable plan. */
 @Component
@@ -34,6 +35,24 @@ public class PilgrimagePlanValidator {
             ObjectNode target = output.addObject().put("day", ++number)
                     .put("title", limited(day.path("title").asText("巡礼路线"), 100))
                     .put("note", limited(day.path("note").asText(""), 500));
+            Map<String, String> reasons = new LinkedHashMap<>();
+            JsonNode reasonInput = day.path("spotReasons");
+            if (!reasonInput.isMissingNode()) {
+                if (!reasonInput.isArray() || reasonInput.size() > 6)
+                    throw new IllegalArgumentException("spotReasons 必须是最多6项的地点理由列表");
+                for (var entry : reasonInput) {
+                    String pointId = entry.path("pointId").asText("");
+                    String reason = entry.path("reason").asText("").trim();
+                    boolean included = false;
+                    for (var id : ids) if (id.isTextual() && id.asText().equals(pointId)) included = true;
+                    if (!entry.path("pointId").isTextual() || !entry.path("reason").isTextual()
+                            || !included || reason.isEmpty() || reason.length() > 240 || reasons.containsKey(pointId))
+                        throw new IllegalArgumentException("推荐理由应对应当天的地点ID，不可重复，正文需要1～240字");
+                    reasons.put(pointId, reason);
+                }
+            }
+            var reasonOutput = target.putArray("spotReasons");
+            reasons.forEach((id, reason) -> reasonOutput.addObject().put("pointId", id).put("reason", reason));
             var points = target.putArray("pointIds");
             var spots = target.putArray("spots");
             var warnings = target.putArray("warnings");
@@ -61,6 +80,7 @@ public class PilgrimagePlanValidator {
                 }
                 ObjectNode enriched = json.valueToTree(spot);
                 enriched.put("dbPointId", id);
+                if (reasons.containsKey(id)) enriched.put("reason", reasons.get(id));
                 enriched.set("coordinates", json.valueToTree(List.of(spot.getLng(), spot.getLat())));
                 spots.add(enriched);
                 points.add(id);
