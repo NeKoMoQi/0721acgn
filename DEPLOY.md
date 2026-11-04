@@ -68,6 +68,29 @@ C:\tools\maven\apache-maven-3.9.9\bin\mvn.cmd -DskipTests package
 Restart-ScheduledTask -TaskName '0721ACGN API'
 ```
 
+打包前**先停 API**，否则 Windows 会锁住 `target\demo4-0.0.1-SNAPSHOT.jar`，`repackage` 直接失败并留下一个几 MB 的空壳 jar。
+
+## 服务自愈（2026-11-04）
+
+**11/3 那次全站宕机的真实原因**：`0721ACGN Web` / `0721ACGN API` 两个计划任务沿用了 Windows 默认的 `ExecutionTimeLimit = PT72H`，也就是"最多跑 72 小时就停"。10/31 21:16 开机启动，72 小时后 11/3 21:16 被系统按规则终止（`LastTaskResult = 267014`，日志末尾是 `^C`）。同期 `0721ACGN Newsroom` 设的是 `PT0S`，所以只有它没倒。
+
+已做的加固：
+
+1. `0721ACGN Web` / `0721ACGN API` / `0721ACGN qBit` 改为 `ExecutionTimeLimit = PT0S`（不限时长）+ `RestartCount = 999` / `RestartInterval = PT1M`（进程崩了自动重启）。
+2. 新增计划任务 **`0721ACGN Watchdog`**：每 5 分钟跑 `C:\apps\0721acgn-server\watchdog.ps1`，443 或 8080 没在监听就把对应任务拉起来，日志写 `logs\watchdog.log`。
+
+```powershell
+# 看门狗最近做了什么
+Get-Content C:\apps\0721acgn-server\logs\watchdog.log -Tail 20
+
+# 按需暂停/恢复自愈
+New-Item -ItemType File C:\apps\0721acgn-server\maintenance.flag   # 维护中，看门狗不插手
+Remove-Item C:\apps\0721acgn-server\maintenance.flag              # 恢复
+```
+
+**长时间维护（重建后端、换数据库）前先建 `maintenance.flag`**，否则 5 分钟内看门狗会把你停掉的服又拉起来，可能撞上正在写 jar 的 Maven。
+
+
 ## 数据来源（已用 CSV 备份重灌）
 
 `C:\数据库\数据库\*.csv` 是干净的 UTF-8 备份，已全部导入 MySQL，覆盖 14 张表、共 15.35 万行：
