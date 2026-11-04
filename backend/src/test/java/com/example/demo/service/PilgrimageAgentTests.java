@@ -152,6 +152,72 @@ class PilgrimageAgentTests {
         verify(client, times(2)).complete(anyList(), any(), any(), any());
     }
 
+    @Test void fiveDayDrivingFollowupKeepsCandidatesAfterClarificationAndServiceRestart() throws Exception {
+        var points = new ArrayList<XunliPoint>();
+        for (int i = 1; i <= 5; i++) points.add(point(i, "西宫巡礼点" + i, 135.3 + i / 1000.0, 34.7 + i / 1000.0));
+        when(source.getPickerXunliPointList()).thenReturn(points);
+        final JsonNode[] persisted = new JsonNode[1];
+        when(store.saveSession(anyString(), eq("user:1"), eq("route"), any(), anyLong())).thenAnswer(invocation -> {
+            persisted[0] = ((JsonNode) invocation.getArgument(3)).deepCopy();
+            return ((Long) invocation.getArgument(4)) + 1;
+        });
+        when(client.complete(anyList(), any(), any(), any())).thenReturn(
+                call("search_spots", tree("{\"keywords\":[\"上低音号\"],\"city\":\"\",\"offset\":0}")),
+                json.createObjectNode().put("role", "assistant").put("content", "想安排几天、怎么出行？"));
+        var firstRequest = request("查站内巡礼点", null, "route"); firstRequest.setOwnerKey("user:1");
+        var first = service.chat(firstRequest);
+        assertNull(first.getRoutePlan());
+        assertEquals(5, persisted[0].path("candidateIds").size());
+        when(store.session(first.getConversationId(), "user:1", "route")).thenReturn(Map.of("payload", persisted[0].toString(), "version", 1L));
+        when(store.parse(anyString())).thenAnswer(invocation -> json.readTree((String) invocation.getArgument(0)));
+        var restarted = new Live2dAgentService(client, catalog, validator, new AgentAssets(""), store);
+        var plan = json.createObjectNode().put("travelMode", "driving");
+        var days = plan.putArray("days");
+        for (int i = 1; i <= 5; i++) days.addObject().put("title", "第" + i + "天").put("note", "当天单点轻松巡礼")
+                .putArray("pointIds").add(String.valueOf(i));
+        reset(client); when(client.configured()).thenReturn(true);
+        when(client.complete(anyList(), any(), any(), any())).thenAnswer(invocation -> {
+            List<JsonNode> messages = invocation.getArgument(0);
+            assertTrue(messages.toString().contains("西宫巡礼点5"));
+            assertTrue(messages.toString().contains("想安排几天"));
+            return call("submit_route", plan);
+        });
+        var followup = request("安排五天，自己开车", first.getConversationId(), "route"); followup.setOwnerKey("user:1");
+        var response = restarted.chat(followup);
+        assertEquals("driving", response.getRoutePlan().path("travelMode").asText());
+        assertEquals(5, response.getRoutePlan().path("days").size());
+        verify(client, times(1)).complete(anyList(), any(), any(), any());
+    }
+
+    @Test void exhaustedToolRoundsExplainActualFailureInsteadOfTellingUserToReduceDays() throws Exception {
+        when(client.complete(anyList(), any(), any(), any())).thenReturn(call("submit_route", proposal()));
+        var error = assertThrows(IllegalStateException.class, () -> service.chat(request("安排五天，自己开车", null, "route")));
+        assertTrue(error.getMessage().contains("不在已检索候选中"));
+        assertFalse(error.getMessage().contains("减少城市或天数"));
+        verify(client, times(8)).complete(anyList(), any(), any(), any());
+    }
+
+    @Test void anotherToolFailureCannotDiscardAnAlreadyValidatedPlan() throws Exception {
+        var answer = call("submit_route", proposal());
+        var bad = call("unknown_tool", json.createObjectNode()).withArray("tool_calls").get(0).deepCopy();
+        ((ObjectNode) bad).put("id", "call2");
+        answer.withArray("tool_calls").add(bad);
+        when(client.complete(anyList(), any(), any(), any())).thenReturn(
+                call("search_spots", tree("{\"keywords\":[\"上低音号\"],\"city\":\"\",\"offset\":0}")), answer);
+        assertNotNull(service.chat(request("宇治一天步行", null, "route")).getRoutePlan());
+        verify(client, times(2)).complete(anyList(), any(), any(), any());
+    }
+
+    @Test void retrievalMergesDuplicateScreenshotsBeforePagingAndValidation() throws Exception {
+        when(source.getPickerXunliPointList()).thenReturn(List.of(point(1, "同一地点截图一", 135.8, 34.9),
+                point(2, "同一地点截图二", 135.8000001, 34.9), point(3, "另一地点", 135.81, 34.91)));
+        var allowed = new LinkedHashMap<String, XunliAgentSpot>();
+        var result = catalog.search(tree("{\"keywords\":[\"上低音号\"],\"city\":\"\",\"offset\":0}"), allowed);
+        assertEquals(2, result.path("total").asInt());
+        assertEquals(2, allowed.size());
+        assertTrue(allowed.containsKey("3"));
+    }
+
     @Test void chatModeHasNoToolsAndCannotReuseRouteSession() throws Exception {
         when(client.complete(anyList(), isNull(), any(), any())).thenReturn(json.createObjectNode().put("role", "assistant").put("content", "你好"));
         var result = service.chat(request("你好", null, "chat"));

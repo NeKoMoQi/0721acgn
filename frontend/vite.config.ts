@@ -59,13 +59,10 @@ export default defineConfig({
         entryFileNames: 'js/[name]-[hash].js',
         chunkFileNames: 'js/[name]-[hash].js',
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
-        manualChunks(id) {
-          // 说明：曾尝试按库拆 chunk（vue / element-plus / mapbox / live2d），
-          // 但 mapbox-gl 与 vendor 之间有 commonjs helper 的环形依赖，
-          // 拆出来之后 mapbox 仍会被首页静态预加载，反而多出一个请求，故保持单 vendor。
-          // 真正要优化的话，应把 WarFlag 里的 mapbox 改成动态 import。
-          if (id.includes('node_modules')) return 'vendor'
-        }
+        // 说明：原先用 manualChunks 把所有 node_modules 塞进单个 vendor，结果 mapbox-gl /
+        // leaflet / epubjs 这些只在懒加载路由里用到的库也被入口静态 import，首屏必须下完
+        // 3.96MB 才出画面。改为交给 Rollup 按实际引用图切分：入口只剩 vue + element-plus，
+        // 地图/阅读器跟着对应路由 chunk 走，不进首屏。
       },
     },
   },

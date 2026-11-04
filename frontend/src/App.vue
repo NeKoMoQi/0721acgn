@@ -20,6 +20,29 @@ const showGlobalLive2D = computed(() => {
   return !route.path.startsWith('/warflag') && !route.path.startsWith('/shengdi');
 });
 
+/** 空闲调度：requestIdleCallback 可用就用，否则退化成 1.2s 定时器；随时可取消。 */
+let idleHandle: { cancel: () => void } | null = null;
+
+function scheduleIdle(fn: () => void) {
+  cancelIdle();
+  const w = window as Window & {
+    requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+    cancelIdleCallback?: (handle: number) => void;
+  };
+  if (typeof w.requestIdleCallback === 'function') {
+    const handle = w.requestIdleCallback(fn, { timeout: 3000 });
+    idleHandle = { cancel: () => w.cancelIdleCallback?.(handle) };
+  } else {
+    const timer = window.setTimeout(fn, 1200);
+    idleHandle = { cancel: () => window.clearTimeout(timer) };
+  }
+}
+
+function cancelIdle() {
+  idleHandle?.cancel();
+  idleHandle = null;
+}
+
 function cleanupGlobalLive2D({ includeCanvas = false } = {}) {
   live2dInitialized.value = false;
   [
@@ -66,8 +89,12 @@ watch(
   showGlobalLive2D,
   async (visible) => {
     if (visible) {
-      mountGlobalLive2D();
+      // 看板娘不是首屏内容：等浏览器空闲（或最迟 3s）再挂，别和 vendor/首屏图片抢带宽和主线程。
+      scheduleIdle(() => {
+        mountGlobalLive2D();
+      });
     } else {
+      cancelIdle();
       await nextTick();
       cleanupGlobalLive2D({ includeCanvas: route.path.startsWith('/warflag') });
     }

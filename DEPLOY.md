@@ -125,6 +125,17 @@ Restart-ScheduledTask -TaskName '0721ACGN API'
 - 验证：后端 79 项（78 通过 + 1 跳过）；前端类型检查/构建通过；线上 1440×900 实跑两轮，得到「宇治川东岸·久美子椅与喜撰桥慢拍」一天三点，理由与 `note` 正常显示、地图自动画线；保存后读取 `spotReasons`/`reason`/`note` 均保留。
 - 注意：模型偶尔会给出不合规的 `spotReasons`（例如把当天以外的点写进理由），校验器会整版退回让模型重试，5 轮仍不合规则提示「本次规划未能通过校验，请减少城市或天数后重试」。实测约每三次出现一次，重发即可。
 
+## 首屏性能修复（2026-10-28）
+
+线上实测（服务器侧、绕公网 IP）：首屏关键资源 1.08 MB（br），其中 `vendor.js` 一个包就 1.03 MB、下载 2.55 秒，其余资源都在 20 ms 内；`index.html` 里还同步引了 `api.mapbox.com` 的 directions CSS/JS，CSS 阻塞渲染、TTFB 实测 2.6 秒。三者叠加就是「一直都很慢」的来源。改动：
+
+1. **`index.html` 删掉 api.mapbox.com 的 CSS+JS**：`src/view/shengdi/index.vue` 本来就 `import` 了 npm 包 `@mapbox/mapbox-gl-directions` 的 js/css，那两行是从 CDN 重复拉的第二份（且 CSS 阻塞首屏）。删掉后首屏少 2.6 s 外网等待和 287 KB。
+2. **`vite.config.ts` 去掉 `manualChunks`**：原来把所有 `node_modules` 塞进单个 `vendor`，导致只在懒加载路由里用的 mapbox-gl / leaflet / epubjs 也被入口静态 import。改成交给 Rollup 按引用图切分后，入口只剩 vue + element-plus，mapbox 单独成 chunk、只在战旗/圣地页加载。首屏关键资源 1.08 MB → **0.39 MB（br）**，关键路径 2554 ms → **~100–240 ms**。
+3. **`server.js` 非 hash 静态资源缓存 5 分钟 → 30 天**：`LOGO.png`(53KB)、`behindpic.webp`(84KB)、`live2d-render.bundle.js`(244KB)、`live2dcubismcore.min.js`(202KB)、`models/` 原来都是 `max-age=300`，回访 5 分钟后全量重下。现在是 `max-age=2592000, stale-while-revalidate=86400`。**换图/换模型要改文件名或加 `?v=`**，否则老用户 30 天内看不到新版本。
+4. `src/App.vue` 看板娘改为 `requestIdleCallback`（不支持则 1.2 s 定时）后再挂载，不再和首屏抢带宽/主线程。
+
+改动前备份：`.tmp/perf-20261028-115200/`（index.html、vite.config.ts、App.vue、server.js）。回滚就拷回去 + `npm run build-only` + 重启 `0721ACGN Web`。
+
 ## 性能优化（2026-10-21）
 
 | 项目 | 优化前 | 优化后 |

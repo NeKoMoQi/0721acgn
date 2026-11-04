@@ -23,6 +23,8 @@ def main() -> int:
     collector = XhhCollector(cfg)
     driver, browser = collector.open(headless=False)
     try:
+        # 先清掉旧 cookie：否则可能一开窗就"检测到"上次的失效登录态
+        browser.clear_cookies()
         page = browser.pages[0] if browser.pages else browser.new_page()
         page.goto("https://www.xiaoheihe.cn/app/bbs", wait_until="domcontentloaded", timeout=60000)
         print("browser opened, waiting for manual login", flush=True)

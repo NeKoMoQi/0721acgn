@@ -7,8 +7,9 @@
     <title>0721Acgn (ﾉ>ω<)ﾉ :｡･::･ﾟ'★,｡･:･ﾟ'☆</title>
   </head>
   <body>
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.css" type="text/css">
-    <script defer src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.js"></script>
+    <!-- mapbox-gl-directions 已由 src/view/shengdi/index.vue 从 npm 包内联引入，
+         原来这里还从 api.mapbox.com 再拉一份 CSS+JS：CSS 阻塞渲染、国内 TTFB 实测 2.6s，
+         属于重复加载，已移除。 -->
     <div id="app">
     </div>
     <script type="module" src="/src/main.ts"></script>

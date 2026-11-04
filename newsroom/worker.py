@@ -1,4 +1,4 @@
-﻿"""Persistent platform-reading newsroom. Python 3.11+; see requirements.txt."""
+"""Persistent platform-reading newsroom. Python 3.11+; see requirements.txt."""
 import argparse
 import contextlib
 import datetime as dt
@@ -437,7 +437,13 @@ class Newsroom:
             if STOP.is_set():
                 break
             try:
-                items, warnings = self.collector(name).collect(self.cfg["topics"])
+                # 平台偶发超时/浏览器目录锁冲突，重试一次再判失败，避免健康状态误报 error。
+                try:
+                    items, warnings = self.collector(name).collect(self.cfg["topics"])
+                except Exception as exc:  # noqa: BLE001
+                    LOG.warning("platform %s collect failed (%s), retrying once", name, type(exc).__name__)
+                    time.sleep(5)
+                    items, warnings = self.collector(name).collect(self.cfg["topics"])
                 skipped = 0
                 for item in items:
                     if item.get("date") and not recent(item["date"], self.cfg["max_article_age_days"]):

@@ -74,16 +74,23 @@ public class PilgrimageCatalog {
             return result;
         }
         int offset = Math.max(0, Math.min(500, args.path("offset").asInt(0)));
-        List<XunliAgentSpot> matches = pool.stream()
+        List<XunliAgentSpot> rawMatches = pool.stream()
                 .filter(p -> city.isEmpty() || cities.stream().anyMatch(c -> text(p.getCity()).toLowerCase(Locale.ROOT).contains(c)))
                 .filter(p -> keywords.isEmpty() || keywords.stream().anyMatch(k -> matches(k, p)))
                 .sorted(Comparator.comparing((XunliAgentSpot p) -> text(p.getCity()))
                         .thenComparing(p -> text(p.getWorkTitle())).thenComparing(XunliAgentSpot::getId))
                 .toList();
+        Map<String, XunliAgentSpot> uniqueLocations = new LinkedHashMap<>();
+        for (var point : rawMatches) {
+            String key = String.format(Locale.ROOT, "%.5f,%.5f", point.getLng(), point.getLat());
+            uniqueLocations.putIfAbsent(key, point);
+        }
+        List<XunliAgentSpot> matches = new ArrayList<>(uniqueLocations.values());
         result.put("total", matches.size());
         var spots = result.putArray("spots");
         matches.stream().skip(offset).limit(32).forEach(p -> {
             if (allowed.size() >= 128 && !allowed.containsKey(p.getId())) return;
+            allowed.remove(p.getId());
             allowed.put(p.getId(), p);
             spots.addObject().put("id", p.getId()).put("name", p.getName())
                     .put("workTitle", p.getWorkTitle()).put("city", p.getCity())
@@ -92,7 +99,7 @@ public class PilgrimageCatalog {
                     .put("verifiedAt", p.getVerifiedAt());
         });
         result.put("nextOffset", offset + 32 < matches.size() ? offset + 32 : -1);
-        result.put("note", "候选为站内数据，仅坐标可用于地理粗筛；开放时间、交通时间和取景准确性尚未核实。");
+        result.put("note", "候选已按坐标合并同地点的重复截图，每个位置只返回一个可提交ID。仅坐标可用于地理粗筛；开放时间、交通时间和取景准确性尚未核实。");
         return result;
     }
 

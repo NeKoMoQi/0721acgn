@@ -69,9 +69,9 @@
       <el-button size="small" type="danger" plain :disabled="agentLibraryLoading" @click="removeAgentRoute(saved.id)">删除</el-button>
     </div>
   </el-dialog>
-  <section v-if="agentMode === 'route' && (agentGuideText || agentGuideSpots.length)" class="agent-guide-panel" :class="{ 'is-collapsed': agentGuideCollapsed }">
+  <section v-if="agentMode === 'route' && (agentGuideText || agentGuideSpots.length || agentStreamError)" class="agent-guide-panel" :class="{ 'is-collapsed': agentGuideCollapsed }">
     <header class="agent-guide-head">
-      <div><span class="agent-eyebrow">PILGRIMAGE / 小窝巡礼</span><strong>{{ agentRoutePlan ? '为你推荐的路线' : '小窝想再了解一下' }}</strong></div>
+      <div><span class="agent-eyebrow">PILGRIMAGE / 小窝巡礼</span><strong>{{ agentRoutePlan ? '为你推荐的路线' : agentRoleSending ? '正在为你规划' : agentStreamError ? '这次规划遇到问题' : '小窝想再了解一下' }}</strong></div>
       <button type="button" class="agent-guide-close" :aria-label="agentGuideCollapsed ? '展开路线' : '收起路线'" :aria-expanded="!agentGuideCollapsed" @click="agentGuideCollapsed = !agentGuideCollapsed">{{ agentGuideCollapsed ? '+' : '−' }}</button>
     </header>
     <div v-show="!agentGuideCollapsed" class="agent-guide-body">
@@ -102,6 +102,8 @@
           <div v-if="agentKnowledgeSources.length" class="agent-knowledge-sources"><strong>站内编辑资料</strong><p v-for="source in agentKnowledgeSources" :key="source.id">{{ source.title }} · {{ source.updatedAt }}<br /><small>{{ source.source }}</small></p></div>
         </details>
       </template>
+      <div v-else-if="agentRoleSending" class="agent-guide-text" role="status">{{ agentProgress || '正在根据你的补充安排路线…' }}</div>
+      <div v-else-if="agentStreamError" class="agent-guide-text" role="alert"><p>{{ agentStreamError }}</p><button type="button" class="agent-retry-route" :disabled="!agentRoleInput.trim()" @click="sendAgentRoleMessage">重新规划</button></div>
       <div v-else class="agent-guide-text" v-html="agentGuideHtml"></div>
     </div>
   </section>
@@ -2838,6 +2840,7 @@ onBeforeUnmount(() => {
 .agent-spot-copy { flex: 1; min-width: 0; }
 .agent-spot-copy .agent-spot-location { width: 100%; }
 .agent-spot-reason { margin: 7px 0 0 24px; font-size: 11px; color: #788b7e; line-height: 1.7; white-space: pre-line; overflow-wrap: anywhere; }
+.agent-retry-route { margin: 8px 0; border: 0; border-radius: 8px; padding: 8px 14px; color: white; background: #315e4b; cursor: pointer; }
 .agent-guide-spots { display: flex; flex-direction: column; gap: 0; padding: 0; max-height: 310px; overflow-y: auto; scrollbar-width: thin; }
 .agent-guide-spot { display: flex; align-items: center; gap: 12px; padding: 12px 0; border: 0; border-bottom: 1px solid #eef2ef; background: transparent; box-shadow: none; }
 .agent-guide-spot:last-child { border-bottom: 0; }
