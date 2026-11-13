@@ -181,7 +181,31 @@ Remove-Item C:\apps\0721acgn-server\maintenance.flag              # 恢复
 7. **本地图片 WebP**：`C:\tools\webp-convert.js` 把 `frontend/public` 下 166 张 >120KB 的 PNG/JPG 转成同名 `.webp`（跳过 `models/` 里的 Live2D 贴图）；`server.js` 按 `Accept: image/webp` 协商返回，URL 不变、无需改代码。
 8. **代码分割（尝试后回退）**：试过按 vue / element-plus / mapbox / live2d / geo 拆 chunk，但 `mapbox-gl` 与 `vendor` 之间因 commonjs helper 形成环形依赖，拆完后 `mapbox` 仍会被首页 `modulepreload`，首屏反而多一个请求（852KB vs 826KB），故保持单 `vendor`。要真正生效需把 `view/WarFlag/composables/useMapbox.ts` 里的 mapbox 改成动态 `import()`。
 
+## 爬虫部署（2026-11-13）
+
+两个增量采集器已装在服务器上，用 Windows 计划任务每天跑（原包是 Linux systemd，已按本机改造）：
+
+| 采集器 | 路径 | 计划任务 | 产出 |
+| --- | --- | --- | --- |
+| anitabi（圣地巡礼） | `C:\apps\anitabi-server` | `0721ACGN Anitabi Crawler`，每天 03:30 + 0–30 min | OSS `xunli-v2/` + PG `acgn0721_gis.tb_xunli/tb_xunlipoint` |
+| 拷贝漫画 | `C:\apps\copymanga-server` | `0721ACGN Copymanga Crawler`，每天 04:30 + 0–30 min | OSS `copymanga-v1/` + `data/comics/*`（尚待接 MySQL） |
+
+- 胶水脚本（入库器、任务入口、安装脚本）在仓库 `ops/`，部署细节见 `C:\apps\anitabi-server\README-DEPLOY.md`、`C:\apps\copymanga-server\README-DEPLOY.md`。
+- anitabi 入库用 `ops/anitabi/import_to_pg.py`：新作品分配 `MAX(xunliid)+1` 并写映射表 `tb_anitabi_map`，站内已有的同名作品按名字认领，点位按「点名 + 经纬度」去重，幂等、可 `--dry-run`。**没有改动旧 `xunliid`**。
+- **当前被外部网络卡住，还没有真实数据入库**：
+  - `api.anitabi.cn` / `image.anitabi.cn` 对本机 IP `124.220.174.115` 返回 Cloudflare `403`（IP 级拦截，冷却 30 分钟未恢复），程序按设计停止本轮并退出 1；
+  - 拷贝漫画所有已知域名（`2026copy.com`、`copymanga.*`、`mangacopy.com` 等）在本机不可达，`www.copymanga.cc` 是域名停放页；`comics.txt` 先留空，任务记 `WAITING` 后跳过。
+  - 恢复办法：给 anitabi 申请放行该 IP / 换一条不被拦的出口，或先在能访问的网络跑一轮后把 `data/export-*` 拷回来导入；拷贝漫画需要可用域名后再填 `comics.txt`。
+
+```powershell
+# 手动跑一轮 + 看日志
+Start-ScheduledTask -TaskName '0721ACGN Anitabi Crawler'
+Get-Content C:\apps\anitabi-server\logs\anitabi-$(Get-Date -Format yyyyMMdd).log -Tail 30
+Get-ScheduledTaskInfo -TaskName '0721ACGN Anitabi Crawler'
+```
+
 ## 已知问题
+
 
 1. **`frontend/src/view/shengdi/index.vue` 占位页已替换**：2026-10-27 合并圣地巡礼 v2 更新包后，该路径已恢复为完整的地图巡礼页（含 DeepSeek Agent、按天预览、保存行程）。原占位页与受损版本的备份仍在同目录：`index.vue.original-from-github`、`index.vue.repaired-attempt`。
 2. **域名 `0721acgn.com` 未完成腾讯云 ICP 备案**：大陆地域对未备案域名在 80/443 上有网关拦截，表现为域名打不开、直接 IP 访问正常。备案通过后即可用域名访问（HTTPS 证书已就绪）。
