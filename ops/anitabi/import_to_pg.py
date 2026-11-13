@@ -60,11 +60,14 @@ def point_of(value):
     return lat, lng
 
 
-def read_export(data_dir):
-    pointer = Path(data_dir) / 'CURRENT'
-    if not pointer.is_file():
-        return [], {}
-    folder = Path(data_dir) / pointer.read_text(encoding='utf-8-sig').strip()
+def read_export(data_dir, export_dir=None):
+    if export_dir:
+        folder = Path(export_dir)
+    else:
+        pointer = Path(data_dir) / 'CURRENT'
+        if not pointer.is_file():
+            return [], {}
+        folder = Path(data_dir) / pointer.read_text(encoding='utf-8-sig').strip()
     main_csv = folder / '巡礼番剧.csv'
     point_csv = folder / '具体点.csv'
     if not main_csv.is_file() or not point_csv.is_file():
@@ -255,9 +258,10 @@ def main():
     p.add_argument('--user', default=os.environ.get('PGUSER', 'postgres'))
     p.add_argument('--password', default=os.environ.get('PGPASSWORD', ''))
     p.add_argument('--dry-run', action='store_true', help='do everything, then roll back')
+    p.add_argument('--export', help='import this export folder directly (bypasses <data>/CURRENT)')
     args = p.parse_args()
 
-    works, points_by_work = read_export(args.data)
+    works, points_by_work = read_export(args.data, args.export)
     print(f'export: {len(works)} works, {sum(len(v) for v in points_by_work.values())} points', flush=True)
     if not works:
         print('nothing to import', flush=True)
