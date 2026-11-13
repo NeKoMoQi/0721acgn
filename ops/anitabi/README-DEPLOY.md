@@ -54,7 +54,8 @@ Get-ScheduledTaskInfo -TaskName '0721ACGN Anitabi Crawler'   # LastTaskResult
 **api.anitabi.cn 与 image.anitabi.cn 对本机公网 IP `124.220.174.115` 返回 Cloudflare `403 Sorry, you have been blocked`。**
 
 - 首次请求（10:35）还能拿到 200；随后列表类请求与正常 lite 接口全部 403，11:21 再测仍 403（约 50 分钟冷却未恢复）。返回页明确写出 `Your IP: 124.220.174.115`，属于 Cloudflare 的 IP/ASN 级拦截，不是账号问题。
-- 排除客户端因素：PowerShell / curl / Python requests / Node fetch（TLS1.3、HTTP/1.1、浏览器 UA）结果一致都是 403；`https://www.cloudflare.com/cdn-cgi/trace` 显示本机 `ip=124.220.174.115 loc=CN colo=LAX`，即 Cloudflare 本身可达，只是 anitabi 的 WAF 规则拦这个来源。
+- 排除客户端因素：PowerShell / curl / Python requests / Node fetch（TLS1.3、HTTP/1.1、浏览器 UA）结果一致都是 403；真 Chromium（headless Edge，HTTP/2 + 浏览器指纹）也是同一张拦截页；`https://www.cloudflare.com/cdn-cgi/trace` 显示本机 `ip=124.220.174.115 loc=CN colo=LAX`，即 Cloudflare 本身可达，只是 anitabi 的 WAF 规则拦这个来源。
+- 2026-11-13 15:32 按「暂停定时任务 + 静默 11 分钟 + 同作品 188412 + 10 秒间隔」复测：lite、points/detail 两次请求均 `403 text/html`（cf-ray `a59c14ca9ca0f18a-AMS`、`a59c150a7cd5f18a-AMS`），图片接口同样 403；同一时刻主站 `https://www.anitabi.cn/` 仍返回 200。说明规则只针对本 IP 访问 api/image 主机，且与请求频率、UA、TLS 指纹无关。
 - 原包说明里也写了「遇到 403 请检查服务器访问情况，不绕过、不盲目重试」，所以程序按设计在 401/403/429 时立即停止本轮并退出 1，不做重试风暴。
 - 影响：`crawler.py` 一条作品都取不到 → 导出为空 → 导入器无事可做（日志会显示 `export: 0 works, 0 points` / `nothing to import`）。
 - 解决方向（任选其一，均需站主/你这边操作）：
