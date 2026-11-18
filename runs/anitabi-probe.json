@@ -1,13 +1,13 @@
 {
-  "utc": "2026-11-18T09:11:35Z",
+  "utc": "2026-11-18T09:48:49Z",
   "subject": 188412,
-  "egress_ip": "48.211.209.16",
+  "egress_ip": "20.171.39.54",
   "lite": {
     "status": 200,
     "type": "application/json; charset=utf-8",
-    "cf_ray": "a5c5d9410811395b-IAD",
+    "cf_ray": "a5c60fca6b0f687a-LAX",
     "server": "cloudflare",
-    "seconds": 0.48,
+    "seconds": 0.25,
     "bytes": 2643,
     "json_keys": [
       "city",
@@ -27,27 +27,27 @@
   "points": {
     "status": 200,
     "type": "application/json; charset=utf-8",
-    "cf_ray": "a5c5d941f910395b-IAD",
+    "cf_ray": "a5c60fcb5dad687a-LAX",
     "server": "cloudflare",
-    "seconds": 0.04,
+    "seconds": 0.1,
     "bytes": 2391,
     "json_keys": "list"
   },
   "cover": {
     "status": 200,
     "type": "image/jpeg",
-    "cf_ray": "a5c5d9442d981ee7-IAD",
+    "cf_ray": "a5c60fcdb980cc9f-LAX",
     "server": "cloudflare",
-    "seconds": 1.32,
+    "seconds": 0.24,
     "bytes": 30175,
     "image_magic": "ffd8ffe000104a46"
   },
   "point_image": {
     "status": 200,
     "type": "image/jpeg",
-    "cf_ray": "a5c5d94cfbea1ee7-IAD",
+    "cf_ray": "a5c60fce7ad8cc9f-LAX",
     "server": "cloudflare",
-    "seconds": 1.02,
+    "seconds": 16.26,
     "bytes": 34894,
     "image_magic": "ffd8ffe000104a46"
   },
@@ -126,13 +126,55 @@
     },
     "/points/compact": {
       "status": 403,
-      "type": "text/html; charset=UTF-8"
+      "type": "text/plain;charset=UTF-8"
     }
   },
   "api_ok": true,
+  "image_timing": [
+    {
+      "status": 200,
+      "bytes": 34894,
+      "seconds": 0.03
+    },
+    {
+      "status": 200,
+      "bytes": 34894,
+      "seconds": 0.02
+    },
+    {
+      "status": 200,
+      "bytes": 34894,
+      "seconds": 0.04
+    },
+    {
+      "status": 200,
+      "bytes": 34894,
+      "seconds": 0.02
+    },
+    {
+      "status": 200,
+      "bytes": 34894,
+      "seconds": 0.02
+    },
+    {
+      "status": 200,
+      "bytes": 34894,
+      "seconds": 0.02
+    },
+    {
+      "status": 200,
+      "bytes": 34894,
+      "seconds": 0.02
+    },
+    {
+      "status": 200,
+      "bytes": 34894,
+      "seconds": 0.02
+    }
+  ],
   "crawler": {
     "exit": 1,
-    "tail": "2026-11-18 09:11:40,215 ERROR id=188412 HTTP 403\n",
+    "tail": "2026-11-18 09:49:14,847 ERROR id=188412 HTTP 403\n",
     "point_rows": 0,
     "images": 0
   }
