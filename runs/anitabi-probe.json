@@ -1,13 +1,13 @@
 {
-  "utc": "2026-11-18T08:56:55Z",
+  "utc": "2026-11-18T09:07:48Z",
   "subject": 188412,
-  "egress_ip": "20.189.181.65",
+  "egress_ip": "3.42.157.46",
   "lite": {
     "status": 200,
     "type": "application/json; charset=utf-8",
-    "cf_ray": "a5c5c3c338c767b2-SJC",
+    "cf_ray": "a5c5d3b5dbb8ff17-PDX",
     "server": "cloudflare",
-    "seconds": 0.4,
+    "seconds": 0.17,
     "bytes": 2643,
     "json_keys": [
       "city",
@@ -27,35 +27,50 @@
   "points": {
     "status": 200,
     "type": "application/json; charset=utf-8",
-    "cf_ray": "a5c5c3c53a3967b2-SJC",
+    "cf_ray": "a5c5d3b69e29ff17-PDX",
     "server": "cloudflare",
-    "seconds": 0.27,
+    "seconds": 0.11,
     "bytes": 2391,
     "json_keys": "list"
   },
   "cover": {
     "status": 200,
     "type": "image/jpeg",
-    "cf_ray": "a5c5c3c86e44cc7e-SJC",
+    "cf_ray": "a5c5d3b7c85bfc1e-PDX",
     "server": "cloudflare",
-    "seconds": 0.87,
+    "seconds": 0.77,
     "bytes": 30175,
     "image_magic": "ffd8ffe000104a46"
   },
   "point_image": {
     "status": 200,
     "type": "image/jpeg",
-    "cf_ray": "a5c5c3ce0db9cc7e-SJC",
+    "cf_ray": "a5c5d3bd8f72fc1e-PDX",
     "server": "cloudflare",
-    "seconds": 0.66,
+    "seconds": 0.76,
     "bytes": 34894,
     "image_magic": "ffd8ffe000104a46"
   },
   "point_count": 9,
+  "point_sample": {
+    "id": "51i53sp1s",
+    "name": "成増駅前",
+    "image": "https://image.anitabi.cn/points/188412/51i53sp1s_1672370570178.jpg?plan=h160",
+    "origin": "Google Maps",
+    "originURL": "https://www.google.com/maps/d/viewer?mid=1SrPs3rUkP9HlP49W8-FQ6mRwUaU&ll=35.777254%2C139.632612&z=17"
+  },
+  "point_keys": [
+    "id",
+    "image",
+    "name",
+    "origin",
+    "originURL"
+  ],
+  "points_with_geo": 0,
   "api_ok": true,
   "crawler": {
     "exit": 1,
-    "tail": "2026-11-18 08:57:32,099 INFO id=188412 saved\n2026-11-18 08:57:37,505 ERROR id=189739 failed (ValueError); retry next run\n",
+    "tail": "2026-11-18 09:08:27,563 INFO id=188412 saved\n2026-11-18 09:08:30,694 ERROR id=189739 failed (ValueError); retry next run\n",
     "point_rows": 9,
     "images": 10
   }
