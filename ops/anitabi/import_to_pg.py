@@ -103,8 +103,11 @@ def import_all(conn, works, points_by_work, apply):
     cur.execute(DDL)
     cur.execute(f'SELECT COALESCE(MAX(id), 0), COALESCE(MAX(xunliid), 0) FROM {SCHEMA}.tb_xunli')
     next_work_id, next_xunliid = cur.fetchone()
-    cur.execute(f'SELECT COALESCE(MAX(id), 0) FROM {SCHEMA}.tb_xunlipoint')
-    next_point_id = cur.fetchone()[0]
+    cur.execute(f'SELECT COALESCE(MAX(id), 0), COALESCE(MAX(xunliid), 0) FROM {SCHEMA}.tb_xunlipoint')
+    next_point_id, max_point_xunliid = cur.fetchone()
+    # tb_xunlipoint 里存在没有作品行的孤儿记录，新作品编号必须越过它们，
+    # 否则会把这些孤儿点位挂到新作品上。
+    next_xunliid = max(next_xunliid, max_point_xunliid)
 
     cur.execute(f'SELECT bangumi_id, xunliid FROM {SCHEMA}.tb_anitabi_map')
     mapped = dict(cur.fetchall())
