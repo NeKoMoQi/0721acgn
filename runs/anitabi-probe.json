@@ -1,13 +1,13 @@
 {
-  "utc": "2026-11-18T09:07:48Z",
+  "utc": "2026-11-18T09:09:40Z",
   "subject": 188412,
-  "egress_ip": "3.42.157.46",
+  "egress_ip": "172.190.110.168",
   "lite": {
     "status": 200,
     "type": "application/json; charset=utf-8",
-    "cf_ray": "a5c5d3b5dbb8ff17-PDX",
+    "cf_ray": "a5c5d6752870672e-ATL",
     "server": "cloudflare",
-    "seconds": 0.17,
+    "seconds": 0.56,
     "bytes": 2643,
     "json_keys": [
       "city",
@@ -27,27 +27,27 @@
   "points": {
     "status": 200,
     "type": "application/json; charset=utf-8",
-    "cf_ray": "a5c5d3b69e29ff17-PDX",
+    "cf_ray": "a5c5d6766903672e-ATL",
     "server": "cloudflare",
-    "seconds": 0.11,
+    "seconds": 0.12,
     "bytes": 2391,
     "json_keys": "list"
   },
   "cover": {
     "status": 200,
     "type": "image/jpeg",
-    "cf_ray": "a5c5d3b7c85bfc1e-PDX",
+    "cf_ray": "a5c5d677fd95bd3c-ATL",
     "server": "cloudflare",
-    "seconds": 0.77,
+    "seconds": 1.05,
     "bytes": 30175,
     "image_magic": "ffd8ffe000104a46"
   },
   "point_image": {
     "status": 200,
     "type": "image/jpeg",
-    "cf_ray": "a5c5d3bd8f72fc1e-PDX",
+    "cf_ray": "a5c5d67ffaedbd3c-ATL",
     "server": "cloudflare",
-    "seconds": 0.76,
+    "seconds": 1.0,
     "bytes": 34894,
     "image_magic": "ffd8ffe000104a46"
   },
@@ -67,11 +67,61 @@
     "originURL"
   ],
   "points_with_geo": 0,
+  "point_variants": {
+    "/points": {
+      "status": 403,
+      "type": "text/plain;charset=UTF-8"
+    },
+    "/points?haveImage=true": {
+      "status": 403,
+      "type": "text/plain;charset=UTF-8"
+    },
+    "/points/detail": {
+      "status": 200,
+      "type": "application/json; charset=utf-8",
+      "count": 9,
+      "keys": [
+        "id",
+        "image",
+        "name",
+        "origin",
+        "originURL"
+      ],
+      "with_geo": 0,
+      "sample": {
+        "id": "51i53sp1s",
+        "name": "成増駅前",
+        "image": "https://image.anitabi.cn/points/188412/51i53sp1s_1672370570178.jpg?plan=h160",
+        "origin": "Google Maps",
+        "originURL": "https://www.google.com/maps/d/viewer?mid=1SrPs3rUkP9HlP49W8-FQ6mRwUaU&ll=35.777254%2C139.632612&z=17"
+      }
+    },
+    "/points/detail?haveImage=true": {
+      "status": 200,
+      "type": "application/json; charset=utf-8",
+      "count": 9,
+      "keys": [
+        "id",
+        "image",
+        "name",
+        "origin",
+        "originURL"
+      ],
+      "with_geo": 0,
+      "sample": {
+        "id": "51i53sp1s",
+        "name": "成増駅前",
+        "image": "https://image.anitabi.cn/points/188412/51i53sp1s_1672370570178.jpg?plan=h160",
+        "origin": "Google Maps",
+        "originURL": "https://www.google.com/maps/d/viewer?mid=1SrPs3rUkP9HlP49W8-FQ6mRwUaU&ll=35.777254%2C139.632612&z=17"
+      }
+    }
+  },
   "api_ok": true,
   "crawler": {
     "exit": 1,
-    "tail": "2026-11-18 09:08:27,563 INFO id=188412 saved\n2026-11-18 09:08:30,694 ERROR id=189739 failed (ValueError); retry next run\n",
-    "point_rows": 9,
-    "images": 10
+    "tail": "2026-11-18 09:09:48,242 ERROR id=188412 HTTP 403\n",
+    "point_rows": 0,
+    "images": 0
   }
 }
