@@ -1,13 +1,14 @@
 name: anitabi-images
 
-# 从 Actions 直传 anitabi 图片到本站 OSS（服务器上行只有 0.06 MiB/s，跑不动）。
+# 从 Actions 分片直传 anitabi 图片到本站 OSS（单 runner 跑两万张后会被限速，改成 6 个 runner 分片）。
 # 需要仓库 Secrets：OSS_ACCESS_KEY_ID / OSS_ACCESS_KEY_SECRET。
-# 产物：OSS xunli-v2/images/<sha256>.<ext> + xunli-v2/image-map-v2.json；服务器用 rewrite_images.py 改库里的 URL。
+# 产物：OSS xunli-v2/images/<sha256>.<ext> + 分片映射 xunli-v2/map-shards/shard-<i>.json
+#       服务器跑 merge_maps.py 合成 xunli-v2/image-map-final.json，再用 rewrite_images.py 改库里的 URL。
 on:
   workflow_dispatch:
     inputs:
       limit:
-        description: '只传前 N 张（0=全部）'
+        description: '每个分片最多传 N 张（0=全部）'
         required: false
         default: '0'
   schedule:
@@ -20,14 +21,17 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: anitabi-images-push
-  cancel-in-progress: false
-
 jobs:
   push:
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
     runs-on: ubuntu-latest
     timeout-minutes: 180
+    concurrency:
+      group: anitabi-images-push-${{ matrix.shard }}
+      cancel-in-progress: false
     env:
       OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
       OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
@@ -35,6 +39,7 @@ jobs:
       OSS_BUCKET: acgn0721
       OSS_PUBLIC_BASE: https://acgn0721.oss-cn-hangzhou.aliyuncs.com
       LIMIT: ${{ github.event.inputs.limit }}
+      SHARD: ${{ matrix.shard }}
     steps:
       - uses: actions/checkout@v4
 
@@ -57,12 +62,11 @@ jobs:
           python ops/anitabi/collect_dump.py --cache data/site-dump --out data/images-export
           cd data/images-export && echo "EXPORT=$(cat CURRENT)" >> "$GITHUB_ENV"
 
-      - name: Push images to OSS
+      - name: Push shard ${{ matrix.shard }}
         run: |
           LIMIT=${LIMIT:-0}
-          echo "limit=$LIMIT"
           python ops/anitabi/push_images.py --export "data/images-export/$EXPORT" \
-            --threads 32 --limit "$LIMIT" | tee push.log
+            --threads 12 --shard "${SHARD}/6" --limit "$LIMIT" | tee push.log
         continue-on-error: true
 
       - name: Status
@@ -71,9 +75,11 @@ jobs:
           import json, os, re
           log = open('push.log', encoding='utf-8', errors='replace').read() if os.path.exists('push.log') else ''
           m = re.findall(r'\{"utc".*\}', log)
-          status = json.loads(m[-1]) if m else {'error': 'no status line', 'log_tail': log[-1500:]}
+          status = json.loads(m[-1]) if m else {'error': 'no status line', 'log_tail': log[-1200:]}
+          status['shard'] = os.environ.get('SHARD')
           status['run_url'] = f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
-          open('runs/images-status.json', 'w', encoding='utf-8').write(json.dumps(status, ensure_ascii=False, indent=2))
+          path = f"runs/images-status-{os.environ['SHARD']}.json"
+          open(path, 'w', encoding='utf-8').write(json.dumps(status, ensure_ascii=False, indent=2))
           print(json.dumps(status, ensure_ascii=False, indent=2))
           PY
 
@@ -82,9 +88,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           mkdir -p runs
-          git add runs/images-status.json
-          if git diff --cached --quiet; then echo "no change"; else
-            git commit -m "chore(images): anitabi image push $(date -u +%F)"
-            git pull --rebase || true
-            git push
-          fi
+          git add "runs/images-status-${SHARD}.json"
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "chore(images): shard ${SHARD} status $(date -u +%F)"
+          for i in 1 2 3; do
+            git pull --rebase >/dev/null 2>&1 || true
+            if git push; then exit 0; fi
+            sleep 5
+          done
+          exit 1

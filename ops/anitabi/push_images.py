@@ -26,6 +26,8 @@ except Exception:
 
 UA = 'Mozilla/5.0 (compatible; 0721acgn-image-push)'
 MAP_KEY = 'xunli-v2/image-map-v2.json'
+FINAL_KEY = 'xunli-v2/image-map-final.json'
+SHARD_PREFIX = 'xunli-v2/map-shards/shard'
 
 
 def ext_of(magic: bytes) -> str:
@@ -62,7 +64,9 @@ def main():
     p.add_argument('--prefix', default='xunli-v2/images')
     p.add_argument('--threads', type=int, default=32)
     p.add_argument('--limit', type=int, default=0)
+    p.add_argument('--shard', default='0/1', help='i/n: only upload urls whose hash %% n == i')
     args = p.parse_args()
+    shard_i, shard_n = (int(x) for x in args.shard.split('/'))
 
     import oss2
 
@@ -77,14 +81,26 @@ def main():
                                   os.environ['OSS_ENDPOINT'], os.environ['OSS_BUCKET'])
         return local.b
 
+    skip = {}
+    for key in (FINAL_KEY, MAP_KEY):
+        try:
+            skip.update(json.loads(bucket.get_object(key).read().decode('utf-8')))
+        except Exception:
+            pass
+    shard_key = f'{SHARD_PREFIX}-{shard_i}.json'
     existing = {}
     try:
-        existing = json.loads(bucket.get_object(MAP_KEY).read().decode('utf-8'))
-        print(f'existing map: {len(existing)}', flush=True)
+        existing = json.loads(bucket.get_object(shard_key).read().decode('utf-8'))
+        print(f'shard map: {len(existing)}', flush=True)
     except Exception:
-        print('no existing map', flush=True)
+        print('no shard map yet', flush=True)
+    skip.update(existing)
+    print(f'skip set: {len(skip)}', flush=True)
 
-    urls = sorted(u for u in load_urls(Path(args.export)) if u not in existing)
+    urls = [u for u in load_urls(Path(args.export)) if u not in skip]
+    if shard_n > 1:
+        urls = [u for u in urls if int(hashlib.sha256(u.encode()).hexdigest()[:8], 16) % shard_n == shard_i]
+    urls.sort()
     if args.limit:
         urls = urls[:args.limit]
     print(f'to upload: {len(urls)}', flush=True)
@@ -117,7 +133,7 @@ def main():
         with lock:
             payload = dict(existing)
         try:
-            bucket.put_object(MAP_KEY, json.dumps(payload, ensure_ascii=False).encode('utf-8'),
+            bucket.put_object(shard_key, json.dumps(payload, ensure_ascii=False).encode('utf-8'),
                               headers={'Content-Type': 'application/json'})
         except Exception as exc:
             print(f'  map save failed: {type(exc).__name__}', flush=True)
