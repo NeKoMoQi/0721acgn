@@ -88,6 +88,29 @@ def main():
             out['point_keys'] = sorted(rows[0].keys())
             out['points_with_geo'] = sum(1 for r in rows if isinstance(r, dict) and r.get('geo'))
 
+    # points/detail 现在只给 id/image/name/origin/originURL，没有 geo/ep/s。
+    # 试几种候选接口，确认哪一个还能拿到坐标。
+    variants = {}
+    for path in ('/points', '/points?haveImage=true', '/points/detail', '/points/detail?haveImage=true'):
+        url = f'https://api.anitabi.cn/bangumi/{SUBJECT}{path}'
+        try:
+            r = session.get(url, timeout=30)
+            item = {'status': r.status_code, 'type': r.headers.get('content-type')}
+            if r.ok:
+                body = r.json()
+                if isinstance(body, list):
+                    item['count'] = len(body)
+                    item['keys'] = sorted(body[0].keys()) if body else []
+                    item['with_geo'] = sum(1 for x in body if isinstance(x, dict) and x.get('geo'))
+                    item['sample'] = body[0] if body else None
+                elif isinstance(body, dict):
+                    item['keys'] = sorted(body.keys())[:15]
+                    item['has_lite_points'] = 'litePoints' in body
+            variants[path] = item
+        except Exception as exc:
+            variants[path] = {'error': f'{type(exc).__name__}: {exc}'}
+    out['point_variants'] = variants
+
     out['api_ok'] = bool(lite_ok and points_ok)
 
     if out['api_ok'] and os.environ.get('PROBE_CRAWL', '1') == '1':
