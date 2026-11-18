@@ -56,6 +56,12 @@ try {
             ForEach-Object { Write-Log ('  ' + "$_") }
         $importCode = $LASTEXITCODE
         Write-Log "import exit=$importCode"
+
+        # 把已经复制到 OSS 的图片 URL 换回库里（image-map.json 不存在时直接跳过）。
+        & $python 'rewrite_images.py' 2>&1 |
+            ForEach-Object { Write-Log ('  ' + "$_") }
+        $rewriteCode = $LASTEXITCODE
+        Write-Log "rewrite exit=$rewriteCode"
     } finally {
         Pop-Location
         $ErrorActionPreference = 'Stop'
@@ -66,7 +72,7 @@ try {
         Remove-Item -Force -ErrorAction SilentlyContinue
 
     Write-Log '--- run end ---'
-    if ($dumpCode -ne 0 -or $importCode -ne 0) { exit 1 }
+    if ($dumpCode -ne 0 -or $importCode -ne 0 -or $rewriteCode -ne 0) { exit 1 }
     exit 0
 } catch {
     Write-Log ('fatal: ' + $_.Exception.Message)
