@@ -36,6 +36,7 @@ def main():
     p.add_argument('--out', default='data/github-export')
     p.add_argument('--import', dest='do_import', action='store_true')
     p.add_argument('--dry-run', action='store_true')
+    p.add_argument('--allow-links', action='store_true', help='import even when the collector ran without OSS')
     args = p.parse_args()
 
     out = Path(args.out)
@@ -69,6 +70,7 @@ def main():
     for name, size in saved:
         print(f'saved {name} ({size} bytes)', flush=True)
 
+    status = {}
     status_url = f'{API}/repos/{args.repo}/contents/runs/anitabi-status.json?ref={args.ref}'
     try:
         raw, _ = get(status_url)
@@ -79,6 +81,11 @@ def main():
         print(f'status unavailable: {type(exc).__name__}', flush=True)
 
     if args.do_import:
+        mode = str(status.get('mode') or '')
+        if mode != 'oss' and not args.allow_links:
+            print(f'collector mode is "{mode}", not "oss": images are still upstream URLs, '
+                  f'skip import (use --allow-links to force)', flush=True)
+            return 0
         cmd = [sys.executable, str(Path(__file__).with_name('import_to_pg.py')), '--export', str(out)]
         if args.dry_run:
             cmd.append('--dry-run')
