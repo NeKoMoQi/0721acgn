@@ -1,13 +1,13 @@
 {
-  "utc": "2026-11-18T09:09:40Z",
+  "utc": "2026-11-18T09:11:35Z",
   "subject": 188412,
-  "egress_ip": "172.190.110.168",
+  "egress_ip": "48.211.209.16",
   "lite": {
     "status": 200,
     "type": "application/json; charset=utf-8",
-    "cf_ray": "a5c5d6752870672e-ATL",
+    "cf_ray": "a5c5d9410811395b-IAD",
     "server": "cloudflare",
-    "seconds": 0.56,
+    "seconds": 0.48,
     "bytes": 2643,
     "json_keys": [
       "city",
@@ -27,27 +27,27 @@
   "points": {
     "status": 200,
     "type": "application/json; charset=utf-8",
-    "cf_ray": "a5c5d6766903672e-ATL",
+    "cf_ray": "a5c5d941f910395b-IAD",
     "server": "cloudflare",
-    "seconds": 0.12,
+    "seconds": 0.04,
     "bytes": 2391,
     "json_keys": "list"
   },
   "cover": {
     "status": 200,
     "type": "image/jpeg",
-    "cf_ray": "a5c5d677fd95bd3c-ATL",
+    "cf_ray": "a5c5d9442d981ee7-IAD",
     "server": "cloudflare",
-    "seconds": 1.05,
+    "seconds": 1.32,
     "bytes": 30175,
     "image_magic": "ffd8ffe000104a46"
   },
   "point_image": {
     "status": 200,
     "type": "image/jpeg",
-    "cf_ray": "a5c5d67ffaedbd3c-ATL",
+    "cf_ray": "a5c5d94cfbea1ee7-IAD",
     "server": "cloudflare",
-    "seconds": 1.0,
+    "seconds": 1.02,
     "bytes": 34894,
     "image_magic": "ffd8ffe000104a46"
   },
@@ -115,12 +115,24 @@
         "origin": "Google Maps",
         "originURL": "https://www.google.com/maps/d/viewer?mid=1SrPs3rUkP9HlP49W8-FQ6mRwUaU&ll=35.777254%2C139.632612&z=17"
       }
+    },
+    "/": {
+      "status": 403,
+      "type": "text/plain;charset=UTF-8"
+    },
+    "/full": {
+      "status": 403,
+      "type": "text/plain;charset=UTF-8"
+    },
+    "/points/compact": {
+      "status": 403,
+      "type": "text/html; charset=UTF-8"
     }
   },
   "api_ok": true,
   "crawler": {
     "exit": 1,
-    "tail": "2026-11-18 09:09:48,242 ERROR id=188412 HTTP 403\n",
+    "tail": "2026-11-18 09:11:40,215 ERROR id=188412 HTTP 403\n",
     "point_rows": 0,
     "images": 0
   }
