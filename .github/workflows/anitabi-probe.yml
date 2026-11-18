@@ -1,0 +1,58 @@
+name: anitabi-probe
+
+# 只验证一件事：GitHub Actions 的出口能不能拿到 anitabi 的数据。
+# 结果写进 runs/anitabi-probe.json 并提交回 main，服务器直接 git pull 就能看。
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/anitabi-probe.yml'
+      - 'ops/github/probe_anitabi.py'
+      - 'ops/anitabi/crawler.py'
+      - 'ops/anitabi/ids-probe.txt'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: anitabi-probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: python -m pip install --quiet requests
+
+      - name: Probe anitabi (and crawl 2 subjects when reachable)
+        run: python ops/github/probe_anitabi.py
+
+      - name: Commit probe result
+        run: |
+          set -e
+          if [ ! -f runs/anitabi-probe.json ]; then echo "no result file"; exit 1; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add runs/anitabi-probe.json
+          if git diff --cached --quiet; then echo "no change"; else
+            git commit -m "chore(probe): anitabi egress check $(date -u +%FT%TZ)"
+            git push
+          fi
+
+      - name: Upload probe artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: anitabi-probe
+          path: |
+            runs/anitabi-probe.json
+            runs/probe-data
+          if-no-files-found: ignore
+          retention-days: 7
