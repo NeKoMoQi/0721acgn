@@ -67,6 +67,26 @@ cd C:\apps\anitabi-server
 .\.venv\Scripts\python.exe import_to_pg.py --export 'D:\path\export-xxxx'
 ```
 
+## 图片同步（2026-11-18）
+
+服务器上行只有 **0.06 MiB/s**（实测），自己下载/上传图片不现实；`image.anitabi.cn` 又只对访客 IP 放行。做法：
+
+1. GitHub Actions（6 个分片 runner，`ops/anitabi/push_images.py`）下载 50,702 个图片 URL（点位图 + 封面），直传 OSS
+   `xunli-v2/images/<sha256(url)>.<ext>`，每个分片把自己的映射写到 `xunli-v2/map-shards/shard-<i>.json`。
+2. 服务器 `merge_maps.py` 合并成 `xunli-v2/image-map-final.json`（URL → OSS URL）。
+3. 服务器 `rewrite_images.py` 按映射把 PG 里的远程 URL 换成 OSS URL（幂等，只换非 OSS 的）。
+4. 每日任务已串起来：采集 → 入库 → merge_maps → rewrite_images。
+
+当前覆盖：
+
+| 项 | 总数 | 已在 OSS | 仍远程 |
+| --- | --- | --- | --- |
+| 点位图 | 48,268 | 44,006 | 2 |
+| 封面 | 1,574 | 1,148 | 426（420 个 image.anitabi + 6 个 bgm.tv） |
+
+- 少部分图片上游返回 404/403，Actions 里记为 fail，不影响其余对象；下次运行会自动重试（分片 map 只记成功的）。
+- 首次单 runner 直传在 2 万张后会被限速到 ~2/s，所以改成 6 分片；实测 6 分片约 32 张/秒。
+
 ## 回滚
 
 导入产生的作品/点位都能靠映射表精确回滚（不影响原有 369 部）：

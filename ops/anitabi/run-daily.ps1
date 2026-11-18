@@ -57,7 +57,8 @@ try {
         $importCode = $LASTEXITCODE
         Write-Log "import exit=$importCode"
 
-        # 把已经复制到 OSS 的图片 URL 换回库里（image-map.json 不存在时直接跳过）。
+        # 合并 Actions 分片上传的图片映射，再把 OSS URL 换回库里。
+        & $python 'merge_maps.py' 2>&1 | ForEach-Object { Write-Log ('  ' + "$_") }
         & $python 'rewrite_images.py' 2>&1 |
             ForEach-Object { Write-Log ('  ' + "$_") }
         $rewriteCode = $LASTEXITCODE
