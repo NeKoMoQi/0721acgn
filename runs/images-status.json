@@ -1,0 +1,17 @@
+{
+  "utc": "2026-11-18T10:25:02Z",
+  "tag": "44279746201",
+  "ok": 49737,
+  "fail": 965,
+  "zip_mib": 2202.8,
+  "map_entries": 49737,
+  "errors_sample": [
+    "https://image.anitabi.cn/bangumi/115908.jpg?plan=h360 :: HTTPError",
+    "https://image.anitabi.cn/bangumi/11602.jpg?plan=h360 :: HTTPError",
+    "https://image.anitabi.cn/bangumi/116461.jpg?plan=h360 :: HTTPError",
+    "https://image.anitabi.cn/bangumi/1167.jpg?plan=h360 :: HTTPError",
+    "https://image.anitabi.cn/bangumi/117777.jpg?plan=h360 :: HTTPError"
+  ],
+  "run_id": "44279746201",
+  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/44279746201"
+}
