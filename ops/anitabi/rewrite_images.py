@@ -21,7 +21,7 @@ except Exception:
     pass
 
 SCHEMA = os.environ.get('ANITABI_SCHEMA', 'acgn0721_gis')
-DEFAULT_MAP = 'https://acgn0721.oss-cn-hangzhou.aliyuncs.com/xunli-v2/image-map.json'
+DEFAULT_MAP = 'https://acgn0721.oss-cn-hangzhou.aliyuncs.com/xunli-v2/image-map-v2.json'
 
 
 def load_map(source):

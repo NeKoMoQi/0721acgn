@@ -1,26 +1,31 @@
 name: anitabi-images
 
-# 把 anitabi 的点位图和封面打包成一个 zip 传到 OSS 中转，服务器再拆包成对象（跨境逐张小对象太慢）。
+# 从 Actions 直传 anitabi 图片到本站 OSS（服务器上行只有 0.06 MiB/s，跑不动）。
 # 需要仓库 Secrets：OSS_ACCESS_KEY_ID / OSS_ACCESS_KEY_SECRET。
-# 产物：OSS xunli-v2/batches/batch-<runid>.zip + .json；服务器跑 unpack_batch.py 后落地到 xunli-v2/images/。
+# 产物：OSS xunli-v2/images/<sha256>.<ext> + xunli-v2/image-map-v2.json；服务器用 rewrite_images.py 改库里的 URL。
 on:
   workflow_dispatch:
+    inputs:
+      limit:
+        description: '只传前 N 张（0=全部）'
+        required: false
+        default: '0'
   schedule:
     - cron: '30 20 * * *'   # 04:30 Asia/Shanghai
   push:
     paths:
       - '.github/workflows/anitabi-images.yml'
-      - 'ops/anitabi/fetch_images.py'
+      - 'ops/anitabi/push_images.py'
 
 permissions:
   contents: write
 
 concurrency:
-  group: anitabi-images-pack
+  group: anitabi-images-push
   cancel-in-progress: false
 
 jobs:
-  fetch:
+  push:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
@@ -29,6 +34,7 @@ jobs:
       OSS_ENDPOINT: https://oss-cn-hangzhou.aliyuncs.com
       OSS_BUCKET: acgn0721
       OSS_PUBLIC_BASE: https://acgn0721.oss-cn-hangzhou.aliyuncs.com
+      LIMIT: '300'   # TEMP rate test
     steps:
       - uses: actions/checkout@v4
 
@@ -51,20 +57,21 @@ jobs:
           python ops/anitabi/collect_dump.py --cache data/site-dump --out data/images-export
           cd data/images-export && echo "EXPORT=$(cat CURRENT)" >> "$GITHUB_ENV"
 
-      - name: Fetch images and upload one batch
+      - name: Push images to OSS
         run: |
-          python ops/anitabi/fetch_images.py --export "data/images-export/$EXPORT" \
-            --tag "${{ github.run_id }}" --threads 16 | tee fetch.log
+          LIMIT=${LIMIT:-0}
+          echo "limit=$LIMIT"
+          python ops/anitabi/push_images.py --export "data/images-export/$EXPORT" \
+            --threads 32 --limit "$LIMIT" | tee push.log
         continue-on-error: true
 
       - name: Status
         run: |
           python - <<'PY'
           import json, os, re
-          log = open('fetch.log', encoding='utf-8', errors='replace').read() if os.path.exists('fetch.log') else ''
+          log = open('push.log', encoding='utf-8', errors='replace').read() if os.path.exists('push.log') else ''
           m = re.findall(r'\{"utc".*\}', log)
           status = json.loads(m[-1]) if m else {'error': 'no status line', 'log_tail': log[-1500:]}
-          status.setdefault('run_id', os.environ.get('GITHUB_RUN_ID'))
           status['run_url'] = f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
           open('runs/images-status.json', 'w', encoding='utf-8').write(json.dumps(status, ensure_ascii=False, indent=2))
           print(json.dumps(status, ensure_ascii=False, indent=2))
@@ -77,7 +84,7 @@ jobs:
           mkdir -p runs
           git add runs/images-status.json
           if git diff --cached --quiet; then echo "no change"; else
-            git commit -m "chore(images): anitabi image batch $(date -u +%F)"
+            git commit -m "chore(images): anitabi image push $(date -u +%F)"
             git pull --rebase || true
             git push
           fi

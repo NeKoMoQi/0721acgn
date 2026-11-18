@@ -25,7 +25,7 @@ try:
 except Exception:
     pass
 
-MAP_KEY = 'xunli-v2/image-map.json'
+MAP_KEY = 'xunli-v2/image-map-v2.json'
 TYPES = {'.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
          '.webp': 'image/webp', '.gif': 'image/gif', '.bin': 'application/octet-stream'}
 

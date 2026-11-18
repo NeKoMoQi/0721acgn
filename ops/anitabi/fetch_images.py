@@ -29,7 +29,7 @@ except Exception:
     pass
 
 UA = 'Mozilla/5.0 (compatible; 0721acgn-image-batch)'
-MAP_KEY = 'xunli-v2/image-map.json'
+MAP_KEY = 'xunli-v2/image-map-v2.json'
 
 
 def ext_of(magic: bytes) -> str:
