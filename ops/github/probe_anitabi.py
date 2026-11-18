@@ -91,7 +91,8 @@ def main():
     # points/detail 现在只给 id/image/name/origin/originURL，没有 geo/ep/s。
     # 试几种候选接口，确认哪一个还能拿到坐标。
     variants = {}
-    for path in ('/points', '/points?haveImage=true', '/points/detail', '/points/detail?haveImage=true'):
+    for path in ('/points', '/points?haveImage=true', '/points/detail', '/points/detail?haveImage=true',
+                 '', '/full', '/points/compact'):
         url = f'https://api.anitabi.cn/bangumi/{SUBJECT}{path}'
         try:
             r = session.get(url, timeout=30)
@@ -104,11 +105,16 @@ def main():
                     item['with_geo'] = sum(1 for x in body if isinstance(x, dict) and x.get('geo'))
                     item['sample'] = body[0] if body else None
                 elif isinstance(body, dict):
-                    item['keys'] = sorted(body.keys())[:15]
-                    item['has_lite_points'] = 'litePoints' in body
-            variants[path] = item
+                    item['keys'] = sorted(body.keys())[:20]
+                    pts = body.get('points')
+                    if isinstance(pts, list):
+                        item['points'] = len(pts)
+                        item['with_geo'] = sum(1 for x in pts if isinstance(x, dict) and x.get('geo'))
+                        item['point_keys'] = sorted(pts[0].keys()) if pts else []
+                        item['sample'] = pts[0] if pts else None
+            variants[path or '/'] = item
         except Exception as exc:
-            variants[path] = {'error': f'{type(exc).__name__}: {exc}'}
+            variants[path or '/'] = {'error': f'{type(exc).__name__}: {exc}'}
     out['point_variants'] = variants
 
     out['api_ok'] = bool(lite_ok and points_ok)
