@@ -34,7 +34,7 @@ jobs:
       OSS_ENDPOINT: https://oss-cn-hangzhou.aliyuncs.com
       OSS_BUCKET: acgn0721
       OSS_PUBLIC_BASE: https://acgn0721.oss-cn-hangzhou.aliyuncs.com
-      LIMIT: '300'   # TEMP rate test
+      LIMIT: ${{ github.event.inputs.limit }}
     steps:
       - uses: actions/checkout@v4
 
