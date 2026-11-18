@@ -119,6 +119,22 @@ def main():
 
     out['api_ok'] = bool(lite_ok and points_ok)
 
+    # 下载/上传速度基线：同一张点位图连取 8 次（顺序），记录每次字节数和耗时。
+    if points_ok:
+        try:
+            rows = session.get(
+                f'https://api.anitabi.cn/bangumi/{SUBJECT}/points/detail?haveImage=true', timeout=30).json()
+            img = rows[0]['image'].split('?')[0] + '?plan=h360'
+            samples = []
+            for _ in range(8):
+                t0 = time.monotonic()
+                resp = session.get(img, timeout=45)
+                samples.append({'status': resp.status_code, 'bytes': len(resp.content),
+                                'seconds': round(time.monotonic() - t0, 2)})
+            out['image_timing'] = samples
+        except Exception as exc:
+            out['image_timing'] = {'error': f'{type(exc).__name__}: {exc}'}
+
     if out['api_ok'] and os.environ.get('PROBE_CRAWL', '1') == '1':
         ids = ROOT / 'ops' / 'anitabi' / 'ids-probe.txt'
         data_dir = ROOT / 'runs' / 'probe-data'
