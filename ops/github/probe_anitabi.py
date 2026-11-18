@@ -83,6 +83,10 @@ def main():
             img = rows[0]['image'].split('?')[0] + '?plan=h360'
             out['point_image'] = probe(img, session, stream=True)
         out['point_count'] = len(rows) if isinstance(rows, list) else None
+        if isinstance(rows, list) and rows:
+            out['point_sample'] = rows[0]
+            out['point_keys'] = sorted(rows[0].keys())
+            out['points_with_geo'] = sum(1 for r in rows if isinstance(r, dict) and r.get('geo'))
 
     out['api_ok'] = bool(lite_ok and points_ok)
 
