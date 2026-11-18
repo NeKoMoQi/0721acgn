@@ -15,6 +15,11 @@ import os
 from pathlib import Path
 import sys
 
+try:
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+except Exception:
+    pass
+
 import psycopg2
 
 SCHEMA = os.environ.get('ANITABI_SCHEMA', 'acgn0721_gis')
@@ -119,13 +124,17 @@ def import_all(conn, works, points_by_work, apply):
     point_index = {}
 
     def existing_points(xunliid):
-        """(name, lat, lng) -> row id, for legacy points imported before the mapping existed."""
+        """(lat, lng) -> row id for legacy points imported before the mapping existed.
+
+        Coordinates alone are the dedupe key on purpose: the old import kept the
+        upstream point name in a different language/format in places, so matching
+        on name would create duplicates at the same spot.
+        """
         if xunliid not in point_index:
             cur.execute(
-                f"""SELECT id, TRIM(xunliname), round(ST_Y(geopoint)::numeric, 5),
-                           round(ST_X(geopoint)::numeric, 5)
+                f"""SELECT id, round(ST_Y(geopoint)::numeric, 4), round(ST_X(geopoint)::numeric, 4)
                     FROM {SCHEMA}.tb_xunlipoint WHERE xunliid = %s""", (xunliid,))
-            point_index[xunliid] = {(n, float(y), float(x)): pid for pid, n, y, x in cur.fetchall()}
+            point_index[xunliid] = {(float(y), float(x)): pid for pid, y, x in cur.fetchall()}
         return point_index[xunliid]
 
     for row in works:
@@ -153,7 +162,8 @@ def import_all(conn, works, points_by_work, apply):
                     f"""SELECT DISTINCT xunliid FROM {SCHEMA}.tb_xunli
                         WHERE TRIM(xunliname) = %s OR (%s IS NOT NULL AND TRIM(japanname) = %s)""",
                     (name, jp_name, jp_name))
-                candidates = [r[0] for r in cur.fetchall()]
+                used_here = set(mapped.values())
+                candidates = [r[0] for r in cur.fetchall() if r[0] not in used_here]
                 if len(candidates) == 1:
                     xunliid = candidates[0]
                     cur.execute(f'INSERT INTO {SCHEMA}.tb_anitabi_map(bangumi_id, xunliid) VALUES (%s,%s)',
@@ -198,7 +208,7 @@ def import_all(conn, works, points_by_work, apply):
                 if lat is None:
                     stats['points_skipped'] += 1
                     continue
-                key = (clip(value(point, 'xunliname'), 254), round(lat, 5), round(lng, 5))
+                key = (round(lat, 4), round(lng, 4))
                 if key in legacy:
                     cur.execute(
                         f'INSERT INTO {SCHEMA}.tb_anitabi_point_map(bangumi_id, point_id, point_row_id) VALUES (%s,%s,%s)',
@@ -211,7 +221,7 @@ def import_all(conn, works, points_by_work, apply):
                     f"""INSERT INTO {SCHEMA}.tb_xunlipoint
                         (id, xunliid, xunliname, xunlipic, gaoqingpic, ep, time, geopoint)
                         VALUES (%s,%s,%s,%s,%s,%s,%s, ST_SetSRID(ST_MakePoint(%s,%s),4326))""",
-                    (next_point_id, xunliid, key[0],
+                    (next_point_id, xunliid, clip(value(point, 'xunliname'), 254),
                      value(point, 'xunlipic'), value(point, 'gaoqingpic'),
                      value(point, 'ep'), value(point, 'time'), lng, lat))
                 cur.execute(

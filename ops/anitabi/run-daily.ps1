@@ -1,4 +1,5 @@
-﻿# Daily Anitabi incremental collection + import into the site's PostgreSQL tables.
+﻿# Daily Anitabi collection: pull the site's public map dataset (www.anitabi.cn/d),
+# turn it into CSV, and merge it into the site's PostgreSQL pilgrimage tables.
 # Runs under SYSTEM via Task Scheduler. Secrets come from .env (never echoed).
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
@@ -23,7 +24,6 @@ try {
 }
 
 try {
-    # --- load .env into this process -------------------------------------
     $envFile = Join-Path $root '.env'
     if (-not (Test-Path $envFile)) { Write-Log 'missing .env'; exit 2 }
     foreach ($line in Get-Content $envFile -Encoding UTF8) {
@@ -33,22 +33,24 @@ try {
         if ($name) { Set-Item -Path "Env:$name" -Value $value }
     }
 
+    # Console/log output must not die on Japanese names under a GBK code page.
+    $env:PYTHONIOENCODING = 'utf-8'
     $python = Join-Path $root '.venv\Scripts\python.exe'
-    $dataDir = Join-Path $root 'data'
-    $idsFile = Join-Path $root 'ids.txt'
+    $dumpDir = Join-Path $root 'data\site-dump'
+    $exportDir = Join-Path $root 'data\dump-export'
 
     Write-Log '--- run start ---'
-    # Native stderr must not abort the wrapper on PowerShell 5.1.
     $ErrorActionPreference = 'Continue'
     Push-Location $root
     try {
-        & $python 'crawler.py' --ids $idsFile --mode oss --data $dataDir --interval 3 --days 7 2>&1 |
+        & $python 'collect_dump.py' --cache $dumpDir --out $exportDir 2>&1 |
             ForEach-Object { Write-Log ('  ' + "$_") }
-        $crawlCode = $LASTEXITCODE
-        Write-Log "crawler exit=$crawlCode"
+        $dumpCode = $LASTEXITCODE
+        Write-Log "collect exit=$dumpCode"
 
-        # Import whatever the export currently holds; idempotent, safe to repeat.
-        & $python 'import_to_pg.py' --data $dataDir 2>&1 |
+        # Idempotent merge: new works get fresh ids, existing works are matched by
+        # name, points are deduped by coordinates.
+        & $python 'import_to_pg.py' --data $exportDir 2>&1 |
             ForEach-Object { Write-Log ('  ' + "$_") }
         $importCode = $LASTEXITCODE
         Write-Log "import exit=$importCode"
@@ -57,13 +59,12 @@ try {
         $ErrorActionPreference = 'Stop'
     }
 
-    # --- housekeeping: drop logs older than 120 days ----------------------
     Get-ChildItem $logDir -Filter 'anitabi-*.log' |
         Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-120) } |
         Remove-Item -Force -ErrorAction SilentlyContinue
 
     Write-Log '--- run end ---'
-    if ($crawlCode -ne 0 -or $importCode -ne 0) { exit 1 }
+    if ($dumpCode -ne 0 -or $importCode -ne 0) { exit 1 }
     exit 0
 } catch {
     Write-Log ('fatal: ' + $_.Exception.Message)
@@ -71,5 +72,3 @@ try {
 } finally {
     if ($lock) { $lock.Dispose() }
 }
-
-

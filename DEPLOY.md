@@ -187,15 +187,14 @@ Remove-Item C:\apps\0721acgn-server\maintenance.flag              # 恢复
 
 | 采集器 | 路径 | 计划任务 | 产出 |
 | --- | --- | --- | --- |
-| anitabi（圣地巡礼） | `C:\apps\anitabi-server` | `0721ACGN Anitabi Crawler`，每天 03:30 + 0–30 min | OSS `xunli-v2/` + PG `acgn0721_gis.tb_xunli/tb_xunlipoint` |
+| anitabi（圣地巡礼） | `C:\apps\anitabi-server` | `0721ACGN Anitabi Crawler`，每天 03:30 + 0–30 min | PG `acgn0721_gis.tb_xunli/tb_xunlipoint`（数据源：官网 `/d/*.json` 静态数据集） |
 | 拷贝漫画 | `C:\apps\copymanga-server` | `0721ACGN Copymanga Crawler`，每天 04:30 + 0–30 min | OSS `copymanga-v1/` + `data/comics/*`（尚待接 MySQL） |
 
 - 胶水脚本（入库器、任务入口、安装脚本）在仓库 `ops/`，部署细节见 `C:\apps\anitabi-server\README-DEPLOY.md`、`C:\apps\copymanga-server\README-DEPLOY.md`。
-- anitabi 入库用 `ops/anitabi/import_to_pg.py`：新作品分配 `MAX(xunliid)+1` 并写映射表 `tb_anitabi_map`，站内已有的同名作品按名字认领，点位按「点名 + 经纬度」去重，幂等、可 `--dry-run`。**没有改动旧 `xunliid`**。
-- **当前被外部网络卡住，还没有真实数据入库**：
-  - `api.anitabi.cn` / `image.anitabi.cn` 对本机 IP `124.220.174.115` 返回 Cloudflare `403`（IP 级拦截，冷却 30 分钟未恢复），程序按设计停止本轮并退出 1；
-  - 拷贝漫画所有已知域名（`2026copy.com`、`copymanga.*`、`mangacopy.com` 等）在本机不可达，`www.copymanga.cc` 是域名停放页；`comics.txt` 先留空，任务记 `WAITING` 后跳过。
-  - 恢复办法：给 anitabi 申请放行该 IP / 换一条不被拦的出口，或先在能访问的网络跑一轮后把 `data/export-*` 拷回来导入；拷贝漫画需要可用域名后再填 `comics.txt`。
+- **2026-11-18 更新**：`api.anitabi.cn` 对本机 IP 返回 Cloudflare 403（排查结论：出口 IP 被站方 WAF 拦，与脚本/频率/UA 无关；GitHub Actions 出口实测 200）。改用官网公开静态数据集 `https://www.anitabi.cn/d/g*.json`（1571 部、53599 点位，含名称/坐标/图片路径），由 `collect_dump.py` 导出 CSV、`import_to_pg.py` 入库。站内已从 369 部 / 8460 点扩到 **1574 部 / 48268 点**。
+- 入库规则：新作品分配 `MAX(xunliid)+1`（并从 `tb_xunlipoint` 的最大 xunliid 起算，避开历史孤儿点位）；已有作品按同名认领；点位按经纬度 4 位小数去重；幂等、可 `--dry-run`。**没有改动旧 `xunliid`**，回滚 SQL 见 `ops/anitabi/README-DEPLOY.md`。
+- 已知缺失：静态数据集没有 `ep` / `time`（集数、时间戳），图片/封面仍是上游远程 URL（访客浏览器直连，未复制到 OSS）。
+- 拷贝漫画所有已知域名（`2026copy.com`、`copymanga.*`、`mangacopy.com` 等）在本机不可达，`www.copymanga.cc` 是域名停放页；`comics.txt` 先留空，任务记 `WAITING` 后跳过。
 
 ```powershell
 # 手动跑一轮 + 看日志

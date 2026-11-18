@@ -2,37 +2,51 @@
 
 部署位置：`C:\apps\anitabi-server`（原 Linux 包的 systemd 单元已弃用，改用 Windows 计划任务）。
 
+**2026-11-18 起，数据源从 API 改成官网静态数据集**：`api.anitabi.cn` 对本机出口 IP 返回 Cloudflare 403（详见证证据见文末），但官网 `www.anitabi.cn` 可访问，且它自己用的地图数据集是公开静态文件，包含全部作品、点位名称、经纬度和图片路径。现在每天从这些文件增量入库，不再依赖被拦的 API。
+
+当前站内：**1574 部作品 / 48268 个点位**（原来 369 部 / 8460 点）。
+
 ## 数据流
 
 ```
-api.anitabi.cn / image.anitabi.cn
-        │  crawler.py --ids ids.txt --mode oss
+https://www.anitabi.cn/d/g.json      作品表（1571 部）
+https://www.anitabi.cn/d/g0..g6.json 点位分片（53599 个，含名称/坐标/图片路径）
+        │  collect_dump.py --cache data/site-dump --out data/dump-export
         ▼
-data/state.sqlite3        断点/HTTP 缓存（不要删）
-data/export-*/            巡礼番剧.csv + 具体点.csv（CURRENT 指向最新一组）
-images → 阿里云 OSS  acgn0721/xunli-v2/<sha256>   （公网可读）
-        │  import_to_pg.py
+data/dump-export/export-*/巡礼番剧.csv + 具体点.csv（CURRENT 指向最新一组）
+        │  import_to_pg.py --data data/dump-export
         ▼
 PostgreSQL  acgn0721_gis.tb_xunli / tb_xunlipoint
-            + tb_anitabi_map / tb_anitabi_point_map（新旧 ID 映射）
+            + tb_anitabi_map / tb_anitabi_point_map（源 ID ↔ 站内 xunliid）
 ```
 
-- 图片走本站已有 OSS（bucket `acgn0721`，前缀 `xunli-v2/`，公网基址 `https://acgn0721.oss-cn-hangzhou.aliyuncs.com`），上传成功后删本地文件。
-- 上游作品 ID 是 Bangumi subject id；站内 `xunliid` 是自增编号，**不能直接覆盖**。导入器给新作品分配 `MAX(xunliid)+1`，并写进 `tb_anitabi_map`。
-- 站内已有的 369 部作品是旧脚本采的、没有源 ID。导入器会按「作品名/日文名完全相同」认领已有作品（`[adopt]` 日志），再按「点名 + 经纬度（5 位小数）」去重点位，因此不会重复建作品、也不会重复插点。
-- 每次导入按作品一个 SAVEPOINT，单部失败只跳过该部；整体一个事务，`--dry-run` 用完整流程后回滚。
+- 作品 ID 用上游 Bangumi subject id，站内 `xunliid` 是自增编号。新作品分配 `MAX(xunliid)+1`，且**从 `tb_xunlipoint` 的最大 xunliid 起算**，避免把历史孤儿点位挂到新作品上。
+- 已有作品按「中文名/日文名完全相同」认领（日志 `[adopt]`）；同名多部（凉宫春日、点兔等）会记 `[skip] ambiguous` 不猜。
+- 点位按「经纬度 4 位小数」去重（旧数据坐标只保留 4 位，按 5 位会全变新点）。4 位小数约 11 米，同作品内两个不同点落在同一格的概率可忽略。
+- 每次导入按作品一个 SAVEPOINT；整体一个事务；`--dry-run` 全流程后回滚。
+
+## 字段与已知限制
+
+- **没有 `ep` / `time`**：官网静态数据集里没有集数和时间戳，API 的 `points/detail` 现在也只返回 `id/image/name/origin/originURL`。导入后这两列为空，页面不显示「第 X 话 / 时间」徽标。
+- **图片是远程 URL，没有复制到 OSS**：
+  - 点位图 `https://image.anitabi.cn/user/...`、封面 `https://image.anitabi.cn/bangumi/...`（1018 部）；
+  - 另外 551 部封面来自 `http://bgm-api.anitabi.cn/pic/cover/...`。
+  - 这些域名对**访客浏览器**可用（住宅网络），但本机出口 IP 被拦，服务器上没法预览。要落地成本地 OSS 副本，用 GitHub Actions 当采集机（已验证 Actions 出口 200）跑一次搬运，见 `ops/github/`。
+- 数据集没有 `origin`/`originURL`（大部分点位有 Google Maps 的 mid，导入器已拼成 originURL 保留在 CSV 里，但表里没有这两列）。
 
 ## 文件
 
 | 文件 | 作用 |
 | --- | --- |
-| `crawler.py` | 原包，未改动 |
-| `ids.txt` | 要采集的 Bangumi 作品 ID，一行一个，`#` 注释 |
-| `.env` | OSS / PG 凭据（ACL 只给 SYSTEM + Administrators 读） |
+| `collect_dump.py` | 下载官网静态数据集 → CSV（每天自动跑） |
 | `import_to_pg.py` | CSV → PostgreSQL（幂等，可 `--dry-run`） |
 | `run-daily.ps1` | 计划任务入口：加锁 → 采集 → 导入 → 写日志 |
+| `crawler.py` | 旧的 API 采集器（本机 403，留作换出口后备用） |
+| `ids.txt` | API 采集用的作品 ID 清单 |
+| `.env` | PG / OSS 凭据（ACL 只给 SYSTEM + Administrators 读） |
+| `data/site-dump/` | 官网数据集缓存（约 10 MB） |
+| `data/dump-export/` | 导出的 CSV，`CURRENT` 指向最新一组 |
 | `logs/anitabi-YYYYMMDD.log` | 运行日志（保留 120 天） |
-| `data/` | 状态与导出，**必须备份**（不删上游已消失的作品/对象） |
 
 ## 计划任务
 
@@ -45,46 +59,30 @@ Get-Content C:\apps\anitabi-server\logs\anitabi-$(Get-Date -Format yyyyMMdd).log
 Get-ScheduledTaskInfo -TaskName '0721ACGN Anitabi Crawler'   # LastTaskResult
 ```
 
-- 停用 / 恢复：`Disable-ScheduledTask` / `Enable-ScheduledTask -TaskName '0721ACGN Anitabi Crawler'`。
-- 直接跑（调试，前台）：`C:\apps\anitabi-server\.venv\Scripts\python.exe crawler.py --ids ids.txt --mode oss --data data`。
-- 只重导不重采：`import_to_pg.py --data data`（或 `--dry-run` 先看统计）。
-
-## 已知问题（2026-11-13 部署时实测）
-
-**api.anitabi.cn 与 image.anitabi.cn 对本机公网 IP `124.220.174.115` 返回 Cloudflare `403 Sorry, you have been blocked`。**
-
-- 首次请求（10:35）还能拿到 200；随后列表类请求与正常 lite 接口全部 403，11:21 再测仍 403（约 50 分钟冷却未恢复）。返回页明确写出 `Your IP: 124.220.174.115`，属于 Cloudflare 的 IP/ASN 级拦截，不是账号问题。
-- 排除客户端因素：PowerShell / curl / Python requests / Node fetch（TLS1.3、HTTP/1.1、浏览器 UA）结果一致都是 403；真 Chromium（headless Edge，HTTP/2 + 浏览器指纹）也是同一张拦截页；`https://www.cloudflare.com/cdn-cgi/trace` 显示本机 `ip=124.220.174.115 loc=CN colo=LAX`，即 Cloudflare 本身可达，只是 anitabi 的 WAF 规则拦这个来源。
-- 2026-11-13 15:32 按「暂停定时任务 + 静默 11 分钟 + 同作品 188412 + 10 秒间隔」复测：lite、points/detail 两次请求均 `403 text/html`（cf-ray `a59c14ca9ca0f18a-AMS`、`a59c150a7cd5f18a-AMS`），图片接口同样 403；同一时刻主站 `https://www.anitabi.cn/` 仍返回 200。说明规则只针对本 IP 访问 api/image 主机，且与请求频率、UA、TLS 指纹无关。
-- 原包说明里也写了「遇到 403 请检查服务器访问情况，不绕过、不盲目重试」，所以程序按设计在 401/403/429 时立即停止本轮并退出 1，不做重试风暴。
-- 影响：`crawler.py` 一条作品都取不到 → 导出为空 → 导入器无事可做（日志会显示 `export: 0 works, 0 points` / `nothing to import`）。
-- 解决方向（任选其一，均需站主/你这边操作）：
-  1. 给 anitabi 站主发邮件，附日志里的 Cloudflare Ray ID，申请放行该 IP / ASN；
-  2. 换一个不被拦的出口（住宅宽带、境外小机）跑采集，再把 `data/` 或导出 CSV 同步回本机导入；
-  3. 在能访问的网络里先手工跑一轮，把 `export-*` 目录拷过来，用 `import_to_pg.py` 入库。
-
-一旦网络恢复，不用改任何配置：计划任务下一轮会自动采集、入库。
-
-## 离线导入（在别的机器采好再拷回来）
-
-如果这台机器一直被 anitabi 拦，可以在能访问的网络里跑同一份 `crawler.py`，把生成的 `export-xxxx` 目录整个拷回来：
+- 手动导入某个导出目录（先看再落库）：
 
 ```powershell
 cd C:\apps\anitabi-server
-# 先把 .env 里的库凭据加载进当前进程（同 run-daily.ps1 的读法）
-Get-Content .env | Where-Object { $_ -match '=' -and $_ -notmatch '^\s*#' } | ForEach-Object {
-    $k, $v = $_ -split '=', 2; Set-Item -Path ("Env:" + $k.Trim()) -Value $v.Trim()
-}
-.\.venv\Scripts\python.exe import_to_pg.py --export 'D:\传输\export-abc123' --dry-run   # 先看统计
-.\.venv\Scripts\python.exe import_to_pg.py --export 'D:\传输\export-abc123'            # 确认后落库
+.\.venv\Scripts\python.exe import_to_pg.py --export 'D:\path\export-xxxx' --dry-run
+.\.venv\Scripts\python.exe import_to_pg.py --export 'D:\path\export-xxxx'
 ```
 
-`--export` 直接读目录里的 `巡礼番剧.csv` + `具体点.csv`，不需要 `CURRENT`。导入是幂等的，重复执行只会补新增点位。
+## 回滚
 
-## 维护
+导入产生的作品/点位都能靠映射表精确回滚（不影响原有 369 部）：
 
-- 加作品：往 `ids.txt` 追加 Bangumi ID 即可（`#` 注释）。
-- 七天内采集成功的作品会跳过（`--days 7`）；要强制刷新加 `--force`（仍复用 HTTP/图片缓存）。
-- 换 OSS 桶/目录/模式必须换新的 `--data` 目录（`policy.json` 会拦住混用）。
-- 不要开 `--original`：原图体积大，站点展示用 h360 足够。
-- 上游 CC BY-NC-SA 4.0：站内展示点位时保留 `origin`/`originURL` 来源说明（当前点位表没有这两列，`具体点.csv` 里保留了，后续加列可直接补）。
+```sql
+BEGIN;
+DELETE FROM acgn0721_gis.tb_xunlipoint WHERE xunliid IN (SELECT xunliid FROM acgn0721_gis.tb_anitabi_map);
+DELETE FROM acgn0721_gis.tb_xunli     WHERE xunliid IN (SELECT xunliid FROM acgn0721_gis.tb_anitabi_map);
+TRUNCATE acgn0721_gis.tb_anitabi_point_map;
+TRUNCATE acgn0721_gis.tb_anitabi_map;
+COMMIT;
+```
+
+## 为什么不用 API（2026-11-18 排查结论）
+
+- `api.anitabi.cn` / `image.anitabi.cn` 对本机 IP `124.220.174.115` 返回 Cloudflare `403 Sorry, you have been blocked`（页面写明该 IP）。
+- 停任务静默 11 分钟后、同作品 10 秒间隔单发仍 403；PowerShell / curl / Python / Node / 真 Chromium（headless Edge）结果一致；主站 `www.anitabi.cn` 同期 200。→ 与脚本、频率、UA 无关，是出口 IP 被站方 WAF 拦。
+- 同一时段 GitHub Actions 出口（Azure）访问 API 全部 200，说明采集能力没问题，换出口即可。
+- 官网 API 的 `points/detail` 数据也变了：现在只有 `id/image/name/origin/originURL`，没有 `geo/ep/s`。
