@@ -1,0 +1,117 @@
+name: anitabi-collect
+
+# GitHub Actions 当采集机：每天定时跑 Anitabi 增量采集。
+# - 有 OSS_ACCESS_KEY_ID / OSS_ACCESS_KEY_SECRET 这两个仓库 Secret 时：图片直接传 OSS（推荐）
+# - 没有时自动降级为 --mode links（只存远程 URL，不落图片），仍会产出 CSV
+# 产出：runs/anitabi-export/latest/{巡礼番剧,具体点}.csv 提交回 main，服务器据此入库。
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 18 * * *'   # 02:30 Asia/Shanghai
+  push:
+    paths:
+      - '.github/workflows/anitabi-collect.yml'
+      - 'ops/anitabi/crawler.py'
+      - 'ops/anitabi/ids.txt'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: anitabi-collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+      OSS_ENDPOINT: https://oss-cn-hangzhou.aliyuncs.com
+      OSS_BUCKET: acgn0721
+      OSS_PUBLIC_BASE: https://acgn0721.oss-cn-hangzhou.aliyuncs.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: python -m pip install --quiet requests oss2
+
+      - name: Restore collector state
+        uses: actions/cache@v4
+        with:
+          path: |
+            collector-data-oss
+            collector-data-links
+          key: anitabi-state-${{ github.run_id }}
+          restore-keys: |
+            anitabi-state-
+
+      - name: Collect
+        id: collect
+        run: |
+          set -o pipefail
+          if [ -n "$OSS_ACCESS_KEY_ID" ] && [ -n "$OSS_ACCESS_KEY_SECRET" ]; then
+            MODE=oss
+          else
+            MODE=links
+            echo "::warning::OSS secrets missing, falling back to --mode links (no image copies)"
+          fi
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          python ops/anitabi/crawler.py --ids ops/anitabi/ids.txt --mode "$MODE" \
+            --data "collector-data-$MODE" --interval 2 --days 7 2>&1 | tee crawl.log
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          true
+
+      - name: Export CSV into the repo
+        run: |
+          set -e
+          MODE="${{ steps.collect.outputs.mode }}"
+          CURRENT="collector-data-$MODE/CURRENT"
+          test -f "$CURRENT" || { echo "no export produced"; exit 1; }
+          SRC="collector-data-$MODE/$(cat "$CURRENT")"
+          mkdir -p runs/anitabi-export/latest
+          cp "$SRC/巡礼番剧.csv" "$SRC/具体点.csv" runs/anitabi-export/latest/
+          python - <<'PY'
+          import csv, json, os, time
+          base = 'runs/anitabi-export/latest'
+          works = list(csv.DictReader(open(os.path.join(base, '巡礼番剧.csv'), encoding='utf-8-sig')))
+          points = list(csv.DictReader(open(os.path.join(base, '具体点.csv'), encoding='utf-8-sig')))
+          status = {
+              'utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+              'mode': os.environ.get('MODE', ''),
+              'works': len(works),
+              'points': len(points),
+              'run_url': f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
+          }
+          open('runs/anitabi-status.json', 'w', encoding='utf-8').write(json.dumps(status, ensure_ascii=False, indent=2))
+          print(json.dumps(status, ensure_ascii=False))
+          PY
+        env:
+          MODE: ${{ steps.collect.outputs.mode }}
+
+      - name: Commit export
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add runs/anitabi-export runs/anitabi-status.json
+          if git diff --cached --quiet; then echo "no change"; else
+            git commit -m "chore(anitabi): incremental export $(date -u +%F)"
+            git push
+          fi
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: anitabi-collect-log
+          path: |
+            crawl.log
+            runs/anitabi-status.json
+          if-no-files-found: ignore
+          retention-days: 14
