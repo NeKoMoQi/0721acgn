@@ -1,0 +1,62 @@
+{
+  "utc": "2026-11-18T08:56:55Z",
+  "subject": 188412,
+  "egress_ip": "20.189.181.65",
+  "lite": {
+    "status": 200,
+    "type": "application/json; charset=utf-8",
+    "cf_ray": "a5c5c3c338c767b2-SJC",
+    "server": "cloudflare",
+    "seconds": 0.4,
+    "bytes": 2643,
+    "json_keys": [
+      "city",
+      "cn",
+      "color",
+      "cover",
+      "geo",
+      "id",
+      "imagesLength",
+      "litePoints",
+      "modified",
+      "pointsLength",
+      "title",
+      "zoom"
+    ]
+  },
+  "points": {
+    "status": 200,
+    "type": "application/json; charset=utf-8",
+    "cf_ray": "a5c5c3c53a3967b2-SJC",
+    "server": "cloudflare",
+    "seconds": 0.27,
+    "bytes": 2391,
+    "json_keys": "list"
+  },
+  "cover": {
+    "status": 200,
+    "type": "image/jpeg",
+    "cf_ray": "a5c5c3c86e44cc7e-SJC",
+    "server": "cloudflare",
+    "seconds": 0.87,
+    "bytes": 30175,
+    "image_magic": "ffd8ffe000104a46"
+  },
+  "point_image": {
+    "status": 200,
+    "type": "image/jpeg",
+    "cf_ray": "a5c5c3ce0db9cc7e-SJC",
+    "server": "cloudflare",
+    "seconds": 0.66,
+    "bytes": 34894,
+    "image_magic": "ffd8ffe000104a46"
+  },
+  "point_count": 9,
+  "api_ok": true,
+  "crawler": {
+    "exit": 1,
+    "tail": "2026-11-18 08:57:32,099 INFO id=188412 saved\n2026-11-18 08:57:37,505 ERROR id=189739 failed (ValueError); retry next run\n",
+    "point_rows": 9,
+    "images": 10
+  }
+}
