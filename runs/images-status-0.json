@@ -1,0 +1,17 @@
+{
+  "utc": "2026-11-18T12:11:03Z",
+  "ok": 3803,
+  "fail": 558,
+  "mapped": 3803,
+  "seconds": 3450.7,
+  "rate": 1.1,
+  "errors_sample": [
+    "https://image.anitabi.cn/bangumi/15237.jpg?plan=h360 :: TimeoutError",
+    "https://image.anitabi.cn/bangumi/120445.jpg?plan=h360 :: TimeoutError",
+    "https://image.anitabi.cn/bangumi/14429.jpg?plan=h360 :: TimeoutError",
+    "https://image.anitabi.cn/bangumi/2042.jpg?plan=h360 :: TimeoutError",
+    "https://image.anitabi.cn/bangumi/217249.jpg?plan=h360 :: TimeoutError"
+  ],
+  "shard": "0",
+  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/44292642728"
+}
