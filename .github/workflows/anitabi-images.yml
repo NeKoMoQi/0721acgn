@@ -80,3 +80,5 @@ jobs:
             git pull --rebase || true
             git push
           fi
+
+# trigger: secrets configured 2026-11-18
