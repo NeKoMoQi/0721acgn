@@ -35,6 +35,8 @@ try {
 
     # Console/log output must not die on Japanese names under a GBK code page.
     $env:PYTHONIOENCODING = 'utf-8'
+    try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
+    $OutputEncoding = [System.Text.Encoding]::UTF8
     $python = Join-Path $root '.venv\Scripts\python.exe'
     $dumpDir = Join-Path $root 'data\site-dump'
     $exportDir = Join-Path $root 'data\dump-export'
