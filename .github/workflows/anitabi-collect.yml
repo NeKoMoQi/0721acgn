@@ -54,7 +54,7 @@ jobs:
       - name: Collect
         id: collect
         run: |
-          set -o pipefail
+          set +e
           if [ -n "$OSS_ACCESS_KEY_ID" ] && [ -n "$OSS_ACCESS_KEY_SECRET" ]; then
             MODE=oss
           else
@@ -64,8 +64,10 @@ jobs:
           echo "mode=$MODE" >> "$GITHUB_OUTPUT"
           python ops/anitabi/crawler.py --ids ops/anitabi/ids.txt --mode "$MODE" \
             --data "collector-data-$MODE" --interval 2 --days 7 2>&1 | tee crawl.log
-          echo "exit=$?" >> "$GITHUB_OUTPUT"
-          true
+          CODE=${PIPESTATUS[0]}
+          echo "exit=$CODE" >> "$GITHUB_OUTPUT"
+          echo "crawler exit=$CODE (non-zero only means some subjects failed; export is still written)"
+          exit 0
 
       - name: Export CSV into the repo
         run: |
@@ -77,15 +79,21 @@ jobs:
           mkdir -p runs/anitabi-export/latest
           cp "$SRC/巡礼番剧.csv" "$SRC/具体点.csv" runs/anitabi-export/latest/
           python - <<'PY'
-          import csv, json, os, time
+          import csv, json, os, re, time
           base = 'runs/anitabi-export/latest'
           works = list(csv.DictReader(open(os.path.join(base, '巡礼番剧.csv'), encoding='utf-8-sig')))
           points = list(csv.DictReader(open(os.path.join(base, '具体点.csv'), encoding='utf-8-sig')))
+          try:
+              log = open('crawl.log', encoding='utf-8', errors='replace').read()
+              failed_ids = sorted({int(m) for m in re.findall(r'ERROR id=(\d+)', log)})
+          except FileNotFoundError:
+              failed_ids = []
           status = {
               'utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
               'mode': os.environ.get('MODE', ''),
               'works': len(works),
               'points': len(points),
+              'failed_ids': failed_ids,
               'run_url': f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
           }
           open('runs/anitabi-status.json', 'w', encoding='utf-8').write(json.dumps(status, ensure_ascii=False, indent=2))
