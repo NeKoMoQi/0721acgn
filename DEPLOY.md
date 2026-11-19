@@ -212,6 +212,17 @@ Get-ScheduledTaskInfo -TaskName '0721ACGN Anitabi Crawler'
 - 部署：后端 `mvn -DskipTests package` 后重启 `0721ACGN API`；前端 `npm run build-only`（dist 立即生效，无需重启 Web）。
 - 验证（2026-11-19）：`/api/xunli/byid?Xunliid=1742`（蓝色时期）封面返回 CDN；`/api/xunli/point/byid?Xunliid=233` 里 Anitabi 外链（id 51321）保持 `image.anitabi.cn`；列表/视野/picker 接口已无 OSS 残留；CDN 图重复请求 `200` + `X-Cache: HIT`；前端运行时给 CDN 图追加了一次 `x-oss-process`，对已带参数、外链、签名链接不改写。
 
+## 拷贝漫画采集（2026-11-19 重写）
+
+原 v3 API 爬虫对现在的 mangacopy.com 无效（该域名已换成 mangashot 前端：`/api/v3` 全部 404，章节图由混淆 JS 动态加载）。参考 `muzi-xiaoren/kaobei_Crawler` 的做法改为**无头浏览器渲染**：
+
+- `ops/copymanga/crawl_selenium.py`：GitHub Actions 里用 headless Chrome 打开漫画页 → 取章节列表 → 逐章按空格触发懒加载 → 读 `img[data-src]` → 下载图片 → 上传 OSS `copymanga/images/<path_word>/<chapter_uuid>/<页码>.<ext>` → 写 manifest `copymanga/manifests/<path_word>.json`（含每章页码与 OSS URL，可断点续跑）。
+- `ops/copymanga/import_mysql.py`：服务器读 manifest → `tb_cartoons/tb_cartoonchapters/tb_cartoonpage`，映射表 `tb_copymanga_map` / `tb_copymanga_chapter_map` 保证幂等；`pageorder` 用四位补零。
+- `.github/workflows/copymanga-crawl.yml`：手动输入 path_word 与本次章节数；需要 OSS Secrets（可选 `COPY_USER`/`COPY_PASS` 登录）。
+- 实测（2026-11-19）：`HAIBIANZHIYE`《海邊之夜》共 103 章，先抓第 1 章 39 页 → OSS 39 张 → 入库 `comicid=40`、`chapterid=390088`，`/api/cartoon*` 三个接口均正常返回 OSS 图片。
+
+注意：服务器仍访问不了该站，采集只能在 Actions 跑；服务器只做入库。
+
 ## 已知问题
 
 
