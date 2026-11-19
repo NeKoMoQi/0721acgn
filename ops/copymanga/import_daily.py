@@ -118,15 +118,14 @@ def main():
                 cur.execute('INSERT INTO tb_copymanga_map(path_word, comicid) VALUES(%s,%s)',
                             (pw, comicid))
 
-            cur.execute('SELECT COALESCE(MAX(chapterno),0) AS mx FROM tb_cartoonchapters WHERE comicid=%s',
-                        (comicid,))
-            have = int(cur.fetchone()['mx'] or 0)
+            cur.execute('SELECT chapterno FROM tb_cartoonchapters WHERE comicid=%s', (comicid,))
+            existing_nos = {int(r['chapterno']) for r in cur.fetchall() if r['chapterno'] is not None}
             cur.execute('SELECT uuid FROM tb_copymanga_chapter_map WHERE path_word=%s', (pw,))
             done_uuids = {r['uuid'] for r in cur.fetchall()}
 
             imported = 0
             for ch in sorted(chapters, key=lambda c: c['index']):
-                if ch['uuid'] in done_uuids or int(ch['index']) <= have:
+                if ch['uuid'] in done_uuids or int(ch['index']) in existing_nos:
                     continue
                 pages = ch.get('pages') or []
                 if not pages:
