@@ -119,6 +119,33 @@ def main():
 
     out['api_ok'] = bool(lite_ok and points_ok)
 
+    # 作品总目录：官网列表/搜索接口还能不能用、总共有多少部
+    catalog = {}
+    for path in ('/bangumi?limit=1&offset=0', '/bangumi?order=update&limit=1&offset=0',
+                 '/bangumi/search?keyword=&limit=1&offset=0',
+                 '/bangumi/search?keyword=%E5%90%9B%E3%81%AE%E5%90%8D&limit=1&offset=0',
+                 '/bangumi/search2?keyword=&limit=1&offset=0'):
+        try:
+            r = session.get('https://api.anitabi.cn' + path, timeout=30)
+            item = {'status': r.status_code, 'type': r.headers.get('content-type')}
+            if r.ok and 'json' in (r.headers.get('content-type') or ''):
+                body = r.json()
+                if isinstance(body, dict):
+                    item['keys'] = sorted(body.keys())[:12]
+                    for k in ('total', 'count', 'total_count'):
+                        if k in body:
+                            item['total'] = body[k]
+                    lst = body.get('list') or body.get('results') or body.get('data')
+                    item['list_len'] = len(lst) if isinstance(lst, list) else None
+                elif isinstance(body, list):
+                    item['list_len'] = len(body)
+            elif not r.ok:
+                item['body'] = r.text[:100].replace('\n', ' ')
+            catalog[path] = item
+        except Exception as exc:
+            catalog[path] = {'error': f'{type(exc).__name__}: {exc}'}
+    out['catalog'] = catalog
+
     # 下载/上传速度基线：同一张点位图连取 8 次（顺序），记录每次字节数和耗时。
     if points_ok:
         try:
