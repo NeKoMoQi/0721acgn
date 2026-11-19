@@ -49,6 +49,11 @@ def main():
         if cur.fetchone():
             cur.execute('SELECT path_word, state, status, chapters_total, chapters_imported, updated_at FROM tb_copymanga_queue')
             for row in cur.fetchall():
+                row = dict(row)
+                if row.get('updated_at') is not None:
+                    row['updated_at'] = row['updated_at'].isoformat()
+                else:
+                    row['updated_at'] = ''
                 state['queued'][row['path_word']] = row['state']
                 state['queue'].append(row)
         cur.execute('SELECT comicid, name FROM tb_cartoons')

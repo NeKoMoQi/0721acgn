@@ -1,14 +1,18 @@
+yishijieshushu	2	异世界舅舅	异世界舅舅	未知	0
 kuyugongcun	3	堀与宫村	堀與宮村	完结	100
 gebulinshashou	4	哥布林杀手	哥布林殺手	连载中	92
 monvzhilv	5	魔女之旅	魔女之旅	完结	60
 wudengfendehuajia	6	五等分的新娘	五等分的花嫁	完结	125
 xjqxsdchangkexiaojie	7	想尽情享受的常客小姐	想盡情享受的常客小姐	连载中	97
 xianruaihedefenggujunshinvp	8	陷入爱河的蜂谷君是女仆	陷入愛河的蜂谷君是女僕	连载中	30
+gywzshcwslmnjs	9	关于我转生变成史莱姆这档事	关于我转生变成史莱姆这档事	未知	0
 paiduilangkezhugekongming	10	派对浪客诸葛孔明	派對浪客諸葛孔明	连载中	241
 kuangduzhiyuanjia	11	狂赌之渊	狂賭之淵(仮)	连载中	244
 biedangounijiangle	12	别当欧尼酱了	別當歐尼醬了！	连载中	135
 bzlmldynhmsnlxsljbdclwjwl	13	帮助了迷路的幼女后，美少女留学生邻居变得常来我家玩了	幫助了迷路的幼女後，美少女留學生鄰居變得常來我家玩了	连载中	21
+younvzhanji	14	谭雅战记	谭雅战记	未知	0
 grandblue	15	碧蓝之海	碧蓝之海	连载中	104
+gyljdtsdrbzbjbwgclfrzjs	16	关于我在无意间被隔壁的天使变成废柴这件事	关于我在无意间被隔壁的天使变成废柴这件事	未知	0
 dongfangzuidiehua	17	东方醉蝶华	東方醉蝶華	未知	64
 huaxoajiedexinfushenghuo	18	花咲家的性福生活	花咲家的性福生活	连载中	92
 tiancaiwangzidechiziguojiazhenxingshu	19	天才王子的赤字国家振兴术	天才王子的赤字國家振興術	连载中	254
@@ -27,6 +31,7 @@ guduyaogun	31	孤独摇滚!	孤獨搖滾	连载中	110
 sishenshaoyeyuheinvpu	32	死神少爷与黑女仆	死神少爺與黑女僕	完结	250
 zaimowangchengshuowanan	33	在魔王城说晚安	在魔王城說晚安	连载中	439
 wodantuidenvhai	34	【我推的孩子】	【我推的孩子】	完结	195
+zongzhijiushifeichangxiangzuo	35	总之就是非常可爱	总之就是非常可爱	未知	0
 rujiantongxuerumole	36	入间同学入魔了！	入間同學入魔了	连载中	457
 dfsnhzj	37	地缚少年花子君	地縛少年花子君	连载中	136
 wuzhizhuanshengluoqixiyeyaonachuzhenbenshi	38	无职转生～到了异世界就拿出真本事～	無職轉生~洛琪希也要拿出真本事~	连载中	71
