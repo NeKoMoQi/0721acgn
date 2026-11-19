@@ -54,10 +54,14 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--plan', default=f'{OSS_BASE}/copymanga/plan/latest.json')
     p.add_argument('--dry-run', action='store_true')
+    p.add_argument('--path-word', action='append', default=[], help='绕过 plan，直接导入这些 path_word')
     args = p.parse_args()
 
-    plan = fetch_json(args.plan)
-    items = plan.get('items') or []
+    if args.path_word:
+        items = [{'path_word': pw, 'title': '', 'action': 'fill', 'rank': None} for pw in args.path_word]
+    else:
+        plan = fetch_json(args.plan)
+        items = plan.get('items') or []
     print(f"plan: {len(items)} works", flush=True)
     if not items:
         return 0

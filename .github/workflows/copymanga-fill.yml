@@ -1,0 +1,62 @@
+name: copymanga-fill
+
+# 一次性补齐指定作品（读 ops/copymanga/fill_list.txt，每行一个 path_word）。
+on:
+  workflow_dispatch:
+    inputs:
+      budget:
+        description: '每部最多抓多少章'
+        required: false
+        default: '120'
+  push:
+    paths:
+      - '.github/workflows/copymanga-fill.yml'
+      - 'ops/copymanga/fill_list.txt'
+      - 'ops/copymanga/crawl_selenium.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: copymanga-fill
+  cancel-in-progress: false
+
+jobs:
+  fill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+      OSS_ENDPOINT: https://oss-cn-hangzhou.aliyuncs.com
+      OSS_BUCKET: acgn0721
+      OSS_PUBLIC_BASE: https://acgn0721.oss-cn-hangzhou.aliyuncs.com
+      COPY_USER: ${{ secrets.COPY_USER }}
+      COPY_PASS: ${{ secrets.COPY_PASS }}
+      BUDGET: ${{ github.event.inputs.budget }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps
+        run: python -m pip install --quiet selenium beautifulsoup4 oss2 requests
+      - name: Fill listed works
+        run: |
+          BUDGET=${BUDGET:-120}
+          while IFS= read -r pw; do
+            pw=$(echo "$pw" | tr -d '\r' | xargs)
+            [ -z "$pw" ] && continue
+            echo "=== $pw (budget $BUDGET) ==="
+            python ops/copymanga/crawl_selenium.py --comic "$pw" --max-chapters "$BUDGET" | tail -n 40 || true
+          done < ops/copymanga/fill_list.txt
+      - name: Commit summary
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add runs/copymanga-crawl.json
+          if git diff --cached --quiet; then echo "no change"; else
+            git commit -m "chore(copymanga): fill run $(date -u +%F)"
+            git pull --rebase || true
+            git push
+          fi
