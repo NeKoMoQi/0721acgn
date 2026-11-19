@@ -1,11 +1,11 @@
 {
-  "utc": "2026-11-19T02:13:33Z",
+  "utc": "2026-11-19T03:01:02Z",
   "base": "https://www.2026copy.com",
   "path_word": "pingchengyuzhaihuiyilu",
   "page": {
     "status": 200,
     "type": "text/html; charset=utf-8",
-    "seconds": 0.38
+    "seconds": 0.44
   },
   "chapter_links": [
     "/comic/pingchengyuzhaihuiyilu/chapter/59d5a8e2-54dc-11ef-a501-3f487b7d9a9a"
@@ -46,7 +46,7 @@
     "url": "https://www.2026copy.com/comic/pingchengyuzhaihuiyilu/chapter/59d5a8e2-54dc-11ef-a501-3f487b7d9a9a",
     "status": 200,
     "type": "text/html; charset=utf-8",
-    "seconds": 0.38
+    "seconds": 0.43
   },
   "chapter_imgs": [
     "https://s3.mangafunb.fun/static/ads/tsugumomo800_130.jpg"

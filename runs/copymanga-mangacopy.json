@@ -1,0 +1,47 @@
+{
+  "utc": "2026-11-19T03:01:03Z",
+  "base": "https://www.mangacopy.com",
+  "root": {
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "seconds": 1.11
+  },
+  "title": "拷貝漫畫 - 海賊王 海贼王 哥布林殺手 哥布林杀手 漫畫 漫画 FGO FGO 東方 东方 艦娘 舰娘 同人志 本子 更新 全集 在綫漫畫 在线漫画 - 拷貝漫畫 拷贝漫画",
+  "comic_links": [
+    "HAIBIANZHIYE",
+    "SIZHOULIANREN",
+    "baoshimonv",
+    "baoye",
+    "bdtsyfcrl",
+    "bkhymwdnxs",
+    "boboqisi",
+    "bossfaqingle"
+  ],
+  "api_in_html": [
+    "/api/v1/logout"
+  ],
+  "search": {
+    "status": 200,
+    "type": "application/json",
+    "seconds": 0.42
+  },
+  "search_body": "{\"code\":200,\"message\":\"请求成功\",\"results\":{\"list\":[],\"total\":0,\"limit\":1,\"offset\":0}}",
+  "path_word": "HAIBIANZHIYE",
+  "api": {
+    "/api/v3/comic2/HAIBIANZHIYE?platform=1": {
+      "error": "HTTPError: HTTP Error 404: Not Found",
+      "head": "",
+      "json": false
+    },
+    "/api/v3/comic/HAIBIANZHIYE?platform=1": {
+      "error": "HTTPError: HTTP Error 404: Not Found",
+      "head": "",
+      "json": false
+    },
+    "/api/v3/comic/HAIBIANZHIYE/group/default/chapters?limit=1&offset=0": {
+      "error": "HTTPError: HTTP Error 404: Not Found",
+      "head": "",
+      "json": false
+    }
+  }
+}
