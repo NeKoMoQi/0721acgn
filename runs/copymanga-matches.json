@@ -3,128 +3,396 @@
     "comicid": 1,
     "name": "出包王女 Darkness",
     "site_chapters": 77,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%87%BA%E5%8C%85%E7%8E%8B%E5%A5%B3%20Darkness",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "chubaowangnv"
+      },
+      {
+        "title": "",
+        "path_word": "chabaodarkness"
+      },
+      {
+        "title": "",
+        "path_word": "wodeqingqingjiajiao"
+      }
+    ]
   },
   {
     "comicid": 2,
     "name": "异世界舅舅",
     "site_chapters": 66,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%BC%82%E4%B8%96%E7%95%8C%E8%88%85%E8%88%85",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "yishijiejiujiudonghuabdsaotu"
+      },
+      {
+        "title": "",
+        "path_word": "yishijieshushu"
+      },
+      {
+        "title": "",
+        "path_word": "wokeaidejiujiu"
+      }
+    ]
   },
   {
     "comicid": 3,
     "name": "堀与宫村",
     "site_chapters": 122,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%A0%80%E4%B8%8E%E5%AE%AB%E6%9D%91",
+      "count": 6
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "kuyugongcun"
+      },
+      {
+        "title": "",
+        "path_word": "qwsyctj"
+      },
+      {
+        "title": "",
+        "path_word": "yilianxiangchengshangxianweimang"
+      }
+    ]
   },
   {
     "comicid": 4,
     "name": "哥布林杀手",
     "site_chapters": 93,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%93%A5%E5%B8%83%E6%9E%97%E6%9D%80%E6%89%8B",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "gebulinshashou"
+      },
+      {
+        "title": "",
+        "path_word": "gebulinlieshou"
+      },
+      {
+        "title": "",
+        "path_word": "gebulinshashouzhanxinderizi"
+      }
+    ]
   },
   {
     "comicid": 5,
     "name": "魔女之旅",
     "site_chapters": 18,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "monvzhilv"
+      },
+      {
+        "title": "",
+        "path_word": "monvzhilvdeqidian"
+      },
+      {
+        "title": "",
+        "path_word": "zhongyemonvdeshijiezhilv"
+      }
+    ]
   },
   {
     "comicid": 6,
     "name": "五等分的新娘",
     "site_chapters": 122,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E4%BA%94%E7%AD%89%E5%88%86%E7%9A%84%E6%96%B0%E5%A8%98",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "wudengfendehuajia"
+      },
+      {
+        "title": "",
+        "path_word": "shuishendexinniang"
+      },
+      {
+        "title": "",
+        "path_word": "sdxn"
+      }
+    ]
   },
   {
     "comicid": 7,
     "name": "想尽情享受的常客小姐",
     "site_chapters": 40,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E6%83%B3%E5%B0%BD%E6%83%85%E4%BA%AB%E5%8F%97%E7%9A%84%E5%B8%B8%E5%AE%A2%E5%B0%8F%E5%A7%90",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "xjqxsdchangkexiaojie"
+      },
+      {
+        "title": "",
+        "path_word": "xiangxiuxidexiaojie"
+      },
+      {
+        "title": "",
+        "path_word": "jiqinvpuxiangbangshangdxjdm"
+      }
+    ]
   },
   {
     "comicid": 8,
     "name": "陷入爱河的蜂谷君是女仆",
     "site_chapters": 17,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E9%99%B7%E5%85%A5%E7%88%B1%E6%B2%B3%E7%9A%84%E8%9C%82%E8%B0%B7%E5%90%9B%E6%98%AF%E5%A5%B3%E4%BB%86",
+      "count": 1
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "xianruaihedefenggujunshinvp"
+      }
+    ]
   },
   {
     "comicid": 9,
     "name": "关于我转生变成史莱姆这档事",
     "site_chapters": 127,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%85%B3%E4%BA%8E%E6%88%91%E8%BD%AC%E7%94%9F%E5%8F%98%E6%88%90%E5%8F%B2%E8%8E%B1%E5%A7%86%E8%BF%99%E6%A1%A3%E4%BA%8B",
+      "count": 7
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "gywzscslmzdsklmrevenga"
+      },
+      {
+        "title": "",
+        "path_word": "tywzsbcslmzdsfwpxsjqdfs"
+      },
+      {
+        "title": "",
+        "path_word": "guanyuwozhuangshengchengxiaohaizhejianshi"
+      }
+    ]
   },
   {
     "comicid": 10,
     "name": "派对浪客诸葛孔明",
     "site_chapters": 189,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E6%B4%BE%E5%AF%B9%E6%B5%AA%E5%AE%A2%E8%AF%B8%E8%91%9B%E5%AD%94%E6%98%8E",
+      "count": 1
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "paiduilangkezhugekongming"
+      }
+    ]
   },
   {
     "comicid": 11,
     "name": "狂赌之渊",
     "site_chapters": 111,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E7%8B%82%E8%B5%8C%E4%B9%8B%E6%B8%8A",
+      "count": 4
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "kuangduzhiyuanjia"
+      },
+      {
+        "title": "",
+        "path_word": "kuangduzhiyuan"
+      },
+      {
+        "title": "",
+        "path_word": "kuangduzhiyuanwang"
+      }
+    ]
   },
   {
     "comicid": 12,
     "name": "别当欧尼酱了",
     "site_chapters": 113,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%88%AB%E5%BD%93%E6%AC%A7%E5%B0%BC%E9%85%B1%E4%BA%86",
+      "count": 4
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "biedangounijiangle"
+      },
+      {
+        "title": "",
+        "path_word": "biedangounijiangleguanfangtongrenjisanbeijiazhu"
+      },
+      {
+        "title": "",
+        "path_word": "lacdcxzqklygxggl"
+      }
+    ]
   },
   {
     "comicid": 13,
     "name": "帮助了迷路的幼女后，美少女留学生邻居变得常来我家玩了",
     "site_chapters": 23,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%B8%AE%E5%8A%A9%E4%BA%86%E8%BF%B7%E8%B7%AF%E7%9A%84%E5%B9%BC%E5%A5%B3%E5%90%8E%EF%BC%8C%E7%BE%8E%E5%B0%91%E5%A5%B3%E7%95%99%E5%AD%A6%E7%94%9F%E9%82%BB%E5%B1%85%E5%8F%98%E5%BE%97%E5%B8%B8%E6%9D%A5%E6%88%91%E5%AE%B6%E7%8E%A9%E4%BA%86",
+      "count": 1
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "bzlmldynhmsnlxsljbdclwjwl"
+      }
+    ]
   },
   {
     "comicid": 14,
     "name": "谭雅战记",
     "site_chapters": 125,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E8%B0%AD%E9%9B%85%E6%88%98%E8%AE%B0",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "younvzhanji"
+      },
+      {
+        "title": "",
+        "path_word": "shangbatanyajiang"
+      },
+      {
+        "title": "",
+        "path_word": "tanyajiangshuishoufuersanshi"
+      }
+    ]
   },
   {
     "comicid": 15,
     "name": "碧蓝之海",
     "site_chapters": 85,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E7%A2%A7%E8%93%9D%E4%B9%8B%E6%B5%B7",
+      "count": 1
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "grandblue"
+      }
+    ]
   },
   {
     "comicid": 16,
     "name": "关于我在无意间被隔壁的天使变成废柴这件事",
     "site_chapters": 71,
     "path_word": "",
-    "status": "ERROR NameError",
+    "status": "ERROR UnexpectedAlertPresentException",
     "source_chapters": 0
   },
   {
@@ -132,7 +400,7 @@
     "name": "东方醉蝶华",
     "site_chapters": 57,
     "path_word": "",
-    "status": "ERROR NameError",
+    "status": "ERROR UnexpectedAlertPresentException",
     "source_chapters": 0
   },
   {
@@ -140,7 +408,7 @@
     "name": "花咲家的性福生活",
     "site_chapters": 55,
     "path_word": "",
-    "status": "ERROR NameError",
+    "status": "ERROR UnexpectedAlertPresentException",
     "source_chapters": 0
   },
   {
@@ -148,7 +416,7 @@
     "name": "天才王子的赤字国家振兴术",
     "site_chapters": 239,
     "path_word": "",
-    "status": "ERROR NameError",
+    "status": "ERROR UnexpectedAlertPresentException",
     "source_chapters": 0
   },
   {
@@ -156,7 +424,7 @@
     "name": "转生成为魔剑了",
     "site_chapters": 108,
     "path_word": "",
-    "status": "ERROR NameError",
+    "status": "ERROR UnexpectedAlertPresentException",
     "source_chapters": 0
   },
   {
@@ -164,143 +432,447 @@
     "name": "辉夜大小姐想让我告白 ~天才们的恋爱头脑战~",
     "site_chapters": 300,
     "path_word": "",
-    "status": "ERROR NameError",
+    "status": "ERROR UnexpectedAlertPresentException",
     "source_chapters": 0
   },
   {
     "comicid": 22,
     "name": "食戟之灵",
     "site_chapters": 111,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E9%A3%9F%E6%88%9F%E4%B9%8B%E7%81%B5",
+      "count": 9
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "shijizhiling"
+      },
+      {
+        "title": "",
+        "path_word": "shijiezhilingletoile"
+      },
+      {
+        "title": "",
+        "path_word": "shijideshanzhi"
+      }
+    ]
   },
   {
     "comicid": 23,
     "name": "香格里拉边境~粪作猎人向神作游戏发起挑战~",
     "site_chapters": 216,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E9%A6%99%E6%A0%BC%E9%87%8C%E6%8B%89%E8%BE%B9%E5%A2%83~%E7%B2%AA%E4%BD%9C%E7%8C%8E%E4%BA%BA%E5%90%91%E7%A5%9E%E4%BD%9C%E6%B8%B8%E6%88%8F%E5%8F%91%E8%B5%B7%E6%8C%91%E6%88%98~",
+      "count": 1
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "xianggelilafulongtiyashizuolierenxiangshenzuofaqit"
+      }
+    ]
   },
   {
     "comicid": 24,
     "name": "葬送的芙莉莲",
     "site_chapters": 145,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E8%91%AC%E9%80%81%E7%9A%84%E8%8A%99%E8%8E%89%E8%8E%B2",
+      "count": 8
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "zangsongdefulilian"
+      },
+      {
+        "title": "",
+        "path_word": "zsdfllzpjxsgzlxdmf"
+      },
+      {
+        "title": "",
+        "path_word": "wangxaingdefll"
+      }
+    ]
   },
   {
     "comicid": 25,
     "name": "更衣人偶坠入爱河",
     "site_chapters": 121,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E6%9B%B4%E8%A1%A3%E4%BA%BA%E5%81%B6%E5%9D%A0%E5%85%A5%E7%88%B1%E6%B2%B3",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "gengyinrenouzhuiruaihe"
+      },
+      {
+        "title": "",
+        "path_word": "tvdhgyrozrahyhj"
+      },
+      {
+        "title": "",
+        "path_word": "xiangzuonidezhuanshuhuazww"
+      }
+    ]
   },
   {
     "comicid": 26,
     "name": "我独自升级",
     "site_chapters": 115,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E6%88%91%E7%8B%AC%E8%87%AA%E5%8D%87%E7%BA%A7",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "woduzishenji"
+      },
+      {
+        "title": "",
+        "path_word": "wdzsjzshh"
+      },
+      {
+        "title": "",
+        "path_word": "kqzdgjdzdjnwdwcssj"
+      }
+    ]
   },
   {
     "comicid": 27,
     "name": "憧憬成为魔法少女",
     "site_chapters": 76,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E6%86%A7%E6%86%AC%E6%88%90%E4%B8%BA%E9%AD%94%E6%B3%95%E5%B0%91%E5%A5%B3",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "chongjingchengweimofashaonv"
+      },
+      {
+        "title": "",
+        "path_word": "chongjingmofashaonv"
+      },
+      {
+        "title": "",
+        "path_word": "mmcwldjdcjdmfsnwsmzywsnra"
+      }
+    ]
   },
   {
     "comicid": 28,
     "name": "妹妹一天只和我对上一次眼",
     "site_chapters": 78,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%A6%B9%E5%A6%B9%E4%B8%80%E5%A4%A9%E5%8F%AA%E5%92%8C%E6%88%91%E5%AF%B9%E4%B8%8A%E4%B8%80%E6%AC%A1%E7%9C%BC",
+      "count": 1
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "meimeiyitianzhihewoduishangyiciyan"
+      }
+    ]
   },
   {
     "comicid": 29,
     "name": "夏日重现",
     "site_chapters": 181,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%A4%8F%E6%97%A5%E9%87%8D%E7%8E%B0",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "summertimerendring"
+      },
+      {
+        "title": "",
+        "path_word": "xiarichongxianweifashengdeshiguzhuzhai"
+      },
+      {
+        "title": "",
+        "path_word": "mjcx"
+      }
+    ]
   },
   {
     "comicid": 30,
     "name": "租借女友",
     "site_chapters": 301,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E7%A7%9F%E5%80%9F%E5%A5%B3%E5%8F%8B",
+      "count": 6
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "zujienvyouxiaolian"
+      },
+      {
+        "title": "",
+        "path_word": "zujienvyouguanfangtongrenji"
+      },
+      {
+        "title": "",
+        "path_word": "zujienvyouyuetianxiaojie"
+      }
+    ]
   },
   {
     "comicid": 31,
     "name": "孤独摇滚!",
     "site_chapters": 91,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%AD%A4%E7%8B%AC%E6%91%87%E6%BB%9A%21",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "guduyaogun"
+      },
+      {
+        "title": "",
+        "path_word": "guduyaogunduanpian"
+      },
+      {
+        "title": "",
+        "path_word": "armorgunyilaoshiguduyaogunheji"
+      }
+    ]
   },
   {
     "comicid": 32,
     "name": "死神少爷与黑女仆",
     "site_chapters": 249,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E6%AD%BB%E7%A5%9E%E5%B0%91%E7%88%B7%E4%B8%8E%E9%BB%91%E5%A5%B3%E4%BB%86",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "sishenshaoyeyuheinvpu"
+      },
+      {
+        "title": "",
+        "path_word": "hpnpycqsydtqrc"
+      },
+      {
+        "title": "",
+        "path_word": "fuyannvpudajeijieyuxiaozhangchunqingxiaoshaoye"
+      }
+    ]
   },
   {
     "comicid": 33,
     "name": "在魔王城说晚安",
     "site_chapters": 398,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%9C%A8%E9%AD%94%E7%8E%8B%E5%9F%8E%E8%AF%B4%E6%99%9A%E5%AE%89",
+      "count": 3
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "zaimowangchengshuowanan"
+      },
+      {
+        "title": "",
+        "path_word": "meishijia"
+      },
+      {
+        "title": "",
+        "path_word": "cydmn"
+      }
+    ]
   },
   {
     "comicid": 34,
     "name": "【我推的孩子】",
     "site_chapters": 178,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E3%80%90%E6%88%91%E6%8E%A8%E7%9A%84%E5%AD%A9%E5%AD%90%E3%80%91",
+      "count": 3
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "wodantuidenvhai"
+      },
+      {
+        "title": "",
+        "path_word": "zypiecewtdhzsljr"
+      },
+      {
+        "title": "",
+        "path_word": "manshiai"
+      }
+    ]
   },
   {
     "comicid": 35,
     "name": "总之就是非常可爱",
     "site_chapters": 313,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E6%80%BB%E4%B9%8B%E5%B0%B1%E6%98%AF%E9%9D%9E%E5%B8%B8%E5%8F%AF%E7%88%B1",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "zongzhijiushihenkeaijiehunjinyanji"
+      },
+      {
+        "title": "",
+        "path_word": "zongzhijiushifeichangkeaiflymetothemoon"
+      },
+      {
+        "title": "",
+        "path_word": "zongzhijiushifeichangxiangzuo"
+      }
+    ]
   },
   {
     "comicid": 36,
     "name": "入间同学入魔了！",
     "site_chapters": 326,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%85%A5%E9%97%B4%E5%90%8C%E5%AD%A6%E5%85%A5%E9%AD%94%E4%BA%86%EF%BC%81",
+      "count": 12
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "rujiantongxuerumole"
+      },
+      {
+        "title": "",
+        "path_word": "rujiantongxuerumolemoshoudangif"
+      },
+      {
+        "title": "",
+        "path_word": "rjtxrmlklygwz"
+      }
+    ]
   },
   {
     "comicid": 37,
     "name": "地缚少年花子君",
     "site_chapters": 127,
+    "search": {
+      "url": "https://www.mangacopy.com/search?q=%E5%9C%B0%E7%BC%9A%E5%B0%91%E5%B9%B4%E8%8A%B1%E5%AD%90%E5%90%9B",
+      "count": 6
+    },
     "path_word": "",
-    "status": "ERROR NameError",
-    "source_chapters": 0
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
+    "top3": [
+      {
+        "title": "",
+        "path_word": "dfsnhzj"
+      },
+      {
+        "title": "",
+        "path_word": "fangxuehoushaonianhuazijun"
+      },
+      {
+        "title": "",
+        "path_word": "aidairohuajidifushaonianhuazijun"
+      }
+    ]
   },
   {
     "comicid": 38,
     "name": "无职转生～到了异世界就拿出真本事～",
     "site_chapters": 118,
     "path_word": "",
-    "status": "ERROR NameError",
+    "status": "ERROR UnexpectedAlertPresentException",
     "source_chapters": 0
   },
   {
@@ -308,7 +880,7 @@
     "name": "异世界迷宫黑心企业",
     "site_chapters": 87,
     "path_word": "",
-    "status": "ERROR NameError",
+    "status": "ERROR UnexpectedAlertPresentException",
     "source_chapters": 0
   },
   {
@@ -316,7 +888,7 @@
     "name": "海邊之夜",
     "site_chapters": 1,
     "path_word": "",
-    "status": "ERROR NameError",
+    "status": "ERROR UnexpectedAlertPresentException",
     "source_chapters": 0
   }
 ]
