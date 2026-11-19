@@ -3,18 +3,17 @@
     "comicid": 1,
     "name": "出包王女 Darkness",
     "site_chapters": 77,
-    "path_word": "chabaodarkness",
-    "matched_title": "出包王女Darkness",
-    "score": 1.0,
-    "status": "未知",
-    "source_chapters": 4,
+    "path_word": "",
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
     "candidates": [
       "chubaowangnv",
       "chabaodarkness",
       "wodeqingqingjiajiao",
       "roidroid"
-    ],
-    "cover": "https://sc.mangafunb.fun/c/chabaodarkness/cover/1651113232.jpg.328x422.jpg"
+    ]
   },
   {
     "comicid": 2,
@@ -36,17 +35,18 @@
     "comicid": 3,
     "name": "堀与宫村",
     "site_chapters": 122,
-    "path_word": "",
-    "matched_title": "",
-    "score": 0.0,
-    "status": "未匹配",
-    "source_chapters": 0,
+    "path_word": "kuyugongcun",
+    "matched_title": "堀與宮村",
+    "score": 1.0,
+    "status": "完结",
+    "source_chapters": 100,
     "candidates": [
       "kuyugongcun",
       "qwsyctj",
       "yilianxiangchengshangxianweimang",
       "faqingyuleshi"
-    ]
+    ],
+    "cover": "https://sk.mangafunb.fun/k/kuyugongcun/cover/1731990693.jpg.328x422.jpg"
   },
   {
     "comicid": 4,
@@ -54,7 +54,7 @@
     "site_chapters": 93,
     "path_word": "gebulinshashou",
     "matched_title": "哥布林殺手",
-    "score": 0.8,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 92,
     "candidates": [
@@ -105,7 +105,7 @@
     "site_chapters": 40,
     "path_word": "xjqxsdchangkexiaojie",
     "matched_title": "想盡情享受的常客小姐",
-    "score": 0.9,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 97,
     "candidates": [
@@ -122,7 +122,7 @@
     "site_chapters": 17,
     "path_word": "xianruaihedefenggujunshinvp",
     "matched_title": "陷入愛河的蜂谷君是女僕",
-    "score": 0.82,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 30,
     "candidates": [
@@ -152,7 +152,7 @@
     "site_chapters": 189,
     "path_word": "paiduilangkezhugekongming",
     "matched_title": "派對浪客諸葛孔明",
-    "score": 0.75,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 241,
     "candidates": [
@@ -164,33 +164,36 @@
     "comicid": 11,
     "name": "狂赌之渊",
     "site_chapters": 111,
-    "path_word": "",
-    "matched_title": "",
-    "score": 0.0,
-    "status": "未匹配",
-    "source_chapters": 0,
+    "path_word": "kuangduzhiyuanjia",
+    "matched_title": "狂賭之淵(仮)",
+    "score": 0.89,
+    "status": "连载中",
+    "source_chapters": 244,
     "candidates": [
       "kuangduzhiyuanjia",
       "kuangduzhiyuan",
       "kuangduzhiyuanwang",
       "kuangduzhiyuanshuang"
-    ]
+    ],
+    "cover": "https://sk.mangafunb.fun/k/kuangduzhiyuanjia/cover/1651047148.jpg.328x422.jpg"
   },
   {
     "comicid": 12,
     "name": "别当欧尼酱了",
     "site_chapters": 113,
-    "path_word": "",
-    "matched_title": "",
-    "score": 0.0,
-    "status": "未匹配",
-    "source_chapters": 0,
+    "path_word": "biedangounijiangle",
+    "matched_title": "別當歐尼醬了！",
+    "score": 1.0,
+    "status": "连载中",
+    "source_chapters": 135,
     "candidates": [
       "biedangounijiangle",
       "biedangounijiangleguanfangtongrenjisanbeijiazhu",
       "lacdcxzqklygxggl",
-      "henwuliaodetsmanhua"
-    ]
+      "henwuliaodetsmanhua",
+      "zulinounijiang"
+    ],
+    "cover": "https://sb.mangafunb.fun/b/biedangounijiangle/cover/1730054905.jpg.328x422.jpg"
   },
   {
     "comicid": 13,
@@ -198,7 +201,7 @@
     "site_chapters": 23,
     "path_word": "bzlmldynhmsnlxsljbdclwjwl",
     "matched_title": "幫助了迷路的幼女後，美少女留學生鄰居變得常來我家玩了",
-    "score": 0.76,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 21,
     "candidates": [
@@ -255,7 +258,7 @@
     "site_chapters": 57,
     "path_word": "dongfangzuidiehua",
     "matched_title": "東方醉蝶華",
-    "score": 0.6,
+    "score": 1.0,
     "status": "未知",
     "source_chapters": 64,
     "candidates": [
@@ -286,11 +289,13 @@
     "site_chapters": 239,
     "path_word": "tiancaiwangzidechiziguojiazhenxingshu",
     "matched_title": "天才王子的赤字國家振興術",
-    "score": 0.75,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 254,
     "candidates": [
-      "tiancaiwangzidechiziguojiazhenxingshu"
+      "tiancaiwangzidechiziguojiazhenxingshu",
+      "dipaihenduodeweiduoliya",
+      "zhuanshulaoshi"
     ],
     "cover": "https://st.mangafunb.fun/t/tiancaiwangzidechiziguojiazhenxingshu/cover/1651390129.jpg.328x422.jpg"
   },
@@ -298,17 +303,18 @@
     "comicid": 20,
     "name": "转生成为魔剑了",
     "site_chapters": 108,
-    "path_word": "",
-    "matched_title": "",
-    "score": 0.0,
-    "status": "未匹配",
-    "source_chapters": 0,
+    "path_word": "zhuanshengchengweimojian",
+    "matched_title": "轉生成為魔劍",
+    "score": 0.92,
+    "status": "连载中",
+    "source_chapters": 127,
     "candidates": [
       "zhuanshengchengweimojianantoherwish",
       "zhuanshengchengweimojianmydish",
       "zhuanshengchengweimojian",
       "tszhuanshengcwlnpj"
-    ]
+    ],
+    "cover": "https://sz.mangafunb.fun/z/zhuanshengchengweimojian/cover/1651408588.jpg.328x422.jpg"
   },
   {
     "comicid": 21,
@@ -316,7 +322,7 @@
     "site_chapters": 300,
     "path_word": "hydxjxrwgb",
     "matched_title": "輝夜大小姐想讓我告白 ~天才們的戀愛頭腦戰~",
-    "score": 0.62,
+    "score": 1.0,
     "status": "完结",
     "source_chapters": 315,
     "candidates": [
@@ -333,7 +339,7 @@
     "site_chapters": 111,
     "path_word": "shijizhiling",
     "matched_title": "食戟之靈",
-    "score": 0.75,
+    "score": 1.0,
     "status": "完结",
     "source_chapters": 111,
     "candidates": [
@@ -350,7 +356,7 @@
     "site_chapters": 216,
     "path_word": "xianggelilafulongtiyashizuolierenxiangshenzuofaqit",
     "matched_title": "香格裡拉·弗隴提亞~屎作獵人向神作發起挑戰~",
-    "score": 0.57,
+    "score": 0.76,
     "status": "连载中",
     "source_chapters": 287,
     "candidates": [
@@ -364,7 +370,7 @@
     "site_chapters": 145,
     "path_word": "zangsongdefulilian",
     "matched_title": "葬送的芙莉蓮",
-    "score": 0.83,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 152,
     "candidates": [
@@ -381,7 +387,7 @@
     "site_chapters": 121,
     "path_word": "gengyinrenouzhuiruaihe",
     "matched_title": "更衣人偶墜入愛河",
-    "score": 0.75,
+    "score": 1.0,
     "status": "完结",
     "source_chapters": 122,
     "candidates": [
@@ -398,7 +404,7 @@
     "site_chapters": 115,
     "path_word": "woduzishenji",
     "matched_title": "我獨自升級",
-    "score": 0.6,
+    "score": 1.0,
     "status": "完结",
     "source_chapters": 201,
     "candidates": [
@@ -415,7 +421,7 @@
     "site_chapters": 76,
     "path_word": "chongjingchengweimofashaonv",
     "matched_title": "憧憬成為魔法少女",
-    "score": 0.88,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 91,
     "candidates": [
@@ -432,7 +438,7 @@
     "site_chapters": 78,
     "path_word": "meimeiyitianzhihewoduishangyiciyan",
     "matched_title": "妹妹一天只和我對上一次眼",
-    "score": 0.92,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 86,
     "candidates": [
@@ -446,7 +452,7 @@
     "site_chapters": 181,
     "path_word": "summertimerendring",
     "matched_title": "夏日重現",
-    "score": 0.75,
+    "score": 1.0,
     "status": "完结",
     "source_chapters": 182,
     "candidates": [
@@ -461,34 +467,35 @@
     "comicid": 30,
     "name": "租借女友",
     "site_chapters": 301,
-    "path_word": "zujienvyouxiaolian",
-    "matched_title": "租借女友小蓮",
-    "score": 0.8,
+    "path_word": "nvpengyoujiewoyixia",
+    "matched_title": "租借女友",
+    "score": 1.0,
     "status": "连载中",
-    "source_chapters": 16,
+    "source_chapters": 452,
     "candidates": [
       "zujienvyouxiaolian",
       "zujienvyouguanfangtongrenji",
       "zujienvyouyuetianxiaojie",
       "nvpengyoujiewoyixia"
     ],
-    "cover": "https://sz.mangafunb.fun/z/zujienvyouxiaolian/cover/1651190914.jpg.328x422.jpg"
+    "cover": "https://sn.mangafunb.fun/n/nvpengyoujiewoyixia/cover/1752678504.jpg.328x422.jpg"
   },
   {
     "comicid": 31,
     "name": "孤独摇滚!",
     "site_chapters": 91,
-    "path_word": "",
-    "matched_title": "",
-    "score": 0.0,
-    "status": "未匹配",
-    "source_chapters": 0,
+    "path_word": "guduyaogun",
+    "matched_title": "孤獨搖滾",
+    "score": 1.0,
+    "status": "连载中",
+    "source_chapters": 110,
     "candidates": [
       "guduyaogun",
       "guduyaogunduanpian",
       "armorgunyilaoshiguduyaogunheji",
       "guduyaoguntongrenheji"
-    ]
+    ],
+    "cover": "https://sg.mangafunb.fun/g/guduyaogun/cover/1784611110.jpg.328x422.jpg"
   },
   {
     "comicid": 32,
@@ -496,7 +503,7 @@
     "site_chapters": 249,
     "path_word": "sishenshaoyeyuheinvpu",
     "matched_title": "死神少爺與黑女僕",
-    "score": 0.62,
+    "score": 1.0,
     "status": "完结",
     "source_chapters": 250,
     "candidates": [
@@ -513,7 +520,7 @@
     "site_chapters": 398,
     "path_word": "zaimowangchengshuowanan",
     "matched_title": "在魔王城說晚安",
-    "score": 0.86,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 439,
     "candidates": [
@@ -543,18 +550,17 @@
     "comicid": 35,
     "name": "总之就是非常可爱",
     "site_chapters": 313,
-    "path_word": "zongzhijiushifeichangxiangzuo",
-    "matched_title": "總之就是非常想做",
-    "score": 0.62,
-    "status": "连载中",
-    "source_chapters": 42,
+    "path_word": "",
+    "matched_title": "",
+    "score": 0.0,
+    "status": "未匹配",
+    "source_chapters": 0,
     "candidates": [
       "zongzhijiushihenkeaijiehunjinyanji",
       "zongzhijiushifeichangkeaiflymetothemoon",
       "zongzhijiushifeichangxiangzuo",
       "shiyuzhenshikeai"
-    ],
-    "cover": "https://sz.mangafunb.fun/z/zongzhijiushifeichangxiangzuo/cover/1730303996.jpg.328x422.jpg"
+    ]
   },
   {
     "comicid": 36,
@@ -562,7 +568,7 @@
     "site_chapters": 326,
     "path_word": "rujiantongxuerumole",
     "matched_title": "入間同學入魔了",
-    "score": 0.71,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 457,
     "candidates": [
@@ -579,7 +585,7 @@
     "site_chapters": 127,
     "path_word": "dfsnhzj",
     "matched_title": "地縛少年花子君",
-    "score": 0.86,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 136,
     "candidates": [
@@ -594,16 +600,17 @@
     "comicid": 38,
     "name": "无职转生～到了异世界就拿出真本事～",
     "site_chapters": 118,
-    "path_word": "",
-    "matched_title": "",
-    "score": 0.0,
-    "status": "未匹配",
-    "source_chapters": 0,
+    "path_word": "wuzhizhuanshengluoqixiyeyaonachuzhenbenshi",
+    "matched_title": "無職轉生~洛琪希也要拿出真本事~",
+    "score": 0.55,
+    "status": "连载中",
+    "source_chapters": 71,
     "candidates": [
       "mushokutenseiKitachuuoutairikunoyuki",
       "wzzsdlysjynczbsduanpianjixilufeipian",
       "wuzhizhuanshengluoqixiyeyaonachuzhenbenshi"
-    ]
+    ],
+    "cover": "https://sw.mangafunb.fun/w/wuzhizhuanshengluoqixiyeyaonachuzhenbenshi/cover/1651107286.jpg.328x422.jpg"
   },
   {
     "comicid": 39,
@@ -611,7 +618,7 @@
     "site_chapters": 87,
     "path_word": "yishijiemigongheixinqiye",
     "matched_title": "異世界迷宮黑心企業",
-    "score": 0.67,
+    "score": 1.0,
     "status": "连载中",
     "source_chapters": 101,
     "candidates": [
