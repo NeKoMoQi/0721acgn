@@ -70,6 +70,23 @@ def main():
                 item['json'] = False
             out.setdefault('api', {})[path] = item
 
+    # 章节页：找图片是怎么加载的
+    chapter = None
+    comic_page = get(f'{BASE}/comic/{path_word}') if path_word else {}
+    chtml = comic_page.get('text', '') if isinstance(comic_page, dict) else ''
+    ch_links = sorted(set(re.findall(r'/comic/' + re.escape(path_word or '') + r'/chapter/[A-Za-z0-9-]+', chtml)))
+    out['chapter_links'] = ch_links[:3]
+    if ch_links:
+        ch = get(BASE + ch_links[0])
+        out['chapter_page'] = {k: v for k, v in ch.items() if k != 'text'}
+        text = ch.get('text', '')
+        out['chapter_scripts'] = re.findall(r'<script[^>]+src=["\']([^"\']+)', text)[:10]
+        inline = re.findall(r'<script(?![^>]*src=)[^>]*>([\s\S]{0,4000}?)</script>', text)
+        out['chapter_inline'] = [x.strip()[:600] for x in inline if re.search(r'api|ajax|fetch|image|img|chapter', x, re.I)][:5]
+        out['chapter_imgs'] = sorted(set(re.findall(r'(?:data-src|data-original|src)=["\']([^"\']+\.(?:jpg|jpeg|png|webp)[^"\']*)', text)))[:10]
+        out['chapter_api_hits'] = sorted(set(re.findall(r'/api/[A-Za-z0-9/_\-?=&.]{2,70}', text)))[:20]
+        out['c3_hits'] = sorted(set(re.findall(r'c3\.[A-Za-z0-9.\-]+', text)))[:5]
+
     os.makedirs('runs', exist_ok=True)
     with open('runs/copymanga-mangacopy.json', 'w', encoding='utf-8') as fh:
         json.dump(out, fh, ensure_ascii=False, indent=2)
