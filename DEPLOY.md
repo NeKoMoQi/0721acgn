@@ -191,7 +191,7 @@ Remove-Item C:\apps\0721acgn-server\maintenance.flag              # 恢复
 | 拷贝漫画 | `C:\apps\copymanga-server` | `0721ACGN Copymanga Crawler`，每天 04:30 + 0–30 min | OSS `copymanga-v1/` + `data/comics/*`（尚待接 MySQL） |
 
 - 胶水脚本（入库器、任务入口、安装脚本）在仓库 `ops/`，部署细节见 `C:\apps\anitabi-server\README-DEPLOY.md`、`C:\apps\copymanga-server\README-DEPLOY.md`。
-- **2026-11-18 更新**：`api.anitabi.cn` 对本机 IP 返回 Cloudflare 403（排查结论：出口 IP 被站方 WAF 拦，与脚本/频率/UA 无关；GitHub Actions 出口实测 200）。改用官网公开静态数据集 `https://www.anitabi.cn/d/g*.json`（1571 部、53599 点位，含名称/坐标/图片路径），由 `collect_dump.py` 导出 CSV、`import_to_pg.py` 入库。站内已从 369 部 / 8460 点扩到 **1572 部 / 49042 点**（去重后；上游数据集 1571 部、53599 条记录，去重后 44122 个唯一点位，老库另有独有点位）。
+- **2026-11-18 更新**：`api.anitabi.cn` 对本机 IP 返回 Cloudflare 403（排查结论：出口 IP 被站方 WAF 拦，与脚本/频率/UA 无关；GitHub Actions 出口实测 200）。改用官网公开静态数据集 `https://www.anitabi.cn/d/g*.json`（1571 部、53599 点位，含名称/坐标/图片路径），由 `collect_dump.py` 导出 CSV、`import_to_pg.py` 入库。站内已从 369 部 / 8460 点扩到 **1572 部 / 50450 点**（去重后；上游数据集 1571 部、53599 条记录，去重后 44122 个唯一点位，老库另有独有点位）。
 - 入库规则：新作品分配 `MAX(xunliid)+1`（并从 `tb_xunlipoint` 的最大 xunliid 起算，避开历史孤儿点位）；已有作品按同名认领；点位按经纬度 4 位小数去重；幂等、可 `--dry-run`。**没有改动旧 `xunliid`**，回滚 SQL 见 `ops/anitabi/README-DEPLOY.md`。
 - 已知缺失：静态数据集没有 `ep` / `time`（集数、时间戳）。图片已同步到 OSS（点位图 44,006/48,268、封面 1,148/1,574，其余少量上游 404），方法见 `ops/anitabi/README-DEPLOY.md`。
 - 拷贝漫画所有已知域名（`2026copy.com`、`copymanga.*`、`mangacopy.com` 等）在本机不可达，`www.copymanga.cc` 是域名停放页；`comics.txt` 先留空，任务记 `WAITING` 后跳过。

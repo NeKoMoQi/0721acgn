@@ -47,7 +47,7 @@ def main():
                             password=os.environ.get('PGPASSWORD', ''))
     cur = conn.cursor()
     cur.execute(f'SELECT bangumi_id, xunliid FROM {SCHEMA}.tb_anitabi_map')
-    mapped = {b: x for b, x in cur.fetchall() if x <= 537}
+    mapped = {b: x for b, x in cur.fetchall()}
     cur.execute(f'SELECT COALESCE(MAX(id), 0) FROM {SCHEMA}.tb_xunlipoint')
     next_id = cur.fetchone()[0]
 
