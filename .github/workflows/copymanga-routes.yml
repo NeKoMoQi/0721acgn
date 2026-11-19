@@ -1,0 +1,41 @@
+name: copymanga-routes
+
+# 探测 mangacopy 的搜索/分类路由，找可用的目录来源（服务端访问不了该站）。
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/copymanga-routes.yml'
+      - 'ops/copymanga/probe_routes.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: copymanga-routes
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps
+        run: python -m pip install --quiet selenium beautifulsoup4
+      - name: Probe routes
+        run: python ops/copymanga/probe_routes.py
+        continue-on-error: true
+      - name: Commit result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add runs/copymanga-routes.json
+          if git diff --cached --quiet; then echo "no change"; else
+            git commit -m "chore(copymanga): route probe $(date -u +%F)"
+            git pull --rebase || true
+            git push
+          fi
