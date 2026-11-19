@@ -30,6 +30,11 @@ CREATE TABLE IF NOT EXISTS {SCHEMA}.tb_anitabi_map (
     xunliid    integer NOT NULL UNIQUE,
     updated_at timestamptz NOT NULL DEFAULT now()
 );
+CREATE TABLE IF NOT EXISTS {SCHEMA}.tb_anitabi_skip (
+    bangumi_id integer PRIMARY KEY,
+    reason     text,
+    added_at   timestamptz NOT NULL DEFAULT now()
+);
 CREATE TABLE IF NOT EXISTS {SCHEMA}.tb_anitabi_point_map (
     bangumi_id   integer NOT NULL,
     point_id     text    NOT NULL,
@@ -118,6 +123,8 @@ def import_all(conn, works, points_by_work, apply):
     mapped = dict(cur.fetchall())
     cur.execute(f'SELECT bangumi_id, point_id FROM {SCHEMA}.tb_anitabi_point_map')
     known_points = set(cur.fetchall())
+    cur.execute(f'SELECT bangumi_id FROM {SCHEMA}.tb_anitabi_skip')
+    skipped_ids = {r[0] for r in cur.fetchall()}
 
     stats = dict(works_new=0, works_matched=0, works_updated=0, works_skipped=0,
                  points_new=0, points_skipped=0, failed=0)
@@ -132,14 +139,19 @@ def import_all(conn, works, points_by_work, apply):
         """
         if xunliid not in point_index:
             cur.execute(
-                f"""SELECT id, round(ST_Y(geopoint)::numeric, 4), round(ST_X(geopoint)::numeric, 4)
+                f"""SELECT id, round(ST_Y(geopoint)::numeric, 4), round(ST_X(geopoint)::numeric, 4),
+                           TRIM(xunliname)
                     FROM {SCHEMA}.tb_xunlipoint WHERE xunliid = %s""", (xunliid,))
-            point_index[xunliid] = {(float(y), float(x)): pid for pid, y, x in cur.fetchall()}
+            point_index[xunliid] = {(float(y), float(x), n or ''): pid for pid, y, x, n in cur.fetchall()}
         return point_index[xunliid]
 
     for row in works:
         bangumi_id = int(row['xunliid'])
         name = value(row, 'xunliname') or value(row, 'japanname') or f'anitabi-{bangumi_id}'
+        if bangumi_id in skipped_ids:
+            print(f'[skip] {bangumi_id} {name}: in tb_anitabi_skip', flush=True)
+            stats['works_skipped'] += 1
+            continue
         jp_name = value(row, 'japanname')
         rows = points_by_work.get(bangumi_id, [])
         if not rows:
@@ -208,7 +220,8 @@ def import_all(conn, works, points_by_work, apply):
                 if lat is None:
                     stats['points_skipped'] += 1
                     continue
-                key = (round(lat, 4), round(lng, 4))
+                # (lat4, lng4, name): 同一地点的不同场景是不同点位，不能只按坐标去重。
+                key = (round(lat, 4), round(lng, 4), clip(value(point, 'xunliname'), 254) or '')
                 if key in legacy:
                     cur.execute(
                         f'INSERT INTO {SCHEMA}.tb_anitabi_point_map(bangumi_id, point_id, point_row_id) VALUES (%s,%s,%s)',
@@ -221,7 +234,7 @@ def import_all(conn, works, points_by_work, apply):
                     f"""INSERT INTO {SCHEMA}.tb_xunlipoint
                         (id, xunliid, xunliname, xunlipic, gaoqingpic, ep, time, geopoint)
                         VALUES (%s,%s,%s,%s,%s,%s,%s, ST_SetSRID(ST_MakePoint(%s,%s),4326))""",
-                    (next_point_id, xunliid, clip(value(point, 'xunliname'), 254),
+                    (next_point_id, xunliid, key[2],
                      value(point, 'xunlipic'), value(point, 'gaoqingpic'),
                      value(point, 'ep'), value(point, 'time'), lng, lat))
                 cur.execute(
