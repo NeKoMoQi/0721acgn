@@ -1,0 +1,64 @@
+name: copymanga-crawl
+
+# 无头 Chrome 渲染 mangacopy 页面 → 取章节图 → 上传 OSS → 写 manifest。
+# 需要 Secrets：OSS_ACCESS_KEY_ID / OSS_ACCESS_KEY_SECRET（可选 COPY_USER / COPY_PASS 登录）。
+on:
+  workflow_dispatch:
+    inputs:
+      comic:
+        description: 'path_word 或漫画 URL'
+        required: false
+        default: 'HAIBIANZHIYE'
+      max_chapters:
+        description: '本次最多抓几章（0=全部）'
+        required: false
+        default: '1'
+  push:
+    paths:
+      - '.github/workflows/copymanga-crawl.yml'
+      - 'ops/copymanga/crawl_selenium.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: copymanga-crawl
+  cancel-in-progress: false
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+      OSS_ENDPOINT: https://oss-cn-hangzhou.aliyuncs.com
+      OSS_BUCKET: acgn0721
+      OSS_PUBLIC_BASE: https://acgn0721.oss-cn-hangzhou.aliyuncs.com
+      COPY_USER: ${{ secrets.COPY_USER }}
+      COPY_PASS: ${{ secrets.COPY_PASS }}
+      COMIC: ${{ github.event.inputs.comic }}
+      MAXC: ${{ github.event.inputs.max_chapters }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps
+        run: python -m pip install --quiet selenium beautifulsoup4 oss2 requests
+      - name: Crawl
+        run: |
+          COMIC=${COMIC:-HAIBIANZHIYE}
+          MAXC=${MAXC:-1}
+          python ops/copymanga/crawl_selenium.py --comic "$COMIC" --max-chapters "$MAXC" | tee crawl.log
+        continue-on-error: true
+      - name: Commit summary
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add runs/copymanga-crawl.json
+          if git diff --cached --quiet; then echo "no change"; else
+            git commit -m "chore(copymanga): crawl $(date -u +%F)"
+            git pull --rebase || true
+            git push
+          fi
