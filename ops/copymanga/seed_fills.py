@@ -55,14 +55,15 @@ def main():
                 cur.execute('INSERT INTO tb_copymanga_map(path_word, comicid) VALUES(%s,%s)',
                             (row['path_word'], row['comicid']))
                 linked += 1
+            state = 'done' if row['status'] == '完结' else 'imported'
             cur.execute("""INSERT INTO tb_copymanga_queue(path_word,comicid,title,status,state,
                              chapters_total,chapters_imported)
-                           VALUES(%s,%s,%s,%s,'imported',%s,%s)
+                           VALUES(%s,%s,%s,%s,%s,%s,%s)
                            ON DUPLICATE KEY UPDATE comicid=VALUES(comicid), title=VALUES(title),
-                             status=VALUES(status), chapters_total=VALUES(chapters_total),
+                             status=VALUES(status), state=VALUES(state), chapters_total=VALUES(chapters_total),
                              chapters_imported=GREATEST(chapters_imported, VALUES(chapters_imported))""",
                         (row['path_word'], row['comicid'], row['title'] or row['site_name'],
-                         row['status'], row['total'], have))
+                         row['status'], state, row['total'], have))
             cur.execute('UPDATE tb_cartoons SET status=%s WHERE comicid=%s', (row['status'], row['comicid']))
             print(f"  {row['comicid']:>3} {row['site_name'][:14]:<14} -> {row['path_word']:<24} "
                   f"{row['status']} 站内{have}话/源{row['total']}话", flush=True)
