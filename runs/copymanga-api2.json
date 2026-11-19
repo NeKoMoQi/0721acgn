@@ -1,0 +1,57 @@
+{
+  "utc": "2026-11-19T02:12:29Z",
+  "base": "https://www.2026copy.com",
+  "path_word": "pingchengyuzhaihuiyilu",
+  "page": {
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "len": 14791,
+    "title": "\n    平成御宅Re:members-平成御宅Re:members漫畫-第42話-已完結-愛情漫画,奇幻漫画-在线阅读 - 拷貝漫畫 拷贝漫画\n  "
+  },
+  "scripts": [
+    "https://s3.mangafunb.fun/static/websitefree/js20190704/jquery.slim.min.js",
+    "https://www.googletagmanager.com/gtag/js?id=G-SS4LL7K6CL",
+    "https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092",
+    "https://s3.mangafunb.fun/static/cdn/lazysizes.5.3.2.min.js",
+    "https://s3.mangafunb.fun/static/cdn/bootstrap.4.3.1.min.js",
+    "https://s3.mangafunb.fun/static/websitefree/js20190704/public20251212.js",
+    "https://s3.mangafunb.fun/static/websitefree/js20190704/http_request.js",
+    "https://s3.mangafunb.fun/static/websitefree/js20190704/seek_util202103241830.js",
+    "https://s3.mangafunb.fun/static/cdn/jquery.qrcode.min.js",
+    "https://s3.mangafunb.fun/static/websitefree/js20190704/image_util20200331.js"
+  ],
+  "api_in_html": [
+    "/api/v1/logout"
+  ],
+  "api_in_js": [],
+  "candidates": {
+    "/api/v3/comic2/pingchengyuzhaihuiyilu?platform=1": {
+      "status": null,
+      "error": "HTTPError: HTTP Error 404: Not Found"
+    },
+    "/api/v3/comic/pingchengyuzhaihuiyilu?platform=1": {
+      "status": null,
+      "error": "HTTPError: HTTP Error 404: Not Found"
+    },
+    "/api/v3/comic/pingchengyuzhaihuiyilu": {
+      "status": null,
+      "error": "HTTPError: HTTP Error 404: Not Found"
+    },
+    "/api/v3/comic/pingchengyuzhaihuiyilu/chapters?limit=1&offset=0": {
+      "status": null,
+      "error": "HTTPError: HTTP Error 404: Not Found"
+    },
+    "/api/v3/comic/pingchengyuzhaihuiyilu/group/default/chapters?limit=1&offset=0": {
+      "status": null,
+      "error": "HTTPError: HTTP Error 404: Not Found"
+    },
+    "/api/v3/comic/pingchengyuzhaihuiyilu/group/default/chapters?limit=1&offset=0&platform=1": {
+      "status": null,
+      "error": "HTTPError: HTTP Error 404: Not Found"
+    },
+    "/api/v3/comics/pingchengyuzhaihuiyilu?platform=1": {
+      "status": null,
+      "error": "HTTPError: HTTP Error 404: Not Found"
+    }
+  }
+}
