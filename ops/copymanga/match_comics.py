@@ -41,29 +41,21 @@ def normalize(text: str) -> str:
     return re.sub(r'[\s\-_·:：!！?？,，.。()（）\[\]【】]+', '', text or '').lower()
 
 
+def clean_title(text: str) -> str:
+    text = re.sub(r"[0-9.]+\s*[Ww万亿]?\s*$", "", text or "")
+    text = re.sub(r"作者[:：].*$", "", text)
+    return text.strip(" |·-")
+
+
 def search(driver, name):
-    driver.get(BASE + '/')
-    time.sleep(2)
-    box = None
-    for sel in ('input[type=text]', 'input[placeholder*="搜索"]', 'input[placeholder*="漫畫"]',
-                'input[placeholder*="漫画"]', '#searchKey', 'input[name="key"]'):
-        els = driver.find_elements(By.CSS_SELECTOR, sel)
-        if els:
-            box = els[0]
-            break
-    if box is None:
-        return {'error': 'no search box', 'url': driver.current_url}
-    box.clear()
-    box.send_keys(name)
-    box.send_keys(Keys.ENTER)
-    time.sleep(3)
-    search_url = driver.current_url
+    """站点可用搜索路由是 /search?q=（首页搜索框在 headless 下不跳转）。"""
+    driver.get(BASE + '/search?q=' + urllib.parse.quote(name))
+    time.sleep(2.5)
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     results = []
     seen = set()
     for a in soup.find_all('a', href=True):
-        href = a['href']
-        m = re.search(r'/comic/([A-Za-z0-9_-]+)', href)
+        m = re.search(r'/comic/([A-Za-z0-9_-]+)', a['href'])
         if not m:
             continue
         pw = m.group(1)
@@ -74,8 +66,12 @@ def search(driver, name):
         if not title:
             img = a.find('img')
             title = (img.get('alt') or img.get('title') or '') if img else ''
-        results.append({'path_word': pw, 'title': title, 'url': BASE + href})
-    return {'search_url': search_url, 'results': results}
+        if not title:
+            parent = a.find_parent(['li', 'div', 'p'])
+            if parent:
+                title = parent.get_text(' ', strip=True)
+        results.append({'path_word': pw, 'title': clean_title(title)[:60], 'url': BASE + a['href']})
+    return {'search_url': driver.current_url, 'results': results}
 
 
 def comic_meta(driver, url):
