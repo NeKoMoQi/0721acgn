@@ -12,6 +12,8 @@ import time
 import urllib.parse
 from pathlib import Path
 
+import zhconv
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -46,6 +48,26 @@ def dismiss(driver):
         time.sleep(0.5)
     except Exception:
         pass
+
+
+def variants(name):
+    out = [name]
+    for target in ('zh-hant', 'zh-hans'):
+        try:
+            v = zhconv.convert(name, target)
+        except Exception:
+            v = name
+        if v and v not in out:
+            out.append(v)
+    return out
+
+
+def similarity(name, title):
+    best = 0.0
+    for a in variants(name):
+        for b in variants(title):
+            best = max(best, difflib.SequenceMatcher(None, normalize(a), normalize(b)).ratio())
+    return best
 
 
 def normalize(text):
@@ -122,18 +144,22 @@ def main():
             entry.update({'path_word': '', 'matched_title': '', 'score': 0.0,
                           'status': '未匹配', 'source_chapters': 0})
             try:
-                paths = search_paths(driver, row['name'])
+                paths = []
+                for query in variants(row['name']):
+                    for pw in search_paths(driver, query):
+                        if pw not in paths:
+                            paths.append(pw)
+                paths = paths[:5]
                 entry['candidates'] = paths
                 best = None
-                for pw in paths[:3]:
+                for pw in paths[:5]:
                     meta = comic_meta(driver, pw)
-                    score = difflib.SequenceMatcher(None, normalize(row['name']),
-                                                    normalize(meta['title'])).ratio()
+                    score = similarity(row['name'], meta['title'])
                     if best is None or score > best['score']:
                         best = {'path_word': pw, 'score': round(score, 2), **meta}
                     if score >= 0.85:
                         break
-                if best and best['score'] >= 0.55:
+                if best and best['score'] >= 0.55 and (best['chapters'] == 0 or best['chapters'] >= row['site_chapters'] * 0.6):
                     entry.update({'path_word': best['path_word'], 'matched_title': best['title'],
                                   'score': best['score'], 'status': best['status'],
                                   'source_chapters': best['chapters'], 'cover': best.get('cover', '')})

@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install deps
-        run: python -m pip install --quiet selenium beautifulsoup4 requests
+        run: python -m pip install --quiet selenium beautifulsoup4 requests zhconv
       - name: Match comics
         run: python ops/copymanga/match_comics.py | tee match.log
         continue-on-error: true
