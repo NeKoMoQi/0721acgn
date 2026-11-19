@@ -1,0 +1,26 @@
+{
+  "utc": "2026-11-19T03:05:42Z",
+  "comic": "https://www.mangacopy.com/comic/HAIBIANZHIYE",
+  "login": "skipped (no credentials)",
+  "title": "海邊之夜",
+  "chapter_count": 103,
+  "chapter_sample": [
+    "https://www.mangacopy.com/comic/HAIBIANZHIYE/chapter/a65853ec-8f6a-11ed-8ca4-024352452ce0",
+    "https://www.mangacopy.com/comic/HAIBIANZHIYE/chapter/b5633907-8f6a-11ed-8ca4-024352452ce0",
+    "https://www.mangacopy.com/comic/HAIBIANZHIYE/chapter/b9c6e952-8f6a-11ed-8ca4-024352452ce0"
+  ],
+  "chapter": "https://www.mangacopy.com/comic/HAIBIANZHIYE/chapter/a65853ec-8f6a-11ed-8ca4-024352452ce0",
+  "img_count": 39,
+  "img_sample": [
+    "https://sh.mangafunb.fun/h/HAIBIANZHIYE/4351d/1673192664740022.jpg.c1500x.webp",
+    "https://sh.mangafunb.fun/h/HAIBIANZHIYE/4351d/1673192667050037.jpg.c1500x.webp",
+    "https://sh.mangafunb.fun/h/HAIBIANZHIYE/4351d/1673192668940027.jpg.c1500x.webp"
+  ],
+  "comicCount": "39",
+  "first_image": {
+    "status": 200,
+    "type": "image/webp",
+    "bytes": 162404,
+    "url": "https://sh.mangafunb.fun/h/HAIBIANZHIYE/4351d/1673192664740022.jpg.c1500x.webp"
+  }
+}
