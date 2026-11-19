@@ -53,19 +53,40 @@ def head(url, limit=2048):
 
 def main():
     out = {'utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()), 'base': BASE}
-    meta, data = api('search/comic', q='出包王女', limit=1, offset=0)
-    out['search'] = meta
     path_word = None
-    if data and isinstance(data.get('results'), dict):
-        lst = data['results'].get('list') or []
+    for params in ({'q': '出包王女', 'limit': 1, 'offset': 0},
+                   {'q': '出包王女', 'limit': 1, 'offset': 0, 'platform': 1}):
+        meta, data = api('search/comic', **params)
+        out.setdefault('search', []).append({'params': params, **meta})
+        lst = ((data or {}).get('results') or {}).get('list') or []
         if lst:
             first = lst[0]
             path_word = first.get('path_word')
             out['search_first'] = {k: first.get(k) for k in
                                    ('name', 'path_word', 'author', 'cover', 'status', 'popular', 'theme')}
+            break
+
+    # 搜索接口可能需要登录：退回从首页 HTML 里抓一个 /comic/<path_word>
     if not path_word:
-        print(json.dumps(out, ensure_ascii=False))
-        return 1
+        try:
+            req = urllib.request.Request(BASE + '/', headers={'User-Agent': UA})
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                html = resp.read(500000).decode('utf-8', 'replace')
+            import re
+            found = re.findall(r'/comic/([A-Za-z0-9_-]+)', html)
+            out['homepage_comic_links'] = found[:5]
+            if found:
+                path_word = found[0]
+        except Exception as exc:
+            out['homepage_error'] = f'{type(exc).__name__}: {exc}'
+
+    if not path_word:
+        os.makedirs('runs', exist_ok=True)
+        with open('runs/copymanga-api.json', 'w', encoding='utf-8') as fh:
+            json.dump(out, fh, ensure_ascii=False, indent=2)
+        print(json.dumps(out, ensure_ascii=False, indent=2)[:2000])
+        return 0
+    out['path_word'] = path_word
 
     meta, info = api(f'comic2/{path_word}', platform=1)
     out['comic2'] = meta
