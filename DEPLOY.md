@@ -203,6 +203,15 @@ Get-Content C:\apps\anitabi-server\logs\anitabi-$(Get-Date -Format yyyyMMdd).log
 Get-ScheduledTaskInfo -TaskName '0721ACGN Anitabi Crawler'
 ```
 
+## 巡礼图片 CDN（2026-11-19）
+
+自有 OSS 图片对外统一走 `https://img.0721acgn.com`（阿里云 CDN，回源 `acgn0721.oss-cn-hangzhou.aliyuncs.com`）。
+
+- 后端 `util/ImageCdnRewriter.java`：只匹配完整 OSS 主机名，保留路径与查询参数；`image.anitabi.cn` 等外链、已经是 CDN 的链接、带 `Signature`/`OSSAccessKeyId` 的签名链接原样返回。转换点在 `XunliServiceImpl` 的所有返回值（列表/详情/搜索/视野/点位/picker），**数据库仍是原始 OSS 链接**。
+- 前端 `utils/imageOptimizer.ts`：识别主机名 `acgn0721.oss-cn-hangzhou.aliyuncs.com` 与 `img.0721acgn.com`；已有 `x-oss-process=` 不重复追加，签名链接不加参数。
+- 部署：后端 `mvn -DskipTests package` 后重启 `0721ACGN API`；前端 `npm run build-only`（dist 立即生效，无需重启 Web）。
+- 验证（2026-11-19）：`/api/xunli/byid?Xunliid=1742`（蓝色时期）封面返回 CDN；`/api/xunli/point/byid?Xunliid=233` 里 Anitabi 外链（id 51321）保持 `image.anitabi.cn`；列表/视野/picker 接口已无 OSS 残留；CDN 图重复请求 `200` + `X-Cache: HIT`；前端运行时给 CDN 图追加了一次 `x-oss-process`，对已带参数、外链、签名链接不改写。
+
 ## 已知问题
 
 
