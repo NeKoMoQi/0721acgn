@@ -1,0 +1,201 @@
+{
+  "utc": "2026-11-19T01:59:13Z",
+  "hosts": {
+    "www.2026copy.com": {
+      "root": {
+        "status": 200,
+        "url": "https://www.2026copy.com/",
+        "type": "text/html; charset=utf-8",
+        "bytes_read": 400,
+        "seconds": 1.31,
+        "head": "   <!DOCTYPE html> <html lang=\"zh-hant\">  <head>   <meta charset=\"UTF-8\">   <link rel=\"icon\" href=\"https://s3.mangafunb.fun/static/free.ico\" type=\"image/x-icon\""
+      },
+      "title": "拷貝漫畫 - 海賊王 海贼王 哥布林殺手 哥布林杀手 漫畫 漫画 FGO FGO 東方 东方 艦娘 舰娘 同人志 本子 更新 全集 在綫漫畫 在线漫画 - 拷貝",
+      "parked": false,
+      "api": {
+        "status": 200,
+        "url": "https://www.2026copy.com/api/v3/search/comic?q=%E6%B5%B7%E8%B4%BC%E7%8E%8B&limit=1&offset=0",
+        "type": "application/json",
+        "bytes_read": 90,
+        "seconds": 0.4,
+        "head": "{\"code\":200,\"message\":\"请求成功\",\"results\":{\"list\":[],\"total\":0,\"limit\":1,\"offset\":0}}"
+      }
+    },
+    "2026copy.com": {
+      "root": {
+        "status": 200,
+        "url": "https://2026copy.com/",
+        "type": "text/html; charset=utf-8",
+        "bytes_read": 400,
+        "seconds": 1.24,
+        "head": "   <!DOCTYPE html> <html lang=\"zh-hant\">  <head>   <meta charset=\"UTF-8\">   <link rel=\"icon\" href=\"https://s3.mangafunb.fun/static/free.ico\" type=\"image/x-icon\""
+      },
+      "title": "拷貝漫畫 - 海賊王 海贼王 哥布林殺手 哥布林杀手 漫畫 漫画 FGO FGO 東方 东方 艦娘 舰娘 同人志 本子 更新 全集 在綫漫畫 在线漫画 - 拷貝",
+      "parked": false,
+      "api": {
+        "status": 200,
+        "url": "https://2026copy.com/api/v3/search/comic?q=%E6%B5%B7%E8%B4%BC%E7%8E%8B&limit=1&offset=0",
+        "type": "application/json",
+        "bytes_read": 90,
+        "seconds": 0.9,
+        "head": "{\"code\":200,\"message\":\"请求成功\",\"results\":{\"list\":[],\"total\":0,\"limit\":1,\"offset\":0}}"
+      }
+    },
+    "www.copymanga.site": {
+      "root": {
+        "error": "URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+        "seconds": 0.08
+      },
+      "title": "",
+      "parked": false
+    },
+    "copymanga.site": {
+      "root": {
+        "error": "URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+        "seconds": 0.08
+      },
+      "title": "",
+      "parked": false
+    },
+    "www.copymanga.org": {
+      "root": {
+        "error": "URLError: <urlopen error [Errno 111] Connection refused>",
+        "seconds": 0.24
+      },
+      "title": "",
+      "parked": false
+    },
+    "copymanga.org": {
+      "root": {
+        "error": "URLError: <urlopen error [Errno 111] Connection refused>",
+        "seconds": 0.08
+      },
+      "title": "",
+      "parked": false
+    },
+    "www.mangacopy.com": {
+      "root": {
+        "status": 200,
+        "url": "https://www.mangacopy.com/",
+        "type": "text/html; charset=utf-8",
+        "bytes_read": 400,
+        "seconds": 1.28,
+        "head": "   <!DOCTYPE html> <html lang=\"zh-hant\">  <head>   <meta charset=\"UTF-8\">   <link rel=\"icon\" href=\"https://s3.mangafunb.fun/static/free.ico\" type=\"image/x-icon\""
+      },
+      "title": "拷貝漫畫 - 海賊王 海贼王 哥布林殺手 哥布林杀手 漫畫 漫画 FGO FGO 東方 东方 艦娘 舰娘 同人志 本子 更新 全集 在綫漫畫 在线漫画 - 拷貝",
+      "parked": false,
+      "api": {
+        "status": 200,
+        "url": "https://www.mangacopy.com/api/v3/search/comic?q=%E6%B5%B7%E8%B4%BC%E7%8E%8B&limit=1&offset=0",
+        "type": "application/json",
+        "bytes_read": 90,
+        "seconds": 0.93,
+        "head": "{\"code\":200,\"message\":\"请求成功\",\"results\":{\"list\":[],\"total\":0,\"limit\":1,\"offset\":0}}"
+      }
+    },
+    "mangacopy.com": {
+      "root": {
+        "status": 200,
+        "url": "https://mangacopy.com/",
+        "type": "text/html; charset=utf-8",
+        "bytes_read": 400,
+        "seconds": 1.19,
+        "head": "   <!DOCTYPE html> <html lang=\"zh-hant\">  <head>   <meta charset=\"UTF-8\">   <link rel=\"icon\" href=\"https://s3.mangafunb.fun/static/free.ico\" type=\"image/x-icon\""
+      },
+      "title": "拷貝漫畫 - 海賊王 海贼王 哥布林殺手 哥布林杀手 漫畫 漫画 FGO FGO 東方 东方 艦娘 舰娘 同人志 本子 更新 全集 在綫漫畫 在线漫画 - 拷貝",
+      "parked": false,
+      "api": {
+        "status": 200,
+        "url": "https://mangacopy.com/api/v3/search/comic?q=%E6%B5%B7%E8%B4%BC%E7%8E%8B&limit=1&offset=0",
+        "type": "application/json",
+        "bytes_read": 90,
+        "seconds": 0.91,
+        "head": "{\"code\":200,\"message\":\"请求成功\",\"results\":{\"list\":[],\"total\":0,\"limit\":1,\"offset\":0}}"
+      }
+    },
+    "www.copymanga.cc": {
+      "root": {
+        "status": 200,
+        "url": "http://ww19.copymanga.cc/",
+        "type": "text/html",
+        "bytes_read": 400,
+        "seconds": 1.12,
+        "head": "<html> <head ><style>*{margin: 0; padding: 0;}</style><meta  name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1\" content=\"\"><script> "
+      },
+      "title": "Loading...",
+      "parked": true
+    },
+    "www.copy20.com": {
+      "root": {
+        "status": 200,
+        "url": "https://www.copy20.com/",
+        "type": "text/html; charset=utf-8",
+        "bytes_read": 400,
+        "seconds": 0.97,
+        "head": "   <!DOCTYPE html> <html lang=\"zh-hant\">  <head>   <meta charset=\"UTF-8\">   <link rel=\"icon\" href=\"https://s3.mangafunb.fun/static/free.ico\" type=\"image/x-icon\""
+      },
+      "title": "拷貝漫畫 - 海賊王 海贼王 哥布林殺手 哥布林杀手 漫畫 漫画 FGO FGO 東方 东方 艦娘 舰娘 同人志 本子 更新 全集 在綫漫畫 在线漫画 - 拷貝",
+      "parked": false,
+      "api": {
+        "status": 200,
+        "url": "https://www.copy20.com/api/v3/search/comic?q=%E6%B5%B7%E8%B4%BC%E7%8E%8B&limit=1&offset=0",
+        "type": "application/json",
+        "bytes_read": 90,
+        "seconds": 0.75,
+        "head": "{\"code\":200,\"message\":\"请求成功\",\"results\":{\"list\":[],\"total\":0,\"limit\":1,\"offset\":0}}"
+      }
+    },
+    "www.copymanga.tv": {
+      "root": {
+        "error": "URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+        "seconds": 10.01
+      },
+      "title": "",
+      "parked": false
+    },
+    "mangacopy.net": {
+      "root": {
+        "error": "RemoteDisconnected: Remote end closed connection without response",
+        "seconds": 2.72
+      },
+      "title": "",
+      "parked": false
+    },
+    "www.copy-manga.com": {
+      "root": {
+        "error": "URLError: <urlopen error [Errno -2] Name or service not known>",
+        "seconds": 0.03
+      },
+      "title": "",
+      "parked": false
+    },
+    "www.copymanga.fun": {
+      "root": {
+        "status": 200,
+        "url": "https://www.copymanga.fun/",
+        "type": "text/html; charset=utf-8",
+        "bytes_read": 400,
+        "seconds": 1.18,
+        "head": "   <!DOCTYPE html> <html lang=\"zh-hant\">  <head>   <meta charset=\"UTF-8\">   <link rel=\"icon\" href=\"https://s3.mangafunb.fun/static/free.ico\" type=\"image/x-icon\""
+      },
+      "title": "拷貝漫畫 - 海賊王 海贼王 哥布林殺手 哥布林杀手 漫畫 漫画 FGO FGO 東方 东方 艦娘 舰娘 同人志 本子 更新 全集 在綫漫畫 在线漫画 - 拷貝",
+      "parked": false,
+      "api": {
+        "status": 200,
+        "url": "https://www.copymanga.fun/api/v3/search/comic?q=%E6%B5%B7%E8%B4%BC%E7%8E%8B&limit=1&offset=0",
+        "type": "application/json",
+        "bytes_read": 90,
+        "seconds": 0.9,
+        "head": "{\"code\":200,\"message\":\"请求成功\",\"results\":{\"list\":[],\"total\":0,\"limit\":1,\"offset\":0}}"
+      }
+    },
+    "www.copymanga.xyz": {
+      "root": {
+        "error": "URLError: <urlopen error [Errno 104] Connection reset by peer>",
+        "seconds": 0.05
+      },
+      "title": "",
+      "parked": false
+    }
+  }
+}
