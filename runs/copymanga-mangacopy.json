@@ -1,10 +1,10 @@
 {
-  "utc": "2026-11-19T03:02:21Z",
+  "utc": "2026-11-19T03:03:27Z",
   "base": "https://www.mangacopy.com",
   "root": {
     "status": 200,
     "type": "text/html; charset=utf-8",
-    "seconds": 0.86
+    "seconds": 0.88
   },
   "title": "拷貝漫畫 - 海賊王 海贼王 哥布林殺手 哥布林杀手 漫畫 漫画 FGO FGO 東方 东方 艦娘 舰娘 同人志 本子 更新 全集 在綫漫畫 在线漫画 - 拷貝漫畫 拷贝漫画",
   "comic_links": [
@@ -23,7 +23,7 @@
   "search": {
     "status": 200,
     "type": "application/json",
-    "seconds": 0.78
+    "seconds": 0.82
   },
   "search_body": "{\"code\":200,\"message\":\"请求成功\",\"results\":{\"list\":[],\"total\":0,\"limit\":1,\"offset\":0}}",
   "path_word": "HAIBIANZHIYE",
@@ -50,7 +50,7 @@
   "chapter_page": {
     "status": 200,
     "type": "text/html; charset=utf-8",
-    "seconds": 0.76
+    "seconds": 0.83
   },
   "chapter_scripts": [
     "https://s3.mangafunb.fun/static/cdn/jquery.3.6.0.slim.min.js",

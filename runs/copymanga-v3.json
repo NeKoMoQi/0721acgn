@@ -1,0 +1,146 @@
+{
+  "utc": "2026-11-19T03:03:32Z",
+  "hosts": {
+    "www.copymanga.site": {
+      "root": {
+        "status": 200,
+        "type": "text/html",
+        "seconds": 0.12
+      },
+      "title": "Redirecting...",
+      "/api/v3/search/comic": {
+        "status": 200,
+        "type": "text/html",
+        "seconds": 0.1,
+        "head": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Redirecting...</title><styl",
+        "json": false
+      },
+      "/api/v3/comic2/HAIBIANZHIYE": {
+        "status": 200,
+        "type": "text/html",
+        "seconds": 0.1,
+        "head": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Redirecting...</title><styl",
+        "json": false
+      }
+    },
+    "copymanga.site": {
+      "root": {
+        "status": 200,
+        "type": "text/html",
+        "seconds": 0.1
+      },
+      "title": "Redirecting...",
+      "/api/v3/search/comic": {
+        "status": 200,
+        "type": "text/html",
+        "seconds": 0.13,
+        "head": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Redirecting...</title><styl",
+        "json": false
+      },
+      "/api/v3/comic2/HAIBIANZHIYE": {
+        "status": 200,
+        "type": "text/html",
+        "seconds": 0.08,
+        "head": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Redirecting...</title><styl",
+        "json": false
+      }
+    },
+    "www.copymanga.org": {
+      "root": {
+        "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+      },
+      "title": "",
+      "/api/v3/search/comic": {
+        "error": "URLError: <urlopen error [Errno 111] Connection refused>",
+        "head": "",
+        "json": false
+      },
+      "/api/v3/comic2/HAIBIANZHIYE": {
+        "error": "URLError: <urlopen error [Errno 111] Connection refused>",
+        "head": "",
+        "json": false
+      }
+    },
+    "www.copymanga.fun": {
+      "root": {
+        "status": 200,
+        "type": "text/html; charset=utf-8",
+        "seconds": 1.11
+      },
+      "title": "拷貝漫畫 - 海賊王 海贼王 哥布林殺手 哥布林杀手 漫畫 漫画 FGO FGO 東方 东方 艦娘 舰娘 同人志 本子 更新 全集 在綫漫畫 在线漫画 - 拷貝",
+      "/api/v3/search/comic": {
+        "status": 200,
+        "type": "application/json",
+        "seconds": 0.3,
+        "head": "{\"code\":200,\"message\":\"请求成功\",\"results\":{\"list\":[],\"total\":0,\"limit\":1,\"offset\":0}}",
+        "code": 200,
+        "total": 0,
+        "keys": [
+          "limit",
+          "list",
+          "offset",
+          "total"
+        ]
+      },
+      "/api/v3/comic2/HAIBIANZHIYE": {
+        "error": "HTTPError: HTTP Error 404: Not Found",
+        "head": "",
+        "json": false
+      }
+    },
+    "www.2026copy.com": {
+      "root": {
+        "status": 200,
+        "type": "text/html; charset=utf-8",
+        "seconds": 0.38
+      },
+      "title": "拷貝漫畫 - 海賊王 海贼王 哥布林殺手 哥布林杀手 漫畫 漫画 FGO FGO 東方 东方 艦娘 舰娘 同人志 本子 更新 全集 在綫漫畫 在线漫画 - 拷貝",
+      "/api/v3/search/comic": {
+        "status": 200,
+        "type": "application/json",
+        "seconds": 0.32,
+        "head": "{\"code\":200,\"message\":\"请求成功\",\"results\":{\"list\":[],\"total\":0,\"limit\":1,\"offset\":0}}",
+        "code": 200,
+        "total": 0,
+        "keys": [
+          "limit",
+          "list",
+          "offset",
+          "total"
+        ]
+      },
+      "/api/v3/comic2/HAIBIANZHIYE": {
+        "error": "HTTPError: HTTP Error 404: Not Found",
+        "head": "",
+        "json": false
+      }
+    },
+    "www.mangacopy.com": {
+      "root": {
+        "status": 200,
+        "type": "text/html; charset=utf-8",
+        "seconds": 0.3
+      },
+      "title": "拷貝漫畫 - 海賊王 海贼王 哥布林殺手 哥布林杀手 漫畫 漫画 FGO FGO 東方 东方 艦娘 舰娘 同人志 本子 更新 全集 在綫漫畫 在线漫画 - 拷貝",
+      "/api/v3/search/comic": {
+        "status": 200,
+        "type": "application/json",
+        "seconds": 0.82,
+        "head": "{\"code\":200,\"message\":\"请求成功\",\"results\":{\"list\":[],\"total\":0,\"limit\":1,\"offset\":0}}",
+        "code": 200,
+        "total": 0,
+        "keys": [
+          "limit",
+          "list",
+          "offset",
+          "total"
+        ]
+      },
+      "/api/v3/comic2/HAIBIANZHIYE": {
+        "error": "HTTPError: HTTP Error 404: Not Found",
+        "head": "",
+        "json": false
+      }
+    }
+  }
+}
