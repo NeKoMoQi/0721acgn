@@ -47,7 +47,7 @@ def main():
             state['mapped'][row['path_word']] = {'comicid': row['comicid'], 'have': int(have or 0)}
         cur.execute('SHOW TABLES LIKE "tb_copymanga_queue"')
         if cur.fetchone():
-            cur.execute('SELECT path_word, state, status, chapters_total, chapters_imported FROM tb_copymanga_queue')
+            cur.execute('SELECT path_word, state, status, chapters_total, chapters_imported, updated_at FROM tb_copymanga_queue')
             for row in cur.fetchall():
                 state['queued'][row['path_word']] = row['state']
                 state['queue'].append(row)

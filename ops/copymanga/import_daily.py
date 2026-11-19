@@ -147,12 +147,15 @@ def main():
                                VALUES(%s,%s,%s,%s)""", (pw, ch['uuid'], chapterid, len(rows)))
                 imported += 1
 
-            cur.execute('SELECT COUNT(*) AS c FROM tb_copymanga_chapter_map WHERE path_word=%s', (pw,))
-            mapped_chapters = int(cur.fetchone()['c'])
+            # 旧章节没有映射记录，用本作品最大话数作为已导入话数
+            cur.execute('SELECT COALESCE(MAX(chapterno),0) AS mx FROM tb_cartoonchapters WHERE comicid=%s',
+                        (comicid,))
+            mapped_chapters = int(cur.fetchone()['mx'] or 0)
             cur.execute('UPDATE tb_cartoons SET status=%s, chaptercount=%s, updated_at=NOW() WHERE comicid=%s',
                         (status, str(mapped_chapters), comicid))
 
-            state = 'done' if status == '完结' and mapped_chapters >= total else 'imported'
+            # 完结作品只做一次性补齐，之后退出每日追更队列（不再自动更新）
+            state = 'done' if status == '完结' else 'imported'
             cur.execute("""INSERT INTO tb_copymanga_queue(path_word,comicid,title,status,rank_today,state,
                              chapters_total,chapters_imported)
                            VALUES(%s,%s,%s,%s,%s,%s,%s,%s)

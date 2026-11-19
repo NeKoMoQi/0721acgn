@@ -64,9 +64,10 @@ def main():
         have = mapped.get(pw, {}).get('have', q.get('chapters_imported') or 0)
         updates.append({'rank': None, 'path_word': pw, 'title': q.get('title') or '',
                         'action': 'update', 'comicid': q.get('comicid'), 'status': q.get('status'),
-                        'remaining': remaining, 'start': int(have) + 1})
+                        'remaining': remaining, 'updated_at': str(q.get('updated_at') or ''),
+                        'start': int(have) + 1})
     # 完结未补齐优先，其次连载中；每天最多 update-limit 部
-    updates.sort(key=lambda u: (u.get('status') != '完结', u.get('remaining', 0)))
+    updates.sort(key=lambda u: u.get('updated_at') or '')
     updates = updates[:args.update_limit]
     for u in updates:
         queued[u['path_word']] = queued.get(u['path_word'], 'update')
