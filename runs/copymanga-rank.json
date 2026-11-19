@@ -1,0 +1,102 @@
+{
+  "utc": "2026-11-19T03:28:26Z",
+  "count": 50,
+  "probe": {
+    "/rank": {
+      "count": 50,
+      "url": "https://www.mangacopy.com/rank",
+      "sample": [
+        {
+          "path_word": "naoodngxueshenghui",
+          "title": "",
+          "url": "https://www.mangacopy.com/comic/naoodngxueshenghui",
+          "rank": 1
+        },
+        {
+          "path_word": "yjxlzyszhfcwjdymytdmdhdfzwmbzwybzydhxq",
+          "title": "",
+          "url": "https://www.mangacopy.com/comic/yjxlzyszhfcwjdymytdmdhdfzwmbzwybzydhxq",
+          "rank": 2
+        },
+        {
+          "path_word": "guichuyinxiong",
+          "title": "",
+          "url": "https://www.mangacopy.com/comic/guichuyinxiong",
+          "rank": 3
+        }
+      ]
+    },
+    "/rank/all": {
+      "count": 0,
+      "url": "https://www.mangacopy.com/rank/all",
+      "sample": []
+    },
+    "/rank/0": {
+      "count": 0,
+      "url": "https://www.mangacopy.com/rank/0",
+      "sample": []
+    }
+  },
+  "items": [
+    {
+      "path_word": "naoodngxueshenghui",
+      "title": "",
+      "url": "https://www.mangacopy.com/comic/naoodngxueshenghui",
+      "rank": 1
+    },
+    {
+      "path_word": "yjxlzyszhfcwjdymytdmdhdfzwmbzwybzydhxq",
+      "title": "",
+      "url": "https://www.mangacopy.com/comic/yjxlzyszhfcwjdymytdmdhdfzwmbzwybzydhxq",
+      "rank": 2
+    },
+    {
+      "path_word": "guichuyinxiong",
+      "title": "",
+      "url": "https://www.mangacopy.com/comic/guichuyinxiong",
+      "rank": 3
+    },
+    {
+      "path_word": "hougongkaizailihunshi",
+      "title": "",
+      "url": "https://www.mangacopy.com/comic/hougongkaizailihunshi",
+      "rank": 4
+    },
+    {
+      "path_word": "bzfdzszqsyyxzskws",
+      "title": "",
+      "url": "https://www.mangacopy.com/comic/bzfdzszqsyyxzskws",
+      "rank": 5
+    },
+    {
+      "path_word": "xsjzmwls",
+      "title": "",
+      "url": "https://www.mangacopy.com/comic/xsjzmwls",
+      "rank": 6
+    },
+    {
+      "path_word": "modujingbingdenuli",
+      "title": "",
+      "url": "https://www.mangacopy.com/comic/modujingbingdenuli",
+      "rank": 7
+    },
+    {
+      "path_word": "xihuanlaizhebujudeni",
+      "title": "",
+      "url": "https://www.mangacopy.com/comic/xihuanlaizhebujudeni",
+      "rank": 8
+    },
+    {
+      "path_word": "monanayi",
+      "title": "",
+      "url": "https://www.mangacopy.com/comic/monanayi",
+      "rank": 9
+    },
+    {
+      "path_word": "gujiantongxueyoujiaoliuzhangaizheng",
+      "title": "",
+      "url": "https://www.mangacopy.com/comic/gujiantongxueyoujiaoliuzhangaizheng",
+      "rank": 10
+    }
+  ]
+}
