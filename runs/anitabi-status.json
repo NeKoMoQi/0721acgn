@@ -1,8 +1,10 @@
 {
-  "utc": "2026-11-18T09:06:47Z",
-  "mode": "links",
-  "works": 18,
-  "points": 251,
-  "failed_ids": [],
-  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/44272820556"
+  "utc": "2026-11-19T00:41:42Z",
+  "mode": "oss",
+  "works": 0,
+  "points": 0,
+  "failed_ids": [
+    188412
+  ],
+  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/44431002922"
 }
