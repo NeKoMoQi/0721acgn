@@ -1,10 +1,10 @@
 {
-  "utc": "2026-11-19T03:01:03Z",
+  "utc": "2026-11-19T03:02:21Z",
   "base": "https://www.mangacopy.com",
   "root": {
     "status": 200,
     "type": "text/html; charset=utf-8",
-    "seconds": 1.11
+    "seconds": 0.86
   },
   "title": "拷貝漫畫 - 海賊王 海贼王 哥布林殺手 哥布林杀手 漫畫 漫画 FGO FGO 東方 东方 艦娘 舰娘 同人志 本子 更新 全集 在綫漫畫 在线漫画 - 拷貝漫畫 拷贝漫画",
   "comic_links": [
@@ -23,7 +23,7 @@
   "search": {
     "status": 200,
     "type": "application/json",
-    "seconds": 0.42
+    "seconds": 0.78
   },
   "search_body": "{\"code\":200,\"message\":\"请求成功\",\"results\":{\"list\":[],\"total\":0,\"limit\":1,\"offset\":0}}",
   "path_word": "HAIBIANZHIYE",
@@ -43,5 +43,34 @@
       "head": "",
       "json": false
     }
-  }
+  },
+  "chapter_links": [
+    "/comic/HAIBIANZHIYE/chapter/a65853ec-8f6a-11ed-8ca4-024352452ce0"
+  ],
+  "chapter_page": {
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "seconds": 0.76
+  },
+  "chapter_scripts": [
+    "https://s3.mangafunb.fun/static/cdn/jquery.3.6.0.slim.min.js",
+    "https://s3.mangafunb.fun/static/websitefree/js20190704/public20251212.js",
+    "https://s3.mangafunb.fun/static/websitefree/js20190704/http_request.js",
+    "https://www.googletagmanager.com/gtag/js?id=G-SS4LL7K6CL",
+    "https://s3.mangafunb.fun/static/cdn/lazysizes.5.3.2.min.js",
+    "https://s3.mangafunb.fun/static/cdn/bootstrap.4.3.1.min.js",
+    "https://s3.mangafunb.fun/static/websitefree/js20190704/seek_util202103241830.js",
+    "https://s3.mangafunb.fun/static/websitefree/js20190704/bundle202002131913.js",
+    "https://s3.mangafunb.fun/static/websitefree/js20190704/comic_content_pass202508141534.js"
+  ],
+  "chapter_inline": [
+    "$(\".loginOut\").click(function () {\n    var token = \"\";\n    var strCookie = document.cookie; //將多cookie切割爲多個名/值對\n    var arrCookie = strCookie.split(\"; \");\n    for (var i = 0; i < arrCookie.length; i++) {\n      var arr = arrCookie[i].split(\"=\");\n      if (\"token\" == arr[0]) {\n        token = arr[1];\n        break;\n      }\n    }\n    request({\n      type: \"POST\",\n      timeout: 10000, // 超時時間 10 秒\n      headers: {\n        \"Authorization\": \"Token \" + token\n      },\n      url: API_URL + \"/api/v1/logout\",\n      success: function (res) {\n        window.location.reload(true);\n      },\n      error: fun"
+  ],
+  "chapter_imgs": [
+    "https://s3.mangafunb.fun/static/ads/tsugumomo800_130.jpg"
+  ],
+  "chapter_api_hits": [
+    "/api/v1/logout"
+  ],
+  "c3_hits": []
 }
