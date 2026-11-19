@@ -223,6 +223,34 @@ Get-ScheduledTaskInfo -TaskName '0721ACGN Anitabi Crawler'
 
 注意：服务器仍访问不了该站，采集只能在 Actions 跑；服务器只做入库。
 
+## 拷贝漫画自动选品/追更（2026-11-19）
+
+流水线（服务器只做状态与入库，采集全部在 Actions）：
+
+1. **04:00 服务器** `0721ACGN Copymanga State` → `run-daily.ps1 -Mode state` → 导出 `copymanga/state.json`（已入库 path_word、队列状态、站内标题别名）。
+2. **04:30 Actions** `copymanga-daily`：
+   - `scan_rank.py` 扫排行榜（当前 `/rank` 50 条，写 `copymanga/rank/latest.json`）；
+   - `pick_daily.py` 从榜首往下，跳过已入库/队列中的作品，按标题别名判断是新建还是补库；每天最多 5 部新作品，另外把队列里「连载中」和「完结未补齐」的作品列为追更；
+   - `crawl_plan.py` 逐部调 `crawl_selenium.py`，每部每天最多 20 章（分批），图片直传 OSS，manifest 断点续跑。
+3. **07:30 服务器** `0721ACGN Copymanga Import` → `run-daily.ps1 -Mode import` → 读 manifest 入库，更新 `tb_copymanga_queue`、`tb_copymanga_daily`、`tb_cartoons` 的连载状态/章节数，然后刷新 state。
+
+表：
+
+- `tb_copymanga_queue`：path_word、comicid、title、status、rank_today、state(planned/crawling/imported/done)、chapters_total/imported。
+- `tb_copymanga_daily`：day、rank_today、path_word、title、action(new/fill/update)、result、chapters_imported、chapters_remaining —— 当天选了谁、补位到谁、还差多少话都在这查。
+- 建表脚本 `ops/copymanga/schema_mysql.sql`（导入器会自动建）。
+
+去重：`tb_copymanga_map` 按来源 path_word 唯一；`pick_daily` 还会把候选标题与 `tb_cartoons` 现有标题归一化比对，命中则走补库（fill），不会换个译名重复建条目。
+
+已验证（2026-11-19）：
+
+- 排行榜扫描 50 条；选品跳过已在队列的第 1 名，取第 2 名 + 2 部追更；
+- `naoodngxueshenghui`《腦洞學生會》采集第 1 章并入库：comicid=41、status=连载中、1/222 话；
+- 《海邊之夜》追更第 2 章并入库（完结作品进入补齐队列，剩 101 话）；
+- 两个服务器任务实测 exit 0。
+
+**未完成**：站内原有 39 部的自动匹配（站点搜索框在无头浏览器里没有跳转到结果页，搜索路由还在探测）；目前只有《海邊之夜》手工建了映射，其余 38 部待匹配后设为补库目标。
+
 ## 已知问题
 
 

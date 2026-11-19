@@ -54,7 +54,11 @@ def main():
     updates = []
     for q in (state.get('queue') or []):
         pw = q.get('path_word')
-        if not pw or q.get('status') != '连载中' or q.get('state') == 'done':
+        if not pw or q.get('state') == 'done':
+            continue
+        remaining = int(q.get('chapters_total') or 0) - int(q.get('chapters_imported') or 0)
+        # 连载中一直追更；完结但还没补齐的也继续（一次性补齐队列）
+        if q.get('status') != '连载中' and remaining <= 0:
             continue
         have = mapped.get(pw, {}).get('have', q.get('chapters_imported') or 0)
         updates.append({'rank': None, 'path_word': pw, 'title': q.get('title') or '',

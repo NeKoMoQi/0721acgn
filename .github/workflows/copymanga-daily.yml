@@ -49,13 +49,13 @@ jobs:
 
       - name: Pick today's works
         run: |
-          LIMIT=${LIMIT:-1}   # 首轮验证用 1，跑通后改回 5
+          LIMIT=${LIMIT:-5}
           python ops/copymanga/pick_daily.py --top "${TOP_N:-100}" --limit "$LIMIT" | tee pick.log
         continue-on-error: true
 
       - name: Crawl planned works (batched)
         run: |
-          BUDGET=${BUDGET:-1}  # 首轮验证用 1，跑通后改回 20
+          BUDGET=${BUDGET:-20}
           python ops/copymanga/crawl_plan.py --budget "$BUDGET" | tee crawl.log
         continue-on-error: true
 
