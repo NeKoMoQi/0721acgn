@@ -1,13 +1,13 @@
 {
-  "utc": "2026-11-18T09:48:49Z",
+  "utc": "2026-11-19T01:39:56Z",
   "subject": 188412,
-  "egress_ip": "20.171.39.54",
+  "egress_ip": "134.138.41.6",
   "lite": {
     "status": 200,
     "type": "application/json; charset=utf-8",
-    "cf_ray": "a5c60fca6b0f687a-LAX",
+    "cf_ray": "a5cb810c9ec0cf6c-ATL",
     "server": "cloudflare",
-    "seconds": 0.25,
+    "seconds": 0.49,
     "bytes": 2643,
     "json_keys": [
       "city",
@@ -27,27 +27,27 @@
   "points": {
     "status": 200,
     "type": "application/json; charset=utf-8",
-    "cf_ray": "a5c60fcb5dad687a-LAX",
+    "cf_ray": "a5cb810d6a10cf6c-ATL",
     "server": "cloudflare",
-    "seconds": 0.1,
+    "seconds": 0.11,
     "bytes": 2391,
     "json_keys": "list"
   },
   "cover": {
     "status": 200,
     "type": "image/jpeg",
-    "cf_ray": "a5c60fcdb980cc9f-LAX",
+    "cf_ray": "a5cb8110eb24217c-ATL",
     "server": "cloudflare",
-    "seconds": 0.24,
+    "seconds": 0.32,
     "bytes": 30175,
     "image_magic": "ffd8ffe000104a46"
   },
   "point_image": {
     "status": 200,
     "type": "image/jpeg",
-    "cf_ray": "a5c60fce7ad8cc9f-LAX",
+    "cf_ray": "a5cb81119d96217c-ATL",
     "server": "cloudflare",
-    "seconds": 16.26,
+    "seconds": 0.03,
     "bytes": 34894,
     "image_magic": "ffd8ffe000104a46"
   },
@@ -130,51 +130,39 @@
     }
   },
   "api_ok": true,
-  "image_timing": [
-    {
-      "status": 200,
-      "bytes": 34894,
-      "seconds": 0.03
+  "catalog": {
+    "/bangumi?limit=1&offset=0": {
+      "status": 403,
+      "type": "text/html; charset=UTF-8",
+      "body": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if I"
     },
-    {
-      "status": 200,
-      "bytes": 34894,
-      "seconds": 0.02
+    "/bangumi?order=update&limit=1&offset=0": {
+      "status": 403,
+      "type": "text/html; charset=UTF-8",
+      "body": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if I"
     },
-    {
-      "status": 200,
-      "bytes": 34894,
-      "seconds": 0.04
+    "/bangumi/search?keyword=&limit=1&offset=0": {
+      "status": 403,
+      "type": "text/html; charset=UTF-8",
+      "body": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if I"
     },
-    {
-      "status": 200,
-      "bytes": 34894,
-      "seconds": 0.02
+    "/bangumi/search?keyword=%E5%90%9B%E3%81%AE%E5%90%8D&limit=1&offset=0": {
+      "status": 403,
+      "type": "text/plain;charset=UTF-8",
+      "body": ""
     },
-    {
-      "status": 200,
-      "bytes": 34894,
-      "seconds": 0.02
-    },
-    {
-      "status": 200,
-      "bytes": 34894,
-      "seconds": 0.02
-    },
-    {
-      "status": 200,
-      "bytes": 34894,
-      "seconds": 0.02
-    },
-    {
-      "status": 200,
-      "bytes": 34894,
-      "seconds": 0.02
+    "/bangumi/search2?keyword=&limit=1&offset=0": {
+      "status": 403,
+      "type": "text/html; charset=UTF-8",
+      "body": "<!DOCTYPE html> <!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]--> <!--[if I"
     }
-  ],
+  },
+  "image_timing": {
+    "error": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
+  },
   "crawler": {
     "exit": 1,
-    "tail": "2026-11-18 09:49:14,847 ERROR id=188412 HTTP 403\n",
+    "tail": "2026-11-19 01:40:03,654 ERROR id=188412 HTTP 403\n",
     "point_rows": 0,
     "images": 0
   }
