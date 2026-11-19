@@ -1,0 +1,254 @@
+{
+  "utc": "2026-11-19T03:47:44Z",
+  "routes": {
+    "/search?keyword=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85": {
+      "error": "UnexpectedAlertPresentException: Alert Text: undefined\nMessage: unexpected alert open: {Alert text : undefined}\n  (Session info: chrome=157.0.8103.50)\nStacktrace:\n#0 0x632ea8ec959a <unknown>\n#1 0x632ea87ff0b5 <unknown>\n#2 0x632ea8880bc2 <unknown>\n#3 0x632ea883b4d7 <unknown>\n#4 0x632ea883a7ee <unknown>\n#5 0x632ea883b2c1 <unknown>\n#6 0x632ea8e8c47c <unknown>\n#7 0x632ea8e8acaf <unknown>\n#8 0x632ea8e75b25 <unknown>\n#9 0x632ea8e8b8ea <unknown>\n#10 0x632ea8e5d959 <unknown>\n#11 0x632ea8eb3ff8 <unknown>\n#12 0x632ea8eb4195 <unknown>\n#13 0x632ea8ec7f03 <unknown>\n#14 0x7457fe6abe6b <unknown>\n#15 0x7457fe73f55c <unknown>\n"
+    },
+    "/search?q=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85": {
+      "url": "https://www.mangacopy.com/search?q=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85",
+      "count": 12,
+      "pages": [],
+      "keyword_present": true,
+      "sample": [
+        {
+          "path_word": "monvzhilv",
+          "title": "",
+          "href": "/comic/monvzhilv"
+        },
+        {
+          "path_word": "monvzhilvdeqidian",
+          "title": "",
+          "href": "/comic/monvzhilvdeqidian"
+        },
+        {
+          "path_word": "zhongyemonvdeshijiezhilv",
+          "title": "",
+          "href": "/comic/zhongyemonvdeshijiezhilv"
+        },
+        {
+          "path_word": "jingduzhilv",
+          "title": "",
+          "href": "/comic/jingduzhilv"
+        },
+        {
+          "path_word": "xingchenzhilv",
+          "title": "",
+          "href": "/comic/xingchenzhilv"
+        }
+      ]
+    },
+    "/search?key=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85": {
+      "error": "UnexpectedAlertPresentException: Alert Text: undefined\nMessage: unexpected alert open: {Alert text : undefined}\n  (Session info: chrome=157.0.8103.50)\nStacktrace:\n#0 0x632ea8ec959a <unknown>\n#1 0x632ea87ff0b5 <unknown>\n#2 0x632ea8880bc2 <unknown>\n#3 0x632ea883b4d7 <unknown>\n#4 0x632ea883a7ee <unknown>\n#5 0x632ea883b2c1 <unknown>\n#6 0x632ea8e8c47c <unknown>\n#7 0x632ea8e8acaf <unknown>\n#8 0x632ea8e75b25 <unknown>\n#9 0x632ea8e8b8ea <unknown>\n#10 0x632ea8e5d959 <unknown>\n#11 0x632ea8eb3ff8 <unknown>\n#12 0x632ea8eb4195 <unknown>\n#13 0x632ea8ec7f03 <unknown>\n#14 0x7457fe6abe6b <unknown>\n#15 0x7457fe73f55c <unknown>\n"
+    },
+    "/search?word=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85": {
+      "error": "UnexpectedAlertPresentException: Alert Text: undefined\nMessage: unexpected alert open: {Alert text : undefined}\n  (Session info: chrome=157.0.8103.50)\nStacktrace:\n#0 0x632ea8ec959a <unknown>\n#1 0x632ea87ff0b5 <unknown>\n#2 0x632ea8880bc2 <unknown>\n#3 0x632ea883b4d7 <unknown>\n#4 0x632ea883a7ee <unknown>\n#5 0x632ea883b2c1 <unknown>\n#6 0x632ea8e8c47c <unknown>\n#7 0x632ea8e8acaf <unknown>\n#8 0x632ea8e75b25 <unknown>\n#9 0x632ea8e8b8ea <unknown>\n#10 0x632ea8e5d959 <unknown>\n#11 0x632ea8eb3ff8 <unknown>\n#12 0x632ea8eb4195 <unknown>\n#13 0x632ea8ec7f03 <unknown>\n#14 0x7457fe6abe6b <unknown>\n#15 0x7457fe73f55c <unknown>\n"
+    },
+    "/comics?keyword=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85": {
+      "url": "https://www.mangacopy.com/comics?keyword=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85",
+      "count": 62,
+      "pages": [],
+      "keyword_present": false,
+      "sample": [
+        {
+          "path_word": "pingchengyuzhaihuiyilu",
+          "title": "感動完結！",
+          "href": "/comic/pingchengyuzhaihuiyilu"
+        },
+        {
+          "path_word": "hunhuan",
+          "title": "動畫化！",
+          "href": "/comic/hunhuan"
+        },
+        {
+          "path_word": "lianhouyujia",
+          "title": "高三女生和高一男生在同一屋簷下——",
+          "href": "/comic/lianhouyujia"
+        },
+        {
+          "path_word": "weizhuangbanrenma",
+          "title": "騎乘之主作者新連載、少年與獨角獸合體！",
+          "href": "/comic/weizhuangbanrenma"
+        },
+        {
+          "path_word": "yuekanshaonvyeqijun",
+          "title": "月刊少女野崎君",
+          "href": "/comic/yuekanshaonvyeqijun"
+        }
+      ]
+    },
+    "/comics?search=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85": {
+      "url": "https://www.mangacopy.com/comics?search=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85",
+      "count": 62,
+      "pages": [],
+      "keyword_present": false,
+      "sample": [
+        {
+          "path_word": "pingchengyuzhaihuiyilu",
+          "title": "感動完結！",
+          "href": "/comic/pingchengyuzhaihuiyilu"
+        },
+        {
+          "path_word": "hunhuan",
+          "title": "動畫化！",
+          "href": "/comic/hunhuan"
+        },
+        {
+          "path_word": "lianhouyujia",
+          "title": "高三女生和高一男生在同一屋簷下——",
+          "href": "/comic/lianhouyujia"
+        },
+        {
+          "path_word": "weizhuangbanrenma",
+          "title": "騎乘之主作者新連載、少年與獨角獸合體！",
+          "href": "/comic/weizhuangbanrenma"
+        },
+        {
+          "path_word": "yuekanshaonvyeqijun",
+          "title": "月刊少女野崎君",
+          "href": "/comic/yuekanshaonvyeqijun"
+        }
+      ]
+    },
+    "/comics?q=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85": {
+      "url": "https://www.mangacopy.com/comics?q=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85",
+      "count": 62,
+      "pages": [],
+      "keyword_present": false,
+      "sample": [
+        {
+          "path_word": "pingchengyuzhaihuiyilu",
+          "title": "感動完結！",
+          "href": "/comic/pingchengyuzhaihuiyilu"
+        },
+        {
+          "path_word": "hunhuan",
+          "title": "動畫化！",
+          "href": "/comic/hunhuan"
+        },
+        {
+          "path_word": "lianhouyujia",
+          "title": "高三女生和高一男生在同一屋簷下——",
+          "href": "/comic/lianhouyujia"
+        },
+        {
+          "path_word": "weizhuangbanrenma",
+          "title": "騎乘之主作者新連載、少年與獨角獸合體！",
+          "href": "/comic/weizhuangbanrenma"
+        },
+        {
+          "path_word": "yuekanshaonvyeqijun",
+          "title": "月刊少女野崎君",
+          "href": "/comic/yuekanshaonvyeqijun"
+        }
+      ]
+    },
+    "/comics?theme=aiqing": {
+      "url": "https://www.mangacopy.com/comics?theme=aiqing",
+      "count": 61,
+      "pages": [],
+      "keyword_present": false,
+      "sample": [
+        {
+          "path_word": "pingchengyuzhaihuiyilu",
+          "title": "感動完結！",
+          "href": "/comic/pingchengyuzhaihuiyilu"
+        },
+        {
+          "path_word": "hunhuan",
+          "title": "動畫化！",
+          "href": "/comic/hunhuan"
+        },
+        {
+          "path_word": "lianhouyujia",
+          "title": "高三女生和高一男生在同一屋簷下——",
+          "href": "/comic/lianhouyujia"
+        },
+        {
+          "path_word": "weizhuangbanrenma",
+          "title": "騎乘之主作者新連載、少年與獨角獸合體！",
+          "href": "/comic/weizhuangbanrenma"
+        },
+        {
+          "path_word": "yuekanshaonvyeqijun",
+          "title": "月刊少女野崎君",
+          "href": "/comic/yuekanshaonvyeqijun"
+        }
+      ]
+    },
+    "/comics": {
+      "url": "https://www.mangacopy.com/comics",
+      "count": 62,
+      "pages": [],
+      "keyword_present": false,
+      "sample": [
+        {
+          "path_word": "pingchengyuzhaihuiyilu",
+          "title": "感動完結！",
+          "href": "/comic/pingchengyuzhaihuiyilu"
+        },
+        {
+          "path_word": "hunhuan",
+          "title": "動畫化！",
+          "href": "/comic/hunhuan"
+        },
+        {
+          "path_word": "lianhouyujia",
+          "title": "高三女生和高一男生在同一屋簷下——",
+          "href": "/comic/lianhouyujia"
+        },
+        {
+          "path_word": "weizhuangbanrenma",
+          "title": "騎乘之主作者新連載、少年與獨角獸合體！",
+          "href": "/comic/weizhuangbanrenma"
+        },
+        {
+          "path_word": "yuekanshaonvyeqijun",
+          "title": "月刊少女野崎君",
+          "href": "/comic/yuekanshaonvyeqijun"
+        }
+      ]
+    },
+    "/filter": {
+      "url": "https://www.mangacopy.com/filter",
+      "count": 0,
+      "pages": [],
+      "keyword_present": false,
+      "sample": []
+    },
+    "/rank": {
+      "url": "https://www.mangacopy.com/rank",
+      "count": 50,
+      "pages": [],
+      "keyword_present": false,
+      "sample": [
+        {
+          "path_word": "naoodngxueshenghui",
+          "title": "腦洞學生會 作者： むちまろ 1699.8W",
+          "href": "/comic/naoodngxueshenghui"
+        },
+        {
+          "path_word": "yjxlzyszhfcwjdymytdmdhdfzwmbzwybzydhxq",
+          "title": "一覺醒來坐擁神裝和飛船，我決定以買一套獨門獨戶的房子為目標作為傭兵自由地活下去 ",
+          "href": "/comic/yjxlzyszhfcwjdymytdmdhdfzwmbzwybzydhxq"
+        },
+        {
+          "path_word": "guichuyinxiong",
+          "title": "鬼畜英雄 作者： よのき 4326.5W",
+          "href": "/comic/guichuyinxiong"
+        },
+        {
+          "path_word": "hougongkaizailihunshi",
+          "title": "後宮開在離婚時 作者： 稻叶みのり 1117.2W",
+          "href": "/comic/hougongkaizailihunshi"
+        },
+        {
+          "path_word": "bzfdzszqsyyxzskws",
+          "title": "被追放的轉生重騎士用遊戲知識開無雙 作者： 猫子 等2位 1489.9W",
+          "href": "/comic/bzfdzszqsyyxzskws"
+        }
+      ]
+    }
+  },
+  "forms": [],
+  "search_inputs": []
+}
