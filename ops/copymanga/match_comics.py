@@ -128,6 +128,14 @@ def comic_meta(driver, path_word):
 
 
 def main():
+    aliases = {}
+    alias_file = ROOT / 'ops' / 'copymanga' / 'aliases.tsv'
+    if alias_file.is_file():
+        for line in alias_file.read_text(encoding='utf-8-sig').splitlines():
+            parts = [x.strip() for x in line.split('\t') if x.strip()]
+            if len(parts) >= 2 and parts[0].isdigit():
+                aliases[int(parts[0])] = parts[1:]
+
     rows = []
     for line in (ROOT / 'ops' / 'copymanga' / 'site_comics.tsv').read_text(encoding='utf-8-sig').splitlines():
         parts = line.split('\t')
@@ -144,8 +152,9 @@ def main():
             entry.update({'path_word': '', 'matched_title': '', 'score': 0.0,
                           'status': '未匹配', 'source_chapters': 0})
             try:
+                queries = variants(row['name']) + aliases.get(row['comicid'], [])
                 paths = []
-                for query in variants(row['name']):
+                for query in queries:
                     for pw in search_paths(driver, query):
                         if pw not in paths:
                             paths.append(pw)

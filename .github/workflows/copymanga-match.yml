@@ -9,6 +9,7 @@ on:
       - 'ops/copymanga/match_comics.py'
       - 'ops/copymanga/probe_search.py'
       - 'ops/copymanga/site_comics.tsv'
+      - 'ops/copymanga/aliases.tsv'
 
 permissions:
   contents: write
