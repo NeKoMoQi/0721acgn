@@ -1,0 +1,61 @@
+{
+  "utc": "2026-11-19T02:13:33Z",
+  "base": "https://www.2026copy.com",
+  "path_word": "pingchengyuzhaihuiyilu",
+  "page": {
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "seconds": 0.38
+  },
+  "chapter_links": [
+    "/comic/pingchengyuzhaihuiyilu/chapter/59d5a8e2-54dc-11ef-a501-3f487b7d9a9a"
+  ],
+  "chapter_links_any": [
+    "#",
+    "/",
+    "//cdn.bootcdn.net",
+    "//stats.g.doubleclick.net",
+    "//www.google-analytics.com",
+    "//www.googletagmanager.com",
+    "/author/yixuzhidao/comics",
+    "/comic/pingchengyuzhaihuiyilu/chapter/59d5a8e2-54dc-11ef-a501-3f487b7d9a9a",
+    "/comics",
+    "/comics?theme=aiqing",
+    "/comics?theme=qihuan",
+    "/download",
+    "/filter",
+    "/rank",
+    "/topic",
+    "/web/login?jumpto=https%3A//www.2026copy.com/web/person/uploadComic",
+    "/web/login?url=person/home",
+    "https://s3.mangafunb.fun/static/cdn/bootstrap.4.3.1.min.css",
+    "https://s3.mangafunb.fun/static/free.ico",
+    "https://s3.mangafunb.fun/static/websitefree/css/comic_detail20210219.css",
+    "https://s3.mangafunb.fun/static/websitefree/css/public20260309.css",
+    "https://www.manga2026.xyz/cartoon/nandekokonisenseiga#utm_source=bk_detail"
+  ],
+  "img_attrs": [
+    "https://s3.mangafunb.fun/static/ads/ishuzokureviewers220_100.jpg",
+    "https://sp.mangafunb.fun/p/pingchengyuzhaihuiyilu/cover/1794555593.jpg.328x422.jpg"
+  ],
+  "forms": [],
+  "inline_api": [
+    "/api/v1/logout"
+  ],
+  "chapter_page": {
+    "url": "https://www.2026copy.com/comic/pingchengyuzhaihuiyilu/chapter/59d5a8e2-54dc-11ef-a501-3f487b7d9a9a",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "seconds": 0.38
+  },
+  "chapter_imgs": [
+    "https://s3.mangafunb.fun/static/ads/tsugumomo800_130.jpg"
+  ],
+  "chapter_img_count": 1,
+  "chapter_inline_js": [
+    [
+      "cct",
+      "0p0zzpvv.nmn.oop"
+    ]
+  ]
+}
