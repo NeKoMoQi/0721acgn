@@ -1,0 +1,52 @@
+{
+  "utc": "2026-11-19T02:11:26Z",
+  "base": "https://www.2026copy.com",
+  "search": [
+    {
+      "params": {
+        "q": "出包王女",
+        "limit": 1,
+        "offset": 0
+      },
+      "status": 200,
+      "seconds": 2.53,
+      "code": 200,
+      "results": {
+        "list": [],
+        "total": 0,
+        "limit": 1,
+        "offset": 0
+      }
+    },
+    {
+      "params": {
+        "q": "出包王女",
+        "limit": 1,
+        "offset": 0,
+        "platform": 1
+      },
+      "status": 200,
+      "seconds": 0.9,
+      "code": 200,
+      "results": {
+        "list": [],
+        "total": 0,
+        "limit": 1,
+        "offset": 0
+      }
+    }
+  ],
+  "homepage_comic_links": [
+    "pingchengyuzhaihuiyilu",
+    "pingchengyuzhaihuiyilu",
+    "lianhouyujia",
+    "lianhouyujia",
+    "hunhuan"
+  ],
+  "path_word": "pingchengyuzhaihuiyilu",
+  "comic2": {
+    "error": "HTTPError: HTTP Error 404: Not Found"
+  },
+  "group": null,
+  "ok": false
+}
