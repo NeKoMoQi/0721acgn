@@ -30,6 +30,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--top', type=int, default=100)
     p.add_argument('--limit', type=int, default=5)
+    p.add_argument('--update-limit', type=int, default=10)
     p.add_argument('--state', default='copymanga/state.json')
     p.add_argument('--rank', default='copymanga/rank/latest.json')
     p.add_argument('--out', default='copymanga/plan/latest.json')
@@ -62,8 +63,11 @@ def main():
             continue
         have = mapped.get(pw, {}).get('have', q.get('chapters_imported') or 0)
         updates.append({'rank': None, 'path_word': pw, 'title': q.get('title') or '',
-                        'action': 'update', 'comicid': q.get('comicid'),
-                        'start': int(have) + 1})
+                        'action': 'update', 'comicid': q.get('comicid'), 'status': q.get('status'),
+                        'remaining': remaining, 'start': int(have) + 1})
+    # 完结未补齐优先，其次连载中；每天最多 update-limit 部
+    updates.sort(key=lambda u: (u.get('status') != '完结', u.get('remaining', 0)))
+    updates = updates[:args.update_limit]
     for u in updates:
         queued[u['path_word']] = queued.get(u['path_word'], 'update')
 
