@@ -1,0 +1,42 @@
+name: copymanga-api-probe
+
+# 从 Actions 出口确认拷贝漫画 API 结构（搜索 → 详情 → 目录 → 章节 → 图片）。
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/copymanga-api.yml'
+      - 'ops/copymanga/probe_api.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: copymanga-api-probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      COPY_BASE: ${{ github.event.inputs.base || 'https://www.2026copy.com' }}
+      COPY_TOKEN: ${{ secrets.COPY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Probe API
+        run: python ops/copymanga/probe_api.py
+        continue-on-error: true
+      - name: Commit result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add runs/copymanga-api.json
+          if git diff --cached --quiet; then echo "no change"; else
+            git commit -m "chore(copymanga): api probe $(date -u +%F)"
+            git pull --rebase || true
+            git push
+          fi
