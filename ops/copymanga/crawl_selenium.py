@@ -134,8 +134,15 @@ def main():
                 if 'chapter' not in href:
                     continue
                 entries.append({'url': BASE + href, 'name': a.get_text(strip=True)})
-        print(f'comic={title} chapters={len(entries)}', flush=True)
-        manifest.update({'title': title, 'cover': cover, 'chapter_total': len(entries)})
+        print(f'comic={title} chapters={len(entries)} status={manifest.get("status")}', flush=True)
+        page_text = soup.get_text(' ', strip=True)
+        if '已完结' in page_text or '已完結' in page_text:
+            status = '完结'
+        elif '连载中' in page_text or '連載中' in page_text:
+            status = '连载中'
+        else:
+            status = '未知'
+        manifest.update({'title': title, 'cover': cover, 'chapter_total': len(entries), 'status': status})
 
         todo = []
         for idx, entry in enumerate(entries, 1):
