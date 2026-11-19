@@ -1,0 +1,39 @@
+name: copymanga-probe
+
+# 服务器在国内，所有已知拷贝漫画域名都不可达；从 Actions 出口探测哪个域名还活着。
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/copymanga-probe.yml'
+      - 'ops/copymanga/probe_domains.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: copymanga-probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Probe domains
+        run: python ops/copymanga/probe_domains.py
+        continue-on-error: true
+      - name: Commit probe result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add runs/copymanga-probe.json
+          if git diff --cached --quiet; then echo "no change"; else
+            git commit -m "chore(copymanga): domain probe $(date -u +%F)"
+            git pull --rebase || true
+            git push
+          fi
