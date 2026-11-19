@@ -1,8 +1,8 @@
 {
-  "utc": "2026-11-19T06:17:26Z",
+  "utc": "2026-11-19T06:22:01Z",
   "routes": {
     "/search?keyword=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85": {
-      "error": "UnexpectedAlertPresentException: Alert Text: undefined\nMessage: unexpected alert open: {Alert text : undefined}\n  (Session info: chrome=157.0.8103.78)\nStacktrace:\n#0 0x59a8ae3b7caa <unknown>\n#1 0x59a8adcebcc5 <unknown>\n#2 0x59a8add6dc42 <unknown>\n#3 0x59a8add28557 <unknown>\n#4 0x59a8add2786e <unknown>\n#5 0x59a8add28341 <unknown>\n#6 0x59a8ae37a79c <unknown>\n#7 0x59a8ae378fcd <unknown>\n#8 0x59a8ae363df5 <unknown>\n#9 0x59a8ae379c0a <unknown>\n#10 0x59a8ae34cb99 <unknown>\n#11 0x59a8ae3a2318 <unknown>\n#12 0x59a8ae3a24b5 <unknown>\n#13 0x59a8ae3b6633 <unknown>\n#14 0x7a3c8e8abe6b <unknown>\n#15 0x7a3c8e93f55c <unknown>\n"
+      "error": "UnexpectedAlertPresentException: Alert Text: undefined\nMessage: unexpected alert open: {Alert text : undefined}\n  (Session info: chrome=157.0.8103.50)\nStacktrace:\n#0 0x64b8b328059a <unknown>\n#1 0x64b8b2bb60b5 <unknown>\n#2 0x64b8b2c37bc2 <unknown>\n#3 0x64b8b2bf24d7 <unknown>\n#4 0x64b8b2bf17ee <unknown>\n#5 0x64b8b2bf22c1 <unknown>\n#6 0x64b8b324347c <unknown>\n#7 0x64b8b3241caf <unknown>\n#8 0x64b8b322cb25 <unknown>\n#9 0x64b8b32428ea <unknown>\n#10 0x64b8b3214959 <unknown>\n#11 0x64b8b326aff8 <unknown>\n#12 0x64b8b326b195 <unknown>\n#13 0x64b8b327ef03 <unknown>\n#14 0x7897ca4abe6b <unknown>\n#15 0x7897ca53f55c <unknown>\n"
     },
     "/search?q=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85": {
       "url": "https://www.mangacopy.com/search?q=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85",
@@ -38,10 +38,10 @@
       ]
     },
     "/search?key=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85": {
-      "error": "UnexpectedAlertPresentException: Alert Text: undefined\nMessage: unexpected alert open: {Alert text : undefined}\n  (Session info: chrome=157.0.8103.78)\nStacktrace:\n#0 0x59a8ae3b7caa <unknown>\n#1 0x59a8adcebcc5 <unknown>\n#2 0x59a8add6dc42 <unknown>\n#3 0x59a8add28557 <unknown>\n#4 0x59a8add2786e <unknown>\n#5 0x59a8add28341 <unknown>\n#6 0x59a8ae37a79c <unknown>\n#7 0x59a8ae378fcd <unknown>\n#8 0x59a8ae363df5 <unknown>\n#9 0x59a8ae379c0a <unknown>\n#10 0x59a8ae34cb99 <unknown>\n#11 0x59a8ae3a2318 <unknown>\n#12 0x59a8ae3a24b5 <unknown>\n#13 0x59a8ae3b6633 <unknown>\n#14 0x7a3c8e8abe6b <unknown>\n#15 0x7a3c8e93f55c <unknown>\n"
+      "error": "UnexpectedAlertPresentException: Alert Text: undefined\nMessage: unexpected alert open: {Alert text : undefined}\n  (Session info: chrome=157.0.8103.50)\nStacktrace:\n#0 0x64b8b328059a <unknown>\n#1 0x64b8b2bb60b5 <unknown>\n#2 0x64b8b2c37bc2 <unknown>\n#3 0x64b8b2bf24d7 <unknown>\n#4 0x64b8b2bf17ee <unknown>\n#5 0x64b8b2bf22c1 <unknown>\n#6 0x64b8b324347c <unknown>\n#7 0x64b8b3241caf <unknown>\n#8 0x64b8b322cb25 <unknown>\n#9 0x64b8b32428ea <unknown>\n#10 0x64b8b3214959 <unknown>\n#11 0x64b8b326aff8 <unknown>\n#12 0x64b8b326b195 <unknown>\n#13 0x64b8b327ef03 <unknown>\n#14 0x7897ca4abe6b <unknown>\n#15 0x7897ca53f55c <unknown>\n"
     },
     "/search?word=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85": {
-      "error": "UnexpectedAlertPresentException: Alert Text: undefined\nMessage: unexpected alert open: {Alert text : undefined}\n  (Session info: chrome=157.0.8103.78)\nStacktrace:\n#0 0x59a8ae3b7caa <unknown>\n#1 0x59a8adcebcc5 <unknown>\n#2 0x59a8add6dc42 <unknown>\n#3 0x59a8add28557 <unknown>\n#4 0x59a8add2786e <unknown>\n#5 0x59a8add28341 <unknown>\n#6 0x59a8ae37a79c <unknown>\n#7 0x59a8ae378fcd <unknown>\n#8 0x59a8ae363df5 <unknown>\n#9 0x59a8ae379c0a <unknown>\n#10 0x59a8ae34cb99 <unknown>\n#11 0x59a8ae3a2318 <unknown>\n#12 0x59a8ae3a24b5 <unknown>\n#13 0x59a8ae3b6633 <unknown>\n#14 0x7a3c8e8abe6b <unknown>\n#15 0x7a3c8e93f55c <unknown>\n"
+      "error": "UnexpectedAlertPresentException: Alert Text: undefined\nMessage: unexpected alert open: {Alert text : undefined}\n  (Session info: chrome=157.0.8103.50)\nStacktrace:\n#0 0x64b8b328059a <unknown>\n#1 0x64b8b2bb60b5 <unknown>\n#2 0x64b8b2c37bc2 <unknown>\n#3 0x64b8b2bf24d7 <unknown>\n#4 0x64b8b2bf17ee <unknown>\n#5 0x64b8b2bf22c1 <unknown>\n#6 0x64b8b324347c <unknown>\n#7 0x64b8b3241caf <unknown>\n#8 0x64b8b322cb25 <unknown>\n#9 0x64b8b32428ea <unknown>\n#10 0x64b8b3214959 <unknown>\n#11 0x64b8b326aff8 <unknown>\n#12 0x64b8b326b195 <unknown>\n#13 0x64b8b327ef03 <unknown>\n#14 0x7897ca4abe6b <unknown>\n#15 0x7897ca53f55c <unknown>\n"
     },
     "/comics?keyword=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85": {
       "url": "https://www.mangacopy.com/comics?keyword=%E9%AD%94%E5%A5%B3%E4%B9%8B%E6%97%85",
