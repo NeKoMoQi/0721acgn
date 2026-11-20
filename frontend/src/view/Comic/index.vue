@@ -63,7 +63,7 @@
         <div v-for="item in comicGridList" :key="'g' + item.comicid" class="card-container" @click="gotocomic(item.comicid)">
           <div class="card-inner">
             <div class="image-wrapper">
-              <img :src="item.picurl" alt="封面图片" class="cover-image" />
+              <img :src="item.picurl" alt="封面图片" class="cover-image" loading="lazy" decoding="async" />
             </div>
             <div class="content-wrapper">
               <h4 class="title">{{ item.name }}</h4>

@@ -78,6 +78,8 @@
         :src="item.bcimg" 
         alt="封面图片"
         class="cover-image"
+        loading="lazy"
+        decoding="async"
       >
     </div>
     <div class="content-wrapper">

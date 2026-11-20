@@ -19,7 +19,7 @@ function requireLogin(failedToken?: unknown) {
 let request = axios.create({
   // 基础路径会携�?api
   baseURL:'/api',
-  timeout: 5000, //超时时间
+  timeout: 15000, //超时时间（5s 在移动网络下太紧，容易把慢一点但正常的接口判成超时）
 })
 //请求拦截�
 request.interceptors.request.use((config) => {

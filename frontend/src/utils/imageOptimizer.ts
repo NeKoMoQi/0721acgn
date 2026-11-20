@@ -58,7 +58,8 @@ export function optimizeImageUrl(src: string): string {
   if (cdn.includes(MARK)) return cdn;
   const sep = cdn.includes('?') ? '&' : '?';
   const w = targetWidth();
-  return `${cdn}${sep}${MARK}image/resize,m_lfit,w_${w}/quality,q_82`;
+  // 输出 WebP：同一张封面 700px 时 PNG 约 870KB，WebP 约 78KB（CDN 会缓存这份结果）
+  return `${cdn}${sep}${MARK}image/resize,m_lfit,w_${w}/quality,q_80/format,webp`;
 }
 
 /**
