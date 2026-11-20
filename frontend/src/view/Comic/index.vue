@@ -4,7 +4,7 @@
 
     <div class="background-layer"></div>
 
-    <div class="acgn_container" ref="maintain" @scroll="handscroll">
+    <div class="acgn_container" ref="maintain">
       <div class="block text-center">
         <span class="demonstration"></span>
         <el-carousel class="catalog-carousel" height="var(--catalog-carousel-height, 535px)" motion-blur>
@@ -72,7 +72,8 @@
           </div>
         </div>
       </div>
-      <button v-if="nomore && !isloading" type="button" class="catalog-more" @click="load">加载更多</button>
+      <!-- 瀑布式加载：哨兵滚到视口附近就自动续载，不用按钮 -->
+      <div ref="sentinel" class="load-sentinel" aria-hidden="true"></div>
       <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
       <div v-if="!nomore" class="tishi">已经到底啦~亲(๑•̀ㅂ•́)و✧</div>
     </div>
@@ -83,7 +84,7 @@
 
 <script setup>
 import { getcartoon, getcartoonhot } from '@/api/cartoon'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import AcgnFilterBar from '@/components/AcgnFilterBar.vue'
 import { decadeRange } from '@/utils/acgnConstants'
@@ -105,6 +106,8 @@ async function reloadList() {
   const rows = result.data || []
   comicGridList.value = rows
   if (rows.length < 20) nomore.value = false
+  await nextTick()
+  checkAutoFill()
 }
 
 function onFilterChange(f) {
@@ -121,6 +124,9 @@ function onFilterChange(f) {
 onMounted(async () => {
   const [hotRes] = await Promise.all([getcartoonhot(), reloadList()])
   comicHotList.value = hotRes.data || []
+  await nextTick()
+  setupAutoLoad()
+  checkAutoFill()
 })
 
 function gotocomic(id) {
@@ -129,6 +135,9 @@ function gotocomic(id) {
     query: { comicid: id },
   })
 }
+
+const sentinel = ref(null)
+let observer = null
 
 const getMore = async () => {
   try {
@@ -139,6 +148,8 @@ const getMore = async () => {
     currentpage.value += 1
   } finally {
     isloading.value = false
+    await nextTick()
+    checkAutoFill()
   }
 }
 
@@ -148,13 +159,29 @@ const load = async () => {
   getMore()
 }
 
-const handscroll = () => {
-  const el = maintain.value
+/** 首屏或筛选后列表还没填满一屏时继续续载，瀑布流不会停在半页 */
+function checkAutoFill() {
+  if (isloading.value || !nomore.value) return
+  const el = sentinel.value
   if (!el) return
-  const distanceToBottom = el.scrollHeight - el.scrollTop - el.clientHeight
-  const threshold = 150
-  if (distanceToBottom <= threshold) load()
+  if (el.getBoundingClientRect().top <= window.innerHeight + 400) load()
 }
+
+function setupAutoLoad() {
+  if (!sentinel.value || typeof IntersectionObserver === 'undefined') return
+  observer = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) load()
+    },
+    { root: null, rootMargin: '0px 0px 400px 0px' },
+  )
+  observer.observe(sentinel.value)
+}
+
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  observer = null
+})
 </script>
 <style scoped>
 .card-container {
@@ -250,6 +277,9 @@ const handscroll = () => {
   width: auto;
   margin-top: 20px;
   padding: 20px;
+}
+.load-sentinel {
+  height: 1px;
 }
 .demonstration {
   color: var(--el-text-color-secondary);

@@ -4,13 +4,19 @@ import com.example.demo.com.Novel;
 import com.example.demo.com.NovelChapter;
 import com.example.demo.com.Result;
 import com.example.demo.service.NovelChapterService;
+import com.example.demo.service.NovelFileService;
 import com.example.demo.service.NovelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.util.List;
 
 @Slf4j
@@ -20,6 +26,8 @@ public class NovelController {
     private NovelService novelService;
     @Autowired
     private NovelChapterService novelChapterService;
+    @Autowired
+    private NovelFileService novelFileService;
     @GetMapping("/api/novel")
     public Result getNovelAll(
             @RequestParam int page,
@@ -69,6 +77,31 @@ public class NovelController {
     public Result getNovelChapterById(@RequestParam int id,int no){
         String novelurl = novelService.getNovelUrlById(id,no);
         return Result.success(novelurl);
+    }
+
+    /**
+     * 同源返回整卷 epub 字节。浏览器直连 OSS 会被 CORS 拦（存储桶没配跨域），
+     * 前端改用这个接口取 ArrayBuffer 交给 epub.js。
+     */
+    @GetMapping("/api/novel/content")
+    public ResponseEntity<Object> getNovelFile(@RequestParam int id, @RequestParam int no) {
+        String url = novelService.getNovelUrlById(id, no);
+        if (url == null || url.isBlank()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Result.error("暂无该卷正文"));
+        }
+        try {
+            byte[] body = novelFileService.fetch(url);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("application/epub+zip"))
+                    .cacheControl(CacheControl.maxAge(Duration.ofDays(7)).cachePublic())
+                    .body(body);
+        } catch (IllegalArgumentException e) {
+            log.warn("novel file rejected: id={} no={} {}", id, no, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Result.error("正文地址不可用"));
+        } catch (Exception e) {
+            log.warn("novel file fetch failed: id={} no={} {}", id, no, e.toString());
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Result.error("正文文件获取失败，请稍后重试"));
+        }
     }
     @GetMapping("/api/novel/hot")
     public Result getNovelHot(){
