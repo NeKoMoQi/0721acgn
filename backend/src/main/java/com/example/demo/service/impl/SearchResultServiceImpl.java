@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import com.example.demo.com.SearchResult;
 import com.example.demo.mapper.mysql.SearchResultMapper;
 import com.example.demo.service.SearchResultService;
+import com.example.demo.util.ImageCdnRewriter;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,7 +22,7 @@ public class SearchResultServiceImpl implements SearchResultService {
 
     @Override
     public List<SearchResult> getSearchResults(String search) {
-        return searchResultMapper.getSearchResult(search);
+        return ImageCdnRewriter.applyCdnToSearchResults(searchResultMapper.getSearchResult(search));
     }
 
     @Override
@@ -82,9 +83,9 @@ public class SearchResultServiceImpl implements SearchResultService {
 
         merged.sort(buildComparator(normalizedSort));
         if (merged.size() > lim) {
-            return new ArrayList<>(merged.subList(0, lim));
+            return ImageCdnRewriter.applyCdnToSearchResults(new ArrayList<>(merged.subList(0, lim)));
         }
-        return merged;
+        return ImageCdnRewriter.applyCdnToSearchResults(merged);
     }
 
     private static String emptyToNull(String s) {

@@ -28,6 +28,14 @@ mvnw.cmd spring-boot:run
 
 Fill `backend/src/main/resources/application.properties` with your local database, OSS, and agent credentials before running the backend.
 
+## 图片走 CDN
+
+库里的封面、阅读页图片存的都是 OSS 直链（`acgn0721.oss-cn-hangzhou.aliyuncs.com`，常带 `?x-oss-process=image/...` 缩图参数）。直接渲染会走 OSS 公网流出，所以出口处统一换成 CDN 域名：
+
+- 后端：`ImageCdnRewriter` 在接口返回前换主机名，路径与缩图参数原样保留（签名链接、外链不动）。配置项 `image.cdn.oss-host` / `image.cdn.base` / `image.cdn.enabled`。已覆盖漫画列表/详情/阅读页、搜索、推荐、巡礼。
+- 前端：`src/utils/imageOptimizer.ts` 在 `<img>` 渲染前把 OSS 主机换成 CDN 并补缩图参数（`VITE_IMG_CDN` 可覆盖，留空则不换域名）。视频、epub 不受影响。
+- 验证：DevTools Network 里阅读页图片的域名应为 `img.0721acgn.com`，响应头 `X-Cache` 为 `HIT`（第二次起）。若要确认 OSS 不再被直连，看 OSS 控制台「用量统计 - 外网流出流量」是否只剩回源。
+
 ## Galgame 板块
 
 - 页面：`/#/Galagame`（列表与推荐轮播）、`/#/GalgameIntroduce?galgameid=1`（详情）。

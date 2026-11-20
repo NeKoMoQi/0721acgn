@@ -1,5 +1,7 @@
 package com.example.demo.util;
 
+import com.example.demo.com.CartoonPage;
+import com.example.demo.com.Cartoons;
 import com.example.demo.com.Xunli;
 import com.example.demo.com.XunliPoint;
 import org.junit.jupiter.api.Test;
@@ -71,5 +73,45 @@ class ImageCdnRewriterTests {
         ImageCdnRewriter.applyCdn(point);
         assertEquals(CDN + "/xunli/point/15/16/16-1.jpg", point.getXunlipic());
         assertEquals("https://image.anitabi.cn/points/x.jpg?plan=h360", point.getGaoqingpic());
+    }
+
+    /** 漫画阅读页：fileurl 换成 CDN，缩图参数原样保留。 */
+    @Test
+    void appliesToCartoonCoverAndReadingPage() {
+        Cartoons cover = new Cartoons();
+        cover.setPicurl(OSS + "/comic/cover/1.jpg");
+        cover.setHengpic(OSS + "/comic/heng/1.jpg?x-oss-process=image/resize,w_700");
+        ImageCdnRewriter.applyCdn(cover);
+        assertEquals(CDN + "/comic/cover/1.jpg", cover.getPicurl());
+        assertEquals(CDN + "/comic/heng/1.jpg?x-oss-process=image/resize,w_700", cover.getHengpic());
+
+        CartoonPage page = new CartoonPage();
+        page.setFileurl(OSS + "/comic/chapter/0000001/001.jpg?x-oss-process=image/resize,m_lfit,w_1600");
+        assertEquals(CDN + "/comic/chapter/0000001/001.jpg?x-oss-process=image/resize,m_lfit,w_1600",
+                ImageCdnRewriter.applyCdn(page).getFileurl());
+    }
+
+    @Test
+    void usesConfiguredHosts() {
+        try {
+            ImageCdnRewriter.configure("bucket.example.com", "https://cdn.example.com/");
+            assertEquals("https://cdn.example.com/a/b.jpg?x-oss-process=image/resize,w_700",
+                    ImageCdnRewriter.rewrite("https://bucket.example.com/a/b.jpg?x-oss-process=image/resize,w_700"));
+            // 老主机不再是本地 OSS，原样返回
+            assertEquals(OSS + "/x.jpg", ImageCdnRewriter.rewrite(OSS + "/x.jpg"));
+        } finally {
+            ImageCdnRewriter.configure(null, null);
+        }
+        assertEquals(CDN + "/x.jpg", ImageCdnRewriter.rewrite(OSS + "/x.jpg"));
+    }
+
+    @Test
+    void disableKeepsOssUrls() {
+        try {
+            ImageCdnRewriter.disable();
+            assertEquals(OSS + "/x.jpg", ImageCdnRewriter.rewrite(OSS + "/x.jpg"));
+        } finally {
+            ImageCdnRewriter.configure(null, null);
+        }
     }
 }

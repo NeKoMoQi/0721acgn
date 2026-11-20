@@ -10,6 +10,7 @@ import com.example.demo.mapper.mysql.CartoonMapper;
 import com.example.demo.mapper.mysql.NovelMapper;
 import com.example.demo.mapper.mysql.RelatedWorkMapper;
 import com.example.demo.service.RelatedWorkService;
+import com.example.demo.util.ImageCdnRewriter;
 import com.example.demo.util.RelatedSeriesTitleUtil;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +59,7 @@ public class RelatedWorkServiceImpl implements RelatedWorkService {
             appendSameNameWorks(t, st, srcId, out, seen);
             appendSameSeriesPeers(t, st, srcId, out, seen);
         }
-        return out;
+        return ImageCdnRewriter.applyCdnToRelatedWorks(out);
     }
 
     /**
