@@ -39,7 +39,7 @@ export const constantRoute = [
     name: 'SiteSearch',
     component: () => import('@/view/Search/index.vue'),
     meta: {
-      title: '全站搜索',
+      title: '作品搜索',
       name: 'SiteSearch',
     },
   },

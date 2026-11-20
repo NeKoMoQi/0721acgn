@@ -25,12 +25,12 @@
     >
       结束回合
     </button>
-    <button class="reset-btn" :disabled="resetLoading" @click="onResetBattle" title="从备份还原所有棋子状态">
+    <button class="reset-btn" :disabled="resetLoading" @click="onResetBattle" title="重置所有玩家共享的战场进度">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M3 12a9 9 0 1 0 3-6.7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         <path d="M3 4v5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span>{{ resetLoading ? '重置中…' : '重置战局' }}</span>
+      <span>{{ resetLoading ? '重置中…' : '重置公共战场' }}</span>
     </button>
   </div>
 
@@ -75,7 +75,7 @@
         </section>
         <section class="rules-section">
           <h4>重置与存档</h4>
-          <p>「重置战局」会从服务器<strong>备份</strong>恢复本关初始部署与回合，且仍由<strong>您当前阵营先手</strong>。开始页的「继续游戏」仅记录您上次所选阵营，进度以服务器数据为准。</p>
+          <p>公共战场由所有玩家共享。「重置公共战场」会恢复初始部署与回合，仍由当前阵营先手。本机仅记住上次选择的阵营。</p>
         </section>
         <p class="rules-foot">之后可随时点击右上角 <strong>?</strong> 再次打开本说明。</p>
         <button type="button" class="rules-ok-btn" @click="showRulesModal = false">知道了</button>
@@ -95,7 +95,7 @@
           :disabled="settleRestartLoading"
           @click="onRestartFromSettlement"
         >
-          {{ settleRestartLoading ? '重置中…' : '重新开始' }}
+          {{ settleRestartLoading ? '重置中…' : '重置公共战场并再战' }}
         </button>
         <button type="button" class="victory-btn victory-btn-ghost" @click="goToWarStart">
           返回开始界面
@@ -379,7 +379,7 @@ async function onEndTurn() {
 
 async function onResetBattle() {
   if (resetLoading.value) return
-  if (!window.confirm('确定要重置整场战局吗？所有棋子位置 / 血量 / 回合都会从备份还原。')) {
+  if (!window.confirm('确定要重置公共战场吗？所有玩家共享的棋子位置、血量和回合都会恢复初始状态。')) {
     return
   }
   resetLoading.value = true
@@ -392,6 +392,7 @@ async function onResetBattle() {
 
 async function onRestartFromSettlement() {
   if (settleRestartLoading.value) return
+  if (!window.confirm('确定要重置所有玩家共享的公共战场并再战吗？')) return
   settleRestartLoading.value = true
   try {
     const ok = await resetBattle()

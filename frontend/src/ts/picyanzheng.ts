@@ -1,5 +1,5 @@
 import { ElNotification } from 'element-plus'
-export const processFile = (file:File) => {
+export const processFile = (file:File, { announceSuccess = true } = {}) => {
     if (!file) return;
     // 验证文件类型和大小
     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -20,7 +20,7 @@ export const processFile = (file:File) => {
           })  
       return;
     }
-    ElNotification({
+    if (announceSuccess) ElNotification({
         title: 'bingo',
         message: '上传成功',
         type: 'success',

@@ -15,7 +15,7 @@
           :title="hasSave ? '以本机记住的阵营进入公共战场' : '本机还没选过阵营'"
           @click="continueGame"
         >
-          <span class="btn-label">继续游戏</span>
+          <span class="btn-label">进入公共战场</span>
           <span class="btn-hint">{{ hasSave ? '用上次的阵营进入公共战场' : '本机还没选过阵营' }}</span>
         </button>
         <button
@@ -24,7 +24,7 @@
           :class="{ active: flow === 'new' }"
           @click="flow = 'new'"
         >
-          <span class="btn-label">开始新游戏</span>
+          <span class="btn-label">重置公共战场</span>
           <span class="btn-hint">重置为初始部署后入场</span>
         </button>
       </div>
@@ -60,12 +60,12 @@
             :disabled="!picked || resetting"
             @click="startNewGame"
           >
-            {{ resetting ? '正在重置战场…' : '确认开局（重置棋盘）' }}
+            {{ resetting ? '正在重置战场…' : '确认重置公共战场并进入' }}
           </button>
         </div>
       </transition>
 
-      <p class="war-tip">当前是公共战场，所有玩家共享进度。「新游戏」会将公共战场恢复为初始部署。</p>
+      <p class="war-tip">当前是公共战场，所有玩家共享进度。重置会覆盖所有玩家当前的战场进度。</p>
     </div>
   </div>
 </template>

@@ -6,7 +6,7 @@
       退出熄灯
     </button>
 
-    <main class="watch-wrap" v-if="animation && currentEpisode">
+    <main class="watch-wrap" v-if="watchState === 'ready'">
       <section class="watch-content">
         <section class="player-shell">
           <div class="title-bar">
@@ -30,15 +30,19 @@
           </div>
 
           <div class="video-frame">
+            <div v-if="playbackFailed" class="playback-error" role="alert">
+              <p>视频加载失败，请重试。</p>
+              <button type="button" class="tool-button" @click="playbackFailed = false">重新加载视频</button>
+            </div>
             <video
-              ref="videoRef"
+              v-else
               class="watch-video"
               controls
               autoplay
               playsinline
               preload="metadata"
               :src="currentEpisode.videoUrl"
-              @loadedmetadata="onLoadedMetadata"
+              @error="playbackFailed = true"
               @ended="onEnded"
               @play="persistCurrentEpisode"
             />
@@ -97,8 +101,13 @@
 
     <main v-else class="watch-wrap">
       <section class="empty-state">
-        <h1>暂无视频资源</h1>
-        <router-link class="back-link" :to="{ name: 'Animationintroduce', query: { animationid: animationIdNum } }">
+        <h1 v-if="watchState === 'loading'" role="status">正在加载番剧…</h1>
+        <template v-else-if="watchState === 'error'">
+          <h1 role="alert">番剧加载失败</h1>
+          <button type="button" class="tool-button" @click="loadPage">重新加载</button>
+        </template>
+        <h1 v-else>{{ emptyMessage }}</h1>
+        <router-link v-if="animationIdNum" class="back-link" :to="{ name: 'Animationintroduce', query: { animationid: animationIdNum } }">
           返回详情
         </router-link>
       </section>
@@ -109,11 +118,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getAnimationById, getAnimationEpisodeById, getAnimationEpisodes } from '@/api/animation';
 import { ensureAcgnUserHydrated, isInBookshelf, pushHistory, saveAnimationEpisode, toggleBookshelfAsync } from '@/utils/acgnLocal';
-import { ElMessage } from 'element-plus';
 import AcgnCommunityPanel from '@/components/AcgnCommunityPanel.vue';
 
 const route = useRoute();
@@ -121,15 +129,20 @@ const router = useRouter();
 const animation = ref<any>(null);
 const currentEpisode = ref<any>(null);
 const episodes = ref<any[]>([]);
-const videoRef = ref<HTMLVideoElement | null>(null);
+const watchState = ref<'loading' | 'error' | 'empty' | 'ready'>('loading');
+const emptyMessage = ref('暂无视频资源');
+const playbackFailed = ref(false);
+let disposed = false;
 const lightsOff = ref(false);
 const autoNext = ref(true);
-const duration = ref(0);
 const favoriteActive = ref(false);
 const favoritePending = ref(false);
 
-const animationIdNum = computed(() => Number(route.query.animationid));
-const episodeIdNum = computed(() => Number(route.query.episodeid));
+// App 按完整路由重建观看页，保留本次请求对应的分集。
+const requestedAnimation = Number(route.query.animationid);
+const animationIdNum = Number.isInteger(requestedAnimation) && requestedAnimation > 0 ? requestedAnimation : 0;
+const episodeId = Number(route.query.episodeid);
+const resumeEpisode = Number(route.query.episode);
 const currentIndex = computed(() =>
   episodes.value.findIndex((item) => Number(item.id) === Number(currentEpisode.value?.id)),
 );
@@ -141,57 +154,70 @@ const nextEpisode = computed(() =>
 );
 
 onMounted(() => {
-  loadPage();
+  void loadPage();
   window.addEventListener('keydown', handleKeydown);
 });
 onUnmounted(() => {
+  disposed = true;
   window.removeEventListener('keydown', handleKeydown);
 });
-watch(() => route.query.episodeid, loadEpisode);
-
 async function loadPage() {
-  const animationId = animationIdNum.value;
-  if (!animationId) return;
-  const [animationRes, episodeRes] = await Promise.all([
-    getAnimationById(animationId),
-    getAnimationEpisodes(animationId),
-  ]);
-  animation.value = animationRes?.data || null;
-  episodes.value = Array.isArray(episodeRes?.data) ? episodeRes.data : [];
-  await loadEpisode();
-  await ensureAcgnUserHydrated();
-  favoriteActive.value = isInBookshelf('animation', animationId);
-  if (animation.value) {
-    pushHistory({
-      type: 'animation',
-      id: animationId,
-      name: animation.value.name,
-      pic: animation.value.bcimg,
-    });
+  watchState.value = 'loading';
+  playbackFailed.value = false;
+  if (!animationIdNum) {
+    emptyMessage.value = '请选择一部番剧';
+    watchState.value = 'empty';
+    return;
+  }
+
+  try {
+    const [work, listing, selected] = await Promise.all([
+      getAnimationById(animationIdNum),
+      getAnimationEpisodes(animationIdNum),
+      episodeId ? getAnimationEpisodeById(episodeId) : Promise.resolve(null),
+    ]);
+    if (disposed) return;
+    if (work?.code !== 200 || listing?.code !== 200 || !Array.isArray(listing.data) ||
+        (episodeId && selected?.code !== 200)) {
+      throw new Error('番剧资源请求失败');
+    }
+
+    animation.value = work.data;
+    episodes.value = listing.data;
+    const episode = episodeId
+      ? selected?.data
+      : resumeEpisode
+        ? episodes.value.find(item => Number(item.episodeNo) === resumeEpisode)
+        : episodes.value[0];
+    if (!animation.value || typeof episode?.videoUrl !== 'string' || !episode.videoUrl.trim() ||
+        (episode.animationId != null && Number(episode.animationId) !== animationIdNum)) {
+      emptyMessage.value = episodes.value.length ? '所选分集暂无视频资源' : '暂无视频资源';
+      watchState.value = 'empty';
+      return;
+    }
+
+    currentEpisode.value = episode;
+    watchState.value = 'ready';
+    void loadViewerState();
+  } catch {
+    if (!disposed) watchState.value = 'error';
   }
 }
 
-async function loadEpisode() {
-  duration.value = 0;
-  const episodeId = episodeIdNum.value;
-  if (!episodeId) {
-    const resumeEpisode = Number(route.query.episode);
-    currentEpisode.value = resumeEpisode
-      ? episodes.value.find((item) => Number(item.episodeNo) === resumeEpisode) || null
-      : episodes.value[0] || null;
-    if (resumeEpisode && !currentEpisode.value) {
-      ElMessage.warning('上次观看的集数暂不可用，请重新选择');
-      await router.replace({ name: 'Animationintroduce', query: { animationid: animationIdNum.value } });
-      return;
-    }
-    await nextTick();
-    persistCurrentEpisode();
-    return;
+async function loadViewerState() {
+  try {
+    await ensureAcgnUserHydrated();
+    if (disposed) return;
+    favoriteActive.value = isInBookshelf('animation', animationIdNum);
+    pushHistory({
+      type: 'animation',
+      id: animationIdNum,
+      name: animation.value.name,
+      pic: animation.value.bcimg,
+    });
+  } catch {
+    // 书架状态暂不可用时，播放器仍然可用。
   }
-  const res = await getAnimationEpisodeById(episodeId);
-  currentEpisode.value = res?.data || null;
-  await nextTick();
-  persistCurrentEpisode();
 }
 
 function episodeTitle(item: any) {
@@ -199,12 +225,12 @@ function episodeTitle(item: any) {
 }
 
 async function toggleFavorite() {
-  if (favoritePending.value || !animation.value || !animationIdNum.value) return;
+  if (favoritePending.value || !animation.value || !animationIdNum) return;
   favoritePending.value = true;
   try {
     const state = await toggleBookshelfAsync({
       type: 'animation',
-      id: animationIdNum.value,
+      id: animationIdNum,
       name: animation.value.name,
       pic: animation.value.bcimg,
     });
@@ -225,12 +251,8 @@ function goNext() {
 function navigateToEpisode(item: any) {
   router.push({
     name: 'AnimationWatch',
-    query: { animationid: animationIdNum.value, episodeid: item.id },
+    query: { animationid: animationIdNum, episodeid: item.id },
   });
-}
-
-function onLoadedMetadata() {
-  duration.value = videoRef.value?.duration || 0;
 }
 
 function onEnded() {
@@ -240,7 +262,7 @@ function onEnded() {
 }
 
 function persistCurrentEpisode() {
-  const animationId = animationIdNum.value;
+  const animationId = animationIdNum;
   const episodeNo = Number(currentEpisode.value?.episodeNo);
   if (animationId && episodeNo) {
     saveAnimationEpisode(animationId, episodeNo);
@@ -537,6 +559,16 @@ function handleKeydown(event: KeyboardEvent) {
   padding: 32px;
   color: #6b7b88;
 }
+.playback-error {
+  padding: 24px;
+  background: white;
+}
+.playback-error .tool-button,
+.empty-state .tool-button {
+  margin: 8px 12px 8px 0;
+  min-height: 44px;
+}
+
 .empty-state h1 {
   margin: 0 0 18px;
   color: #263747;

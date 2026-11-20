@@ -3,7 +3,7 @@
     <Headpage style="position: sticky !important; top: 0px; z-index: 10" />
     <div class="bg" />
     <div class="wrap">
-      <h1 class="h1">全站搜索</h1>
+      <h1 class="h1">作品搜索</h1>
       <p class="muted">支持番剧 / 漫画 / 轻小说统一检索，并可按题材、状态、年代与排序组合筛选。</p>
 
       <div class="bar">

@@ -9,22 +9,8 @@
             <el-icon><ArrowLeft /></el-icon>
             返回地图
           </button>
-          <div class="anime-kicker">
-            <span>EP.{{ episodeNo }}</span>
-            <span>SCENE MATCH</span>
-            <span>{{ cardStatus }}</span>
-          </div>
-          <h1>巡礼对比图生成器</h1>
-          <p>上传现实照片，对比动画截图，生成相似度、拍摄建议和巡礼记录。</p>
-          <div class="danmaku-row">
-            <span v-for="text in danmakuTexts" :key="text">{{ text }}</span>
-          </div>
-        </div>
-        <div class="quick-data">
-          <div v-for="item in quickStats" :key="item.label" class="quick-data-item">
-            <strong>{{ item.value }}</strong>
-            <span>{{ item.label }}</span>
-          </div>
+          <h1>巡礼图片对照</h1>
+          <p>{{ spotTitle }}</p>
         </div>
       </section>
 
@@ -62,92 +48,33 @@
 
             <label class="image-box upload-box" data-label="现实照片">
               <div class="scene-tag real">REAL TAKE</div>
-              <img v-if="realImage" :src="realImage" ref="previewImage" alt="现实照片" />
+              <img v-if="realImage" :src="realImage" @error="showPhotoError" alt="现实照片" />
               <div v-else class="empty-image">
                 <el-icon><UploadFilled /></el-icon>
-                <span>点击上传现实照片</span>
+                <span>选择本机照片</span>
                 <small>JPG / PNG / GIF，最大 5MB</small>
               </div>
-              <input class="file-input" type="file" accept="image/*" @change="handleRealUploading" />
+              <input class="file-input" type="file" accept="image/jpeg,image/png,image/gif" aria-label="选择本机照片" @change="handleRealUploading" />
             </label>
           </div>
 
           <div class="toolbar">
-            <button class="primary-btn" type="button" :disabled="!canCompare || comparing" @click="compareImages">
-              <el-icon><MagicStick /></el-icon>
-              {{ comparing ? '分析中...' : '开始对比' }}
-            </button>
             <button class="plain-btn" type="button" :disabled="!realImage" @click="resetComparison">
               <el-icon><Refresh /></el-icon>
               重置照片
             </button>
-            <button class="plain-btn" type="button" :disabled="!showResults" @click="markAsCollected">
-              <el-icon><CollectionTag /></el-icon>
-              收藏结果
-            </button>
           </div>
+          <p v-if="photoError" class="comparison-status" role="alert">{{ photoError }}</p>
+          <p class="comparison-status">自动比对服务暂不可用。可在本机预览照片，手动对照截图。</p>
 
           <div class="cut-note">
             <span>{{ activeTip }}</span>
             <p>{{ activeShootingTip }}</p>
           </div>
 
-          <div v-if="showResults" class="result-card">
-            <div class="score-box">
-              <strong>{{ scorePercent }}</strong>
-              <span>%</span>
-            </div>
-            <div class="result-info">
-              <div class="result-row">
-                <span>评价</span>
-                <strong>{{ matchLevel }}</strong>
-              </div>
-              <p>{{ comment }}</p>
-              <div class="tag-row">
-                <span v-for="tag in resultTags" :key="tag">{{ tag }}</span>
-              </div>
-            </div>
-          </div>
         </div>
 
         <aside class="side-stack">
-          <div class="panel-card">
-            <div class="card-header compact">
-              <div>
-                <span class="mini-title">热度排行</span>
-                <h2>巡礼榜单</h2>
-              </div>
-              <el-icon><Trophy /></el-icon>
-            </div>
-            <div class="rank-tabs">
-              <button
-                v-for="tab in rankTabs"
-                :key="tab"
-                type="button"
-                :class="{ active: activeRankTab === tab }"
-                @click="activeRankTab = tab"
-              >
-                {{ tab }}
-              </button>
-            </div>
-            <div class="rank-list">
-              <button
-                v-for="(item, index) in filteredRanking"
-                :key="item.name"
-                type="button"
-                class="rank-item"
-                @click="selectRanking(item)"
-              >
-                <span class="rank-no">{{ index + 1 }}</span>
-                <span class="rank-text">
-                  <strong>{{ item.name }}</strong>
-                  <small>{{ item.area }} · {{ item.checkins }} 次打卡</small>
-                </span>
-                <span class="rank-score">{{ item.score }}</span>
-              </button>
-            </div>
-          </div>
-
           <div class="panel-card">
             <div class="card-header compact">
               <div>
@@ -215,96 +142,30 @@
           </div>
         </div>
 
-        <div class="panel-card mission-card">
-          <div class="card-header compact">
-            <div>
-              <span class="mini-title">巡礼小卡</span>
-              <h2>报告完成度</h2>
-            </div>
-            <span class="progress-text">{{ missionProgress }}%</span>
-          </div>
-          <div class="report-preview">
-            <div class="report-cover">
-              <span>EP.{{ episodeNo }}</span>
-              <strong>{{ reportTitle }}</strong>
-              <small>{{ cardStatus }}</small>
-            </div>
-            <div class="report-lines">
-              <p v-for="line in reportLines" :key="line">{{ line }}</p>
-            </div>
-          </div>
-          <div class="progress-bar">
-            <i :style="{ width: missionProgress + '%' }"></i>
-          </div>
-          <button
-            v-for="task in missionList"
-            :key="task.title"
-            type="button"
-            class="mission-item"
-            :class="{ done: task.done }"
-            @click="task.done = !task.done"
-          >
-            <span class="checkmark">{{ task.done ? '✓' : '' }}</span>
-            <span>
-              <strong>{{ task.title }}</strong>
-              <small>{{ task.desc }}</small>
-              <em>{{ task.done ? task.doneText : task.todoText }}</em>
-            </span>
-          </button>
-        </div>
-
-        <div class="panel-card history-card">
-          <div class="card-header compact">
-            <div>
-              <span class="mini-title">记录</span>
-              <h2>最近对比</h2>
-            </div>
-            <el-icon><TrendCharts /></el-icon>
-          </div>
-          <div v-for="item in historyList" :key="item.time + item.title" class="history-item">
-            <span>{{ item.time }}</span>
-            <strong>{{ item.title }}</strong>
-            <small>{{ item.result }}</small>
-          </div>
-        </div>
       </section>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
   ArrowLeft,
   Camera,
   ChatDotRound,
-  CollectionTag,
   Grid,
-  MagicStick,
   Picture,
   Refresh,
   ScaleToOriginal,
   Star,
-  TrendCharts,
-  Trophy,
   UploadFilled,
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import Headpage from '@/components/Headpage/index.vue'
 import useUserStore from '@/stores/modules/users'
 import { processFile } from '@/ts/picyanzheng'
-import { updatePic } from '@/api/updatepic'
 import { getXunliPointById } from '@/api/xunli'
-import { contrastpic } from '@/ts/contrastpic'
-
-type RankingItem = {
-  name: string
-  area: string
-  checkins: number
-  score: string
-  type: string
-}
 
 const router = useRouter()
 const route = useRoute()
@@ -316,42 +177,18 @@ const workId = Number(route.query.work)
 const reviewKey = Number.isSafeInteger(spotId) && spotId > 0 ? `0721acgn:pilgrimage-note:${spotId}` : ''
 
 const animeImage = ref('')
-const previewImage = ref<HTMLImageElement | null>(null)
 const realImage = ref<string | null>(null)
-const canCompare = ref(false)
-const comparing = ref(false)
-const url2 = ref('')
-const showResults = ref(false)
-const similarity = ref(0)
-const comment = ref('')
+const photoError = ref('')
 const userRating = ref(4)
 const reviewText = ref('')
 const activeMode = ref('side')
-const activeRankTab = ref('综合')
 const activeTip = ref('机位')
-const episodeNo = ref('07')
-
-const quickStats = [
-  { value: 'CUT', label: '动画分镜' },
-  { value: 'TAKE', label: '现实复拍' },
-  { value: 'CARD', label: '巡礼小卡' },
-]
+let photoReader: FileReader | null = null
 
 const compareModes = [
   { key: 'side', label: '并排', icon: Grid },
   { key: 'focus', label: '聚焦', icon: ScaleToOriginal },
 ]
-
-const rankTabs = ['综合', '本周', '高分']
-
-const rankingList = ref<RankingItem[]>([
-  { name: '镰仓高校前', area: '神奈川', checkins: 1836, score: '98', type: '综合' },
-  { name: '须贺神社阶梯', area: '东京', checkins: 1522, score: '96', type: '综合' },
-  { name: '飞驒古川站', area: '岐阜', checkins: 1043, score: '91', type: '本周' },
-  { name: '伏见稻荷大社', area: '京都', checkins: 1287, score: '94', type: '本周' },
-  { name: '下鸭神社', area: '京都', checkins: 876, score: '99', type: '高分' },
-  { name: '秩父桥', area: '埼玉', checkins: 745, score: '97', type: '高分' },
-])
 
 const shootingTips = [
   { title: '机位', desc: '先对齐道路边缘、楼体轮廓和地平线' },
@@ -359,152 +196,57 @@ const shootingTips = [
   { title: '时间', desc: '截图偏暖时，优先选择清晨或傍晚复刻' },
 ]
 
-const missionList = ref([
-  {
-    title: '补齐现实 TAKE',
-    desc: '把现场照片放进对照框，生成小卡封面素材',
-    done: false,
-    todoText: '待解锁：现实照片缩略图',
-    doneText: '已解锁：小卡封面素材',
-  },
-  {
-    title: '生成相似度结论',
-    desc: '得到匹配等级、建议标签和巡礼判断',
-    done: false,
-    todoText: '待解锁：相似度评分与标签',
-    doneText: '已解锁：评分、等级、建议标签',
-  },
-  {
-    title: '留下现场短评',
-    desc: '把你的机位、光线或路线经验写进报告',
-    done: false,
-    todoText: '待解锁：用户巡礼备注',
-    doneText: '已解锁：可分享巡礼备注',
-  },
-])
-
 const reviews = ref<{ user: string; text: string }[]>([])
 
-const historyList = ref([
-  { time: '今天 14:20', title: '车站前街景', result: '相似度 87%' },
-  { time: '昨天 18:42', title: '坡道转角', result: '相似度 73%' },
-  { time: '05/07 09:15', title: '神社参道', result: '相似度 91%' },
-])
-
-const modeTitle = computed(() => (activeMode.value === 'side' ? '并排查看截图与实景' : '聚焦查看上传照片'))
-const scorePercent = computed(() => Math.round(similarity.value * 100))
-const finishedMissionCount = computed(() => missionList.value.filter((item) => item.done).length)
-const missionProgress = computed(() => Math.round((finishedMissionCount.value / missionList.value.length) * 100))
-const filteredRanking = computed(() => rankingList.value.filter((item) => item.type === activeRankTab.value).slice(0, 4))
+const modeTitle = computed(() => (activeMode.value === 'side' ? '并排查看截图与实景' : '聚焦查看本机照片'))
 const activeShootingTip = computed(
   () => shootingTips.find((tip) => tip.title === activeTip.value)?.desc || shootingTips[0].desc,
 )
-const cardStatus = computed(() => {
-  if (missionProgress.value === 100) return '小卡完成'
-  if (missionProgress.value >= 67) return '待补短评'
-  if (missionProgress.value >= 34) return '待生成结论'
-  return '待上传实景'
-})
-const reportTitle = computed(() =>
+const spotTitle = computed(() =>
   currentSpot.value.pointXunliname || currentSpot.value.name || currentSpot.value.xunliname || '未命名巡礼场景',
 )
-const danmakuTexts = computed(() => {
-  if (showResults.value) return [`相似度 ${scorePercent.value}%`, matchLevel.value, activeTip.value + '优先']
-  if (realImage.value) return ['实景已就位', '可以开始对比', activeTip.value + '参考中']
-  return ['截图待复刻', '寻找同款机位', '上传实景 TAKE']
-})
-const reportLines = computed(() => [
-  missionList.value[0].done ? '封面：已放入现实 TAKE' : '封面：等待现实照片',
-  missionList.value[1].done ? `结论：${scorePercent.value}% · ${matchLevel.value}` : '结论：等待 AI 对比',
-  missionList.value[2].done ? `短评：${reviews.value[0]?.text || '已记录'}` : '短评：等待现场备注',
-])
 
-const matchLevel = computed(() => {
-  if (similarity.value < 0.3) return '差异较大'
-  if (similarity.value < 0.6) return '有巡礼价值'
-  if (similarity.value < 0.85) return '高度相似'
-  return '神还原取景地'
-})
+function handleRealUploading(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = ''
+  if (!file || !processFile(file, { announceSuccess: false })) return
 
-const resultTags = computed(() => {
-  if (similarity.value < 0.3) return ['建议换角度', '低匹配', activeTip.value]
-  if (similarity.value < 0.6) return ['可继续复拍', '中等匹配', activeTip.value]
-  if (similarity.value < 0.85) return ['推荐打卡', '高匹配', activeTip.value]
-  return ['巡礼名场面', '极高匹配', activeTip.value]
-})
-
-const handleRealUploading = async (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
-  if (!file) return
-
-  const processfile = processFile(file)
-  if (!processfile) return
-
+  resetComparison()
   const reader = new FileReader()
-  reader.onload = (readerEvent) => {
-    realImage.value = String(readerEvent.target?.result || '')
+  photoReader = reader
+  reader.onload = () => {
+    if (photoReader !== reader) return
+    photoReader = null
+    if (typeof reader.result === 'string' && reader.result) realImage.value = reader.result
+    else showPhotoError()
+  }
+  reader.onerror = () => {
+    if (photoReader !== reader) return
+    photoReader = null
+    showPhotoError()
   }
   reader.readAsDataURL(file)
-
-  canCompare.value = true
-  showResults.value = false
-  missionList.value[0].done = true
-
-  const result = await updatePic(processfile)
-  url2.value = result?.url || ''
 }
+
+function resetComparison() {
+  photoReader?.abort()
+  photoReader = null
+  realImage.value = null
+  photoError.value = ''
+}
+
+function showPhotoError() {
+  realImage.value = null
+  photoError.value = '照片无法预览，请尝试选择其他图片。'
+}
+
+onBeforeUnmount(resetComparison)
 
 const goBack = () => {
   router.push({ path: '/shengdi' })
   userStore.xunlilist = {}
   ;(useUserStore as unknown as { xunlilist?: unknown }).xunlilist = null
-}
-
-const compareImages = async () => {
-  if (!animeImage.value || !url2.value || comparing.value) return
-
-  comparing.value = true
-  try {
-    const result = await contrastpic(animeImage.value, url2.value)
-    const rawSimilarity = Number(result?.similarity ?? 0)
-    similarity.value = Math.min(1, Math.max(0, rawSimilarity + 0.3))
-
-    if (similarity.value < 0.3) {
-      comment.value = '差异较大，可能不是同一个场景。建议先对齐道路边缘和建筑轮廓。'
-    } else if (similarity.value < 0.6) {
-      comment.value = '部分相似，有巡礼价值。可以继续调整机位、焦段和拍摄高度。'
-    } else if (similarity.value < 0.85) {
-      comment.value = '非常相似，很可能是取景地。适合加入巡礼记录并分享给同好。'
-    } else {
-      comment.value = '几乎一模一样，取景地特征非常明确。可以作为高质量巡礼对比图。'
-    }
-
-    showResults.value = true
-    missionList.value[1].done = true
-    historyList.value.unshift({
-      time: '刚刚',
-      title: reportTitle.value,
-      result: `相似度 ${scorePercent.value}%`,
-    })
-  } finally {
-    comparing.value = false
-  }
-}
-
-const resetComparison = () => {
-  realImage.value = null
-  canCompare.value = false
-  showResults.value = false
-  similarity.value = 0
-  comment.value = ''
-  url2.value = ''
-  missionList.value[0].done = false
-  missionList.value[1].done = false
-}
-
-const markAsCollected = () => {
-  ElMessage.success('已收藏本次巡礼对比')
 }
 
 const submitReview = () => {
@@ -525,13 +267,7 @@ const submitReview = () => {
   }
   reviews.value = [{ user: '我的备注', text }]
   reviewText.value = ''
-  missionList.value[2].done = true
   ElMessage.success('备注已保存到此浏览器')
-}
-
-const selectRanking = (item: RankingItem) => {
-  activeTip.value = item.score === '99' ? '时间' : '机位'
-  ElMessage.info(`已切换到 ${item.name} 的巡礼参考`)
 }
 
 onMounted(async () => {
@@ -541,8 +277,7 @@ onMounted(async () => {
       if (typeof saved?.text === 'string' && saved.text.trim()) {
         reviews.value = [{ user: '我的备注', text: saved.text }]
         if (Number.isInteger(saved.rating) && saved.rating >= 1 && saved.rating <= 5) userRating.value = saved.rating
-        missionList.value[2].done = true
-      }
+            }
     } catch {
       /* 本机记录损坏或存储不可用时仍可打开对照页 */
     }
@@ -565,6 +300,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.comparison-status { margin: 12px 0; }
 * {
   box-sizing: border-box;
 }
@@ -618,7 +354,7 @@ onMounted(async () => {
   min-height: 148px;
   padding: 24px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
   align-items: center;
   position: relative;
@@ -667,76 +403,6 @@ onMounted(async () => {
   font-size: 15px;
 }
 
-.anime-kicker,
-.danmaku-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.anime-kicker {
-  margin-top: 12px;
-}
-
-.anime-kicker span,
-.danmaku-row span {
-  border-radius: 14px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.anime-kicker span {
-  padding: 4px 9px;
-  color: #fff;
-  background: #18191c;
-}
-
-.anime-kicker span:nth-child(2) {
-  background: #00aeec;
-}
-
-.anime-kicker span:nth-child(3) {
-  background: #fb7299;
-}
-
-.danmaku-row {
-  margin-top: 14px;
-}
-
-.danmaku-row span {
-  padding: 5px 10px;
-  color: #00aeec;
-  background: #eaf8ff;
-  border: 1px solid rgba(0, 174, 236, 0.16);
-}
-
-.quick-data {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.quick-data-item {
-  min-height: 74px;
-  padding: 12px;
-  border-radius: 6px;
-  background: #f6fbff;
-  border: 1px solid rgba(0, 174, 236, 0.16);
-}
-
-.quick-data-item strong {
-  display: block;
-  color: #00aeec;
-  font-size: 22px;
-}
-
-.quick-data-item span {
-  display: block;
-  margin-top: 6px;
-  color: #9499a0;
-  font-size: 13px;
-}
-
 .tool-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
@@ -779,8 +445,7 @@ onMounted(async () => {
   line-height: 1.2;
 }
 
-.mode-tabs,
-.rank-tabs {
+.mode-tabs {
   display: inline-flex;
   padding: 4px;
   gap: 4px;
@@ -788,8 +453,7 @@ onMounted(async () => {
   background: #f1f2f3;
 }
 
-.mode-tabs button,
-.rank-tabs button {
+.mode-tabs button {
   min-height: 32px;
   border: 0;
   border-radius: 5px;
@@ -802,8 +466,7 @@ onMounted(async () => {
   cursor: pointer;
 }
 
-.mode-tabs button.active,
-.rank-tabs button.active {
+.mode-tabs button.active {
   color: #00aeec;
   background: #fff;
   box-shadow: 0 2px 6px rgba(0, 174, 236, 0.15);
@@ -992,86 +655,13 @@ onMounted(async () => {
   padding: 0 14px;
 }
 
-.result-card {
-  margin-top: 16px;
-  padding: 16px;
-  display: grid;
-  grid-template-columns: 96px 1fr;
-  gap: 14px;
-  border-radius: 6px;
-  background: #f6fbff;
-  border: 1px solid rgba(0, 174, 236, 0.18);
-}
-
-.score-box {
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  padding-top: 25px;
-  color: #00aeec;
-  background: #fff;
-  border: 4px solid #00aeec;
-}
-
-.score-box strong {
-  font-size: 30px;
-  line-height: 1;
-}
-
-.result-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.result-row span {
-  color: #9499a0;
-}
-
-.result-row strong {
-  color: #fb7299;
-  font-size: 18px;
-}
-
-.result-info p {
-  margin: 10px 0;
-  color: #61666d;
-  line-height: 1.7;
-}
-
-.tag-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.tag-row span {
-  padding: 5px 10px;
-  border-radius: 14px;
-  color: #00aeec;
-  background: #fff;
-  border: 1px solid rgba(0, 174, 236, 0.18);
-  font-size: 13px;
-}
-
-.rank-tabs {
-  margin-bottom: 12px;
-}
-
-.rank-list,
 .tips-list,
 .review-list {
   display: grid;
   gap: 10px;
 }
 
-.rank-item,
-.tip-item,
-.mission-item {
+.tip-item {
   width: 100%;
   border: 1px solid #e3e5e7;
   border-radius: 6px;
@@ -1081,54 +671,14 @@ onMounted(async () => {
   transition: all 0.2s ease;
 }
 
-.rank-item:hover,
-.tip-item:hover,
-.mission-item:hover {
+.tip-item:hover {
   border-color: #00aeec;
   transform: translateY(-1px);
 }
 
-.rank-item {
-  min-height: 66px;
-  padding: 10px;
-  display: grid;
-  grid-template-columns: 32px 1fr 42px;
-  gap: 10px;
-  align-items: center;
-}
-
-.rank-no {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  background: #00aeec;
-  font-weight: 700;
-}
-
-.rank-text strong,
-.mission-item strong,
-.review-item strong,
-.history-item strong {
+.review-item strong {
   display: block;
   color: #18191c;
-}
-
-.rank-text small,
-.mission-item small,
-.history-item small {
-  display: block;
-  margin-top: 4px;
-  color: #9499a0;
-}
-
-.rank-score {
-  color: #fb7299;
-  font-weight: 800;
-  text-align: right;
 }
 
 .tip-item {
@@ -1155,7 +705,7 @@ onMounted(async () => {
 
 .interactive-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.9fr) minmax(260px, 0.9fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
   margin-top: 18px;
 }
@@ -1213,8 +763,7 @@ onMounted(async () => {
   margin-top: 14px;
 }
 
-.review-item,
-.history-item {
+.review-item {
   padding: 10px 12px;
   border-radius: 6px;
   background: #f6f7fb;
@@ -1227,134 +776,11 @@ onMounted(async () => {
   line-height: 1.6;
 }
 
-.progress-text {
-  color: #00aeec;
-  font-weight: 800;
-}
-
-.report-preview {
-  margin-bottom: 12px;
-  padding: 12px;
-  display: grid;
-  grid-template-columns: 104px 1fr;
-  gap: 12px;
-  border-radius: 6px;
-  background: #f6fbff;
-  border: 1px solid rgba(0, 174, 236, 0.18);
-}
-
-.report-cover {
-  min-height: 116px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-radius: 6px;
-  color: #fff;
-  background:
-    linear-gradient(135deg, rgba(0, 174, 236, 0.94), rgba(251, 114, 153, 0.9)),
-    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0 6px, transparent 6px 12px);
-}
-
-.report-cover span,
-.report-cover small {
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.report-cover strong {
-  display: block;
-  font-size: 15px;
-  line-height: 1.35;
-}
-
-.report-lines {
-  display: grid;
-  align-content: center;
-  gap: 8px;
-}
-
-.report-lines p {
-  margin: 0;
-  padding: 7px 9px;
-  border-radius: 6px;
-  color: #61666d;
-  background: #fff;
-  font-size: 13px;
-  line-height: 1.45;
-}
-
-.progress-bar {
-  height: 8px;
-  margin-bottom: 12px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: #f1f2f3;
-}
-
-.progress-bar i {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, #00aeec, #fb7299);
-  transition: width 0.25s ease;
-}
-
-.mission-item {
-  min-height: 64px;
-  margin-top: 10px;
-  padding: 10px;
-  display: grid;
-  grid-template-columns: 32px 1fr;
-  gap: 10px;
-  align-items: center;
-}
-
-.checkmark {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  background: #c9ccd0;
-  font-weight: 800;
-}
-
-.mission-item.done .checkmark {
-  background: #00aeec;
-}
-
-.mission-item em {
-  display: inline-block;
-  margin-top: 6px;
-  color: #fb7299;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 700;
-}
-
-.history-item + .history-item {
-  margin-top: 10px;
-}
-
-.history-item span {
-  display: block;
-  color: #00aeec;
-  font-size: 12px;
-  font-weight: 700;
-}
-
 @media (max-width: 1020px) {
   .duizhao-title-card,
   .tool-layout,
   .interactive-grid {
     grid-template-columns: 1fr;
-  }
-
-  .quick-data {
-    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -1370,10 +796,8 @@ onMounted(async () => {
     padding: 14px;
   }
 
-  .quick-data,
   .image-stage,
-  .image-stage.stage-focus,
-  .result-card {
+  .image-stage.stage-focus {
     grid-template-columns: 1fr;
   }
 

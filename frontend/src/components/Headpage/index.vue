@@ -32,7 +32,7 @@
             @mousedown.prevent
             @click="goFullSearch"
           >
-            在「全站搜索」中打开高级筛选与结果高亮 »
+            打开作品搜索与筛选
           </button>
           <div v-if="searchPending" class="search-empty-pill" role="status">正在搜索…</div>
           <div v-else-if="searchError" class="search-empty-pill" role="status">{{ searchError }}</div>
@@ -275,7 +275,7 @@ async function allsearch(search: string) {
     if (result?.code !== 200 || !Array.isArray(result.data)) throw new Error('快速搜索失败')
     searchResults.value = result.data
   } catch {
-    if (request === searchRequest) searchError.value = '快速搜索失败，可重试或打开全站搜索。'
+    if (request === searchRequest) searchError.value = '快速搜索失败，可重试或打开作品搜索。'
   } finally {
     if (request === searchRequest) searchPending.value = false
   }
