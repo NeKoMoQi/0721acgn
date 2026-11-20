@@ -63,7 +63,7 @@
         <div v-for="item in comicGridList" :key="'g' + item.comicid" class="card-container" @click="gotocomic(item.comicid)">
           <div class="card-inner">
             <div class="image-wrapper">
-              <img :src="item.picurl" alt="封面图片" class="cover-image" />
+              <img :src="optimizeCoverUrl(item.picurl)" loading="lazy" decoding="async" alt="封面图片" class="cover-image" />
             </div>
             <div class="content-wrapper">
               <h4 class="title">{{ item.name }}</h4>
@@ -83,6 +83,7 @@
 </template>
 
 <script setup>
+import { optimizeCoverUrl } from '@/utils/imageOptimizer'
 import { getcartoon, getcartoonhot } from '@/api/cartoon'
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'

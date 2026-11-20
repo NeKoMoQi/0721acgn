@@ -711,10 +711,17 @@ class Newsroom:
                 LOG.warning("candidate %s attempt %s: %s", row["id"], attempts, error[:200])
 
     def export(self):
+        from media import ensure_cover_thumbnail
+
         articles = []
         for row in self.db.execute("SELECT * FROM articles WHERE status='published' ORDER BY published_at DESC LIMIT 500"):
             article = json.loads(row["payload"])
             article.pop("event_key", None)
+            if any(image.get("role") == "cover" for image in article.get("images") or []):
+                try:
+                    ensure_cover_thumbnail(self.root, row["id"])
+                except (OSError, ValueError):
+                    LOG.warning("Could not generate thumbnail for article %s", row["id"], exc_info=True)
             articles.append({**article, "id": row["id"], "published_at": row["published_at"]})
         atomic_json(self.root / "published.json", {"updated_at": stamp(), "articles": articles})
 

@@ -45,13 +45,22 @@ class NewsControllerTests {
         Files.writeString(directory.resolve("published.json"), "{\"articles\":[{\"id\":\"" + id + "\",\"images\":[{\"role\":\"cover\"}]}]}");
         Files.createDirectories(directory.resolve("media"));
         Files.write(directory.resolve("media/" + id + "-cover.png"), new byte[]{1, 2, 3});
+        Files.write(directory.resolve("media/" + id + "-cover-thumb.webp"), new byte[]{4, 5, 6});
         var mvc = MockMvcBuilders.standaloneSetup(new NewsController(directory.toString(), new ObjectMapper())).build();
         mvc.perform(get("/api/news/image").param("id", id).param("role", "cover"))
-            .andExpect(status().isOk()).andExpect(content().contentType("image/png"));
+            .andExpect(status().isOk()).andExpect(content().contentType("image/png"))
+            .andExpect(header().string("Cache-Control", "no-store"));
+        var thumbnail = get("/api/news/image").param("id", id).param("role", "cover").param("variant", "thumb");
+        String etag = mvc.perform(thumbnail)
+            .andExpect(status().isOk()).andExpect(content().contentType("image/webp"))
+            .andExpect(header().string("Cache-Control", "max-age=300, public"))
+            .andExpect(content().bytes(new byte[]{4, 5, 6})).andReturn().getResponse().getHeader("ETag");
+        mvc.perform(thumbnail.header("If-None-Match", etag)).andExpect(status().isNotModified());
         mvc.perform(get("/api/news/image").param("id", id).param("role", "../secrets"))
             .andExpect(status().isBadRequest());
         Files.writeString(directory.resolve("published.json"), "{\"articles\":[]}");
         mvc.perform(get("/api/news/image").param("id", id).param("role", "cover"))
             .andExpect(status().isNotFound());
+        mvc.perform(thumbnail).andExpect(status().isNotFound());
     }
 }

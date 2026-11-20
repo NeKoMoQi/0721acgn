@@ -59,7 +59,7 @@
         <div v-for="item in novellist" :key="'g' + item.novelid" class="card-container" @click="gotonovel(item.novelid)">
           <div class="card-inner">
             <div class="image-wrapper">
-              <img :src="item.picurl" alt="封面图片" class="cover-image" />
+              <img :src="optimizeCoverUrl(item.picurl)" loading="lazy" decoding="async" alt="封面图片" class="cover-image" />
             </div>
             <div class="content-wrapper">
               <h4 class="title">{{ item.name }}</h4>
@@ -78,6 +78,7 @@
 </template>
 
 <script setup>
+import { optimizeCoverUrl } from '@/utils/imageOptimizer'
 import { getnovel, getnovelhot } from '@/api/novel/index'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'

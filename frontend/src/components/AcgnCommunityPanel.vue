@@ -81,7 +81,7 @@
           class="guess-card"
           @click="goGuess(item)"
         >
-          <img v-if="guessPic(item)" :src="guessPic(item)" class="guess-cover" alt="" />
+          <img v-if="guessPic(item)" :src="optimizeCoverUrl(guessPic(item))" loading="lazy" decoding="async" class="guess-cover" alt="" />
           <div class="guess-meta">
             <span class="g-name">{{ guessName(item) }}</span>
             <span class="g-sub">{{ genreLine }}</span>
@@ -94,6 +94,7 @@
 </template>
 
 <script setup lang="ts">
+import { optimizeCoverUrl } from '@/utils/imageOptimizer'
 import type { AcgnMediaType } from '@/utils/acgnLocal'
 import {
   getEngagement,

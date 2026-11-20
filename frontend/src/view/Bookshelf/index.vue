@@ -20,7 +20,7 @@
 
       <ul v-else class="timeline">
         <li v-for="it in shown" :key="it.type + '-' + it.id" class="row" @click="open(it)">
-          <img v-if="it.pic" class="thumb" :src="it.pic" alt="" />
+          <img v-if="it.pic" class="thumb" :src="optimizeCoverUrl(it.pic)" loading="lazy" decoding="async" alt="" />
           <div class="mid">
             <span class="badge">{{ typeLabel(it.type) }}</span>
             <span v-if="it.starred" class="star">★ 已收藏</span>
@@ -42,6 +42,7 @@
 </template>
 
 <script setup>
+import { optimizeCoverUrl } from '@/utils/imageOptimizer'
 import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import {

@@ -143,6 +143,8 @@ Start-ScheduledTask -TaskName '0721ACGN Newsroom'
 
 按现有部署流程构建 Vue dist 和 Java jar、重启 Java 服务，然后访问 `/#/news`。服务账户要能读取 data/published.json 和 data/media。不要把整个 data 暴露为静态目录。
 
+更新编辑部代码后，可在服务器的 `newsroom` 目录运行 `python worker.py export --config config.json`，从现有发布封面补生成 WebP 缩略图。常驻编辑部后续导出时也会自动生成或更新缩略图。部署配套的 Java 接口和前端后，首页和资讯列表请求 `/api/news/image?id=文章ID&role=cover&variant=thumb`，该地址可缓存 5 分钟并支持 ETag 校验。资讯详情仍使用原尺寸封面。
+
 ```powershell
 cd 你的项目\frontend
 npm run build

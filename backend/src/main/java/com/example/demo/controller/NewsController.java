@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,6 +26,9 @@ import java.util.Map;
 /** Reads the worker's atomic public snapshot; drafts and credentials never enter the web root. */
 @RestController
 public class NewsController {
+    private static final MediaType WEBP = MediaType.parseMediaType("image/webp");
+    // Allow quick repeat visits while limiting how long a withdrawn cover can remain fresh.
+    private static final CacheControl THUMBNAIL_CACHE = CacheControl.maxAge(Duration.ofMinutes(5)).cachePublic();
     private final Path snapshot;
     private final ObjectMapper mapper;
 
@@ -77,8 +82,11 @@ public class NewsController {
     }
 
     @GetMapping("/api/news/image")
-    public ResponseEntity<byte[]> image(@RequestParam String id, @RequestParam String role) {
-        if (!id.matches("[a-f0-9]{24}") || !(role.equals("cover") || role.equals("stats"))) {
+    public ResponseEntity<byte[]> image(@RequestParam String id, @RequestParam String role,
+                                        @RequestParam(defaultValue = "original") String variant) {
+        boolean thumbnail = "thumb".equals(variant);
+        if (!id.matches("[a-f0-9]{24}") || !(role.equals("cover") || role.equals("stats")) ||
+                (thumbnail ? !role.equals("cover") : !variant.equals("original"))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         // Do not serve artwork for drafts/retracted articles, even if its filename is guessed.
@@ -88,13 +96,18 @@ public class NewsController {
             if (role.equals(asset.path("role").asText())) known = true;
         }
         if (!known) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Path image = snapshot.getParent().resolve("media").resolve(id + "-" + role + ".png");
+        Path image = snapshot.getParent().resolve("media").resolve(id + "-" + role + (thumbnail ? "-thumb.webp" : ".png"));
         try {
             if (!Files.isRegularFile(image) || Files.size(image) > 8_000_000) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).cacheControl(CacheControl.noStore())
-                    .header("X-Content-Type-Options", "nosniff").body(Files.readAllBytes(image));
+            byte[] bytes = Files.readAllBytes(image);
+            var response = ResponseEntity.ok()
+                    .contentType(thumbnail ? WEBP : MediaType.IMAGE_PNG)
+                    .cacheControl(thumbnail ? THUMBNAIL_CACHE : CacheControl.noStore())
+                    .header("X-Content-Type-Options", "nosniff");
+            if (thumbnail) response.eTag(DigestUtils.md5DigestAsHex(bytes));
+            return response.body(bytes);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

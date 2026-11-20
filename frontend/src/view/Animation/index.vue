@@ -75,7 +75,7 @@
   <div class="card-inner">
     <div class="image-wrapper">
       <img 
-        :src="item.bcimg" 
+        :src="optimizeCoverUrl(item.bcimg)" loading="lazy" decoding="async"
         alt="封面图片"
         class="cover-image"
       >
@@ -100,6 +100,7 @@
   </template>
   
   <script setup>
+import { optimizeCoverUrl } from '@/utils/imageOptimizer'
     import { getAnimation, getAnimationhot } from '@/api/animation/index';
     import { ref, onMounted } from 'vue';
     import { useRouter } from 'vue-router';

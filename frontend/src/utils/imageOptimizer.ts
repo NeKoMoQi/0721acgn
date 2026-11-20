@@ -49,7 +49,7 @@ export function toCdn(src: string): string {
 }
 
 /** 换域名 + 补缩图参数；非图片、签名链接、外链都不动 */
-export function optimizeImageUrl(src: string): string {
+export function optimizeImageUrl(src: string, width = targetWidth(), webp = width < 1600): string {
   if (!isOwnImage(src)) return src;
   // 只处理图片扩展名，避免给 mp4/epub 等加图片处理参数
   if (!/\.(jpe?g|png|webp|gif|bmp)$/i.test(src.split(/[?#]/)[0])) return src;
@@ -57,8 +57,14 @@ export function optimizeImageUrl(src: string): string {
   const cdn = toCdn(src);
   if (cdn.includes(MARK)) return cdn;
   const sep = cdn.includes('?') ? '&' : '?';
-  const w = targetWidth();
-  return `${cdn}${sep}${MARK}image/resize,m_lfit,w_${w}/quality,q_82`;
+  const format = webp && /\.(jpe?g|png|bmp)$/i.test(cdn.split(/[?#]/)[0]) ? '/format,webp' : '';
+  return `${cdn}${sep}${MARK}image/resize,m_lfit,w_${width}/quality,q_82${format}`;
+}
+
+/** Build the list URL before inserting the image so the browser never queues the larger original. */
+export function optimizeCoverUrl(src: string): string {
+  const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
+  return optimizeImageUrl(src, Math.round(360 * dpr), true);
 }
 
 /**

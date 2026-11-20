@@ -21,7 +21,7 @@
           <p class="summary">{{ article.summary }}</p>
           <p v-for="(paragraph, index) in article.paragraphs" :key="index">{{ paragraph }}</p>
           <figure v-for="image in article.images?.filter(i => i.role !== 'cover')" :key="image.role">
-            <img :src="safeImage(image.url)" :alt="image.caption" class="inline-image" />
+            <img :src="safeImage(image.url)" :alt="image.caption" class="inline-image" loading="lazy" decoding="async" />
             <figcaption>{{ image.caption }} · {{ image.credit }}</figcaption>
           </figure>
           <footer><h2>资料来源</h2>
@@ -35,7 +35,7 @@
         <div v-if="!items.length" class="notice">暂时还没有发布的资讯，新消息整理好后会出现在这里。</div>
         <div class="news-grid">
           <RouterLink v-for="(item, index) in items" :key="item.id" :to="{ path: `/news/${item.id}`, query: listLocation(page).query }" class="news-card">
-            <img v-if="cover(item)" :src="cover(item)" alt="" loading="lazy" class="card-cover" @error="imageFailed(item.id)" />
+            <img v-if="cover(item, true)" :src="cover(item, true)" alt="" loading="lazy" decoding="async" class="card-cover" @error="imageFailed(item.id)" />
             <div v-else class="cover" :class="`tone-${index % 3}`" aria-hidden="true"><span>ACGN / NEWS</span><strong>{{ item.title }}</strong><i>0721</i></div>
             <div class="card-copy"><span class="date">{{ formatDate(item.published_at) }} · {{ kindLabel(item.kind) }}</span><h2>{{ item.title }}</h2><p>{{ item.summary }}</p><span class="read">读这篇 ↗</span></div>
           </RouterLink>
@@ -51,6 +51,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import Headpage from '@/components/Headpage/index.vue'
 import request from '@/utils/request'
+import { newsCoverUrl } from '@/utils/newsImages'
 
 interface NewsArticle {
   id: string; title: string; summary: string; paragraphs: string[]; published_at: string; event_date: string
@@ -74,7 +75,8 @@ const loading = ref(false)
 const error = ref('')
 const failedImages = ref(new Set<string>())
 const safeImage = (url: string) => /^\/api\/news\/image\?id=[a-f0-9]{24}&role=(cover|stats)$/.test(url) ? url : ''
-const cover = (item: NewsArticle) => failedImages.value.has(item.id) ? '' : safeImage(item.images?.find(i => i.role === 'cover')?.url || '')
+const cover = (item: NewsArticle, thumbnail = false) =>
+  failedImages.value.has(item.id) ? '' : newsCoverUrl(item.images, thumbnail)
 const imageFailed = (id: string) => { failedImages.value = new Set([...failedImages.value, id]) }
 const kindLabel = (kind?: string) => kind === 'discussion' ? '社区观察' : kind === 'rumor' ? '未证实消息' : '资讯'
 let generation = 0

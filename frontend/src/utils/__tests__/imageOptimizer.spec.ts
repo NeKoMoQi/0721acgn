@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { CDN_BASE, optimizeImageUrl, rewriteImgElement, toCdn } from '../imageOptimizer'
+import { CDN_BASE, optimizeCoverUrl, optimizeImageUrl, rewriteImgElement, toCdn } from '../imageOptimizer'
 
 const OSS = 'https://acgn0721.oss-cn-hangzhou.aliyuncs.com'
 
@@ -20,6 +20,11 @@ describe('图片走 CDN', () => {
     expect(url.startsWith(`${CDN_BASE}/comic/cover/7.png?x-oss-process=image/resize,m_lfit,w_`)).toBe(true)
   })
 
+  it('列表封面在设置 src 前已是 WebP 缩略图，动画图保留格式', () => {
+    expect(optimizeCoverUrl(`${OSS}/comic/cover/7.png`)).toContain('w_360/quality,q_82/format,webp')
+    expect(optimizeCoverUrl(`${OSS}/comic/cover/7.gif`)).not.toContain('format,webp')
+  })
+
   it('已有 x-oss-process 时只换域名，不重复追加', () => {
     const src = `${OSS}/comic/chapter/0000001/001.jpg?x-oss-process=image/resize,m_lfit,w_1600`
     const url = optimizeImageUrl(src)
@@ -32,6 +37,7 @@ describe('图片走 CDN', () => {
     expect(optimizeImageUrl(`${OSS}/a.jpg`)).toContain('w_1600')
     window.location.hash = '#/Comicsee?chapterid=0000001&chapterno=1'
     expect(optimizeImageUrl(`${OSS}/cartoons/cbwn/001/001.jpg`)).toContain('w_1600')
+    expect(optimizeImageUrl(`${OSS}/cartoons/cbwn/001/001.jpg`)).not.toContain('format,webp')
   })
 
   it('签名链接、外链、非图片原样返回', () => {

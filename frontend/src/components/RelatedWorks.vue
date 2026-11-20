@@ -4,7 +4,7 @@
     <p class="subtitle">Bangumi 边、题名完全相同，以及<strong>同一主标题 IP</strong>：凡题名以该主名为前缀（多季、配音版、剧场版副标题等），且衔接处合理，即视为同系列作品。</p>
     <div class="cards">
       <div v-for="(it, idx) in items" :key="idx" class="card" @click="go(it)">
-        <img v-if="it.picurl" :src="it.picurl" class="cover" alt="" />
+        <img v-if="it.picurl" :src="optimizeCoverUrl(it.picurl)" loading="lazy" decoding="async" class="cover" alt="" />
         <div class="meta">
           <span class="tag">{{ labelType(it.type) }}</span>
           <span class="name">{{ it.name }}</span>
@@ -15,6 +15,7 @@
 </template>
 
 <script setup>
+import { optimizeCoverUrl } from '@/utils/imageOptimizer'
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { getRelated } from '@/api/related'

@@ -34,8 +34,10 @@
                   <div class="desfont">{{ item.summary }}</div>
                   <div class="newsmeta">{{ newsKind(item.kind) }} · {{ formatDate(item.published_at) }} · AI 辅助整理</div>
                 </div>
-                <div class="ziimg1">
-                  <img v-if="newsCover(item)" :src="newsCover(item)" alt="" class="imgs">
+                <div class="ziimg1" :data-news-cover="item.id" :ref="el => observeNewsCover(el, item.id)">
+                  <img v-if="visibleNewsCovers.has(item.id) && !failedNewsCovers.has(item.id) && newsCoverUrl(item.images, true)"
+                    :src="newsCoverUrl(item.images, true)" alt="" class="imgs"
+                    loading="lazy" decoding="async" @error="failedNewsCovers.add(item.id)">
                   <div v-else class="newscover-fallback">{{ item.title }}</div>
                 </div>
               </RouterLink>
@@ -54,7 +56,7 @@
                   <div class="desfont">{{ shortText(item.activitydescribe) }}</div>
                   <div class="newsmeta activity-meta">{{ dateLabel(item.createtime) ? dateLabel(item.createtime) + ' · ' : '' }}站内推荐 · 点开看完整介绍</div>
               </div>
-                <div class="ziimg1"><img :src=item.activityimg alt="" style="height: 100%; width: 100%;" class="imgs"></div>
+                <div class="ziimg1"><img :src="optimizeCoverUrl(item.activityimg)" loading="lazy" decoding="async" alt="" style="height: 100%; width: 100%;" class="imgs"></div>
               </RouterLink>
               <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
               <div v-else-if="activityLoadFailed" class="tishi" role="status">
@@ -266,14 +268,27 @@
 <script setup lang="ts">
 import behind from '@/components/behind/index.vue'
 import svgicon from '@/components/SvgIcon/index.vue'
-import {ref,onMounted, reactive,onBeforeMount} from 'vue'
+import {ref,onMounted, reactive,onBeforeMount,onBeforeUnmount} from 'vue'
 import {getpageActivity,getAllActivity,getActivityHot,getActivityLeibie} from '@/api/activity'
 import { getPeopleCount } from '@/api/peoplecount'
 import {getAcgnUserRandom,getAcgnUserBirth} from '@/api/acgnuser/index'
 import { RouterLink, useRoute,useRouter } from 'vue-router'
 import { getShengDiHot } from '@/api/shengdi/index'
 import request from '@/utils/request'
-const scrollcontainer = ref(null)
+import { newsCoverUrl } from '@/utils/newsImages'
+import { optimizeCoverUrl } from '@/utils/imageOptimizer'
+const scrollcontainer = ref<HTMLElement | null>(null)
+const visibleNewsCovers = reactive(new Set<string>())
+const failedNewsCovers = reactive(new Set<string>())
+let newsObserver: IntersectionObserver | undefined
+
+function observeNewsCover(element: unknown, id: string) {
+  if (!(element instanceof HTMLElement) || visibleNewsCovers.has(id)) return
+  if (!newsObserver) visibleNewsCovers.add(id)
+  else newsObserver.observe(element)
+}
+
+onBeforeUnmount(() => newsObserver?.disconnect())
 const qq = ref<boolean>(false)
 const wechat = ref<boolean>(false)
 const blbl = ref<boolean>(false)
@@ -311,10 +326,6 @@ const pickFeatured = (items: any[]) => {
     (Number(b?.acgn_score) || 0) - (Number(a?.acgn_score) || 0) ||
     newsScore(b) - newsScore(a) ||
     publishTime(b?.published_at) - publishTime(a?.published_at))
-}
-const newsCover = (item: any) => {
-  const url = item?.images?.find((image: any) => image.role === 'cover')?.url || ''
-  return /^\/api\/news\/image\?id=[a-f0-9]{24}&role=cover$/.test(url) ? url : ''
 }
 const newsKind = (kind?: string) =>
   kind === 'discussion' ? '社区观察' : kind === 'rumor' ? '未证实消息' : '资讯'
@@ -415,6 +426,16 @@ const blleave = () => {
   blbl.value = false
 }
 onMounted(async () => {
+  if (typeof IntersectionObserver !== 'undefined') {
+    newsObserver = new IntersectionObserver((entries, observer) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue
+        const id = (entry.target as HTMLElement).dataset.newsCover
+        if (id) visibleNewsCovers.add(id)
+        observer.unobserve(entry.target)
+      }
+    })
+  }
   void loadpage()
   // 站内资讯并入下面的快讯流，失败就当作没有，不影响首页其它区块。
   request.get('/news', { params: { page: 1, featured: 1 } })

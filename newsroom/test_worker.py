@@ -198,6 +198,14 @@ class NewsroomTests(unittest.TestCase):
         images = json.loads(row['payload'])['images']
         self.assertTrue(images)
         self.assertEqual((Path(self.temp.name) / 'media' / (row['id'] + '-cover.png')).read_bytes()[:8], b'\x89PNG\r\n\x1a\n')
+        from PIL import Image
+        thumbnail = Path(self.temp.name) / 'media' / (row['id'] + '-cover-thumb.webp')
+        self.room.export()
+        with Image.open(thumbnail) as image:
+            self.assertEqual((image.format, image.size), ('WEBP', (640, 360)))
+        previous_mtime = thumbnail.stat().st_mtime_ns
+        self.room.export()
+        self.assertEqual(thumbnail.stat().st_mtime_ns, previous_mtime)
 
     def test_full_platform_to_public_snapshot_without_official_domains(self):
         self.cfg.update(platforms=['bilibili'], official_domains=[], auto_publish=True, verify_with_web=False)

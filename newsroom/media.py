@@ -21,6 +21,29 @@ def save_png(image, path):
     temp.replace(path)
 
 
+def ensure_cover_thumbnail(root, ident):
+    """Backfill the current cover once; keep conversion out of the request path."""
+    from PIL import Image
+
+    media = Path(root) / "media"
+    original = media / (ident + "-cover.png")
+    thumbnail = media / (ident + "-cover-thumb.webp")
+    if not original.is_file():
+        return
+    if thumbnail.is_file() and thumbnail.stat().st_mtime_ns >= original.stat().st_mtime_ns:
+        return
+    temp = thumbnail.with_suffix(".tmp")
+    try:
+        with Image.open(original) as image:
+            if image.width * image.height > 40_000_000:
+                raise ValueError("cover image too large")
+            image.thumbnail((640, 360), Image.Resampling.LANCZOS)
+            image.convert("RGB").save(temp, format="WEBP", quality=76, method=4)
+        temp.replace(thumbnail)
+    finally:
+        temp.unlink(missing_ok=True)
+
+
 def wrap(draw, text, font, width, lines=3):
     rows, row = [], ""
     for char in text:

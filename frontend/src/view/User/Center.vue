@@ -10,7 +10,7 @@
           <div v-if="continueLoading" class="muted" role="status">正在读取进度…</div>
           <ul v-else-if="continueItems.length" class="thumb-list">
             <li v-for="it in continueItems" :key="it.type + '-' + it.id" class="trow resume-row">
-              <img v-if="it.pic" :src="it.pic" alt="" class="thumb" />
+              <img v-if="it.pic" :src="optimizeCoverUrl(it.pic)" loading="lazy" decoding="async" alt="" class="thumb" />
               <div class="resume-copy">
                 <div class="tit">{{ it.name }}</div>
                 <div class="muted2">{{ typ(it.type) }} · 上次{{ it.type === 'animation' ? '观看' : '阅读' }}至第 {{ it.position }} {{ it.type === 'animation' ? '集' : it.type === 'comic' ? '章' : '卷' }}</div>
@@ -61,7 +61,7 @@
           <h3 class="subh">最近在追</h3>
           <ul class="thumb-list">
             <li v-for="it in historySample" :key="it.type + '-' + it.id" class="trow" @click="go(it)">
-              <img v-if="it.pic" class="thumb" :src="it.pic" alt="" />
+              <img v-if="it.pic" class="thumb" :src="optimizeCoverUrl(it.pic)" loading="lazy" decoding="async" alt="" />
               <div>
                 <div class="tit">{{ it.name }}</div>
                 <div class="muted2">{{ typ(it.type) }} · {{ it.starred ? '已收藏' : '足迹' }}</div>
@@ -113,6 +113,7 @@
 </template>
 
 <script setup lang="ts">
+import { optimizeCoverUrl } from '@/utils/imageOptimizer'
 import { computed, ref, onMounted } from 'vue'
 import Headpage from '@/components/Headpage/index.vue'
 import { useRouter } from 'vue-router'

@@ -44,7 +44,7 @@
             @click="selectResult(item)"
           >
             <!-- 左侧图片 -->
-            <img :src="item.picurl" alt="" class="result-img">
+            <img :src="optimizeCoverUrl(item.picurl)" loading="lazy" decoding="async" alt="" class="result-img">
             
             <!-- 中间名字 -->
             <span class="result-name">{{ item.name }}</span>
@@ -212,6 +212,7 @@ style="
 
 <script setup lang="ts">
 defineOptions({ inheritAttrs: false })
+import { optimizeCoverUrl } from '@/utils/imageOptimizer'
 import { Search, CaretTop, Grid, InfoFilled } from '@element-plus/icons-vue';
 import { onMounted, onUnmounted, ref, watch, nextTick } from 'vue';
 import useUserStore from '@/stores/modules/users';

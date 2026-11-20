@@ -61,7 +61,7 @@
           <h3>为你推荐 · 各频道热门</h3>
           <div class="rec-grid">
             <button v-for="(it, i) in recs" :key="i" type="button" class="rec-card" @click="goRec(it)">
-              <img v-if="it.pic" :src="it.pic" class="rec-img" alt="" />
+              <img v-if="it.pic" :src="optimizeCoverUrl(it.pic)" loading="lazy" decoding="async" class="rec-img" alt="" />
               <div class="rec-meta">
                 <span class="rec-name">{{ it.name }}</span>
                 <span class="rec-sub">{{ it.type }}</span>
@@ -73,7 +73,7 @@
 
       <ul v-else class="list">
         <li v-for="(item, index) in rows" :key="index" class="row" @click="open(item)">
-          <img v-if="item.picurl" class="thumb" :src="item.picurl" alt="" />
+          <img v-if="item.picurl" class="thumb" :src="optimizeCoverUrl(item.picurl)" loading="lazy" decoding="async" alt="" />
           <div class="mid">
             <span class="tag">{{ item.sourcetype }}</span>
             <div class="title">
@@ -91,6 +91,7 @@
 </template>
 
 <script setup lang="ts">
+import { optimizeCoverUrl } from '@/utils/imageOptimizer'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Headpage from '@/components/Headpage/index.vue'
