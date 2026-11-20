@@ -50,7 +50,7 @@ import { ref, shallowRef, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import useUserStore from '@/stores/modules/users'
 import ePub from 'epubjs'
-import { getnovelcount, getnovelbyid, getnovelchapterbyid } from '@/api/novel/index'
+import { getnovelcount, getnovelbyid, getnovelcontent } from '@/api/novel/index'
 import { getNovelProgress, saveNovelProgress, ensureAcgnUserHydrated, pushHistory } from '@/utils/acgnLocal'
 const route = useRoute()
 const usestore = useUserStore()
@@ -101,12 +101,14 @@ async function loadVolume(volume) {
   toc.value = []
   destroyBook()
   try {
+    // 同源接口拿 ArrayBuffer：OSS 没配 CORS，浏览器不能直接 fetch epub。
+    const buffer = await getnovelcontent(novelId, volume)
+    if (disposed) return
+    if (!(buffer instanceof ArrayBuffer) || buffer.byteLength < 4) throw new Error('暂无正文数据')
     const instance = ePub()
     book.value = instance
-    const content = await getnovelchapterbyid(novelId, volume)
-    if (disposed) return
-    if (content?.code !== 200 || typeof content.data !== 'string' || !content.data) throw new Error('暂无正文地址')
-    await instance.open(content.data, 'epub')
+    // 已经是二进制字节，按 binary 打开；传 'epub' 会被 epub.js 当成 URL 再去请求一次。
+    await instance.open(buffer, 'binary')
     if (disposed) return
     const reader = instance.renderTo(viewerEl.value, {
       width: '100%', height: '100%', spread: 'none', manager: 'continuous',
