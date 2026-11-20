@@ -822,7 +822,11 @@ def main():
                             error = str(exc) if isinstance(exc, (ValueError, RuntimeError)) else type(exc).__name__
                             LOG.error("round failed: %s", error)
                         finally:
-                            room.export()
+                            try:
+                                room.export()
+                            except Exception as exc:  # noqa: BLE001
+                                error = error or type(exc).__name__
+                                LOG.error("export failed: %s", type(exc).__name__)
                         atomic_json(root / "health.json", {"state": "error" if error else "idle",
                             "checked_at": stamp(), "pid": os.getpid(), "error": error, **room.status()})
                         if error and args.command == "once":
@@ -836,10 +840,14 @@ def main():
                                 raise ValueError("candidate not retryable")
                     elif args.command == "export":
                         room.export()
-            except RuntimeError as exc:
+            except Exception as exc:  # noqa: BLE001
                 if args.command != "run":
                     raise
-                LOG.warning("worker busy: %s", exc)
+                if isinstance(exc, RuntimeError):
+                    LOG.warning("worker busy: %s", exc)
+                else:
+                    # 单轮里的意外错误不该让常驻进程退出；记录后继续下一轮。
+                    LOG.error("loop error (%s), retry in 60s", type(exc).__name__)
             if args.command != "run":
                 break
             # One-minute heartbeat/retry tick; expensive discovery has its own durable interval.
