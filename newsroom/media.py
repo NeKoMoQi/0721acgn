@@ -1,4 +1,4 @@
-﻿"""Create local PNG assets: prefer the original post cover, fall back to generated art."""
+"""Create local PNG assets: prefer the original post cover, fall back to generated art."""
 import hashlib
 import urllib.request
 from urllib.parse import urlsplit
@@ -15,10 +15,26 @@ def font_path(cfg):
     raise RuntimeError("install a CJK font or configure font_file before publishing illustrated articles")
 
 
+def save_webp(image, path, max_width=1000, quality=80):
+    """同时产出一份 WebP：资讯封面 PNG 常有 600–900KB，WebP 约 80KB，首屏全靠它。"""
+    from PIL import Image
+
+    prepared = image
+    if prepared.mode not in ("RGB", "RGBA"):
+        prepared = prepared.convert("RGBA")
+    if prepared.width > max_width:
+        ratio = max_width / prepared.width
+        prepared = prepared.resize((max_width, max(1, round(prepared.height * ratio))), Image.LANCZOS)
+    temp = path.with_name(path.name + ".tmp")
+    prepared.save(temp, format="WEBP", quality=quality, method=6)
+    temp.replace(path)
+
+
 def save_png(image, path):
     temp = path.with_suffix(".tmp")
     image.save(temp, format="PNG", optimize=True)
     temp.replace(path)
+    save_webp(image, path.with_suffix(".webp"))
 
 
 def wrap(draw, text, font, width, lines=3):

@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -88,12 +89,21 @@ public class NewsController {
             if (role.equals(asset.path("role").asText())) known = true;
         }
         if (!known) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Path image = snapshot.getParent().resolve("media").resolve(id + "-" + role + ".png");
+        // 优先用 worker 生成的 WebP（同一张封面 PNG 常有 600–900KB，WebP 约 80KB）
+        Path media = snapshot.getParent().resolve("media");
+        Path webp = media.resolve(id + "-" + role + ".webp");
+        Path png = media.resolve(id + "-" + role + ".png");
+        Path image = Files.isRegularFile(webp) ? webp : png;
         try {
             if (!Files.isRegularFile(image) || Files.size(image) > 8_000_000) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).cacheControl(CacheControl.noStore())
+            MediaType type = image.equals(webp)
+                    ? MediaType.parseMediaType("image/webp")
+                    : MediaType.IMAGE_PNG;
+            // 文件名是内容 id，内容不会变，可以长缓存
+            return ResponseEntity.ok().contentType(type)
+                    .cacheControl(CacheControl.maxAge(Duration.ofDays(30)).cachePublic())
                     .header("X-Content-Type-Options", "nosniff").body(Files.readAllBytes(image));
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

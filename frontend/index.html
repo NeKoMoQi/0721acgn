@@ -5,13 +5,29 @@
     <link rel="icon" href="/LOGO.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>0721Acgn (ﾉ>ω<)ﾉ :｡･::･ﾟ'★,｡･:･ﾟ'☆</title>
+    <!-- 图片走独立 CDN，提前建连，省掉首屏封面的 TLS 握手 -->
+    <link rel="preconnect" href="https://img.0721acgn.com" crossorigin>
+    <link rel="dns-prefetch" href="https://img.0721acgn.com">
+    <style>
+      /* 首屏骨架：JS/CSS 还在下载时先画出来，避免白屏几秒 */
+      #app:empty::before {
+        content: "0721ACGN 加载中…";
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font: 15px/1.6 system-ui, "Microsoft YaHei", sans-serif;
+        color: #7a8ca6;
+        background: linear-gradient(160deg, #eef4fb 0%, #dbe7f6 100%);
+      }
+    </style>
   </head>
   <body>
     <!-- mapbox-gl-directions 已由 src/view/shengdi/index.vue 从 npm 包内联引入，
          原来这里还从 api.mapbox.com 再拉一份 CSS+JS：CSS 阻塞渲染、国内 TTFB 实测 2.6s，
          属于重复加载，已移除。 -->
-    <div id="app">
-    </div>
+    <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
