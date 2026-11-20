@@ -269,3 +269,18 @@ Get-ScheduledTaskInfo -TaskName '0721ACGN Anitabi Crawler'
 1. **`frontend/src/view/shengdi/index.vue` 占位页已替换**：2026-10-27 合并圣地巡礼 v2 更新包后，该路径已恢复为完整的地图巡礼页（含 DeepSeek Agent、按天预览、保存行程）。原占位页与受损版本的备份仍在同目录：`index.vue.original-from-github`、`index.vue.repaired-attempt`。
 2. **域名 `0721acgn.com` 未完成腾讯云 ICP 备案**：大陆地域对未备案域名在 80/443 上有网关拦截，表现为域名打不开、直接 IP 访问正常。备案通过后即可用域名访问（HTTPS 证书已就绪）。
 3. **服务器已启用 HTTPS**（Let's Encrypt，lego 自动续期），无需再前置 Nginx。
+
+## 前端自动发布（2026-11-20）
+
+`scripts\auto-deploy-frontend.ps1` 定时检查 GitHub 上 `frontend/` 的变化，有更新就自动拉取、构建并替换 `dist`（静态文件，不需要重启 Web）。
+
+- 计划任务：**`0721ACGN AutoDeploy Frontend`**，开机启动 + 每 5 分钟一次，以 Administrator（交互式）运行
+- 状态与日志：`.deploy\frontend-state.json`、`.deploy\deploy.log`（都在 .gitignore 里）
+- 行为：
+  - 只认 `frontend/` 下的改动；只有 `backend/`、`newsroom/` 或采集数据变化时只记日志并提示手动部署
+  - 工作区不干净或有未推送提交时直接跳过，不会 reset / 覆盖本地改动
+  - `package-lock.json` 变了会先 `npm install`
+  - 构建前备份 `dist`，构建失败或没有 `dist/index.html` 时自动还原；`dist-backup-*` 只留最近 3 份
+- 手动跑一次：`powershell -NoProfile -ExecutionPolicy Bypass -File scripts\auto-deploy-frontend.ps1`
+- 只看会做什么：加 `-DryRun`；强制重建：加 `-Force`
+- 停用：`Disable-ScheduledTask -TaskName '0721ACGN AutoDeploy Frontend'`
