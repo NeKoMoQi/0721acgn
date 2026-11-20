@@ -267,12 +267,13 @@ try {
         foreach ($sub in @('js', 'assets')) {
             $oldSub = Join-Path $b.FullName $sub
             if (-not (Test-Path $oldSub)) { continue }
-            $newSub = Join-Path $DistDir $sub
-            if (-not (Test-Path $newSub)) { New-Item -ItemType Directory -Path $newSub -Force | Out-Null }
-            Get-ChildItem $oldSub -File -ErrorAction SilentlyContinue | ForEach-Object {
-                $target = Join-Path $newSub $_.Name
+            foreach ($f in (Get-ChildItem $oldSub -File -Recurse -ErrorAction SilentlyContinue)) {
+                $rel = $f.FullName.Substring($oldSub.Length).TrimStart('\')
+                $target = Join-Path (Join-Path $DistDir $sub) $rel
+                $parent = Split-Path $target -Parent
+                if (-not (Test-Path $parent)) { New-Item -ItemType Directory -Path $parent -Force | Out-Null }
                 if (-not (Test-Path $target)) {
-                    Copy-Item $_.FullName $target -Force
+                    Copy-Item $f.FullName $target -Force
                     $merged++
                 }
             }
