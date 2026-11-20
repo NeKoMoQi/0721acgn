@@ -2,7 +2,7 @@
   <div class="news-root">
     <Headpage style="position: sticky !important; top: 0; z-index: 10" />
     <main>
-      <RouterLink v-if="articleId" class="back" to="/news">← 全部资讯</RouterLink>
+      <RouterLink v-if="articleId" class="back" :to="listLocation(page)">← 返回资讯列表</RouterLink>
       <header v-else class="page-heading">
         <span class="eyebrow">0721 ACGN · NEWSROOM</span>
         <h1>新鲜事，慢慢看<span>。</span></h1>
@@ -34,7 +34,7 @@
       <template v-else>
         <div v-if="!items.length" class="notice">暂时还没有发布的资讯，新消息整理好后会出现在这里。</div>
         <div class="news-grid">
-          <RouterLink v-for="(item, index) in items" :key="item.id" :to="`/news/${item.id}`" class="news-card">
+          <RouterLink v-for="(item, index) in items" :key="item.id" :to="{ path: `/news/${item.id}`, query: listLocation(page).query }" class="news-card">
             <img v-if="cover(item)" :src="cover(item)" alt="" loading="lazy" class="card-cover" @error="imageFailed(item.id)" />
             <div v-else class="cover" :class="`tone-${index % 3}`" aria-hidden="true"><span>ACGN / NEWS</span><strong>{{ item.title }}</strong><i>0721</i></div>
             <div class="card-copy"><span class="date">{{ formatDate(item.published_at) }} · {{ kindLabel(item.kind) }}</span><h2>{{ item.title }}</h2><p>{{ item.summary }}</p><span class="read">读这篇 ↗</span></div>
@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
+import { useRoute, useRouter, RouterLink } from 'vue-router'
 import Headpage from '@/components/Headpage/index.vue'
 import request from '@/utils/request'
 
@@ -59,10 +59,16 @@ interface NewsArticle {
   images?: { role: string; url: string; caption: string; credit: string }[]
 }
 const route = useRoute()
+const router = useRouter()
 const articleId = computed(() => String(route.params.id || ''))
 const items = ref<NewsArticle[]>([])
 const article = ref<NewsArticle | null>(null)
-const page = ref(1)
+const page = computed(() => {
+  const raw = route.query.page
+  if (typeof raw !== 'string' || !/^\d+$/.test(raw)) return 1
+  const parsed = Number(raw)
+  return Number.isInteger(parsed) && parsed >= 1 && parsed <= 10000 ? parsed : 1
+})
 const total = ref(0)
 const loading = ref(false)
 const error = ref('')
@@ -86,15 +92,24 @@ async function load() {
     if (current !== generation) return
     if (result.code !== 200) throw new Error('读取失败')
     if (articleId.value) article.value = result.data
-    else { items.value = result.data.items; total.value = result.data.total }
+    else {
+      const lastPage = Math.max(1, Math.ceil(result.data.total / 12))
+      if (page.value > lastPage) {
+        await router.replace(listLocation(lastPage))
+        return
+      }
+      items.value = result.data.items
+      total.value = result.data.total
+    }
   } catch {
     if (current === generation) error.value = articleId.value ? '这篇资讯暂时无法读取，可能已撤下。' : '资讯暂时无法读取，请稍后重试。'
   } finally {
     if (current === generation) loading.value = false
   }
 }
-function changePage(delta: number) { page.value += delta; void load() }
-watch(articleId, () => { page.value = 1; void load() }, { immediate: true })
+function listLocation(value: number) { return { path: '/news', query: { page: value > 1 ? String(value) : undefined } } }
+function changePage(delta: number) { void router.push(listLocation(page.value + delta)) }
+watch([articleId, page], () => { void load() }, { immediate: true })
 </script>
 
 <style scoped>

@@ -2510,8 +2510,11 @@ const showjianjie = (xunlipointlist) =>{
           map.value.remove();
           map.value = null;
         }
-        $router.push({ path:'/shengdi/duizhao'})
         userStore.xunlilist = xunlipointlist
+        $router.push({
+          path: '/shengdi/duizhao',
+          query: { spot: xunlipointlist.id, work: xunlipointlist.xunliid },
+        })
       });
       const jianjietext2 = document.createElement('div')
       jianjietext2.className = 'xunlijianjietext2';

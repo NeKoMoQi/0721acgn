@@ -36,10 +36,17 @@ it('escapes model text and refuses unsafe source links', async () => {
 })
 it('paginates server results', async () => {
   vi.mocked(request.get).mockResolvedValue({ code: 200, data: { items: [article], total: 13 } })
-  const { view } = await setup()
+  const { view, router } = await setup()
   await view.findAll('.pagination button')[1].trigger('click')
   await flushPromises()
   expect(request.get).toHaveBeenLastCalledWith('/news', { params: { page: 2 } })
+  expect(router.currentRoute.value.query.page).toBe('2')
+  const articleHref = view.get('.news-card').attributes('href')
+  expect(articleHref).toContain('page=2')
+  vi.mocked(request.get).mockResolvedValueOnce({ code: 200, data: article })
+  await router.push(articleHref)
+  await flushPromises()
+  expect(view.get('.back').attributes('href')).toBe('/news?page=2')
   view.unmount()
 })
 it('offers retry after a network failure', async () => {
@@ -50,6 +57,13 @@ it('offers retry after a network failure', async () => {
   await view.find('button').trigger('click')
   await flushPromises()
   expect(view.text()).toContain('暂时还没有发布的资讯')
+  view.unmount()
+})
+it('uses the first page for a URL above the API page limit', async () => {
+  vi.mocked(request.get).mockResolvedValue({ code: 200, data: { items: [article], total: 1 } })
+  const { view } = await setup('/news?page=10001')
+  expect(request.get).toHaveBeenCalledExactlyOnceWith('/news', { params: { page: 1 } })
+  expect(view.findAll('.news-card')).toHaveLength(1)
   view.unmount()
 })
 it('shows generated cover and statistics images with credits', async () => {

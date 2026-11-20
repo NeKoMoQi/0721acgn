@@ -1,9 +1,17 @@
 <template>
   <Headpage />
   <div ref="mapcontainer" class="war-content"></div>
+  <div v-if="entryPending || entryError" class="battle-entry">
+    <p v-if="entryPending" role="status">正在载入战场…</p>
+    <template v-else>
+      <p role="alert">{{ entryError }}</p>
+      <button type="button" @click="loadBattle">重试</button>
+      <router-link to="/warflag">返回战棋入口</router-link>
+    </template>
+  </div>
 
   <!-- 顶部回合横幅 -->
-  <div v-if="battleState" class="turn-banner" :class="{ 'turn-self': isMyTurn, 'turn-enemy': !isMyTurn }">
+  <div v-if="battleState && !entryPending && !entryError" class="turn-banner" :class="{ 'turn-self': isMyTurn, 'turn-enemy': !isMyTurn }">
     <div class="turn-info">
       <span class="round-no">第 {{ battleState.roundNo }} 回合</span>
       <span class="turn-label">{{ isMyTurn ? '我方行动' : '敌方行动' }}</span>
@@ -238,7 +246,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import router from '@/router'
 import { useMapbox } from '@/view/WarFlag/composables/useMapbox.ts'
@@ -266,6 +274,10 @@ if (myPlayerIdRaw === null) {
 const myPlayerId = myPlayerIdRaw !== null ? myPlayerIdRaw : 0
 
 const mapcontainer = ref(null)
+const entryPending = ref(false)
+const entryError = ref('')
+let battlePrepared = false
+let disposed = false
 const endTurnLoading = ref(false)
 const resetLoading = ref(false)
 const settleRestartLoading = ref(false)
@@ -395,47 +407,75 @@ function goToWarStart() {
   router.push('/warflag')
 }
 
-;(async () => {
-  if (myPlayerIdRaw === null) return
-
-  const sideForLs = myPlayerIdRaw === 0 ? 'soviet' : 'german'
+async function loadBattle() {
+  if (myPlayerIdRaw === null || entryPending.value || disposed) return
+  entryPending.value = true
+  entryError.value = ''
+  let initializingMap = false
   try {
-    localStorage.setItem('warflag:lastSide', sideForLs)
-  } catch {
-    /* ignore */
-  }
-
-  try {
-    await initBattle(BATTLE_ID, myPlayerId)
-  } catch (e) {
-    console.warn('initBattle 调用失败，继续按现有数据加载', e)
-  }
-
-  const [gridRes, chessRes] = await Promise.all([
-    getWarGrid(),
-    getWarChessing(BATTLE_ID)
-  ])
-  if (gridRes?.code !== 200 || chessRes?.code !== 200) {
-    console.warn('战棋地图或棋子数据加载失败', gridRes, chessRes)
-    return
-  }
-  await init(gridRes.data, chessRes.data)
-
-  try {
-    if (!localStorage.getItem(RULES_SEEN_KEY)) {
-      showRulesModal.value = true
-      localStorage.setItem(RULES_SEEN_KEY, '1')
+    if (!battlePrepared) {
+      const started = await initBattle(BATTLE_ID, myPlayerId)
+      if (started?.code !== 200) throw new Error('战局准备失败')
+      battlePrepared = true
     }
-  } catch {
-    /* ignore */
+    if (disposed) return
+    const [gridRes, chessRes] = await Promise.all([getWarGrid(), getWarChessing(BATTLE_ID)])
+    if (disposed) return
+    if (gridRes?.code !== 200 || chessRes?.code !== 200 ||
+        !Array.isArray(gridRes.data) || !Array.isArray(chessRes.data)) {
+      throw new Error('地图或棋子数据无法读取')
+    }
+    initializingMap = true
+    await init(gridRes.data, chessRes.data)
+    if (disposed) return
+    try {
+      localStorage.setItem('warflag:lastSide', myPlayerIdRaw === 0 ? 'soviet' : 'german')
+      if (!localStorage.getItem(RULES_SEEN_KEY)) {
+        showRulesModal.value = true
+        localStorage.setItem(RULES_SEEN_KEY, '1')
+      }
+    } catch {
+      /* 浏览器可能禁用本地存储 */
+    }
+  } catch (e) {
+    if (!disposed) {
+      entryError.value = initializingMap
+        ? '地图初始化失败，请重试。'
+        : '战场数据加载失败，请重试。'
+      console.warn('战场载入失败', e)
+    }
+  } finally {
+    entryPending.value = false
   }
-})()
+}
+
+onMounted(loadBattle)
+onBeforeUnmount(() => { disposed = true })
 </script>
 
 <style scoped>
 .war-content {
   position: absolute;
   inset: 80px 0 0 0;
+}
+.battle-entry {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1200;
+  width: min(420px, calc(100% - 24px));
+  padding: 18px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px #20332730;
+}
+.battle-entry button, .battle-entry a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: 8px 12px 0 0;
+  padding: 0 8px;
 }
 
 /* ===== 顶部回合横幅 ===== */

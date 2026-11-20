@@ -380,7 +380,11 @@ export function toggleBookshelf(item: Omit<BookshelfItem, 'addedAt'>): boolean {
   return nextStarred
 }
 
-async function innerToggleBookshelf(item: Omit<BookshelfItem, 'addedAt'>) {
+export function toggleBookshelfAsync(item: Omit<BookshelfItem, 'addedAt'>): Promise<boolean | null> {
+  return innerToggleBookshelf(item)
+}
+
+async function innerToggleBookshelf(item: Omit<BookshelfItem, 'addedAt'>): Promise<boolean | null> {
   await ensureAcgnUserHydrated()
   const before = [...historyMem]
   const now = Date.now()
@@ -389,7 +393,7 @@ async function innerToggleBookshelf(item: Omit<BookshelfItem, 'addedAt'>) {
   let nextStarred: boolean
 
   if (i >= 0) {
-    const row = list[i]
+    const row = { ...list[i] }
     nextStarred = !row.starred
     row.starred = nextStarred
     row.starredAt = nextStarred ? now : undefined
@@ -419,15 +423,17 @@ async function innerToggleBookshelf(item: Omit<BookshelfItem, 'addedAt'>) {
     if (res?.code !== 200) {
       historyMem = before
       ElMessage.warning(res?.msg || '同步收藏失败')
-      return
+      return null
     }
     const srv = res.data?.starred
     if (typeof srv === 'boolean' && srv !== nextStarred) {
       innerApplyStarFromServer(item.type, item.id, srv, now)
     }
+    return typeof srv === 'boolean' ? srv : nextStarred
   } catch {
     historyMem = before
     ElMessage.error('网络异常，收藏未保存')
+    return null
   }
 }
 

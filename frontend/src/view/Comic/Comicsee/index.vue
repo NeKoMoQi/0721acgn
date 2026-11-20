@@ -7,22 +7,26 @@
   
       <!-- 内容容器 -->
       <div class="acgn_container" ref="maintain" @scroll="handscroll">
-        <div v-for="(item, index) in pagelist" >
+        <div v-for="(item, index) in pagelist" :key="index">
             <img :src=item.fileurl alt="" style="width: 100%;">
         </div>
-        <button v-if="hasmore && pagelist.length && !isloading" class="more-pages" type="button" @click="loadpage">加载后续页面</button>
+        <button v-if="hasmore && pagelist.length && !isloading && !loadError" class="more-pages" type="button" @click="loadpage">加载后续页面</button>
         <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
-        <div v-if="!hasmore"  class="tishi">已经到底啦~亲(๑•̀ㅂ•́)و✧</div>
+        <div v-else-if="loadError" class="tishi" role="alert">
+          {{ loadError }}
+          <button v-if="chapterId" type="button" class="retry-pages" @click="loadpage">重试</button>
+        </div>
+        <div v-else-if="!hasmore" class="tishi">{{ pagelist.length ? '已经读完本章' : '本章暂无正文' }}</div>
       </div>
       <div class="chapter-nav">
       <button class="nav-btn directory" @click="goToCatalog">
         <i class="iconfont icon-catalog"></i> 目录
       </button>
-      <div class="chapter-control" v-if="pagelist">
-        <button class="nav-btn prev" @click="goPrev" :disabled="chapterno <= 1">
+      <div class="chapter-control" v-if="chapterId">
+        <button class="nav-btn prev" @click="goToChapter(previousChapter)" :disabled="!previousChapter">
           上一章
         </button>
-        <button class="nav-btn next" @click="goNext" :disabled="chapterno >= chaptercount">
+        <button class="nav-btn next" @click="goToChapter(nextChapter)" :disabled="!nextChapter">
           下一章
         </button>
       </div>
@@ -32,122 +36,92 @@
   </template>
   
   <script setup>
-  import { ref, watch, onMounted } from 'vue';
+  import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
   import { getcartoonpage, getcartoonchapter, getcartoonbyid } from '@/api/cartoon';
   import { useRoute, useRouter } from 'vue-router';
   import useUserStore from '@/stores/modules/users';
-  import { saveComicProgress, ensureAcgnUserHydrated, pushHistory } from '@/utils/acgnLocal';
+  import { saveComicProgress, pushHistory } from '@/utils/acgnLocal';
 
   const route = useRoute();
-  const $Router = useRouter();
-  const useStore = useUserStore();
-
-  const chapterIdStr = ref('');
-  const chapterno = ref(1);
-  const intChapterNum = ref(0);
+  const router = useRouter();
+  const store = useUserStore();
+  // App 的路由视图按完整 URL 重建，保留本次打开的作品和章节。
+  const comicId = Number(route.query.comicid || store.cartooncomicid);
+  const chapterId = String(route.query.chapterid ?? '');
+  const chapterNo = Number(route.query.chapterno ?? 1);
+  const chapters = ref([]);
+  const chapterIndex = computed(() => chapters.value.findIndex(row => String(row.chapterid) === chapterId));
+  const previousChapter = computed(() => chapterIndex.value > 0 ? chapters.value[chapterIndex.value - 1] : null);
+  const nextChapter = computed(() => chapterIndex.value >= 0 ? chapters.value[chapterIndex.value + 1] : null);
   const pagelist = ref([]);
-  const pages = ref(1);
-  const chaptercount = ref(0);
   const maintain = ref(null);
   const isloading = ref(false);
   const hasmore = ref(true);
+  const loadError = ref('');
+  let nextPage = 1;
+  let disposed = false;
 
-  function paddedChapterId(num) {
-    return String(num).padStart(7, '0');
-  }
-
-  function persistProgress() {
-    const cid = Number(route.query.comicid || useStore.cartooncomicid);
-    if (!cid || !chapterIdStr.value) return;
-    saveComicProgress(cid, {
-      chapterId: chapterIdStr.value,
-      chapterno: chapterno.value,
-      imagePage: pages.value,
-    });
-  }
-
-  async function loadChapterFromRoute() {
-    chapterIdStr.value = String(route.query.chapterid ?? '');
-    chapterno.value = Number(route.query.chapterno ?? 1);
-    const n = parseInt(chapterIdStr.value, 10);
-    intChapterNum.value = Number.isFinite(n) ? n : 0;
-    pages.value = 1;
-    hasmore.value = true;
-    isloading.value = false;
-    pagelist.value = [];
-    chaptercount.value = Number(useStore.cartoonchapterlength) || 0;
-    if (!chapterIdStr.value) return;
-    const result = await getcartoonpage(chapterIdStr.value, 1);
-    pagelist.value = result.data || [];
-    hasmore.value = pagelist.value.length >= 4;
-    persistProgress();
-    if (maintain.value) maintain.value.scrollTop = 0;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  watch(() => [route.query.chapterid, route.query.chapterno], loadChapterFromRoute);
-  onMounted(async () => {
-    await ensureAcgnUserHydrated();
-    const cid = Number(route.query.comicid || useStore.cartooncomicid);
-    if (cid) {
-      useStore.cartooncomicid = String(cid);
-      const [chapters, work] = await Promise.all([getcartoonchapter(cid), getcartoonbyid(cid)]);
-      if (Array.isArray(chapters.data)) useStore.cartoonchapterlength = chapters.data.length;
-      if (work.data?.name) pushHistory({ type: 'comic', id: cid, name: work.data.name, pic: work.data.picurl });
+  async function loadpage() {
+    if (!chapterId || isloading.value || !hasmore.value || disposed) return;
+    const page = nextPage;
+    isloading.value = true;
+    loadError.value = '';
+    try {
+      const result = await getcartoonpage(chapterId, page);
+      if (disposed) return;
+      if (result?.code !== 200 || !Array.isArray(result.data)) throw new Error('漫画正文加载失败');
+      const images = result.data;
+      pagelist.value.push(...images);
+      hasmore.value = images.length >= 4;
+      nextPage = page + 1;
+      if (comicId && images.length) {
+        saveComicProgress(comicId, { chapterId, chapterno: chapterNo, imagePage: page });
+      }
+    } catch {
+      if (!disposed) loadError.value = '漫画正文加载失败，请重试。';
+    } finally {
+      isloading.value = false;
     }
-    await loadChapterFromRoute();
+  }
+
+  onMounted(() => {
+    if (!chapterId) {
+      loadError.value = '缺少章节信息，请从作品目录重新打开。';
+      return;
+    }
+    window.scrollTo({ top: 0 });
+    void loadpage();
+    if (!comicId) return;
+    getcartoonchapter(comicId).then((result) => {
+      if (!disposed && result?.code === 200 && Array.isArray(result.data)) chapters.value = result.data;
+    }).catch(() => {});
+    getcartoonbyid(comicId).then((result) => {
+      if (!disposed && result?.code === 200 && result.data?.name) {
+        pushHistory({ type: 'comic', id: comicId, name: result.data.name, pic: result.data.picurl });
+      }
+    }).catch(() => {});
   });
 
-  const goToCatalog = () => {
-    $Router.push({ path: '/ComicIntroduce', query: { comicid: useStore.cartooncomicid } });
-  };
+  onBeforeUnmount(() => { disposed = true; });
 
-  const getmorepage = async () => {
-    const result = await getcartoonpage(chapterIdStr.value, pages.value);
-    const chunk = result.data || [];
-    pagelist.value.push(...chunk);
-    if (chunk.length < 4) hasmore.value = false;
-    isloading.value = false;
-    persistProgress();
-  };
-
-  const loadpage = () => {
-    if (isloading.value || !hasmore.value) return;
-    isloading.value = true;
-    pages.value++;
-    getmorepage();
-  };
-
-  const handscroll = () => {
-    const minsee = 900;
-    if (!maintain.value) return;
-    const scrollTop = maintain.value.scrollTop;
-    const scrollHeight = maintain.value.scrollHeight;
-    const clientHeight = maintain.value.clientHeight;
-    if (scrollTop + clientHeight >= scrollHeight - minsee) {
-      loadpage();
+  function handscroll() {
+    const container = maintain.value;
+    if (container && !loadError.value && container.scrollHeight - container.scrollTop - container.clientHeight < 900) {
+      void loadpage();
     }
-  };
+  }
 
-  const goPrev = () => {
-    if (chapterno.value <= 1) return;
-    const prevNum = intChapterNum.value - 1;
-    const nextNo = chapterno.value - 1;
-    $Router.push({
-      path: '/Comicsee',
-      query: { comicid: route.query.comicid || useStore.cartooncomicid, chapterid: paddedChapterId(prevNum), chapterno: nextNo },
-    });
-  };
+  function goToCatalog() {
+    router.push(comicId ? { name: 'ComicIntroduce', query: { comicid: comicId } } : { name: 'Comic' });
+  }
 
-  const goNext = () => {
-    if (chapterno.value >= chaptercount.value) return;
-    const nextNum = intChapterNum.value + 1;
-    const nextNo = chapterno.value + 1;
-    $Router.push({
-      path: '/Comicsee',
-      query: { comicid: route.query.comicid || useStore.cartooncomicid, chapterid: paddedChapterId(nextNum), chapterno: nextNo },
+  function goToChapter(chapter) {
+    if (!chapter) return;
+    router.push({
+      name: 'Comicsee',
+      query: { comicid: comicId, chapterid: chapter.chapterid, chapterno: chapter.chapterno },
     });
-  };
+  }
   </script>
   <style scoped>
   .tishi{
@@ -249,6 +223,7 @@
     top: 200px;
   }
   .more-pages { display: none; }
+.retry-pages { min-height: 44px; margin-left: 8px; padding: 0 12px; }
 
 @media (max-width: 820px) {
   .acgn_container {

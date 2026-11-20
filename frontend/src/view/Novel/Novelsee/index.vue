@@ -68,6 +68,7 @@ const loading = ref(false)
 const loadError = ref('')
 let disposed = false
 let loadedSuccessfully = false
+let historyRecorded = false
 
 const navigateTo = async (href) => {
   if (!rendition.value || loading.value) return
@@ -122,6 +123,17 @@ async function loadVolume(volume) {
     usestore.novelchapter = volume
     loadedSuccessfully = true
     saveNovelProgress(novelId, volume)
+    if (!historyRecorded) {
+      // 每次成功打开都是补写历史的机会，包括首卷失败后的重试。
+      historyRecorded = true
+      getnovelbyid(novelId).then(work => {
+        if (!disposed && work?.data?.name) {
+          pushHistory({ type: 'novel', id: novelId, name: work.data.name, pic: work.data.picurl })
+        } else {
+          historyRecorded = false
+        }
+      }).catch(() => { historyRecorded = false })
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error) {
     if (!disposed) {
@@ -166,12 +178,6 @@ async function initializeReader() {
   }
   if (loadError.value || disposed) return
   await loadVolume(requestedVolume.value)
-  if (loadedSuccessfully) {
-    // 标题、封面加载失败不应阻止正文显示。
-    getnovelbyid(novelId).then(work => {
-      if (!disposed && work.data?.name) pushHistory({ type: 'novel', id: novelId, name: work.data.name, pic: work.data.picurl })
-    }).catch(() => {})
-  }
 }
 function retry() {
   if (maxVolume.value > 0) return loadVolume(requestedVolume.value)

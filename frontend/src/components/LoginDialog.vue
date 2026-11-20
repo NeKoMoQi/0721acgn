@@ -2,14 +2,10 @@
 <div v-if="loading_page == 1" class="overlay"></div>
 <div v-if="loading_page == 1" class="loading_page" role="dialog" aria-modal="true" aria-label="登录" @keydown.esc.stop="close">
   <div class="chaijun">
-    <div class="login-modes" style="display: flex;justify-content: center; top: 10%; position: relative; margin-bottom: 40px;">
-      <div class="erwei">扫描二维码登录</div>
-      <div style="top: 20%; position: fixed;">
-        <img src="/qer.jpg" alt="" style="width: 168px; height: 168px;">
-      </div>
-      <p style="top: 65%; position: fixed;" class="weixin">请使用微信扫码登录</p>
-      <p style="top: 70%; position: fixed;" class="weixin">我的微信扫码登录果然有问题</p>
-      </div>
+    <div class="login-modes" style="position: relative; top: 18%; text-align: center; padding: 0 18px;">
+      <p class="erwei">0721ACGN</p>
+      <p class="weixin">游客也可以浏览作品和资讯。</p>
+    </div>
       <div>
       <img v-if="chaijun == true" src="/tantou.png" alt="" style="width: 100px;  left:0%; top: 84.3%; position: fixed;">
       <img v-if="chaijun == false" src="/tantou2.png" alt="" style="width: 100px;  left:0%; top: 90.6%; position: fixed;">
@@ -18,13 +14,12 @@
   <div class="login-divider" style="width: 1px; height: 90%; background-color: #cccccc; margin: 20px 0;"></div>
   <div class="load" @keydown.enter.prevent="entering">
     <button type="button" class="login-close" aria-label="关闭登录" @click="close" @keydown.enter.stop>×</button>
-    <div class="login-modes" style="display: flex;justify-content: center; top: 10%; position: relative; margin-bottom: 40px;">
-      <div style="font-weight: 500;font-size: 18px;line-height: 20px; margin-right: 12px;" @click="phones1">密码登录</div>
-      <div>|</div>
-      <div style="font-weight: 500;font-size: 18px;line-height: 20px; margin-left: 12px;" @click="phones">手机登录</div>
+    <div class="login-modes" style="display: flex; justify-content: center; top: 10%; position: relative; margin-bottom: 40px;">
+      <h2 style="font-weight: 500; font-size: 18px; line-height: 20px;">账号密码登录</h2>
     </div>
-    <div v-if="phone == 0" class="login-field" style="top: 15%; position: relative; justify-content: center; display: flex;">
+    <div class="login-field" style="top: 15%; position: relative; justify-content: center; display: flex;">
     <el-input
+      ref="usernameInput"
       v-model="loginForm.username"
       autocomplete="username"
       style="max-width: 400px;height: 50px; "
@@ -33,21 +28,7 @@
       <template #prepend>账号</template>
     </el-input>
   </div>
-  <div v-if="phone == 1" class="login-field" style="top: 15%; position: relative; justify-content: center; display: flex;">
-    <el-input
-    v-model="telephone"
-      style="max-width: 400px;height: 50px; "
-      placeholder="请输入手机号"
-    >
-      <template #prepend>手机号</template>
-      <template #append >
-        <div @click="yanzheng">
-          发送验证码
-        </div>
-      </template>
-    </el-input>
-  </div>
-   <div v-if="phone == 0" class="login-field" style="display: flex;justify-content: center;  position: relative;margin-top: 43px; top: 4.5%;">
+   <div class="login-field" style="display: flex;justify-content: center;  position: relative;margin-top: 43px; top: 4.5%;">
     <el-input
        @focus="handleFocus1"
        @blur = "handleFocus2"
@@ -62,24 +43,11 @@
     </el-input>
 
    </div>
-   <div v-if="phone == 1" class="login-field" style="display: flex;justify-content: center;  position: relative;margin-top: 43px; top: 4.5%;">
-    <el-input
-       v-model="yanzheng1"
-       @focus="handleFocus1"
-       @blur = "handleFocus2"
-      style="max-width: 400px;height: 50px;"
-      placeholder="请输入验证码"
-    >
-      <template #prepend>验证码</template>
-    </el-input>
-   </div>
-
    <div class="login-actions" style="position: relative; top: 12%; justify-content: center; display: flex;">
-    <button style="width: 194px; height: 40px; z-index: 1002; margin-right: 5px;" class="zhuce" @click="phones">注册</button>
-    <button  class="denglu" @click="entering">登录</button>
+    <button type="button" class="denglu" :disabled="submitting" @click="entering">{{ submitting ? '正在登录…' : '登录' }}</button>
    </div>
    <div class="login-note" style="position: relative; top: 15%; justify-content: center; display: flex;">
-    <p class="weixin"> 未注册过的手机号，我们将自动帮你注册账号</p>
+    <p class="weixin">自助注册暂未开放。已有账号可直接登录。</p>
    </div>
     <div>
       <img v-if="chaijun == true" src="/tantou2 left.png" alt="" style="width: 100px;  left: 88%; top: 84.3%; position: fixed;">
@@ -91,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, nextTick, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElNotification } from 'element-plus'
 import useUserStore from '@/stores/modules/users'
@@ -100,35 +68,34 @@ import { getTime } from '@/utils/time'
 const userStore = useUserStore()
 const router = useRouter()
 const loading_page = computed(() => userStore.loginVisible ? 1 : 0)
-const phone = ref(0)
-const telephone = ref('')
-const yanzheng1 = ref('')
+const usernameInput = ref<{ focus: () => void } | null>(null)
+let returnFocus: HTMLElement | null = null
 const chaijun = ref(true)
 const loginForm = reactive({ username: '', password: '' })
 const submitting = ref(false)
 
-watch(() => userStore.loginVisible, (visible) => {
-  if (!visible) {
+watch(() => userStore.loginVisible, async (visible) => {
+  if (visible) {
+    if (document.activeElement instanceof HTMLElement) returnFocus = document.activeElement
+    await nextTick()
+    usernameInput.value?.focus()
+  } else {
     loginForm.password = ''
-    telephone.value = ''
-    yanzheng1.value = ''
-    phone.value = 0
     chaijun.value = true
+    await nextTick()
+    if (returnFocus?.isConnected) returnFocus.focus()
+    returnFocus = null
   }
-})
+}, { immediate: true })
 
 function close() {
   if (!submitting.value) userStore.closeLogin()
 }
-function phones1() { if (!submitting.value) phone.value = 0 }
-function phones() { if (!submitting.value) phone.value = 1 }
 function handleFocus1() { chaijun.value = false }
 function handleFocus2() { chaijun.value = true }
-function yanzheng() { ElMessage.info('手机登录暂未开放，请先使用账号密码登录') }
 
 async function entering() {
   if (submitting.value) return
-  if (phone.value === 1) { yanzheng(); return }
   if (!loginForm.username.trim() || !loginForm.password) {
     ElMessage.warning('请填写账号和密码')
     return
@@ -183,17 +150,6 @@ async function entering() {
     border-radius: 8px;
     border: null;
 }
-.zhuce{
-   top: 10%;
-  -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    width: 194px;
-    height: 40px;
-    cursor: pointer;
-    color: #18191c;
-    background: #fff;
-    border-radius: 8px;
-}
 .chaijun{
   background-color: white;
   height: 100%;
@@ -213,7 +169,7 @@ async function entering() {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
-  z-index: 1000; /* 确保遮罩层在其他元素之上 */
+  z-index: 31000; /* 确保遮罩层在其他元素之上 */
 }
 .loading_page{
   width: 820px;
@@ -223,7 +179,7 @@ async function entering() {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1001; /* 确保加载页面在遮罩层之上 */
+  z-index: 31001; /* 确保加载页面在遮罩层之上 */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 添加阴影效果 */
   display: flex;
   align-items: center; /* 垂直居中对齐 */
@@ -282,9 +238,9 @@ input:focus{
 }
 
 @media (max-width: 850px), (max-height: 500px) {
-  .overlay { z-index: 8999; }
+  .overlay { z-index: 31000; }
   .loading_page {
-    z-index: 9000;
+    z-index: 31001;
     width: min(440px, calc(100% - 24px));
     height: auto;
     max-height: calc(100dvh - 24px);

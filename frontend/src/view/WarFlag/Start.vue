@@ -12,11 +12,11 @@
           type="button"
           class="btn btn-continue"
           :disabled="!hasSave"
-          :title="hasSave ? '接着上次的进度' : '还没有在本机选过阵营进过战场哦'"
+          :title="hasSave ? '以本机记住的阵营进入公共战场' : '本机还没选过阵营'"
           @click="continueGame"
         >
           <span class="btn-label">继续游戏</span>
-          <span class="btn-hint">{{ hasSave ? '接着上次的阵营与进度' : '暂无本地记录' }}</span>
+          <span class="btn-hint">{{ hasSave ? '用上次的阵营进入公共战场' : '本机还没选过阵营' }}</span>
         </button>
         <button
           type="button"
@@ -65,7 +65,7 @@
         </div>
       </transition>
 
-      <p class="war-tip">提示：「继续」不会清空棋子；「新游戏」会调用服务器备份还原全场。</p>
+      <p class="war-tip">当前是公共战场，所有玩家共享进度。「新游戏」会将公共战场恢复为初始部署。</p>
     </div>
   </div>
 </template>

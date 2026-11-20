@@ -32,19 +32,15 @@ async function openLogin() {
 }
 
 describe('保留原有登录界面的交互', () => {
-  it('保留原有二维码、人物图片、手机登录和注册入口，空密码不发请求', async () => {
+  it('只显示可用的账号密码登录，空密码不发请求', async () => {
     const { view } = await openLogin()
     expect(view.find('.loading_page').exists()).toBe(true)
-    expect(view.find('img[src="/qer.jpg"]').exists()).toBe(true)
     expect(view.find('img[src="/tantou.png"]').exists()).toBe(true)
-    expect(view.get('.zhuce').text()).toBe('注册')
+    expect(view.text()).toContain('自助注册暂未开放')
+    expect(view.find('input[placeholder="请输入手机号"]').exists()).toBe(false)
+    expect(view.findAll('button').map(button => button.text())).not.toContain('注册')
     await view.get('.denglu').trigger('click')
     expect(ElMessage.warning).toHaveBeenCalledWith('请填写账号和密码')
-    expect(reqLogin).not.toHaveBeenCalled()
-    await view.findAll('div').find(item => item.text() === '手机登录')!.trigger('click')
-    expect(view.find('input[placeholder="请输入手机号"]').exists()).toBe(true)
-    await view.get('.denglu').trigger('click')
-    expect(ElMessage.info).toHaveBeenCalledWith('手机登录暂未开放，请先使用账号密码登录')
     expect(reqLogin).not.toHaveBeenCalled()
   })
 

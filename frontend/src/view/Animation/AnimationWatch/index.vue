@@ -62,56 +62,15 @@
             </div>
           </div>
 
-          <div class="interaction-bar">
-            <button type="button" :class="{ active: likeActive }" @click="toggleLike">
-              <strong>👍</strong>
-              <span>点赞 {{ likeCount }}</span>
-            </button>
-            <button type="button" :class="{ active: coinActive }" @click="toggleCoin">
-              <strong>◎</strong>
-              <span>投币 {{ coinCount }}</span>
-            </button>
-            <button type="button" :class="{ active: favoriteActive }" @click="favoriteActive = !favoriteActive">
-              <strong>☆</strong>
-              <span>{{ favoriteActive ? '已收藏' : '收藏' }}</span>
-            </button>
-            <button type="button" @click="scrollToComments">
-              <strong>💬</strong>
-              <span>评论 {{ comments.length }}</span>
-            </button>
-          </div>
-
-          <div ref="commentSection" class="comment-section">
-            <div class="comment-head">
-              <h2>评论区</h2>
-              <span>{{ comments.length }} 条短评</span>
-            </div>
-            <textarea
-              v-model="commentText"
-              class="comment-input"
-              maxlength="480"
-              placeholder="写一条短评，和大家聊聊这一集..."
-            />
-            <div class="comment-tools">
-              <span>{{ commentText.length }} / 480</span>
-              <button type="button" class="comment-submit" :disabled="!commentText.trim()" @click="submitComment">
-                发布
-              </button>
-            </div>
-            <div v-if="comments.length" class="comment-list">
-              <div v-for="item in comments" :key="item.id" class="comment-item">
-                <div class="avatar">{{ item.author.slice(0, 1) }}</div>
-                <div>
-                  <div class="comment-meta">
-                    <strong>{{ item.author }}</strong>
-                    <span>{{ item.time }}</span>
-                  </div>
-                  <p>{{ item.text }}</p>
-                </div>
-              </div>
-            </div>
-            <div v-else class="comment-empty">暂无短评，来抢沙发。</div>
-          </div>
+          <AcgnCommunityPanel
+            media-type="animation"
+            :media-id="animationIdNum"
+            :genre="animation.genre"
+            :title="animation.name"
+            :pic="animation.bcimg"
+            :shelf-active="favoriteActive"
+            @toggle-shelf="toggleFavorite"
+          />
         </section>
       </section>
 
@@ -153,8 +112,9 @@
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getAnimationById, getAnimationEpisodeById, getAnimationEpisodes } from '@/api/animation';
-import { ensureAcgnUserHydrated, pushHistory, saveAnimationEpisode } from '@/utils/acgnLocal';
+import { ensureAcgnUserHydrated, isInBookshelf, pushHistory, saveAnimationEpisode, toggleBookshelfAsync } from '@/utils/acgnLocal';
 import { ElMessage } from 'element-plus';
+import AcgnCommunityPanel from '@/components/AcgnCommunityPanel.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -162,17 +122,11 @@ const animation = ref<any>(null);
 const currentEpisode = ref<any>(null);
 const episodes = ref<any[]>([]);
 const videoRef = ref<HTMLVideoElement | null>(null);
-const commentSection = ref<HTMLElement | null>(null);
 const lightsOff = ref(false);
 const autoNext = ref(true);
 const duration = ref(0);
 const favoriteActive = ref(false);
-const likeActive = ref(false);
-const coinActive = ref(false);
-const likeCount = ref(1280);
-const coinCount = ref(233);
-const commentText = ref('');
-const comments = ref<Array<{ id: number; author: string; text: string; time: string }>>([]);
+const favoritePending = ref(false);
 
 const animationIdNum = computed(() => Number(route.query.animationid));
 const episodeIdNum = computed(() => Number(route.query.episodeid));
@@ -206,6 +160,7 @@ async function loadPage() {
   episodes.value = Array.isArray(episodeRes?.data) ? episodeRes.data : [];
   await loadEpisode();
   await ensureAcgnUserHydrated();
+  favoriteActive.value = isInBookshelf('animation', animationId);
   if (animation.value) {
     pushHistory({
       type: 'animation',
@@ -243,30 +198,20 @@ function episodeTitle(item: any) {
   return item?.title || `第 ${item?.episodeNo || ''} 集`;
 }
 
-function toggleLike() {
-  likeActive.value = !likeActive.value;
-  likeCount.value += likeActive.value ? 1 : -1;
-}
-
-function toggleCoin() {
-  coinActive.value = !coinActive.value;
-  coinCount.value += coinActive.value ? 1 : -1;
-}
-
-function submitComment() {
-  const text = commentText.value.trim();
-  if (!text) return;
-  comments.value.unshift({
-    id: Date.now(),
-    author: '游客',
-    text,
-    time: '刚刚',
-  });
-  commentText.value = '';
-}
-
-function scrollToComments() {
-  commentSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+async function toggleFavorite() {
+  if (favoritePending.value || !animation.value || !animationIdNum.value) return;
+  favoritePending.value = true;
+  try {
+    const state = await toggleBookshelfAsync({
+      type: 'animation',
+      id: animationIdNum.value,
+      name: animation.value.name,
+      pic: animation.value.bcimg,
+    });
+    if (state !== null) favoriteActive.value = state;
+  } finally {
+    favoritePending.value = false;
+  }
 }
 
 function goPrev() {
@@ -426,9 +371,7 @@ function handleKeydown(event: KeyboardEvent) {
   flex-wrap: wrap;
 }
 .tool-button,
-.icon-toggle,
-.interaction-bar button,
-.comment-submit {
+.icon-toggle {
   min-height: 36px;
   padding: 0 13px;
   border: 1px solid #d5e2ec;
@@ -441,26 +384,21 @@ function handleKeydown(event: KeyboardEvent) {
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
 }
 .tool-button:hover,
-.icon-toggle:hover,
-.interaction-bar button:hover,
-.comment-submit:hover {
+.icon-toggle:hover {
   border-color: #3498db;
   transform: translateY(-1px);
 }
-.tool-button:disabled,
-.comment-submit:disabled {
+.tool-button:disabled {
   cursor: not-allowed;
   opacity: 0.45;
   transform: none;
 }
-.tool-button.primary,
-.comment-submit {
+.tool-button.primary {
   background: #2f89c8;
   border-color: #2f89c8;
   color: #fff;
 }
-.icon-toggle.active,
-.interaction-bar button.active {
+.icon-toggle.active {
   background: #e9f6f0;
   border-color: #42a676;
   color: #267553;
@@ -525,108 +463,6 @@ function handleKeydown(event: KeyboardEvent) {
   background: #eef6fc;
   color: #52728d;
   font-size: 12px;
-}
-.interaction-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 18px 0;
-  padding-top: 16px;
-  border-top: 1px solid #e4edf4;
-}
-.interaction-bar button {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-}
-.comment-section {
-  padding-top: 16px;
-  border-top: 1px solid #e4edf4;
-}
-.comment-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-.comment-head h2 {
-  margin: 0;
-  font-size: 20px;
-  color: #22313f;
-}
-.comment-head span,
-.comment-tools span {
-  color: #7b8a97;
-  font-size: 13px;
-}
-.comment-input {
-  width: 100%;
-  min-height: 86px;
-  padding: 12px;
-  resize: vertical;
-  border: 1px solid #dbe6ee;
-  border-radius: 9px;
-  outline: none;
-  color: #263747;
-  font-size: 14px;
-  line-height: 1.6;
-  background: #fbfdff;
-}
-.comment-input:focus {
-  border-color: #3498db;
-}
-.comment-tools {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  margin-top: 10px;
-}
-.comment-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-top: 16px;
-}
-.comment-item {
-  display: flex;
-  gap: 10px;
-}
-.avatar {
-  flex: 0 0 36px;
-  width: 36px;
-  height: 36px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: #eaf5fd;
-  color: #2f89c8;
-  font-weight: 800;
-}
-.comment-meta {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  color: #7b8a97;
-  font-size: 12px;
-}
-.comment-meta strong {
-  color: #263747;
-  font-size: 14px;
-}
-.comment-item p {
-  margin: 4px 0 0;
-  line-height: 1.7;
-  color: #405466;
-}
-.comment-empty {
-  margin-top: 14px;
-  padding: 18px;
-  border-radius: 9px;
-  background: #f7fafc;
-  color: #7b8a97;
-  text-align: center;
 }
 .episode-panel {
   padding: 14px;

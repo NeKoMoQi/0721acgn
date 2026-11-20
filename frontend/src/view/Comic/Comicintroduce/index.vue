@@ -111,7 +111,7 @@ cartoondata.longcomment
     const id = comicIdNum.value
     const p = getComicProgress(id)
     if (p?.chapterId) {
-      $router.push({ name: 'Comicsee', query: { chapterid: p.chapterId, chapterno: p.chapterno } })
+      $router.push({ name: 'Comicsee', query: { comicid: id, chapterid: p.chapterId, chapterno: p.chapterno } })
       return
     }
     toTop()
@@ -122,6 +122,7 @@ cartoondata.longcomment
     $router.push({
       name:'Comicsee',
       query: {
+        comicid: comicIdNum.value,
         chapterid:chapter.value[0].chapterid,
         chapterno:chapter.value[0].chapterno
     }
@@ -132,6 +133,7 @@ cartoondata.longcomment
     $router.push({
       name:'Comicsee',
       query: {
+        comicid: comicIdNum.value,
         chapterid:id,
         chapterno:no
     }

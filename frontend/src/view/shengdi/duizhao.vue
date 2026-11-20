@@ -177,7 +177,7 @@
         <div class="panel-card review-card">
           <div class="card-header compact">
             <div>
-              <span class="mini-title">巡礼评价</span>
+              <span class="mini-title">本机巡礼备注</span>
               <h2>写下你的现场体验</h2>
             </div>
             <el-icon><ChatDotRound /></el-icon>
@@ -205,7 +205,7 @@
           />
           <div class="submit-row">
             <span>{{ reviewText.length }}/80</span>
-            <button type="button" class="primary-btn small" @click="submitReview">发布评价</button>
+            <button type="button" class="primary-btn small" @click="submitReview">保存到本机</button>
           </div>
           <div class="review-list">
             <div v-for="review in reviews" :key="review.user + review.text" class="review-item">
@@ -274,7 +274,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import {
   ArrowLeft,
   Camera,
@@ -295,6 +295,7 @@ import Headpage from '@/components/Headpage/index.vue'
 import useUserStore from '@/stores/modules/users'
 import { processFile } from '@/ts/picyanzheng'
 import { updatePic } from '@/api/updatepic'
+import { getXunliPointById } from '@/api/xunli'
 import { contrastpic } from '@/ts/contrastpic'
 
 type RankingItem = {
@@ -306,7 +307,13 @@ type RankingItem = {
 }
 
 const router = useRouter()
+const route = useRoute()
 const userStore = useUserStore()
+type CompareSpot = { id?: number; gaoqingpic?: string; name?: string; pointXunliname?: string; xunliname?: string }
+const currentSpot = ref<CompareSpot>({})
+const spotId = Number(route.query.spot ?? (userStore.xunlilist as CompareSpot)?.id)
+const workId = Number(route.query.work)
+const reviewKey = Number.isSafeInteger(spotId) && spotId > 0 ? `0721acgn:pilgrimage-note:${spotId}` : ''
 
 const animeImage = ref('')
 const previewImage = ref<HTMLImageElement | null>(null)
@@ -376,10 +383,7 @@ const missionList = ref([
   },
 ])
 
-const reviews = ref([
-  { user: '青空摄影部', text: '下午四点光线最像原片，逆光边缘很好看。' },
-  { user: '路过的番剧党', text: '机位比想象中靠后，建议带广角镜头。' },
-])
+const reviews = ref<{ user: string; text: string }[]>([])
 
 const historyList = ref([
   { time: '今天 14:20', title: '车站前街景', result: '相似度 87%' },
@@ -401,7 +405,9 @@ const cardStatus = computed(() => {
   if (missionProgress.value >= 34) return '待生成结论'
   return '待上传实景'
 })
-const reportTitle = computed(() => readCurrentSpot().name || '未命名巡礼场景')
+const reportTitle = computed(() =>
+  currentSpot.value.pointXunliname || currentSpot.value.name || currentSpot.value.xunliname || '未命名巡礼场景',
+)
 const danmakuTexts = computed(() => {
   if (showResults.value) return [`相似度 ${scorePercent.value}%`, matchLevel.value, activeTip.value + '优先']
   if (realImage.value) return ['实景已就位', '可以开始对比', activeTip.value + '参考中']
@@ -426,14 +432,6 @@ const resultTags = computed(() => {
   if (similarity.value < 0.85) return ['推荐打卡', '高匹配', activeTip.value]
   return ['巡礼名场面', '极高匹配', activeTip.value]
 })
-
-const readCurrentSpot = () => {
-  const legacySpot = (useUserStore as unknown as { xunlilist?: Record<string, unknown> }).xunlilist
-  return (legacySpot && Object.keys(legacySpot).length > 0 ? legacySpot : userStore.xunlilist) as {
-    gaoqingpic?: string
-    name?: string
-  }
-}
 
 const handleRealUploading = async (event: Event) => {
   const target = event.target as HTMLInputElement
@@ -486,7 +484,7 @@ const compareImages = async () => {
     missionList.value[1].done = true
     historyList.value.unshift({
       time: '刚刚',
-      title: readCurrentSpot().name || '当前巡礼点',
+      title: reportTitle.value,
       result: `相似度 ${scorePercent.value}%`,
     })
   } finally {
@@ -515,10 +513,20 @@ const submitReview = () => {
     ElMessage.warning('先写一点巡礼体验吧')
     return
   }
-  reviews.value.unshift({ user: '我', text })
+  if (!reviewKey) {
+    ElMessage.warning('请从地图选定巡礼地点后保存备注')
+    return
+  }
+  try {
+    localStorage.setItem(reviewKey, JSON.stringify({ text, rating: userRating.value }))
+  } catch {
+    ElMessage.error('本机存储不可用，备注尚未保存')
+    return
+  }
+  reviews.value = [{ user: '我的备注', text }]
   reviewText.value = ''
   missionList.value[2].done = true
-  ElMessage.success('评价已发布')
+  ElMessage.success('备注已保存到此浏览器')
 }
 
 const selectRanking = (item: RankingItem) => {
@@ -526,9 +534,33 @@ const selectRanking = (item: RankingItem) => {
   ElMessage.info(`已切换到 ${item.name} 的巡礼参考`)
 }
 
-onMounted(() => {
-  const spot = readCurrentSpot()
-  animeImage.value = spot?.gaoqingpic || ''
+onMounted(async () => {
+  if (reviewKey) {
+    try {
+      const saved = JSON.parse(localStorage.getItem(reviewKey) || 'null')
+      if (typeof saved?.text === 'string' && saved.text.trim()) {
+        reviews.value = [{ user: '我的备注', text: saved.text }]
+        if (Number.isInteger(saved.rating) && saved.rating >= 1 && saved.rating <= 5) userRating.value = saved.rating
+        missionList.value[2].done = true
+      }
+    } catch {
+      /* 本机记录损坏或存储不可用时仍可打开对照页 */
+    }
+  }
+  const selected = userStore.xunlilist as CompareSpot
+  if (selected && (!route.query.spot || Number(selected.id) === spotId)) {
+    currentSpot.value = selected
+  } else if (reviewKey && Number.isSafeInteger(workId) && workId > 0) {
+    try {
+      const result = await getXunliPointById(workId)
+      if (result?.code === 200 && Array.isArray(result.data)) {
+        currentSpot.value = result.data.find((spot: CompareSpot) => Number(spot.id) === spotId) || {}
+      }
+    } catch {
+      /* 地标资料读取失败时仍可查看已保存的备注 */
+    }
+  }
+  animeImage.value = currentSpot.value.gaoqingpic || ''
 })
 </script>
 

@@ -1,18 +1,14 @@
 <template>
 <div class="heads" v-bind="$attrs">
     <div class="left-group">
-    <div class="logo" @click="back">
-        <img src="/LOGO.png" alt="" style="height: 60px; width: 100px; padding: 4px;">
-    </div>
-    <nav class="main-nav" aria-label="站点导航">
-      <div @click="animation" :style="{ color: route.path === '/animation' ? '#00aeec' : '' }" class="acgn">番剧</div>
-      <div @click="comic"  :style="{ color: route.path === '/comic' ? '#00aeec' : '' }" class="acgn">漫画</div>
-      <div @click="novel" :style="{ color: route.path === '/novel' ? '#00aeec' : '' }" class="acgn">轻小说</div>
-      <div @click="galagame" :style="{ color: route.path.toLowerCase().startsWith('/galgame') || route.path.toLowerCase() === '/galagame' ? '#00aeec' : '' }" class="acgn">Galgame</div>
-      <div @click="zhanqi" :style="{ color: route.path.startsWith('/warflag') ? '#00aeec' : '' }" class="acgn">战棋</div>
-      <div @click="$router.push('/news')" :style="{ color: route.path.startsWith('/news') ? '#00aeec' : '' }" class="acgn">资讯</div>
-      <div @click="gotosd" :style="{ color: route.path === '/shengdi' ? '#00aeec' : '' }" class="acgn">圣地巡礼</div>
-    </nav>
+      <router-link to="/" class="logo" @click="scrollTop">
+        <img src="/LOGO.png" alt="0721ACGN 首页" style="height: 60px; width: 100px; padding: 4px;">
+      </router-link>
+      <nav class="main-nav" aria-label="站点导航">
+        <router-link v-for="item in channels" :key="item.to" :to="item.to" class="acgn" @click="scrollTop">
+          {{ item.label }}
+        </router-link>
+      </nav>
     </div>
     <div class="search" >
       <el-input
@@ -23,6 +19,7 @@
       :suffix-icon="Search"
       @input = "allsearch(searchText)"
       @keydown.enter.prevent="goFullSearch"
+      @keydown.esc.stop="closeSearch"
       clearable
     />
     </div>
@@ -30,15 +27,17 @@
           v-show="showResults && searchText"
           class="search-results-dropdown"
         >
-          <div 
+          <button type="button"
             class="search-more"
             @mousedown.prevent
             @click="goFullSearch"
           >
             在「全站搜索」中打开高级筛选与结果高亮 »
-          </div>
-          <div v-if="!searchResults.length" class="search-empty-pill">暂无快速匹配</div>
-          <div 
+          </button>
+          <div v-if="searchPending" class="search-empty-pill" role="status">正在搜索…</div>
+          <div v-else-if="searchError" class="search-empty-pill" role="status">{{ searchError }}</div>
+          <div v-else-if="!searchResults.length" class="search-empty-pill">暂无快速匹配</div>
+          <button type="button"
             v-for="(item, index) in searchResults" 
             :key="index"
             class="result-item"
@@ -48,172 +47,46 @@
             <img :src="item.picurl" alt="" class="result-img">
             
             <!-- 中间名字 -->
-            <div class="result-name">{{ item.name }}</div>
+            <span class="result-name">{{ item.name }}</span>
             
             <!-- 右侧类型 -->
-            <div class="result-type">{{ item.sourcetype }}</div>
-          </div>
+            <span class="result-type">{{ item.sourcetype }}</span>
+          </button>
     </div>
     <div class="user-wrap">
-      <div class="avatar-wrapper">
+      <div
+        class="avatar-wrapper"
+        @pointerenter="showGuestTip"
+        @pointerleave="showBox = false"
+        @keydown.esc.stop="closeAccountMenu"
+        @focusout="dismissAccountMenu"
+      >
         <button
+          ref="avatarButton"
           type="button"
-          class="mobile-avatar"
+          class="avatar-button"
           :aria-label="useStore.token ? '账号菜单' : '登录'"
-          :aria-expanded="useStore.token ? isUserHovering : undefined"
-          @click="useStore.token ? isUserHovering = !isUserHovering : Loading()"
+          :aria-expanded="useStore.token ? accountOpen : undefined"
+          @click="toggleAccount"
         >
           <img :src="useStore.token && useStore.avatar || '/enter.jpg'" alt="">
         </button>
-        <img
-          v-if="useStore.token"
-          :src="useStore.avatar || '/enter.jpg'"
-          class="avatar"
-          @mouseenter="userenter"
-          @mouseleave="userleave"
-          :style="{
-            transform: isUserHovering ? 'scale(2) translate(-20%, 20%)' : 'scale(1)',
-            transition: 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-          }"
-        />
-        <img
-          v-else
-          src="/enter.jpg"
-          class="avatar"
-          @click="Loading"
-          @mouseenter="loadenter"
-          @mouseleave="loadleave"
-        />
-      <div @mouseenter="userenter" @mouseleave="userleave" v-if="isUserHovering == true" class="usertip">
-        <div style="color: #fb7299; font-size: 18px; margin-top: 30px; font-weight: bold; font-family: 'PingFang SC';">
-          {{useStore.username}}
+        <div v-if="useStore.token && accountOpen" class="usertip">
+          <div class="account-name">{{ useStore.username }}</div>
+          <div>修为：{{ useStore.level }}</div>
+          <router-link
+            v-for="item in accountLinks"
+            :key="item.to"
+            :to="item.to"
+            class="profile-box"
+            @click="accountOpen = false; scrollTop()"
+          >
+            {{ item.label }}
+          </router-link>
+          <button type="button" class="profile-box" @click="logout">登出账号</button>
         </div>
-        <div>
-          修为：{{ useStore.level }}
-        </div>
-        <div>
-          -----------------------------------------------
-        </div>
-        <div class="profile-box" @click.stop="goUserCenter">
-  <!-- 左侧文字 -->
-  <div style="
-    font-family: 'PingFang SC';
-    font-size: 14px;
-    color: #303133;
-    font-weight: 500;
-    cursor: pointer;
-  ">
-    个人中心
-  </div>
-
-  <!-- 右侧箭头 -->
-  <span class="arrow-icon" style="
-    color: #909399;
-    font-size: 12px;
-    transition: transform 0.2s ease;
-  ">
-    ❯
-  </span>
-</div>
-<div 
-  class="profile-box"
-  @click.stop="goUserUpload"
->
-  <!-- 左侧文字 -->
-  <div style="
-    font-family: 'PingFang SC';
-    font-size: 14px;
-    color: #303133;
-    font-weight: 500;
-  ">
-    我要上传
-  </div>
-
-  <!-- 右侧箭头 -->
-  <span class="arrow-icon" style="
-    color: #909399;
-    font-size: 12px;
-    transition: transform 0.2s ease;
-  ">
-    ❯
-  </span>
-</div>
-<div 
-  class="profile-box"
-  @click.stop="goUserActivity"
->
-  <!-- 左侧文字 -->
-  <div style="
-    font-family: 'PingFang SC';
-    font-size: 14px;
-    color: #303133;
-    font-weight: 500;
-  ">
-    我的动态
-  </div>
-
-  <!-- 右侧箭头 -->
-  <span class="arrow-icon" style="
-    color: #909399;
-    font-size: 12px;
-    transition: transform 0.2s ease;
-  ">
-    ❯
-  </span>
-</div>
-<div 
-  class="profile-box"
-  @click.stop="gotoHistoryShelf"
->
-  <!-- 左侧文字 -->
-  <div style="
-    font-family: 'PingFang SC';
-    font-size: 14px;
-    color: #303133;
-    font-weight: 500;
-  ">
-    历史记录
-  </div>
-
-  <!-- 右侧箭头 -->
-  <span class="arrow-icon" style="
-    color: #909399;
-    font-size: 12px;
-    transition: transform 0.2s ease;
-  ">
-    ❯
-  </span>
-</div>
-        <div>
-          -----------------------------------------------
-        </div>
-        <div 
-  class="profile-box"
-  @click="logout"
->
-  <!-- 左侧文字 -->
-  <div style="
-    font-family: 'PingFang SC';
-    font-size: 14px;
-    color: #303133;
-    font-weight: 500;
-  ">
-    登出账号
-  </div>
-
-  <!-- 右侧箭头 -->
-  <span class="arrow-icon" style="
-    color: #909399;
-    font-size: 12px;
-    transition: transform 0.2s ease;
-  ">
-    ❯
-  </span>
-</div>
-      </div>
       <div 
       v-if="showBox == true"
-      @mouseenter="loadenter" @mouseleave="loadleave"
       class="tip"
     >
       <p style="
@@ -245,7 +118,7 @@
 </div>
 </div>
 <button
-@click="Loading"
+@click="toggleAccount"
 style="
   justify-items: center;
   top: 17%;
@@ -348,12 +221,31 @@ import { getAllSearch } from '@/api/AllSearch'
 import { unreadNotificationCount } from '@/utils/acgnNotifications'
 let $router = useRouter()
 const showResults = ref(false)
+const searchPending = ref(false)
+const searchError = ref('')
+let searchRequest = 0
+const channels = [
+  { to: '/Animation', label: '番剧' },
+  { to: '/Comic', label: '漫画' },
+  { to: '/Novel', label: '轻小说' },
+  { to: '/Galagame', label: 'Galgame' },
+  { to: '/warflag', label: '战棋' },
+  { to: '/news', label: '资讯' },
+  { to: '/shengdi', label: '圣地巡礼' },
+]
+const accountLinks = [
+  { to: '/user/center', label: '个人中心' },
+  { to: '/user/upload', label: '我要上传' },
+  { to: '/user/activity', label: '我的动态' },
+  { to: '/bookshelf', label: '历史记录' },
+]
 const searchResults = ref([])
 const searchText = ref("")
 const route = useRoute()
 let useStore = useUserStore()
 const showBox = ref<boolean>(false)
-const isUserHovering = ref(false)
+const accountOpen = ref(false)
+const avatarButton = ref<HTMLButtonElement | null>(null)
 const aboutLegalVisible = ref(false)
 const msgUnread = ref(0)
 function refreshMsgUnread() {
@@ -362,20 +254,33 @@ function refreshMsgUnread() {
 let unreadPoll: ReturnType<typeof setInterval> | null = null
 
 watch(() => useStore.token, () => refreshMsgUnread())
-const allsearch = async (search: string) => {
-  if (!search?.trim()) {
-    searchResults.value = []
-    showResults.value = false
-    return
-  }
-  const result: any = await getAllSearch(search.trim())
-  console.log(result?.data)
-  searchResults.value =
-    result && result.code === 200 && Array.isArray(result.data) ? result.data : []
+function closeSearch() {
+  searchRequest++
+  showResults.value = false
+  searchPending.value = false
+}
+
+async function allsearch(search: string) {
+  const query = search.trim()
+  closeSearch()
+  searchResults.value = []
+  searchError.value = ''
+  if (!query) return
+  const request = searchRequest
   showResults.value = true
+  searchPending.value = true
+  try {
+    const result = await getAllSearch(query)
+    if (request !== searchRequest) return
+    if (result?.code !== 200 || !Array.isArray(result.data)) throw new Error('快速搜索失败')
+    searchResults.value = result.data
+  } catch {
+    if (request === searchRequest) searchError.value = '快速搜索失败，可重试或打开全站搜索。'
+  } finally {
+    if (request === searchRequest) searchPending.value = false
+  }
 }
 const selectResult = (item: any) => {
-  console.log("选择了:", item);
   if (item.sourcetype === "轻小说") {
     $router.push({
       name:'NovelIntroduce',
@@ -400,60 +305,24 @@ const selectResult = (item: any) => {
     }
   })
   }
-  showResults.value = false;
+  closeSearch();
   searchText.value = "";
 };
-const animation = () => {
-  $router.push('/animation')
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth' // 平滑滚动效果，可根据需要改为 'auto' 实现瞬间滚动
-  });
-}
-const comic = () => {
-  $router.push('/comic')
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth' // 平滑滚动效果，可根据需要改为 'auto' 实现瞬间滚动
-  });
-}
-const novel = () => {
-  $router.push('/novel')
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth' // 平滑滚动效果，可根据需要改为 'auto' 实现瞬间滚动
-  });
-}
 const gotoHistoryShelf = () => {
   $router.push('/bookshelf')
   window.scrollTo({ top: 0, behavior: 'smooth' })
-  isUserHovering.value = false
+  accountOpen.value = false
 }
 function goFullSearch() {
   const q = searchText.value.trim()
   if (!q) return
   $router.push({ path: '/search', query: { q } })
   window.scrollTo({ top: 0, behavior: 'smooth' })
-  showResults.value = false
+  closeSearch()
 }
 function goMessages() {
   refreshMsgUnread()
   $router.push('/messages')
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-function goUserCenter() {
-  isUserHovering.value = false
-  $router.push('/user/center')
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-function goUserUpload() {
-  isUserHovering.value = false
-  $router.push('/user/upload')
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-function goUserActivity() {
-  isUserHovering.value = false
-  $router.push('/user/activity')
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 function scrollTop() {
@@ -470,65 +339,44 @@ async function scrollToLegalBlock() {
   await nextTick()
   document.querySelector('.bottom')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
 }
-const zhanqi = () => {
-  $router.push('/warflag')
-}
-const galagame = () => {
-  $router.push('/Galagame')
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth' // 平滑滚动效果，可根据需要改为 'auto' 实现瞬间滚动
-  });
-}
-const gotosd = () => {
-  $router.push('/shengdi')
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth' // 平滑滚动效果，可根据需要改为 'auto' 实现瞬间滚动
-  });
-}
-const  back=()=>{
-  $router.push('/')
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth' // 平滑滚动效果，可根据需要改为 'auto' 实现瞬间滚动
-  });
-}
-const loadenter = () => {
-  showBox.value = true
-  console.log(showBox.value)
-}
-const loadleave = () => {
-  showBox.value = false
-  console.log(showBox.value)
-}
-const Loading = () => {
-  useStore.triggerLoginWall()
-  showBox.value = false
+function showGuestTip(event: PointerEvent) {
+  if (!useStore.token && event.pointerType === 'mouse') showBox.value = true
 }
 
-const userenter = () => {
-  isUserHovering.value = true
+function toggleAccount() {
+  showBox.value = false
+  if (useStore.token) accountOpen.value = !accountOpen.value
+  else useStore.triggerLoginWall()
 }
-const userleave = () => {
-  isUserHovering.value = false
+
+function closeAccountMenu() {
+  if (!accountOpen.value) return
+  accountOpen.value = false
+  avatarButton.value?.focus()
 }
+
+function dismissAccountMenu(event: FocusEvent) {
+  if (!(event.currentTarget as HTMLElement).contains(event.relatedTarget as Node | null)) {
+    accountOpen.value = false
+  }
+}
+
 const logout = async () => {
   try {
     await useStore.userLogout()
   } catch {
     ElMessage.info('已退出本机登录，服务器暂未响应')
   }
-  isUserHovering.value = false
+  accountOpen.value = false
   if (route.meta.requiresAuth) await $router.replace('/')
 }
 const handleClickOutside = (event: MouseEvent) => {
   const target = event.target
   if (!(target instanceof Element)) return
   if (!target.closest('.search, .search-results-dropdown')) {
-    showResults.value = false;
+    closeSearch();
   }
-  if (!target.closest('.avatar-wrapper')) isUserHovering.value = false
+  if (!target.closest('.avatar-wrapper')) accountOpen.value = false
 };
 
 onMounted(() => {
@@ -538,6 +386,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  closeSearch()
   document.removeEventListener('click', handleClickOutside)
   if (unreadPoll) clearInterval(unreadPoll)
 })
@@ -706,7 +555,7 @@ onUnmounted(() => {
     border-radius: 10px;
     outline-style: none ;
     padding: 13px 14px;
-    width: 620px;
+    width: 100%;
     font-size: 14px;
     font-weight: 700;
     font-family: "Microsoft soft";
@@ -747,9 +596,12 @@ button:hover {
   flex: 0 0 auto;
 }
 .acgn {
+  color: inherit;
+  text-decoration: none;
   white-space: nowrap;
   flex: 0 0 auto;
 }
+.acgn.router-link-active { color: #007ca9; }
 @media (max-width: 1400px) {
   .main-nav {
     gap: 12px;
@@ -803,6 +655,7 @@ button:active {
 }
 .search{
   flex: 1 1 auto;
+  min-width: 0;
   max-width: clamp(280px, 34%, 560px);
   margin: 0 auto;          /* 关键：让搜索框自己居中 */
 }
@@ -812,26 +665,25 @@ input:focus{
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
 }
-.profile-box{
-  width: 280pX;
-  height: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    background: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 10px 0;
+.profile-box {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border: 0;
+  background: white;
+  color: #303133;
+  text-decoration: none;
+  font: inherit;
 }
-.profile-box:hover {
-  background: #f5f7fa;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-}
-
-.profile-box:hover .arrow-icon {
-  color: #606266;
-  transform: translateX(3px);
+.profile-box:hover { background: #f5f7fa; }
+.account-name {
+  color: #a83261;
+  font-weight: 700;
+  font-size: 18px;
+  overflow-wrap: anywhere;
 }
 .search-results-dropdown {
   position: absolute;
@@ -848,6 +700,19 @@ input:focus{
 }
 
 /* 单个结果项样式 */
+.search-more,
+.result-item {
+  width: 100%;
+  border: 0;
+  background: white;
+  text-align: left;
+}
+.search-results-dropdown button:hover,
+.profile-box:hover,
+.avatar-button:hover {
+  transform: none;
+  box-shadow: none;
+}
 .result-item {
   display: flex;
   align-items: center;
@@ -909,14 +774,29 @@ input:focus{
 .avatar-wrapper{
   position: relative;   /* 关键：让子元素 absolute 相对它定位 */
 }
-.avatar{
-  position: relative;
+.avatar-button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.avatar-button img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  vertical-align: middle;
-  cursor: pointer;
-  z-index: 1050 !important;
+  object-fit: cover;
+}
+.logo:focus-visible,
+.acgn:focus-visible,
+.avatar-button:focus-visible,
+.profile-box:focus-visible,
+.search-results-dropdown button:focus-visible {
+  outline: 2px solid #1677aa;
+  outline-offset: -2px;
 }
 .nav-history {
   vertical-align: middle;
@@ -937,12 +817,10 @@ input:focus{
     border-radius: 8px;
     padding: 22px;
     width: 300px;
-    height: 475px;
+    height: auto;
+    max-height: calc(100dvh - 90px);
+    overflow-y: auto;
     z-index: 1000;
-}
-
-.mobile-avatar {
-  display: none;
 }
 
 @media (max-width: 820px) {
@@ -1002,23 +880,12 @@ input:focus{
     gap: 2px;
   }
   .head-quick,
-  .avatar,
   .tip {
     display: none;
   }
-  .mobile-avatar {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border: 0;
-    background: transparent;
-  }
-  .mobile-avatar img {
+  .avatar-button img {
     width: 32px;
     height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
   }
   .quick-item {
     padding: 0 4px;

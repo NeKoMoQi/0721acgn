@@ -1,4 +1,4 @@
-import { ref, Ref } from 'vue'
+import { onBeforeUnmount, ref, shallowRef, Ref } from 'vue'
 import mapboxgl from 'mapbox-gl'
 import type { FilterSpecification } from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -48,7 +48,9 @@ export function useMapbox(
     myPlayerId: number
   }
 ) {
-  const map = ref<mapboxgl.Map | null>(null)
+  const map = shallowRef<mapboxgl.Map | null>(null)
+  let cancelMapLoad: (() => void) | null = null
+  let disposed = false
   const selectedGridId = ref<string | null>(null)
   const selectedChessId = ref<string | null>(null)
   const selectedInfo = ref<SelectedInfo>(null)
@@ -399,14 +401,16 @@ export function useMapbox(
    * 用于结束回合后同步最新的 moved / fired / hp / 位置等状态。
    */
   async function reloadChessPieces() {
-    if (!chessPieceCtrl) return
+    const chessPieces = chessPieceCtrl
+    if (!chessPieces) return
     try {
       const chessRes = await getWarChessing(options.battleId)
+      if (chessPieceCtrl !== chessPieces) return
       if (chessRes?.code !== 200) {
         console.warn('刷新棋子失败:', chessRes?.msg)
         return
       }
-      chessPieceCtrl.reloadAll(chessRes.data as ChessData[], chessCreateOptions)
+      chessPieces.reloadAll(chessRes.data as ChessData[], chessCreateOptions)
     } catch (e) {
       console.error('❌ 刷新棋子异常', e)
     }
@@ -586,15 +590,14 @@ export function useMapbox(
   }
 
   async function init(gridData: GridItem[], chessData: ChessData[]) {
-    if (!containerRef.value) return
-
     allGrids = gridData
 
     // 初始化拉一次回合状态
     await battleStateCtrl.refresh()
+    if (!containerRef.value || disposed) return
 
     const { battleId, ...mapOptions } = options
-    map.value = new mapboxgl.Map({
+    const instance = new mapboxgl.Map({
       container: containerRef.value,
       style: 'mapbox://styles/mapbox/streets-v11',
       ...mapOptions,
@@ -606,36 +609,68 @@ export function useMapbox(
       skipOnboarding: true
     } as mapboxgl.MapboxOptions)
 
-    map.value.addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }))
+    map.value = instance
+    try {
+      instance.addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }))
+      await waitForMapLoad(instance)
+      if (disposed) return
 
-    await new Promise(resolve => map.value!.on('load', resolve))
+      setChinaWorldview()
+      loadGrid(gridData)
 
-    setChinaWorldview()
-    loadGrid(gridData)
+      chessPieceCtrl = useChessPiece(instance as any)
 
-    chessPieceCtrl = useChessPiece(map.value as any)
-
-    chessData.forEach((piece) => {
-      if (!isChessOnMap(piece)) return
-      chessPieceCtrl!.create(piece, chessCreateOptions)
-    })
-
-    await runEnemyAiSequence()
-    await battleStateCtrl.refresh()
-    await reloadChessPieces()
-
-    map.value.on('click', (e) => {
-      const gridFeatures = map.value?.queryRenderedFeatures(e.point, {
-        layers: ['hex-fill']
+      chessData.forEach((piece) => {
+        if (!isChessOnMap(piece)) return
+        chessPieceCtrl!.create(piece, chessCreateOptions)
       })
 
-      const clickedChess = (e.originalEvent.target as HTMLElement | null)?.closest('.chess-piece') !== null
+      await runEnemyAiSequence()
+      if (disposed) return
+      await battleStateCtrl.refresh()
+      if (disposed) return
+      await reloadChessPieces()
+      if (disposed) return
 
-      if ((!gridFeatures || gridFeatures.length === 0) && !clickedChess) {
-        clearAll()
+      instance.on('click', (e) => {
+        const gridFeatures = instance.queryRenderedFeatures(e.point, { layers: ['hex-fill'] })
+        const clickedChess = !!(e.originalEvent.target as HTMLElement | null)?.closest('.chess-piece')
+        if (gridFeatures.length === 0 && !clickedChess) clearAll()
+      })
+    } catch (error) {
+      if (map.value === instance) {
+        map.value = null
+        chessPieceCtrl = null
+        instance.remove()
       }
+      throw error
+    }
+  }
+
+  function waitForMapLoad(instance: mapboxgl.Map) {
+    return new Promise<void>((resolve, reject) => {
+      const finish = (error?: Error) => {
+        window.clearTimeout(timer)
+        instance.off('load', loaded)
+        cancelMapLoad = null
+        if (error) reject(error)
+        else resolve()
+      }
+      const loaded = () => finish()
+      const timer = window.setTimeout(() => finish(new Error('地图加载超时')), 12000)
+      cancelMapLoad = () => finish(new Error('已离开战场'))
+      instance.on('load', loaded)
     })
   }
+
+  onBeforeUnmount(() => {
+    disposed = true
+    cancelMapLoad?.()
+    const instance = map.value
+    map.value = null
+    chessPieceCtrl = null
+    instance?.remove()
+  })
 
   function setChinaWorldview() {
     const layers = ['admin-0-boundary', 'admin-1-boundary', 'place-label', 'road-label']
