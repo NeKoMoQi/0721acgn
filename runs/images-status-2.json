@@ -1,17 +1,13 @@
 {
-  "utc": "2026-11-19T01:58:29Z",
-  "ok": 48,
-  "fail": 58,
-  "mapped": 4376,
-  "seconds": 9.0,
-  "rate": 5.3,
+  "utc": "2026-11-20T01:52:32Z",
+  "ok": 57,
+  "fail": 1,
+  "mapped": 4433,
+  "seconds": 35.8,
+  "rate": 1.6,
   "errors_sample": [
-    "https://image.anitabi.cn/bangumi/376008.jpg?plan=h360 :: HTTPError",
-    "https://image.anitabi.cn/bangumi/38040.jpg?plan=h360 :: HTTPError",
-    "https://image.anitabi.cn/bangumi/38125.jpg?plan=h360 :: HTTPError",
-    "https://image.anitabi.cn/bangumi/385928.jpg?plan=h360 :: HTTPError",
-    "https://image.anitabi.cn/bangumi/390237.jpg?plan=h360 :: HTTPError"
+    "https://image.anitabi.cn/user/0/bangumi/300648/points/cyitg80-1775219398169.jpg?plan=h360 :: HTTPError"
   ],
   "shard": "2",
-  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/44440780421"
+  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/44656616636"
 }
