@@ -15,6 +15,21 @@ import { installImageOptimizer } from '@/utils/imageOptimizer'
 
 installImageOptimizer()
 
+// 发版后仍持有旧 index.html 的客户端，路由 chunk 可能已经 404（白屏/只剩背景）。
+// Vite 的 preloadError 能捕获这种情况，自动刷新一次换成新版本；10 秒内只刷一次防循环。
+const PRELOAD_RELOAD_KEY = 'acgn:preload-reload-at'
+window.addEventListener('vite:preloadError', (event) => {
+  event.preventDefault()
+  try {
+    const last = Number(sessionStorage.getItem(PRELOAD_RELOAD_KEY) || 0)
+    if (Date.now() - last < 10000) return
+    sessionStorage.setItem(PRELOAD_RELOAD_KEY, String(Date.now()))
+  } catch {
+    /* 隐私模式下 sessionStorage 不可用时仍然尝试刷新 */
+  }
+  window.location.reload()
+})
+
 const app = createApp(App)
 import './assets/reset.css'
 const pinia = createPinia()

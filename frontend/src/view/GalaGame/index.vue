@@ -112,7 +112,7 @@
           <div class="card-inner">
             <div class="image-wrapper">
               <img
-                :src="coverOf(item)"
+                :src="galgameThumbnail(coverOf(item))"
                 alt="作品封面"
                 class="cover-image"
                 loading="lazy"
@@ -155,6 +155,7 @@
 </template>
 
 <script setup lang="ts">
+import { galgameThumbnail } from './coverThumbnails'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Headpage from '@/components/Headpage/index.vue'

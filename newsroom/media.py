@@ -1,4 +1,4 @@
-﻿"""Create local PNG assets: prefer the original post cover, fall back to generated art."""
+"""Create local PNG assets: prefer the original post cover, fall back to generated art."""
 import hashlib
 import urllib.request
 from urllib.parse import urlsplit
@@ -15,10 +15,29 @@ def font_path(cfg):
     raise RuntimeError("install a CJK font or configure font_file before publishing illustrated articles")
 
 
+def save_webp(image, path, max_width=1000, quality=80):
+    """Write an optimized WebP atomically next to the original."""
+    from PIL import Image
+
+    prepared = image
+    if prepared.mode not in ("RGB", "RGBA"):
+        prepared = prepared.convert("RGBA")
+    if prepared.width > max_width:
+        ratio = max_width / prepared.width
+        prepared = prepared.resize((max_width, max(1, round(prepared.height * ratio))), Image.LANCZOS)
+    temp = path.with_name(path.name + ".tmp")
+    try:
+        prepared.save(temp, format="WEBP", quality=quality, method=6)
+        temp.replace(path)
+    finally:
+        temp.unlink(missing_ok=True)
+
+
 def save_png(image, path):
     temp = path.with_suffix(".tmp")
     image.save(temp, format="PNG", optimize=True)
     temp.replace(path)
+    save_webp(image, path.with_suffix(".webp"))
 
 
 def ensure_cover_thumbnail(root, ident):
@@ -29,19 +48,16 @@ def ensure_cover_thumbnail(root, ident):
     original = media / (ident + "-cover.png")
     thumbnail = media / (ident + "-cover-thumb.webp")
     if not original.is_file():
-        return
+        original = media / (ident + "-cover.webp")
+        if not original.is_file():
+            return
     if thumbnail.is_file() and thumbnail.stat().st_mtime_ns >= original.stat().st_mtime_ns:
         return
-    temp = thumbnail.with_suffix(".tmp")
-    try:
-        with Image.open(original) as image:
-            if image.width * image.height > 40_000_000:
-                raise ValueError("cover image too large")
-            image.thumbnail((640, 360), Image.Resampling.LANCZOS)
-            image.convert("RGB").save(temp, format="WEBP", quality=76, method=4)
-        temp.replace(thumbnail)
-    finally:
-        temp.unlink(missing_ok=True)
+    with Image.open(original) as image:
+        if image.width * image.height > 40_000_000:
+            raise ValueError("cover image too large")
+        image.thumbnail((640, 360), Image.Resampling.LANCZOS)
+        save_webp(image, thumbnail, max_width=640, quality=76)
 
 
 def wrap(draw, text, font, width, lines=3):

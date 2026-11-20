@@ -4,7 +4,7 @@
       <div class="explore-heading"><h2>接着看这些</h2><span>系列与作品关联</span></div>
       <div class="related-grid">
         <router-link v-for="item in related" :key="item.entry.slug" :to="detailLink(item.entry.slug)" class="related-card">
-          <img :src="item.entry.cover" :alt="item.entry.name" loading="lazy" @error="onImgError">
+          <img :src="galgameThumbnail(item.entry.cover)" :alt="item.entry.name" loading="lazy" decoding="async" @error="onImgError">
           <div><span class="relation-reason">{{ item.reason }}</span><h3>{{ item.entry.name }}</h3><p>{{ item.entry.tagline }}</p></div>
         </router-link>
       </div>
@@ -18,7 +18,7 @@
     <p class="topic-description">{{ activeTopic?.description }}</p>
     <div class="topic-results">
       <article v-for="entry in members(selectedTopic)" :key="entry.slug" class="topic-result">
-        <router-link :to="detailLink(entry.slug)" @click="selectedTopic = ''"><img :src="entry.cover" :alt="entry.name" loading="lazy" @error="onImgError"></router-link>
+        <router-link :to="detailLink(entry.slug)" @click="selectedTopic = ''"><img :src="galgameThumbnail(entry.cover)" :alt="entry.name" loading="lazy" decoding="async" @error="onImgError"></router-link>
         <div><router-link :to="detailLink(entry.slug)" class="topic-title" @click="selectedTopic = ''">{{ entry.name }} →</router-link><p>{{ entry.tagline }}</p><a v-if="selectedTopic === 'chinese'" :href="entry.officialUrl" target="_blank" rel="noopener noreferrer">中文对应商品：{{ entry.versionLabel }} ↗</a><a v-else-if="selectedTopic === 'short'" href="https://key.visualarts.gr.jp/kinetic/about.html" target="_blank" rel="noopener noreferrer">短篇定位来源：Key 官方 ↗</a></div>
       </article>
     </div>
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { galgameThumbnail } from './coverThumbnails'
 import { discovery, relatedFor } from '@/data/galgameDiscovery'
 const props = defineProps<{ slug?: string }>()
 const selectedTopic = ref('')

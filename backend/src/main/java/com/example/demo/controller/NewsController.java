@@ -29,6 +29,7 @@ public class NewsController {
     private static final MediaType WEBP = MediaType.parseMediaType("image/webp");
     // Allow quick repeat visits while limiting how long a withdrawn cover can remain fresh.
     private static final CacheControl THUMBNAIL_CACHE = CacheControl.maxAge(Duration.ofMinutes(5)).cachePublic();
+    private static final CacheControl DETAIL_IMAGE_CACHE = CacheControl.maxAge(Duration.ofDays(30)).cachePublic();
     private final Path snapshot;
     private final ObjectMapper mapper;
 
@@ -96,15 +97,18 @@ public class NewsController {
             if (role.equals(asset.path("role").asText())) known = true;
         }
         if (!known) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Path image = snapshot.getParent().resolve("media").resolve(id + "-" + role + (thumbnail ? "-thumb.webp" : ".png"));
+        Path media = snapshot.getParent().resolve("media");
+        Path webp = media.resolve(id + "-" + role + (thumbnail ? "-thumb.webp" : ".webp"));
+        boolean useWebp = thumbnail || Files.isRegularFile(webp);
+        Path image = useWebp ? webp : media.resolve(id + "-" + role + ".png");
         try {
             if (!Files.isRegularFile(image) || Files.size(image) > 8_000_000) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
             byte[] bytes = Files.readAllBytes(image);
             var response = ResponseEntity.ok()
-                    .contentType(thumbnail ? WEBP : MediaType.IMAGE_PNG)
-                    .cacheControl(thumbnail ? THUMBNAIL_CACHE : CacheControl.noStore())
+                    .contentType(useWebp ? WEBP : MediaType.IMAGE_PNG)
+                    .cacheControl(thumbnail ? THUMBNAIL_CACHE : DETAIL_IMAGE_CACHE)
                     .header("X-Content-Type-Options", "nosniff");
             if (thumbnail) response.eTag(DigestUtils.md5DigestAsHex(bytes));
             return response.body(bytes);

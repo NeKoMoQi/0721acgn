@@ -49,7 +49,11 @@ class NewsControllerTests {
         var mvc = MockMvcBuilders.standaloneSetup(new NewsController(directory.toString(), new ObjectMapper())).build();
         mvc.perform(get("/api/news/image").param("id", id).param("role", "cover"))
             .andExpect(status().isOk()).andExpect(content().contentType("image/png"))
-            .andExpect(header().string("Cache-Control", "no-store"));
+            .andExpect(header().string("Cache-Control", "max-age=2592000, public"));
+        Files.write(directory.resolve("media/" + id + "-cover.webp"), new byte[]{7, 8, 9});
+        mvc.perform(get("/api/news/image").param("id", id).param("role", "cover"))
+            .andExpect(status().isOk()).andExpect(content().contentType("image/webp"))
+            .andExpect(content().bytes(new byte[]{7, 8, 9}));
         var thumbnail = get("/api/news/image").param("id", id).param("role", "cover").param("variant", "thumb");
         String etag = mvc.perform(thumbnail)
             .andExpect(status().isOk()).andExpect(content().contentType("image/webp"))

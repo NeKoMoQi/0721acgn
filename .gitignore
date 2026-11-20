@@ -58,3 +58,6 @@ frontend/public/**/*.webp
 # Local temporary directories (screenshots/build cache)
 .tmp/
 backend/.cache/
+
+# 自动发布脚本的状态、日志与锁
+.deploy/

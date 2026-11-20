@@ -43,3 +43,15 @@ for (const f of files) {
   console.log(`${path.relative(root, f.p)}  ${(f.size / 1024) | 0}KB -> ${(out.size / 1024) | 0}KB`);
 }
 console.log(`\n${files.length} images, ${(before / 1048576).toFixed(1)} MB -> ${(after / 1048576).toFixed(1)} MB`);
+
+// Galgame list cards use these Vite-hashed covers directly, including on hosts without content negotiation.
+const galgameRoot = path.join(root, 'galgame');
+const galgameThumbnails = path.resolve(here, '..', 'src', 'assets', 'galgame-covers');
+fs.mkdirSync(galgameThumbnails, { recursive: true });
+for (const filename of fs.readdirSync(galgameRoot).filter(name => /\.jpg$/i.test(name))) {
+  await sharp(path.join(galgameRoot, filename))
+    .rotate()
+    .resize({ width: 640, height: 720, fit: 'inside', withoutEnlargement: true })
+    .webp({ quality: 78, effort: 6 })
+    .toFile(path.join(galgameThumbnails, filename.replace(/\.jpg$/i, '.webp')));
+}
