@@ -82,6 +82,15 @@ function Invoke-Git {
     return @{ Code = $code; Output = $out }
 }
 
+# Windows PowerShell 5.1 会把原生命令的 stderr 当成错误记录，配合 ErrorActionPreference=Stop 会中断脚本。
+# 统一交给 cmd 做重定向，只取退出码；输出全部写日志。
+function Invoke-Npm {
+    param([string]$Arguments)
+    $line = '"{0}" {1} >> "{2}" 2>&1' -f $npm, $Arguments, $LogFile
+    & cmd.exe /c $line | Out-Null
+    return $LASTEXITCODE
+}
+
 function Read-State {
     if (Test-Path $StateFile) {
         try { return Get-Content $StateFile -Raw -Encoding UTF8 | ConvertFrom-Json } catch { }
@@ -129,6 +138,8 @@ try {
     $env:Path = "$NodeBin;$env:Path"
     $npm = Join-Path $NodeBin 'npm.cmd'
     if (-not (Test-Path $npm)) { throw "找不到 $npm" }
+
+    Remove-OldBackups
 
     # ---------- 远端状态 ----------
     Invoke-Git @('fetch', '--quiet', 'origin', $Branch) | Out-Null
@@ -206,8 +217,8 @@ try {
         Write-Log "package-lock.json 有变化，先 npm install"
         Push-Location $FrontendDir
         try {
-            & $npm install --no-audit --no-fund *>> $LogFile
-            if ($LASTEXITCODE -ne 0) { throw "npm install 失败($LASTEXITCODE)" }
+            $installExit = Invoke-Npm 'install --no-audit --no-fund'
+            if ($installExit -ne 0) { throw "npm install 失败($installExit)" }
         } finally { Pop-Location }
     }
 
@@ -215,6 +226,8 @@ try {
     $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
     $backup = Join-Path $FrontendDir "dist-backup-$stamp"
     $hadDist = Test-Path $DistDir
+    $script:backup = $backup
+    $script:hadDist = $hadDist
     if ($hadDist) {
         Copy-Item $DistDir $backup -Recurse -Force
         Write-Log "已备份旧 dist -> $(Split-Path $backup -Leaf)"
@@ -224,8 +237,7 @@ try {
     $buildStart = Get-Date
     Push-Location $FrontendDir
     try {
-        & $npm run build-only *>> $LogFile
-        $buildExit = $LASTEXITCODE
+        $buildExit = Invoke-Npm 'run build-only'
     } finally { Pop-Location }
 
     if ($buildExit -ne 0) {
@@ -254,6 +266,13 @@ try {
 }
 catch {
     Write-Log "运行异常：$($_.Exception.Message)"
+    # 构建过程中出错时，只要 dist 已经不完整就还原备份，别把站点留成空壳
+    if ($script:hadDist -and $script:backup -and (Test-Path $script:backup) -and
+        -not (Test-Path (Join-Path $DistDir 'index.html'))) {
+        if (Test-Path $DistDir) { Remove-Item $DistDir -Recurse -Force }
+        Move-Item $script:backup $DistDir
+        Write-Log "已还原旧 dist"
+    }
     exit 1
 }
 finally {
