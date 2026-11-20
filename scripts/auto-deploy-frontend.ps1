@@ -259,6 +259,27 @@ try {
     }
 
     $cost = [int]((Get-Date) - $buildStart).TotalSeconds
+
+    # 保留历史构建里的 js/assets：客户端还拿着旧 index.html 时，旧的 hash 文件仍能取到，
+    # 不会因为 404 变成白屏（服务端已把缺失静态资源改成 404，这里再兜一层）。
+    $merged = 0
+    foreach ($b in (Get-ChildItem -Path $FrontendDir -Directory -Filter 'dist-backup-*' -ErrorAction SilentlyContinue)) {
+        foreach ($sub in @('js', 'assets')) {
+            $oldSub = Join-Path $b.FullName $sub
+            if (-not (Test-Path $oldSub)) { continue }
+            $newSub = Join-Path $DistDir $sub
+            if (-not (Test-Path $newSub)) { New-Item -ItemType Directory -Path $newSub -Force | Out-Null }
+            Get-ChildItem $oldSub -File -ErrorAction SilentlyContinue | ForEach-Object {
+                $target = Join-Path $newSub $_.Name
+                if (-not (Test-Path $target)) {
+                    Copy-Item $_.FullName $target -Force
+                    $merged++
+                }
+            }
+        }
+    }
+    if ($merged -gt 0) { Write-Log "已补回历史 js/assets $merged 个（旧 index.html 仍可加载）" }
+
     Write-State -DeployedCommit $remote -Result 'success'
     Remove-OldBackups
     Write-Log ("发布完成：{0}，耗时 {1}s，dist/index.html 已更新" -f $remote.Substring(0,8), $cost)
