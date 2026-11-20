@@ -95,21 +95,11 @@ export const constantRoute = [
   {
     path: '/warflag',
     name: 'warflag',
-    component: () => import('@/view/WarFlag/Start.vue'),
+    alias: ['/warflag/battle', '/warflag/preview'],
+    component: () => import('@/view/WarFlag/IronAndSnowEntry.vue'),
     meta: {
-      title: '战旗',
-      requiresAuth: true,
+      title: '铁与雪',
       name: 'warflagi',
-    },
-  },
-  {
-    path: '/warflag/battle',
-    name: 'warflagBattle',
-    component: () => import('@/view/WarFlag/index.vue'),
-    meta: {
-      title: '战旗 · 战场',
-      requiresAuth: true,
-      name: 'warflagBattle',
     },
   },
   {

@@ -21,14 +21,14 @@ beforeEach(() => {
 })
 
 describe('游客路由与登录返回', () => {
-  it.each(['/search?q=test', '/animation', '/comic', '/novel', '/Animationintroduce?animationid=3', '/Comicsee?comicid=4', '/Novelsee?novelid=5', '/AnimationWatch?animationid=3', '/bookshelf', '/shengdi'])('游客可直接打开 %s', async (path) => {
+  it.each(['/search?q=test', '/animation', '/comic', '/novel', '/Animationintroduce?animationid=3', '/Comicsee?comicid=4', '/Novelsee?novelid=5', '/AnimationWatch?animationid=3', '/bookshelf', '/shengdi', '/warflag', '/warflag/preview', '/warflag/battle?side=german'])('游客可直接打开 %s', async (path) => {
     const router = makeRouter()
     await router.push(path)
     expect(router.currentRoute.value.fullPath).toBe(path)
     expect(useUserStore().loginVisible).toBe(false)
   })
 
-  it.each(['/messages', '/user/center', '/user/upload', '/user/activity', '/shengdi/addnew', '/warflag', '/warflag/battle?side=german'])('受保护页面 %s 保留来源、记住目标，取消后仍在来源页', async (path) => {
+  it.each(['/messages', '/user/center', '/user/upload', '/user/activity', '/shengdi/addnew'])('受保护页面 %s 保留来源、记住目标，取消后仍在来源页', async (path) => {
     const router = makeRouter()
     await router.push('/search?q=test')
     await router.push(path)
