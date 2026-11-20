@@ -154,6 +154,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getAnimationById, getAnimationEpisodeById, getAnimationEpisodes } from '@/api/animation';
 import { ensureAcgnUserHydrated, pushHistory, saveAnimationEpisode } from '@/utils/acgnLocal';
+import { ElMessage } from 'element-plus';
 
 const route = useRoute();
 const router = useRouter();
@@ -219,7 +220,17 @@ async function loadEpisode() {
   duration.value = 0;
   const episodeId = episodeIdNum.value;
   if (!episodeId) {
-    currentEpisode.value = episodes.value[0] || null;
+    const resumeEpisode = Number(route.query.episode);
+    currentEpisode.value = resumeEpisode
+      ? episodes.value.find((item) => Number(item.episodeNo) === resumeEpisode) || null
+      : episodes.value[0] || null;
+    if (resumeEpisode && !currentEpisode.value) {
+      ElMessage.warning('上次观看的集数暂不可用，请重新选择');
+      await router.replace({ name: 'Animationintroduce', query: { animationid: animationIdNum.value } });
+      return;
+    }
+    await nextTick();
+    persistCurrentEpisode();
     return;
   }
   const res = await getAnimationEpisodeById(episodeId);
@@ -716,5 +727,12 @@ function handleKeydown(event: KeyboardEvent) {
   .watch-video {
     min-height: 260px;
   }
+}
+
+@media (max-width: 820px) {
+  .watch-wrap { width: calc(100% - 16px); margin: 12px auto 24px; }
+  .watch-video { min-height: 0; aspect-ratio: 16 / 9; }
+  .watch-actions { flex-wrap: wrap; }
+  .episode-link { min-height: 44px; }
 }
 </style>

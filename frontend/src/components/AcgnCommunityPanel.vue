@@ -548,4 +548,9 @@ function goGuess(item: any) {
   font-size: 10px;
   color: #94a3b8;
 }
+
+@media (max-width: 820px) {
+  .el-button { min-height: 40px; }
+  textarea { font-size: 16px; }
+}
 </style>

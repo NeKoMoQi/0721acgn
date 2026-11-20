@@ -457,6 +457,37 @@ export function listHistory(): HistoryItem[] {
   return [...historyMem]
 }
 
+export interface ContinueItem extends HistoryItem {
+  position: number
+  chapterId?: string
+}
+
+/** 只列出实际有观看 / 阅读进度的作品，浏览过简介不算开始阅读。 */
+export function listContinueItems(): ContinueItem[] {
+  return historyMem.flatMap((item): ContinueItem[] => {
+    if (item.type === 'animation') {
+      const episode = getAnimationEpisode(item.id)
+      return episode && Number.isInteger(episode) && episode > 0 ? [{ ...item, position: episode }] : []
+    }
+    if (item.type === 'comic') {
+      const progress = getComicProgress(item.id)
+      return progress?.chapterId && Number.isInteger(progress.chapterno) && progress.chapterno > 0
+        ? [{ ...item, position: progress.chapterno, chapterId: progress.chapterId }] : []
+    }
+    if (item.type === 'novel') {
+      const progress = getNovelProgress(item.id)
+      return progress && Number.isInteger(progress.chapterno) && progress.chapterno > 0
+        ? [{ ...item, position: progress.chapterno }] : []
+    }
+    return []
+  }).sort((a, b) => b.at - a.at)
+}
+
+async function touchProgressHistory(type: AcgnMediaType, id: number) {
+  const item = historyMem.find((row) => row.type === type && row.id === id)
+  if (item) await innerPushHistory({ type, id, name: item.name, pic: item.pic })
+}
+
 export interface ComicProgress {
   chapterId: string
   chapterno: number
@@ -480,6 +511,8 @@ async function innerSaveComicProgress(comicId: number, p: ComicProgress) {
     if (res?.code !== 200) {
       if (before && Object.keys(before).length) comicProgMem[String(comicId)] = before
       else delete comicProgMem[String(comicId)]
+    } else {
+      await touchProgressHistory('comic', comicId)
     }
   } catch {
     if (before && Object.keys(before).length) comicProgMem[String(comicId)] = before
@@ -505,6 +538,8 @@ async function innerSaveNovelProg(novelId: number, chapterno: number) {
     if (res?.code !== 200) {
       if (before) novelProgMem[k] = before
       else delete novelProgMem[k]
+    } else {
+      await touchProgressHistory('novel', novelId)
     }
   } catch {
     if (before) novelProgMem[k] = before
@@ -530,6 +565,8 @@ async function innerSaveAnimEp(animationId: number, episode: number) {
     if (res?.code !== 200) {
       if (typeof prev === 'number') animEpMem[k] = prev
       else delete animEpMem[k]
+    } else {
+      await touchProgressHistory('animation', animationId)
     }
   } catch {
     if (typeof prev === 'number') animEpMem[k] = prev

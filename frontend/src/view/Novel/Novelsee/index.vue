@@ -7,13 +7,19 @@
   
       <!-- 内容容器 -->
       <div class="acgn_container" ref="maintain" @scroll="handscroll">
-        <div ref="viewerEl" class="viewer"></div>
+        <div v-if="loading" class="reader-status" role="status">正在加载正文…</div>
+        <div v-if="loadError" class="reader-status" role="alert">
+          <p>{{ loadError }}</p>
+          <button @click="retry">重新加载</button>
+          <router-link v-if="novelId" :to="{ name: 'NovelIntroduce', query: { novelid: novelId } }">返回作品目录</router-link>
+        </div>
+        <div ref="viewerEl" class="viewer" v-show="!loadError"></div>
         <div class="controls">
-      <button @click="switchVolume(-1)" :disabled="currentVolume === 1">上一卷</button>
-      <button @click="prevPage">上一页</button>
-      <button @click="showToc = !showToc">目录</button>
-      <button @click="nextPage">下一页</button>
-      <button @click="switchVolume(1)" :disabled="currentVolume === maxVolume">下一卷</button>
+      <button @click="switchVolume(-1)" :disabled="loading || !!loadError || currentVolume <= 1">上一卷</button>
+      <button @click="prevPage" :disabled="loading || !!loadError || !rendition">上一页</button>
+      <button @click="showToc = !showToc" :disabled="loading || !!loadError || !rendition">目录</button>
+      <button @click="nextPage" :disabled="loading || !!loadError || !rendition">下一页</button>
+      <button @click="switchVolume(1)" :disabled="loading || !!loadError || currentVolume >= maxVolume">下一卷</button>
     </div>
 
     <!-- 目录侧边栏 -->
@@ -40,151 +46,152 @@
   </template>
   
   <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, shallowRef, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute } from 'vue-router'
 import useUserStore from '@/stores/modules/users'
 import ePub from 'epubjs'
-import { getnovelcount,getnovelchapterbyid } from '@/api/novel/index'
-import { getNovelProgress, saveNovelProgress } from '@/utils/acgnLocal'
+import { getnovelcount, getnovelbyid, getnovelchapterbyid } from '@/api/novel/index'
+import { getNovelProgress, saveNovelProgress, ensureAcgnUserHydrated, pushHistory } from '@/utils/acgnLocal'
+const route = useRoute()
 const usestore = useUserStore()
+const novelId = Number(route.query.novelid || usestore.novelid)
 const currentVolume = ref(1)
-const maxVolume = ref(3) // 根据实际卷数修改
-const bookUrl = ref("")
-const currentLocation = ref(null)
+const requestedVolume = ref(1)
+const maxVolume = ref(0)
 const viewerEl = ref(null)
-const book = ref(null)
-const rendition = ref(null)
+// EPUB 实例包含内部队列与 DOM 引用，不交给 Vue 做深层代理。
+const book = shallowRef(null)
+const rendition = shallowRef(null)
 const toc = ref([])
 const showToc = ref(false)
+const loading = ref(false)
+const loadError = ref('')
+let disposed = false
+let loadedSuccessfully = false
 
-// 修复函数声明
-const navigateTo = (href) => {
-  rendition.value?.display(href)
-  showToc.value = false
+const navigateTo = async (href) => {
+  if (!rendition.value || loading.value) return
+  try { await rendition.value.display(href); showToc.value = false }
+  catch { loadError.value = '该章节暂时无法显示，请重试' }
 }
 const prevPage = async () => {
-  try {
-    if (!rendition.value) {
-      console.warn('阅读器未初始化')
-      return
-    }
-    console.log('翻页前位置:', currentLocation)
-    await rendition.value.prev()
-    window.scrollTo({
-    top: 0,
-    behavior: 'smooth' // 平滑滚动效果，可根据需要改为 'auto' 实现瞬间滚动
-  });
-  } catch (error) {
-    console.error('翻页失败:', error)
-  }
+  if (!rendition.value || loading.value) return
+  try { await rendition.value.prev() }
+  catch { loadError.value = '翻页失败，请重试' }
 }
 const nextPage = async () => {
+  if (!rendition.value || loading.value) return
+  try { await rendition.value.next() }
+  catch { loadError.value = '翻页失败，请重试' }
+}
+
+function destroyBook() {
+  book.value?.destroy()
+  book.value = null
+  rendition.value = null
+}
+
+async function loadVolume(volume) {
+  if (loading.value || disposed) return
+  requestedVolume.value = volume
+  loading.value = true
+  loadError.value = ''
+  loadedSuccessfully = false
+  showToc.value = false
+  toc.value = []
+  destroyBook()
   try {
-    if (!rendition.value) {
-      console.warn('阅读器未初始化')
-      return
-    }
-    const currentLocation = rendition.value.currentLocation()
-    await rendition.value.next()
-    window.scrollTo({
-    top: 0,
-    behavior: 'smooth' // 平滑滚动效果，可根据需要改为 'auto' 实现瞬间滚动
-  });
+    const instance = ePub()
+    book.value = instance
+    const content = await getnovelchapterbyid(novelId, volume)
+    if (disposed) return
+    if (content?.code !== 200 || typeof content.data !== 'string' || !content.data) throw new Error('暂无正文地址')
+    await instance.open(content.data, 'epub')
+    if (disposed) return
+    const reader = instance.renderTo(viewerEl.value, {
+      width: '100%', height: '100%', spread: 'none', manager: 'continuous',
+    })
+    rendition.value = reader
+    reader.themes.register('lightnovel', { body: { 'font-family': 'inherit !important', 'background': 'transparent !important' } })
+    reader.themes.select('lightnovel')
+    const navigation = await instance.loaded.navigation
+    toc.value = navigation.toc.map(item => ({ id: item.id, label: item.label, href: item.href }))
+    await reader.display()
+    if (disposed) return
+    currentVolume.value = volume
+    usestore.novelchapter = volume
+    loadedSuccessfully = true
+    saveNovelProgress(novelId, volume)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error) {
-    console.error('翻页失败:', error)
+    if (!disposed) {
+      console.error('电子书加载失败:', error)
+      loadError.value = '正文加载失败，可能是该卷资源缺失或网络异常。请重试，或返回作品目录选择其他卷。'
+      destroyBook()
+    }
+  } finally {
+    loading.value = false
   }
 }
 
 const switchVolume = async (delta) => {
-  const newVolume = currentVolume.value + delta
-  if (newVolume < 1 || newVolume > maxVolume.value) return
-  
-  currentVolume.value = newVolume
-  const nid = Number(usestore.novelid)
-  if (nid) saveNovelProgress(nid, currentVolume.value)
-  const book = await getnovelchapterbyid(usestore.novelid,currentVolume.value)
-  bookUrl.value = book.data
-  await initBook()
+  const volume = currentVolume.value + delta
+  if (volume >= 1 && volume <= maxVolume.value) await loadVolume(volume)
 }
-
-const initBook = async () => {
-  try {
-    // 销毁之前的实例
-    if (book.value) {
-      book.value.destroy()
-      book.value = null
-      rendition.value = null
-    }
-
-    // 生成新的书籍URL
-    // bookUrl.value = "https://acgn0721.oss-cn-hangzhou.aliyuncs.com/slzs1.epub"
-    
-    book.value = ePub(bookUrl.value)
-    rendition.value = book.value.renderTo(viewerEl.value, {
-      width: '100%',
-      height: '100%',
-      spread: 'none',
-      manager: 'continuous',
-      iframe: {
-        sandbox: 'allow-scripts allow-same-origin allow-popups',
-        allow: 'scripts'
-      }
-    })
-
-    // 保持原有主题设置
-    rendition.value.themes.register("lightnovel", {
-      body: {
-        'font-family': 'inherit !important',
-        'background': 'transparent !important'
-      }
-    })
-    rendition.value.themes.select("lightnovel")
-
-    // 加载目录
-    const navigation = await book.value.loaded.navigation
-    toc.value = navigation.toc.map(item => ({
-      id: item.id,
-      label: item.label,
-      href: item.href
-    }))
-
-    await rendition.value.display()
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  } catch (error) {
-    console.error('电子书加载失败:', error)
-  }
-}
-
-
-const handleResize = () => {
-  rendition.value?.resize()
-}
-
+const handleResize = () => { rendition.value?.resize() }
 function handscroll() {}
 
-onMounted(async() => {
-  const nid = Number(usestore.novelid)
-  const saved = nid ? getNovelProgress(nid) : null
-  let startVol = saved?.chapterno ?? usestore.novelchapter ?? 1
-  if (typeof startVol !== 'number') startVol = parseInt(String(startVol), 10) || 1
-  currentVolume.value = startVol
-  usestore.novelchapter = startVol
-  const count = await getnovelcount(usestore.novelid)
-  maxVolume.value = count.data
-  const result2 = await getnovelchapterbyid(usestore.novelid,currentVolume.value)
-  bookUrl.value = result2.data
-  console.log(bookUrl.value)
-  initBook()
+async function initializeReader() {
+  if (loading.value || disposed) return
+  loadError.value = ''
+  if (!Number.isInteger(novelId) || novelId < 1) {
+    loadError.value = '缺少作品信息，请从轻小说详情页重新进入正文。'
+    return
+  }
+  loading.value = true
+  try {
+    await ensureAcgnUserHydrated()
+    usestore.novelid = String(novelId)
+    const count = await getnovelcount(novelId)
+    const total = Number(count.data)
+    if (count.code !== 200 || !Number.isInteger(total) || total < 1) throw new Error('暂无正文卷数')
+    maxVolume.value = total
+    const saved = getNovelProgress(novelId)
+    const position = Number(route.query.chapterno ?? saved?.chapterno ?? 1)
+    requestedVolume.value = Math.max(1, Math.min(Number.isInteger(position) ? position : 1, total))
+  } catch (error) {
+    if (!disposed) loadError.value = '无法读取作品卷数，请检查网络后重试。'
+  } finally {
+    loading.value = false
+  }
+  if (loadError.value || disposed) return
+  await loadVolume(requestedVolume.value)
+  if (loadedSuccessfully) {
+    // 标题、封面加载失败不应阻止正文显示。
+    getnovelbyid(novelId).then(work => {
+      if (!disposed && work.data?.name) pushHistory({ type: 'novel', id: novelId, name: work.data.name, pic: work.data.picurl })
+    }).catch(() => {})
+  }
+}
+function retry() {
+  if (maxVolume.value > 0) return loadVolume(requestedVolume.value)
+  return initializeReader()
+}
+onMounted(() => {
+  initializeReader()
   window.addEventListener('resize', handleResize)
 })
-
 onBeforeUnmount(() => {
-  const nid = Number(usestore.novelid)
-  if (nid) saveNovelProgress(nid, currentVolume.value)
-  book.value?.destroy()
+  disposed = true
+  if (loadedSuccessfully) saveNovelProgress(novelId, currentVolume.value)
+  destroyBook()
   window.removeEventListener('resize', handleResize)
 })
   </script>
   <style scoped>
+.reader-status { padding: 20px; color: #675642; line-height: 1.8; }
+.reader-status button, .reader-status a { margin-right: 16px; }
+
   .toc-container {
   position: fixed;
   bottom: 120px; /* 位于目录按钮上方 */
@@ -402,4 +409,42 @@ button:disabled {
     position: relative;
     top: 200px;
   }
-  </style>
+  @media (max-width: 820px) {
+  .acgn_container {
+    inset: auto;
+    width: 100%;
+    min-height: 0;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
+  .viewer {
+    max-width: none;
+    height: max(240px, calc(100dvh - var(--mobile-header-height) - 66px - env(safe-area-inset-bottom))) !important;
+    padding: 10px 12px;
+  }
+  .viewer::before { display: none; }
+  .controls {
+    position: sticky;
+    bottom: 0;
+    left: auto;
+    transform: none;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    border-radius: 0;
+    z-index: 1000;
+  }
+  .controls button { min-height: 44px; padding: 4px 0; margin: 0; font-size: 13px; }
+  .toc-container {
+    bottom: calc(66px + env(safe-area-inset-bottom));
+    right: 8px;
+    width: min(320px, calc(100% - 16px));
+    max-height: calc(100dvh - var(--mobile-header-height) - 84px);
+    overflow: auto;
+    z-index: 1001;
+  }
+  .bottom { display: none; }
+}
+</style>

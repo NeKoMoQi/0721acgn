@@ -57,7 +57,11 @@
                 <div class="ziimg1"><img :src=item.activityimg alt="" style="height: 100%; width: 100%;" class="imgs"></div>
               </RouterLink>
               <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
-              <div v-if="!hasmore"  class="tishi">已经到底啦~亲(๑•̀ㅂ•́)و✧</div>
+              <div v-else-if="activityLoadFailed" class="tishi" role="status">
+                活动加载失败。<el-button link type="primary" @click="loadpage">重试</el-button>
+              </div>
+              <button v-else-if="hasmore" type="button" class="activity-more" @click="loadpage">加载更多</button>
+              <div v-else class="tishi">已经到底啦~亲(๑•̀ㅂ•́)و✧</div>
             </div>
             <div class="meiriuser">
               <div class="title"> 
@@ -364,26 +368,29 @@ const  birthavatar = ref()
 const birthname = ref()
 const shengdihot = ref([])
 const isloading = ref(false)
+const activityLoadFailed = ref(false)
 const hasmore = ref(true)
-const currentpage = ref(2)
-const getpage=async()=>{
-  const pageresult = await getpageActivity(currentpage.value)
-  if(pageresult.data.length<=9){
-    hasmore.value = false
-  }
-  rea.value.push(...pageresult.data)
-  currentpage.value++
-  isloading.value = false
-}
-const loadpage = () => {
+const currentpage = ref(1)
+const loadpage = async () => {
   if(isloading.value||!hasmore.value) return
   isloading.value = true
-  getpage()
+  activityLoadFailed.value = false
+  try {
+    const result = await (currentpage.value === 1 ? getAllActivity() : getpageActivity(currentpage.value))
+    if (result?.code !== 200 || !Array.isArray(result.data)) throw new Error('活动加载失败')
+    rea.value.push(...result.data)
+    hasmore.value = result.data.length === 9
+    currentpage.value++
+  } catch {
+    activityLoadFailed.value = true
+  } finally {
+    isloading.value = false
+  }
 }
 const handscroll =()=>{
   const contianer =  scrollcontainer.value
   const zuidiheight = 200
-  if(!contianer) return
+  if(!contianer || activityLoadFailed.value) return
   if(contianer.scrollHeight - (contianer.scrollTop+contianer.clientHeight)<zuidiheight){
     loadpage()
   }
@@ -408,6 +415,7 @@ const blleave = () => {
   blbl.value = false
 }
 onMounted(async () => {
+  void loadpage()
   // 站内资讯并入下面的快讯流，失败就当作没有，不影响首页其它区块。
   request.get('/news', { params: { page: 1, featured: 1 } })
     .then((result: any) => {
@@ -420,7 +428,6 @@ onMounted(async () => {
   const [
     birthRes,
     roleRes,
-    resultRes,
     result1Res,
     hotRes,
     liebieRes,
@@ -428,7 +435,6 @@ onMounted(async () => {
   ] = await Promise.allSettled([
     getAcgnUserBirth(),
     getAcgnUserRandom(),
-    getAllActivity(),
     getPeopleCount(),
     getActivityHot(),
     getActivityLeibie(),
@@ -458,9 +464,6 @@ onMounted(async () => {
   }
   if (hotRes.status === 'fulfilled' && hotRes.value?.data !== undefined) {
     hotlist.value = hotRes.value.data
-  }
-  if (resultRes.status === 'fulfilled' && resultRes.value?.data !== undefined) {
-    rea.value = resultRes.value.data
   }
   if (result1Res.status === 'fulfilled' && result1Res.value?.data) {
     const p = result1Res.value.data
@@ -1388,5 +1391,13 @@ const scrollDown = () => {
   .shengdi{
     margin-bottom: 20px;
   }
+}
+
+.activity-more { display: none; }
+@media (max-width: 820px) {
+  .midbc { min-height: 0; height: max(440px, 84svh); }
+  .zixun { height: auto; max-height: none; overflow: visible; }
+  .activity-more { display: block; min-height: 44px; margin: 12px auto; padding: 0 18px; }
+  .meiriuser { min-width: 0; }
 }
 </style>

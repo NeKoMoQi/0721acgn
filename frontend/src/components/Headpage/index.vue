@@ -4,15 +4,15 @@
     <div class="logo" @click="back">
         <img src="/LOGO.png" alt="" style="height: 60px; width: 100px; padding: 4px;">
     </div>
-    <div class="main-nav">
+    <nav class="main-nav" aria-label="站点导航">
       <div @click="animation" :style="{ color: route.path === '/animation' ? '#00aeec' : '' }" class="acgn">番剧</div>
       <div @click="comic"  :style="{ color: route.path === '/comic' ? '#00aeec' : '' }" class="acgn">漫画</div>
       <div @click="novel" :style="{ color: route.path === '/novel' ? '#00aeec' : '' }" class="acgn">轻小说</div>
-      <div @click="galagame" :style="{ color: route.path === '/Galagame' || route.path === '/GalgameIntroduce' ? '#00aeec' : '' }" class="acgn">Galgame</div>
-      <div @click="zhanqi" :style="{ color: route.path.startsWith('/warflag') ? '#00aeec' : '' }" class="acgn">战旗</div>
+      <div @click="galagame" :style="{ color: route.path.toLowerCase().startsWith('/galgame') || route.path.toLowerCase() === '/galagame' ? '#00aeec' : '' }" class="acgn">Galgame</div>
+      <div @click="zhanqi" :style="{ color: route.path.startsWith('/warflag') ? '#00aeec' : '' }" class="acgn">战棋</div>
       <div @click="$router.push('/news')" :style="{ color: route.path.startsWith('/news') ? '#00aeec' : '' }" class="acgn">资讯</div>
       <div @click="gotosd" :style="{ color: route.path === '/shengdi' ? '#00aeec' : '' }" class="acgn">圣地巡礼</div>
-    </div>
+    </nav>
     </div>
     <div class="search" >
       <el-input
@@ -56,6 +56,15 @@
     </div>
     <div class="user-wrap">
       <div class="avatar-wrapper">
+        <button
+          type="button"
+          class="mobile-avatar"
+          :aria-label="useStore.token ? '账号菜单' : '登录'"
+          :aria-expanded="useStore.token ? isUserHovering : undefined"
+          @click="useStore.token ? isUserHovering = !isUserHovering : Loading()"
+        >
+          <img :src="useStore.token && useStore.avatar || '/enter.jpg'" alt="">
+        </button>
         <img
           v-if="useStore.token"
           :src="useStore.avatar || '/enter.jpg'"
@@ -514,10 +523,12 @@ const logout = async () => {
   if (route.meta.requiresAuth) await $router.replace('/')
 }
 const handleClickOutside = (event: MouseEvent) => {
-  const searchEl = document.querySelector('.search');
-  if (searchEl && !searchEl.contains(event.target as Node)) {
+  const target = event.target
+  if (!(target instanceof Element)) return
+  if (!target.closest('.search, .search-results-dropdown')) {
     showResults.value = false;
   }
+  if (!target.closest('.avatar-wrapper')) isUserHovering.value = false
 };
 
 onMounted(() => {
@@ -930,69 +941,112 @@ input:focus{
     z-index: 1000;
 }
 
-/* 小屏：导航横向滚动，搜索独占一行，避免 7 个入口把标题挤成竖排 */
-@media (max-width: 768px) {
+.mobile-avatar {
+  display: none;
+}
+
+@media (max-width: 820px) {
   .heads {
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: 48px 44px;
+    gap: 0 6px;
+    padding: 0 8px;
     min-height: 0;
   }
   .left-group {
-    flex: 1 1 auto;
-    gap: 6px;
-    min-width: 0;
+    display: contents;
+  }
+  .logo {
+    grid-area: 1 / 1;
   }
   .logo img {
-    height: 42px !important;
-    width: 76px !important;
+    height: 36px !important;
+    width: 52px !important;
+    object-fit: contain;
     padding: 0 !important;
   }
   .main-nav {
-    flex: 1 1 auto;
+    grid-area: 2 / 1 / 3 / -1;
     max-width: none;
-    margin-left: 4px;
-    gap: 8px;
+    margin: 0;
+    gap: 0;
     overflow-x: auto;
-    padding-bottom: 2px;
+    overscroll-behavior-x: contain;
   }
   .acgn {
-    font-size: 12px;
+    flex: 1 0 auto;
+    padding: 0 9px;
+    line-height: 44px;
+    font-size: 14px;
+    text-align: center;
+  }
+  .acgn:hover {
+    transform: none;
   }
   .search {
-    order: 3;
-    flex: 1 1 100%;
+    grid-area: 1 / 2;
+    min-width: 0;
     max-width: 100%;
     margin: 0;
   }
   .kuang {
-    height: 38px !important;
+    height: 40px !important;
     width: 100% !important;
-    padding: 6px 10px !important;
+    padding: 0 !important;
   }
   .user-wrap {
-    order: 2;
-    flex: 0 0 auto;
-    margin-left: auto;
+    grid-area: 1 / 3;
+    margin: 0;
     max-width: none;
-    gap: 6px;
+    gap: 2px;
   }
   .head-quick,
-  .msg-quick {
+  .avatar,
+  .tip {
     display: none;
   }
-  .nav-history {
-    font-size: 13px;
-    line-height: 36px;
+  .mobile-avatar {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    background: transparent;
   }
-  .avatar {
-    width: 34px;
-    height: 34px;
+  .mobile-avatar img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .quick-item {
+    padding: 0 4px;
+    font-size: 13px;
+    line-height: 44px;
+    white-space: nowrap;
+  }
+  .usertip {
+    position: fixed;
+    top: var(--mobile-header-height);
+    right: 8px;
+    left: auto;
+    width: min(300px, calc(100vw - 16px));
+    height: auto;
+    max-height: calc(100dvh - var(--mobile-header-height) - 12px);
+    padding: 14px;
+    overflow: auto;
+    transform: none;
+  }
+  .profile-box {
+    width: 100%;
+    min-height: 44px;
+    margin: 4px 0;
   }
   .search-results-dropdown {
     left: 0;
     width: 100%;
+    max-height: min(400px, calc(100dvh - var(--mobile-header-height)));
   }
 }
 

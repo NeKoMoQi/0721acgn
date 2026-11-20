@@ -1117,4 +1117,23 @@ function goToWarStart() {
   border-radius: 4px;
   transition: width 0.3s ease;
 }
+
+@media (max-width: 820px) {
+  .war-content { inset: var(--mobile-header-height) 0 0; }
+  .turn-banner {
+    top: calc(var(--mobile-header-height) + 6px);
+    left: 6px;
+    right: 52px;
+    transform: none;
+    animation: none;
+    justify-content: space-between;
+    gap: 4px;
+    padding: 4px 6px;
+  }
+  .turn-info { flex-wrap: wrap; gap: 1px 5px; }
+  .round-no, .turn-label { font-size: 12px; }
+  .end-turn-btn, .reset-btn { min-height: 40px; padding: 4px 7px; font-size: 12px; white-space: nowrap; }
+  .rules-help-btn { top: calc(var(--mobile-header-height) + 8px); right: 6px; }
+  .rules-modal, .victory-modal, .detail-modal { max-width: calc(100% - 20px); max-height: 88dvh; overflow: auto; }
+}
 </style>

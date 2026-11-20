@@ -10,6 +10,7 @@
         <div v-for="(item, index) in pagelist" >
             <img :src=item.fileurl alt="" style="width: 100%;">
         </div>
+        <button v-if="hasmore && pagelist.length && !isloading" class="more-pages" type="button" @click="loadpage">加载后续页面</button>
         <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
         <div v-if="!hasmore"  class="tishi">已经到底啦~亲(๑•̀ㅂ•́)و✧</div>
       </div>
@@ -32,10 +33,10 @@
   
   <script setup>
   import { ref, watch, onMounted } from 'vue';
-  import { getcartoonpage } from '@/api/cartoon';
+  import { getcartoonpage, getcartoonchapter, getcartoonbyid } from '@/api/cartoon';
   import { useRoute, useRouter } from 'vue-router';
   import useUserStore from '@/stores/modules/users';
-  import { saveComicProgress } from '@/utils/acgnLocal';
+  import { saveComicProgress, ensureAcgnUserHydrated, pushHistory } from '@/utils/acgnLocal';
 
   const route = useRoute();
   const $Router = useRouter();
@@ -56,7 +57,7 @@
   }
 
   function persistProgress() {
-    const cid = Number(useStore.cartooncomicid);
+    const cid = Number(route.query.comicid || useStore.cartooncomicid);
     if (!cid || !chapterIdStr.value) return;
     saveComicProgress(cid, {
       chapterId: chapterIdStr.value,
@@ -78,13 +79,24 @@
     if (!chapterIdStr.value) return;
     const result = await getcartoonpage(chapterIdStr.value, 1);
     pagelist.value = result.data || [];
+    hasmore.value = pagelist.value.length >= 4;
     persistProgress();
     if (maintain.value) maintain.value.scrollTop = 0;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   watch(() => [route.query.chapterid, route.query.chapterno], loadChapterFromRoute);
-  onMounted(loadChapterFromRoute);
+  onMounted(async () => {
+    await ensureAcgnUserHydrated();
+    const cid = Number(route.query.comicid || useStore.cartooncomicid);
+    if (cid) {
+      useStore.cartooncomicid = String(cid);
+      const [chapters, work] = await Promise.all([getcartoonchapter(cid), getcartoonbyid(cid)]);
+      if (Array.isArray(chapters.data)) useStore.cartoonchapterlength = chapters.data.length;
+      if (work.data?.name) pushHistory({ type: 'comic', id: cid, name: work.data.name, pic: work.data.picurl });
+    }
+    await loadChapterFromRoute();
+  });
 
   const goToCatalog = () => {
     $Router.push({ path: '/ComicIntroduce', query: { comicid: useStore.cartooncomicid } });
@@ -123,7 +135,7 @@
     const nextNo = chapterno.value - 1;
     $Router.push({
       path: '/Comicsee',
-      query: { chapterid: paddedChapterId(prevNum), chapterno: nextNo },
+      query: { comicid: route.query.comicid || useStore.cartooncomicid, chapterid: paddedChapterId(prevNum), chapterno: nextNo },
     });
   };
 
@@ -133,7 +145,7 @@
     const nextNo = chapterno.value + 1;
     $Router.push({
       path: '/Comicsee',
-      query: { chapterid: paddedChapterId(nextNum), chapterno: nextNo },
+      query: { comicid: route.query.comicid || useStore.cartooncomicid, chapterid: paddedChapterId(nextNum), chapterno: nextNo },
     });
   };
   </script>
@@ -236,4 +248,26 @@
     position: relative;
     top: 200px;
   }
-  </style>
+  .more-pages { display: none; }
+
+@media (max-width: 820px) {
+  .acgn_container {
+    inset: auto;
+    width: 100%;
+    height: auto;
+    margin: 0 0 14px;
+    padding: 0 0 76px;
+  }
+  .acgn_container img { display: block; }
+  .chapter-nav {
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    width: min(360px, calc(100% - 16px));
+    gap: 6px;
+    padding: 6px;
+  }
+  .chapter-control { flex: 2; gap: 6px; padding-left: 6px; }
+  .nav-btn { flex: 1; justify-content: center; min-height: 44px; padding: 4px 8px; white-space: nowrap; }
+  .more-pages { display: block; margin: 18px auto; padding: 0 16px; min-height: 44px; }
+  .bottom { top: auto; }
+}
+</style>

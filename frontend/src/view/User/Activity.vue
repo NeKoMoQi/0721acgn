@@ -201,4 +201,9 @@ function goMedia(h: { type: AcgnMediaType; id: number }) {
 .bottom {
   margin-top: auto;
 }
+
+@media (max-width: 820px) {
+  .sheet { width: calc(100% - 20px); margin: 16px auto 24px; padding: 12px; }
+  .sheet :deep(.el-button) { min-height: 40px; }
+}
 </style>

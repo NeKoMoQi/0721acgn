@@ -50,6 +50,10 @@
       </div>
 
       <div v-if="loading" class="hint">加载中…</div>
+      <div v-else-if="searchFailed" class="empty-block" role="status">
+        <p class="empty-title">搜索暂时无法完成</p>
+        <el-button type="primary" @click="syncFromRoute">重试</el-button>
+      </div>
       <div v-else-if="!rows.length" class="empty-block">
         <p class="empty-title">暂无匹配结果</p>
         <p class="muted">试着换个关键词，或放宽题材 / 年代筛选。</p>
@@ -107,6 +111,8 @@ const decade = ref('')
 const sortBy = ref('default')
 const mediaType = ref('')
 const loading = ref(false)
+const searchFailed = ref(false)
+let searchGeneration = 0
 const rows = ref<
   Array<{
     id: number
@@ -172,14 +178,17 @@ async function fetchRecs() {
         query: { novelid: String(id) },
       })
     }
-    recs.value = out.slice(0, 12)
+    return out.slice(0, 12)
   } catch {
-    recs.value = []
+    return []
   }
 }
 
 async function fetchList() {
+  const current = ++searchGeneration
   loading.value = true
+  searchFailed.value = false
+  recs.value = []
   try {
     const yrs = yearSpan.value
     const payload: GlobalSearchParams = {
@@ -192,18 +201,21 @@ async function fetchList() {
       mediaType: mediaType.value || undefined,
       limit: 200,
     }
-    const res: any = await getAllSearch(payload)
-    rows.value = res?.code === 200 && Array.isArray(res.data) ? res.data : []
+    const res = await getAllSearch(payload)
+    if (current !== searchGeneration) return
+    if (res?.code !== 200 || !Array.isArray(res.data)) throw new Error('搜索失败')
+    rows.value = res.data
     if (!rows.value.length) {
-      await fetchRecs()
-    } else {
-      recs.value = []
+      const recommendations = await fetchRecs()
+      if (current === searchGeneration) recs.value = recommendations
     }
   } catch {
-    rows.value = []
-    await fetchRecs()
+    if (current === searchGeneration) {
+      rows.value = []
+      searchFailed.value = true
+    }
   } finally {
-    loading.value = false
+    if (current === searchGeneration) loading.value = false
   }
 }
 
@@ -397,5 +409,15 @@ onMounted(() => {
 }
 .foot {
   margin-top: auto;
+}
+
+@media (max-width: 820px) {
+  .wrap { width: calc(100% - 20px); margin: 16px auto 24px; padding: 12px; }
+  .kw { max-width: none; }
+  .filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sel { width: 100%; }
+  .bar :deep(.el-button), .filters :deep(.el-select__wrapper) { min-height: 44px; }
+  .rec-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .title, .rec-name { overflow-wrap: anywhere; }
 }
 </style>

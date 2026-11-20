@@ -361,4 +361,9 @@ async function startNewGame() {
 .fade-leave-to {
   opacity: 0;
 }
+
+@media (max-width: 820px) {
+  .war-start-page { margin-top: var(--mobile-header-height); min-height: calc(100dvh - var(--mobile-header-height)); }
+  .war-start-panel { width: calc(100% - 20px); }
+}
 </style>

@@ -53,6 +53,7 @@
       <div class="section-head">
         <div>
           <h1>Galgame 作品库</h1>
+          <router-link class="journal-link" to="/galgame/journal">游玩手记</router-link>
           <p>剧情简介、玩法特点与版本资料。</p>
         </div>
         <span class="section-count" v-if="!initialLoading && !loadError">已载入 {{ list.length }} 部</span>
@@ -955,6 +956,7 @@ onMounted(() => {
     -webkit-line-clamp: 3;
   }
 }
+.journal-link { display: inline-flex; align-items: center; min-height: 44px; color: #136d9b; }
 </style>
 
 <style scoped src="./layout.css"></style>

@@ -7,7 +7,7 @@
     <div class="acgn_container" ref="maintain" @scroll="handscroll">
       <div class="block text-center">
         <span class="demonstration"></span>
-        <el-carousel height="535px" motion-blur>
+        <el-carousel class="catalog-carousel" height="var(--catalog-carousel-height, 535px)" motion-blur>
           <el-carousel-item
             v-for="item in novellisthot"
             :key="'h' + item.novelid"
@@ -16,7 +16,7 @@
           >
             <div style="position: relative; height: 100%; width: 100%">
               <img :src="item.hengpic" style="width: 100%; height: 100%; object-fit: cover" />
-              <div
+              <div class="catalog-caption"
                 style="
                   position: absolute;
                   bottom: 40px;
@@ -68,6 +68,7 @@
           </div>
         </div>
       </div>
+      <button v-if="nomore && !isloading" type="button" class="catalog-more" @click="load">加载更多</button>
       <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
       <div v-if="!nomore" class="tishi">已经到底啦~亲(๑•̀ㅂ•́)و✧</div>
     </div>
@@ -315,3 +316,4 @@ function handscroll() {
   top: 200px;
 }
 </style>
+<style scoped src="../../assets/catalog-mobile.css"></style>

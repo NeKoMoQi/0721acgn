@@ -915,6 +915,7 @@ function forceLive2DVisible() {
 }
 
 function keepLive2DVisible(reply, live2dCommand) {
+  if (!document.getElementById('live2dMessageBox-content')) return
   forceLive2DVisible()
   window.Live2dRender?.revealMessageBox?.()
   if (reply) {
@@ -980,11 +981,10 @@ function setAgentMode(mode) {
   agentPartialReply.value = ''
   agentMode.value = mode
   syncAgentModeBodyClass()
-  forceLive2DVisible()
   if (mode === 'chat') {
-    window.Live2dRender?.setMessageBox?.('日常闲聊模式打开啦，路线面板先不动，你可以直接和我聊天。', 4200)
+    keepLive2DVisible('日常闲聊模式打开啦，路线面板先不动，你可以直接和我聊天。', { messageDurationMs: 4200 })
   } else {
-    window.Live2dRender?.setMessageBox?.('路线查询模式打开啦，告诉我番组、城市或想去的巡礼点就好。', 4200)
+    keepLive2DVisible('路线查询模式打开啦，告诉我番组、城市或想去的巡礼点就好。', { messageDurationMs: 4200 })
   }
 }
 
@@ -2569,14 +2569,15 @@ onMounted(async () => {
   window.addEventListener('live2d-agent-response', handleLive2DAgentResponse);
   document.addEventListener('click', handleLive2DChatActivity, true);
   document.addEventListener('focusin', handleLive2DChatActivity, true);
-  mountShengdiLive2D().catch((error) => {
-    console.warn('Live2D 加载失败:', error);
-  }).finally(() => {
-    window.setTimeout(() => {
+  if (!window.matchMedia('(max-width: 820px)').matches) {
+    mountShengdiLive2D().then(() => {
+      if (!mapContainer.value) return
       forceLive2DVisibleRepeatedly()
-      window.Live2dRender?.setMessageBox?.('主人，想巡礼哪部番组都可以告诉我喵~', 5000)
-    }, 600)
-  });
+      keepLive2DVisible('主人，想巡礼哪部番组都可以告诉我喵~', { messageDurationMs: 5000 })
+    }).catch((error) => {
+      console.warn('Live2D 加载失败:', error)
+    })
+  }
 
   // AI returns enriched points; full manual-import data is fetched only when its popover opens.
   init();
@@ -4043,6 +4044,49 @@ display: none;
   .agent-route-actions { padding: 10px 0; }
   :global(body.shengdi-navigation-active:not(.shengdi-live2d-chat-mode) #live2d) { bottom: 124px !important; right: 8px !important; width: 130px !important; height: 200px !important; }
   :global(body.shengdi-navigation-active:not(.shengdi-live2d-chat-mode) #live2dMessageBox) { bottom: 330px !important; right: 12px !important; max-width: 220px; }
+}
+
+@media (max-width: 820px) {
+  .map-container { inset: var(--mobile-header-height) 0 0; height: auto; }
+  #map { height: 100%; }
+  .agent-guide-panel { top: calc(var(--mobile-header-height) + 8px); }
+  .live2d-role-console { max-height: calc(100dvh - var(--mobile-header-height) - 20px); overflow-y: auto; }
+  .live2d-role-console--chat { min-height: 0; }
+  .live2d-chat-stage { height: clamp(56px, 20dvh, 160px); }
+  .live2d-input-row { flex-wrap: wrap; }
+  .live2d-role-input { flex-basis: min(100%, 170px); min-width: 0; }
+  .live2d-input-row button, .mode-button { min-height: 40px; }
+  .navigation-controls {
+    top: calc(var(--mobile-header-height) + 8px);
+    max-height: calc(100dvh - var(--mobile-header-height) - 16px);
+    overflow-y: auto;
+  }
+  .custom-search-container {
+    top: calc(var(--mobile-header-height) + 8px);
+    left: 12px;
+    max-width: calc(100% - 24px);
+  }
+  .search-result-container { max-height: 44dvh; overflow-y: auto; }
+  .search-result-out {
+    inset: calc(var(--mobile-header-height) + 58px) 12px auto;
+    width: auto;
+    height: auto;
+    max-height: 44dvh;
+    overflow-y: auto;
+    border-radius: 10px;
+  }
+  .mainresult { height: auto; margin: 0; }
+  .mainresult .jianjie { min-height: 72px; }
+  .mainresult img { display: block; aspect-ratio: 4 / 3; object-fit: cover; }
+  .jianjie-title { overflow-wrap: anywhere; }
+  .back {
+    top: calc(var(--mobile-header-height) + 8px);
+    left: auto;
+    right: 12px;
+    min-height: 44px;
+    align-items: center;
+    border-radius: 22px;
+  }
 }
 </style>
 

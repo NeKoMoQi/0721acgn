@@ -414,4 +414,10 @@ function toggleShelf() {
     margin: 0 auto;
   }
 }
+
+@media (max-width: 820px) {
+  .acgn_container { margin-top: 16px; }
+  .bottom { top: auto; }
+  .action-button { min-height: 44px; }
+}
 </style>

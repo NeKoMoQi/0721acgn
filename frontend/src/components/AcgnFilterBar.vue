@@ -79,4 +79,10 @@ onMounted(() => fire())
 .sel {
   width: 150px;
 }
+
+@media (max-width: 820px) {
+  .acgn-filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 8px; }
+  .sel { width: 100%; }
+  .sel :deep(.el-select__wrapper) { min-height: 44px; }
+}
 </style>

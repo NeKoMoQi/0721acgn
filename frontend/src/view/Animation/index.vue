@@ -9,7 +9,7 @@
       <div class="acgn_container" ref="maintain" @scroll="handscroll">
         <div class="block text-center">
     <span class="demonstration"></span>
-    <el-carousel height="535px" motion-blur>
+    <el-carousel class="catalog-carousel" height="var(--catalog-carousel-height, 535px)" motion-blur>
   <el-carousel-item 
     v-for="item in animationlisthot" 
     :key="item" 
@@ -21,7 +21,7 @@
         style="width: 100%; height: 100%; object-fit: cover;"> <!-- 改为cover保证图片填充 -->
       
       <!-- 信息卡片 -->
-      <div style="
+      <div class="catalog-caption" style="
         position: absolute;
         bottom: 40px;
         left: 50%;
@@ -48,6 +48,9 @@
           border-right: 2px solid rgba(255,255,255,0.15);
           padding-right: 20px;">
           {{ item.name }}
+          <span v-if="item.episodeCount != null" class="episode-status episode-status--carousel">
+            {{ item.episodeCount > 0 ? `已收录 ${item.episodeCount} 集` : '暂无正片' }}
+          </span>
         </div>
         
         <!-- 右侧描述区域 -->
@@ -79,11 +82,15 @@
     </div>
     <div class="content-wrapper">
       <h4 class="title">{{ item.name }}</h4>
+      <span v-if="item.episodeCount != null" class="episode-status" :class="{ 'episode-status--available': item.episodeCount > 0 }">
+        {{ item.episodeCount > 0 ? `已收录 ${item.episodeCount} 集` : '暂无正片' }}
+      </span>
       <p class="description">{{ item.shortcomment }}</p>
     </div>
   </div>
 </div>
   </div>
+  <button v-if="nomore && !isloading" type="button" class="catalog-more" @click="load">加载更多</button>
   <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
   <div v-if="!nomore"  class="tishi">已经到底啦~亲(๑•̀ㅂ•́)و✧</div>
     </div>
@@ -167,6 +174,18 @@
     };
   </script>
   <style scoped>
+  .episode-status {
+    display: block;
+    margin: 4px 0;
+    color: #525b67;
+    font-size: 0.85rem;
+  }
+  .episode-status--available {
+    color: #216442;
+  }
+  .episode-status--carousel {
+    color: #e1e8ef;
+  }
   .card-container {
   margin: 5px;
   border-radius: 12px;
@@ -320,4 +339,5 @@
     position: relative;
     top: 200px;
   }
-  </style>
+</style>
+<style scoped src="../../assets/catalog-mobile.css"></style>

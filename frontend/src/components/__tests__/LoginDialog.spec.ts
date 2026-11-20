@@ -50,7 +50,7 @@ describe('保留原有登录界面的交互', () => {
 
   it('使用原有关闭按钮取消登录，保留搜索页面并清空待跳转地址', async () => {
     const { view, store, router } = await openLogin()
-    await view.get('.load > div:first-child').trigger('click')
+    await view.get('button[aria-label=\"关闭登录\"]').trigger('click')
     expect(store.loginVisible).toBe(false)
     expect(store.loginRedirect).toBe('')
     expect(router.currentRoute.value.fullPath).toBe('/search?q=test')

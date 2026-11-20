@@ -247,4 +247,12 @@ function fmt(at) {
   width: 100%;
   margin-top: auto;
 }
+
+@media (max-width: 820px) {
+  .acgn_container { width: calc(100% - 20px); margin: 16px auto 24px; padding: 12px; }
+  .row { flex-wrap: wrap; }
+  .mid { min-width: 0; overflow-wrap: anywhere; }
+  .acts { margin-left: auto; }
+  .seg { min-height: 44px; }
+}
 </style>

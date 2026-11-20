@@ -215,4 +215,11 @@ onMounted(() => {
 .bottom {
   margin-top: auto;
 }
+
+@media (max-width: 820px) {
+  .shell { width: calc(100% - 20px); margin: 16px auto 24px; padding: 12px; }
+  .toolbar, .seg-wrap { flex-wrap: wrap; }
+  .mid { min-width: 0; overflow-wrap: anywhere; }
+  .seg { min-height: 44px; }
+}
 </style>

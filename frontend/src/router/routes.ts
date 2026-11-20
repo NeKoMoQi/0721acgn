@@ -1,4 +1,4 @@
-﻿export const constantRoute = [
+export const constantRoute = [
   {
     path: '/activity/:id',
     name: 'ActivityDetail',
@@ -230,6 +230,12 @@
       title: 'Galgame',
       name: 'Galagame',
     },
+  },
+  {
+    path: '/galgame/journal',
+    name: 'GalgameJournal',
+    component: () => import('@/view/GalaGame/Journal.vue'),
+    meta: { title: '游玩手记' },
   },
   {
     path: '/GalgameIntroduce',

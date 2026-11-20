@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import LoginDialog from '@/components/LoginDialog.vue';
 import { loadLive2DScript } from '@/utils/live2d-loader';
@@ -14,9 +14,14 @@ const route = useRoute();
 const live2dInitialized = ref(false);
 /** SDK 或模型加载失败时不再显示空画布，也不再往控制台抛错。 */
 const live2dAvailable = ref(true);
+const compactViewport = window.matchMedia('(max-width: 820px)');
+const compact = ref(compactViewport.matches);
+const updateViewport = (event: MediaQueryListEvent) => { compact.value = event.matches; };
+compactViewport.addEventListener('change', updateViewport);
+onUnmounted(() => compactViewport.removeEventListener('change', updateViewport));
 
 const showGlobalLive2D = computed(() => {
-  if (!live2dAvailable.value) return false;
+  if (!live2dAvailable.value || compact.value) return false;
   return !route.path.startsWith('/warflag') && !route.path.startsWith('/shengdi');
 });
 
@@ -64,6 +69,7 @@ async function mountGlobalLive2D() {
 
   try {
     const live2d = await loadLive2DScript();
+    if (!showGlobalLive2D.value || !document.getElementById('live2d')) return;
     await live2d.initializeLive2D({
       CanvasId: 'live2d',
       BackgroundRGBA: [0.0, 0.0, 0.0, 0.0],
@@ -78,7 +84,8 @@ async function mountGlobalLive2D() {
       Live2dCubismcoreUrl: '/live2dcubismcore.min.js',
     });
 
-    live2dInitialized.value = true;
+    if (showGlobalLive2D.value) live2dInitialized.value = true;
+    else cleanupGlobalLive2D();
   } catch (error) {
     live2dAvailable.value = false;
     console.warn('看板娘没能加载，已隐藏画布：', error);

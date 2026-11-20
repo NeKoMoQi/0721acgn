@@ -509,6 +509,13 @@ const save = () =>{
   max-height: 300px;
   overflow-y: auto;
 }
+
+@media (max-width: 820px) {
+  .form-container { width: calc(100% - 20px); margin: 10px auto; }
+  .form-content { padding: 14px; }
+  .coordinates-wrapper { flex-wrap: wrap; }
+  .coordinates-wrapper > * { flex: 1 1 110px; min-width: 0; }
+}
 </style>
 
 <style scoped>

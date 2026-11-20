@@ -105,7 +105,7 @@ noveldata.longcomment
     const p = getNovelProgress(id)
     useStore.novelid = String(id)
     useStore.novelchapter = p?.chapterno ?? 1
-    $router.push({ name: 'Novelsee' })
+    $router.push({ name: 'Novelsee', query: { novelid: id, chapterno: p?.chapterno ?? 1 } })
   }
 
    const toTop =() =>{
@@ -113,6 +113,7 @@ noveldata.longcomment
     useStore.novelid = String(id)
     $router.push({
       name:'Novelsee',
+      query: { novelid: id, chapterno: 1 },
   })
    useStore.novelchapter = 1
    }
@@ -120,6 +121,7 @@ noveldata.longcomment
       useStore.novelid = String(novelIdNum.value)
     $router.push({
       name:'Novelsee',
+      query: { novelid: novelIdNum.value, chapterno: no },
   })
   useStore.novelchapter = no
   }
@@ -344,4 +346,35 @@ noveldata.longcomment
     position: relative;
     top: 200px;
   }
-  </style>
+
+@media (max-width: 820px) {
+  .acgn_container {
+    inset: auto;
+    width: calc(100% - 24px);
+    margin: 12px auto 24px;
+    padding: 12px;
+  }
+  .introduce {
+    min-height: 0;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px;
+  }
+  .intro-image {
+    flex: none;
+    width: min(190px, 100%);
+    height: auto;
+    aspect-ratio: 3 / 4;
+  }
+  .intro-content { width: 100%; margin: 0; padding: 16px 0 0; overflow-wrap: anywhere; }
+  .anime-title { font-size: 24px; }
+  .anime-subtitle { font-size: 16px; }
+  .anime-description { margin: 16px 0; }
+  .intro-actions { flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .action-button { min-height: 44px; padding: 8px 14px; }
+  .chapter { padding: 12px; }
+  .chapter-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .chapter-list button { min-height: 44px; width: 100%; overflow-wrap: anywhere; }
+  .bottom { top: auto; }
+}
+</style>

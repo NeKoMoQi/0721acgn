@@ -1,8 +1,8 @@
 <template>
 <div v-if="loading_page == 1" class="overlay"></div>
-<div v-if="loading_page == 1" class="loading_page">
+<div v-if="loading_page == 1" class="loading_page" role="dialog" aria-modal="true" aria-label="登录" @keydown.esc.stop="close">
   <div class="chaijun">
-    <div style="display: flex;justify-content: center; top: 10%; position: relative; margin-bottom: 40px;">
+    <div class="login-modes" style="display: flex;justify-content: center; top: 10%; position: relative; margin-bottom: 40px;">
       <div class="erwei">扫描二维码登录</div>
       <div style="top: 20%; position: fixed;">
         <img src="/qer.jpg" alt="" style="width: 168px; height: 168px;">
@@ -15,17 +15,15 @@
       <img v-if="chaijun == false" src="/tantou2.png" alt="" style="width: 100px;  left:0%; top: 90.6%; position: fixed;">
     </div>
   </div>
-  <div style="width: 1px; height: 90%; background-color: #cccccc; margin: 20px 0;"></div>
+  <div class="login-divider" style="width: 1px; height: 90%; background-color: #cccccc; margin: 20px 0;"></div>
   <div class="load" @keydown.enter.prevent="entering">
-    <div @click="close">
-      <img src="/关闭.png" alt="" style="width: 20px; height: 20px; position: fixed; left: 97%;top: 2%;">
-    </div>
-    <div style="display: flex;justify-content: center; top: 10%; position: relative; margin-bottom: 40px;">
+    <button type="button" class="login-close" aria-label="关闭登录" @click="close" @keydown.enter.stop>×</button>
+    <div class="login-modes" style="display: flex;justify-content: center; top: 10%; position: relative; margin-bottom: 40px;">
       <div style="font-weight: 500;font-size: 18px;line-height: 20px; margin-right: 12px;" @click="phones1">密码登录</div>
       <div>|</div>
       <div style="font-weight: 500;font-size: 18px;line-height: 20px; margin-left: 12px;" @click="phones">手机登录</div>
     </div>
-    <div v-if="phone == 0" style="top: 15%; position: relative; justify-content: center; display: flex;">
+    <div v-if="phone == 0" class="login-field" style="top: 15%; position: relative; justify-content: center; display: flex;">
     <el-input
       v-model="loginForm.username"
       autocomplete="username"
@@ -35,7 +33,7 @@
       <template #prepend>账号</template>
     </el-input>
   </div>
-  <div v-if="phone == 1" style="top: 15%; position: relative; justify-content: center; display: flex;">
+  <div v-if="phone == 1" class="login-field" style="top: 15%; position: relative; justify-content: center; display: flex;">
     <el-input
     v-model="telephone"
       style="max-width: 400px;height: 50px; "
@@ -49,7 +47,7 @@
       </template>
     </el-input>
   </div>
-   <div v-if="phone == 0" style="display: flex;justify-content: center;  position: relative;margin-top: 43px; top: 4.5%;">
+   <div v-if="phone == 0" class="login-field" style="display: flex;justify-content: center;  position: relative;margin-top: 43px; top: 4.5%;">
     <el-input
        @focus="handleFocus1"
        @blur = "handleFocus2"
@@ -64,7 +62,7 @@
     </el-input>
 
    </div>
-   <div v-if="phone == 1" style="display: flex;justify-content: center;  position: relative;margin-top: 43px; top: 4.5%;">
+   <div v-if="phone == 1" class="login-field" style="display: flex;justify-content: center;  position: relative;margin-top: 43px; top: 4.5%;">
     <el-input
        v-model="yanzheng1"
        @focus="handleFocus1"
@@ -76,11 +74,11 @@
     </el-input>
    </div>
 
-   <div style="position: relative; top: 12%; justify-content: center; display: flex;">
+   <div class="login-actions" style="position: relative; top: 12%; justify-content: center; display: flex;">
     <button style="width: 194px; height: 40px; z-index: 1002; margin-right: 5px;" class="zhuce" @click="phones">注册</button>
     <button  class="denglu" @click="entering">登录</button>
    </div>
-   <div  style="position: relative; top: 15%; justify-content: center; display: flex;">
+   <div class="login-note" style="position: relative; top: 15%; justify-content: center; display: flex;">
     <p class="weixin"> 未注册过的手机号，我们将自动帮你注册账号</p>
    </div>
     <div>
@@ -268,5 +266,53 @@ input:focus{
   border-color: #66afe9;
   outline: 0;
   box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+}
+
+.login-close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 1003;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: #303133;
+  font-size: 26px;
+}
+
+@media (max-width: 850px), (max-height: 500px) {
+  .overlay { z-index: 8999; }
+  .loading_page {
+    z-index: 9000;
+    width: min(440px, calc(100% - 24px));
+    height: auto;
+    max-height: calc(100dvh - 24px);
+    overflow: auto;
+    display: block;
+    border-radius: 14px;
+  }
+  .chaijun, .login-divider, .load img { display: none; }
+  .load {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+    height: auto;
+    padding: 50px 16px 20px;
+  }
+  .load .login-modes, .login-field, .login-actions, .login-note {
+    top: auto !important;
+    margin: 0 !important;
+  }
+  .login-actions { gap: 8px; }
+  .login-actions button {
+    flex: 1;
+    width: auto !important;
+    height: 44px !important;
+    margin: 0 !important;
+  }
+  :deep(.el-input-group__prepend), :deep(.el-input-group__append) {
+    padding-inline: 8px;
+  }
 }
 </style>

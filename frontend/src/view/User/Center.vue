@@ -5,6 +5,22 @@
       <h1 class="h1">个人中心</h1>
 
       <el-tabs v-model="tab" type="border-card">
+        <el-tab-pane label="继续观看 / 阅读" name="continue">
+          <p class="hint">接着上次的集数、章节或卷数继续，按最近观看 / 阅读时间排列。</p>
+          <div v-if="continueLoading" class="muted" role="status">正在读取进度…</div>
+          <ul v-else-if="continueItems.length" class="thumb-list">
+            <li v-for="it in continueItems" :key="it.type + '-' + it.id" class="trow resume-row">
+              <img v-if="it.pic" :src="it.pic" alt="" class="thumb" />
+              <div class="resume-copy">
+                <div class="tit">{{ it.name }}</div>
+                <div class="muted2">{{ typ(it.type) }} · 上次{{ it.type === 'animation' ? '观看' : '阅读' }}至第 {{ it.position }} {{ it.type === 'animation' ? '集' : it.type === 'comic' ? '章' : '卷' }}</div>
+                <div class="muted2">{{ fmtAt(it.at) }}</div>
+              </div>
+              <el-button type="primary" size="small" @click="resume(it)">{{ it.type === 'animation' ? '继续观看' : '继续阅读' }}</el-button>
+            </li>
+          </ul>
+          <div v-else class="muted">还没有观看或阅读进度，开始看一集番剧或读一章作品后，会出现在这里。</div>
+        </el-tab-pane>
         <el-tab-pane label="资料" name="profile">
           <div class="profile-row">
             <img :src="avatarShow" alt="" class="big-av" />
@@ -105,13 +121,17 @@ import {
   ensureAcgnUserHydrated,
   listHistory,
   listSubscriptions,
+  listContinueItems,
+  type ContinueItem,
   type AcgnMediaType,
 } from '@/utils/acgnLocal'
 import { listMyPublishedComments, listUserUploadRecords, type UserUploadRecord } from '@/utils/acgnPersonalFeed'
 
 const store = useUserStore()
 const router = useRouter()
-const tab = ref('profile')
+const tab = ref('continue')
+const continueLoading = ref(true)
+const continueItems = ref<ContinueItem[]>([])
 
 const preview = ref('')
 
@@ -157,6 +177,16 @@ function goRev(r: ReturnType<typeof listMyPublishedComments>[0]) {
   go({ type: r.type, id: r.mediaId })
 }
 
+function resume(it: ContinueItem) {
+  if (it.type === 'animation') {
+    router.push({ name: 'AnimationWatch', query: { animationid: it.id, episode: it.position } })
+  } else if (it.type === 'comic') {
+    router.push({ name: 'Comicsee', query: { comicid: it.id, chapterid: it.chapterId, chapterno: it.position } })
+  } else {
+    router.push({ name: 'Novelsee', query: { novelid: it.id } })
+  }
+}
+
 function channel(c: string) {
   return c === 'server' ? '云端' : '本地'
 }
@@ -195,9 +225,14 @@ function auditLbl(s?: UserUploadRecord['auditStatus']) {
 }
 
 onMounted(async () => {
-  await ensureAcgnUserHydrated()
-  history.value = listHistory()
-  subs.value = listSubscriptions()
+  try {
+    await ensureAcgnUserHydrated()
+    history.value = listHistory()
+    subs.value = listSubscriptions()
+    continueItems.value = listContinueItems().slice(0, 20)
+  } finally {
+    continueLoading.value = false
+  }
 })
 </script>
 
@@ -313,6 +348,9 @@ onMounted(async () => {
 .trow:hover {
   background: #ecf5ff;
 }
+.resume-row { align-items: center; cursor: default; }
+.resume-copy { flex: 1; min-width: 0; }
+.resume-copy .tit { overflow-wrap: anywhere; }
 .thumb {
   width: 48px;
   height: 64px;
@@ -384,5 +422,17 @@ onMounted(async () => {
 }
 .bottom {
   margin-top: auto;
+}
+
+@media (max-width: 820px) {
+  .sheet { width: calc(100% - 20px); margin: 16px auto 24px; padding: 12px; }
+  .sheet :deep(.el-button) { min-height: 40px; }
+
+  .profile-row { align-items: flex-start; flex-wrap: wrap; }
+  .big-av { width: 84px; height: 84px; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .trow { flex-wrap: wrap; }
+  .resume-copy { min-width: 110px; }
+  .sheet :deep(.el-tabs__content) { padding: 8px; }
 }
 </style>
