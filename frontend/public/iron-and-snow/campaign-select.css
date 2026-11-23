@@ -37,3 +37,30 @@
   border: 1px solid #867458; border-radius: 4px; padding-inline: 9px;
 }
 :is(#german-chapters,#soviet-chapters) .gc-rating { margin-block: 8px; color: var(--gc-gold); font-size: 13px; }
+
+:is(#german-chapters,#soviet-chapters) {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+:is(#german-chapters,#soviet-chapters) :is(.gc-heading, .gc-content, .gc-battle-map) {
+  width: min(100% - 32px, 1200px);
+  margin-inline: auto;
+}
+:is(#german-chapters,#soviet-chapters) :is(.gc-heading, .gc-content) { padding-inline: 0; }
+:is(#german-chapters,#soviet-chapters) .gc-content { min-width: 0; flex: 1; }
+:is(#german-chapters,#soviet-chapters) .gc-map-caption { gap: 10px; }
+:is(#german-chapters,#soviet-chapters) .gc-map-caption > * { min-width: 0; }
+:is(#german-chapters,#soviet-chapters) .gc-back { min-height: 44px; }
+:is(#german-chapters,#soviet-chapters) .gc-map-scroll { overscroll-behavior-inline: contain; }
+:is(#german-chapters,#soviet-chapters) .gc-pin:focus-visible {
+  z-index: 4; outline: 2px solid #f1d48b; outline-offset: 3px;
+}
+@media (max-width: 740px) {
+  :is(#german-chapters,#soviet-chapters) .gc-heading { gap: 10px; }
+  :is(#german-chapters,#soviet-chapters) .gc-heading h1 { font-size: clamp(22px, 6vw, 29px); }
+  :is(#german-chapters,#soviet-chapters) .gc-faction-mark { display: none; }
+  :is(#german-chapters,#soviet-chapters) .gc-map-caption,
+  :is(#german-chapters,#soviet-chapters) .gc-chapter-picker { padding-inline: 12px; }
+}

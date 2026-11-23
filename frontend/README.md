@@ -41,4 +41,4 @@ npm run test:unit
 
 网站导航「战棋」进入 `/iron-and-snow/start.html`。`/#/warflag`、`/#/warflag/battle` 和 `/#/warflag/preview` 均兼容旧链接。新版使用当前浏览器的本地存档，旧账号战局与新版进度独立。
 
-`public/iron-and-snow/` 来自《铁与雪》提交 `1d47075` 的生产构建。更新时在独立项目执行 `npm run build`，替换此目录的静态产物，一并带上 `SourceHanSans-LICENSE.txt`，并保留封面页返回网站的链接。主站构建会原样复制此目录。
+`public/iron-and-snow/` 来自《铁与雪》提交 `0bf2a6d` 的生产构建。更新时在独立项目执行 `npm run build`，替换此目录的静态产物，并保留 `SourceHanSans-LICENSE.txt`。封面在此路径下会显示返回网站的链接。主站构建会原样复制此目录。
