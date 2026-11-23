@@ -1,10 +1,6 @@
 {
-  "utc": "2026-11-22T00:36:57Z",
-  "ok": 2,
-  "fail": 0,
-  "mapped": 3841,
-  "seconds": 7.5,
-  "rate": 0.3,
+  "error": "no status line",
+  "log_tail": "shard map: 3841\nskip set: 50753\nto upload: 0\n",
   "shard": "0",
-  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/44967415815"
+  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/45092410116"
 }
