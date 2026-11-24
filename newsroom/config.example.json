@@ -49,5 +49,7 @@
   "image_library": [],
   "font_file": "",
   "report_dir": "",
-  "retention_days": 90
+  "retention_days": 90,
+  "pending_max": 800,
+  "pending_max_age_days": 14
 }
