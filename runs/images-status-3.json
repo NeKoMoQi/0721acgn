@@ -1,6 +1,15 @@
 {
-  "error": "no status line",
-  "log_tail": "shard map: 4458\nskip set: 50753\nto upload: 0\n",
+  "utc": "2026-11-24T04:56:18Z",
+  "ok": 2,
+  "fail": 3,
+  "mapped": 4460,
+  "seconds": 31.6,
+  "rate": 0.1,
+  "errors_sample": [
+    "https://image.anitabi.cn/user/2205/bangumi/548156/points/m8nuukx-1795423419417.webp?plan=h360 :: TimeoutError",
+    "https://image.anitabi.cn/user/2205/bangumi/548156/points/m8p5duc-1795425539184.webp?plan=h360 :: TimeoutError",
+    "https://image.anitabi.cn/user/2205/bangumi/548156/points/m8pluk4-1795426513948.webp?plan=h360 :: TimeoutError"
+  ],
   "shard": "3",
-  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/45092410116"
+  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/45329694649"
 }
