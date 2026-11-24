@@ -86,4 +86,81 @@ describe('漫画阅读器', () => {
     })
     wrapper.unmount()
   })
+
+  it('滑到章节加载标记时自动追加正文，重复通知不会重复请求', async () => {
+    const observe = vi.fn()
+    let intersect: IntersectionObserverCallback
+    vi.stubGlobal('IntersectionObserver', class {
+      constructor(callback: IntersectionObserverCallback) { intersect = callback }
+      observe = observe
+      disconnect = vi.fn()
+    })
+    vi.mocked(getcartoonpage)
+      .mockResolvedValueOnce({ code: 200, data: pages })
+      .mockResolvedValueOnce({ code: 200, data: [{ fileurl: '/page-5.jpg' }] })
+
+    const wrapper = mountReader()
+    try {
+      await flushPromises()
+      const marker = wrapper.get('.load-marker').element
+      expect(observe).toHaveBeenCalledWith(marker)
+      expect(wrapper.find('.more-pages').exists()).toBe(false)
+      const notify = (isIntersecting: boolean) =>
+        intersect([{ target: marker, isIntersecting } as IntersectionObserverEntry], {} as IntersectionObserver)
+      notify(false)
+      expect(getcartoonpage).toHaveBeenCalledTimes(1)
+      notify(true)
+      notify(true)
+      await flushPromises()
+      expect(vi.mocked(getcartoonpage).mock.calls).toEqual([['0018042', 1], ['0018042', 2]])
+      expect(wrapper.findAll('.comic-page')).toHaveLength(5)
+      expect(wrapper.text()).toContain('已经读完本章')
+    } finally {
+      wrapper.unmount()
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('从点开的图片进入沉浸模式，滑动跨过分页后回到当前阅读位置', async () => {
+    vi.mocked(getcartoonpage)
+      .mockResolvedValueOnce({ code: 200, data: pages })
+      .mockResolvedValueOnce({ code: 200, data: [{ fileurl: '/page-5.jpg' }] })
+
+    const wrapper = mountReader()
+    await flushPromises()
+    const dialog = wrapper.get<HTMLDialogElement>('dialog').element
+    Object.assign(dialog, {
+      showModal() { dialog.open = true },
+      close() {
+        dialog.open = false
+        dialog.dispatchEvent(new Event('close'))
+      },
+    })
+    await wrapper.findAll('.comic-page')[3].trigger('click')
+    expect(dialog.open).toBe(true)
+    expect(wrapper.get('.immersive-stage img').attributes('src')).toBe('/page-4.jpg')
+
+    const stage = wrapper.get('.immersive-stage')
+    const swipe = async (from: number, to: number) => {
+      const pointer = { isPrimary: true, pointerId: 1, button: 0, clientY: 150 }
+      await stage.trigger('pointerdown', { ...pointer, clientX: from })
+      await stage.trigger('pointerup', { ...pointer, clientX: to })
+      await flushPromises()
+    }
+    await swipe(80, 280)
+    expect(wrapper.get('.immersive-stage img').attributes('src')).toBe('/page-3.jpg')
+    await swipe(280, 80)
+    await swipe(280, 80)
+    expect(wrapper.get('.immersive-stage img').attributes('src')).toBe('/page-5.jpg')
+    expect(vi.mocked(getcartoonpage).mock.calls).toEqual([['0018042', 1], ['0018042', 2]])
+    expect(wrapper.get('.immersive-bar:last-child button:last-child').attributes('disabled')).toBeDefined()
+
+    const scrollIntoView = vi.fn()
+    const lastPage = wrapper.findAll('.comic-page')[4].element
+    Object.assign(lastPage, { scrollIntoView })
+    await wrapper.get('.immersive-bar button').trigger('click')
+    expect(dialog.open).toBe(false)
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'start' })
+    wrapper.unmount()
+  })
 })

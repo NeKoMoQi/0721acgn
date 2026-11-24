@@ -6,11 +6,15 @@
       <div class="background-layer"></div>
   
       <!-- 内容容器 -->
-      <div class="acgn_container" ref="maintain" @scroll="handscroll">
-        <div v-for="(item, index) in pagelist" :key="index">
-            <img :src=item.fileurl alt="" style="width: 100%;">
-        </div>
-        <button v-if="hasmore && pagelist.length && !isloading && !loadError" class="more-pages" type="button" @click="loadpage">加载后续页面</button>
+      <div class="acgn_container">
+        <button v-for="(item, index) in pagelist" :key="index" type="button" class="comic-page"
+          :aria-label="`从第 ${index + 1} 页进入沉浸阅读`" @click="openImmersive(index)">
+          <img :src="optimizeImageUrl(item.fileurl)" alt="" :loading="index === 0 ? 'eager' : 'lazy'" decoding="async">
+        </button>
+        <template v-if="hasmore && pagelist.length && !isloading && !loadError && immersivePage === null">
+          <div v-if="canObserve" ref="loadMarker" class="load-marker" aria-hidden="true"></div>
+          <button v-else class="more-pages" type="button" @click="loadpage">加载后续页面</button>
+        </template>
         <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
         <div v-else-if="loadError" class="tishi" role="alert">
           {{ loadError }}
@@ -18,6 +22,26 @@
         </div>
         <div v-else-if="!hasmore" class="tishi">{{ pagelist.length ? '已经读完本章' : '本章暂无正文' }}</div>
       </div>
+      <dialog ref="immersiveDialog" class="immersive-reader" aria-label="沉浸阅读"
+        @close="finishImmersive" @keydown.left.prevent="turnPage(-1)" @keydown.right.prevent="turnPage(1)">
+        <template v-if="immersivePage !== null">
+          <header class="immersive-bar">
+            <span aria-live="polite">第 {{ immersivePage + 1 }} 页</span>
+            <button type="button" autofocus @click="immersiveDialog.close()">退出沉浸模式</button>
+          </header>
+          <div class="immersive-stage" @pointerdown="startSwipe" @pointerup="endSwipe" @pointercancel="swipeStart = null">
+            <img :src="optimizeImageUrl(pagelist[immersivePage].fileurl)" :alt="`漫画第 ${immersivePage + 1} 页`" draggable="false">
+          </div>
+          <footer class="immersive-bar">
+            <button type="button" :disabled="immersivePage === 0" @click="turnPage(-1)">上一页</button>
+            <span v-if="immersiveLoading" role="status">加载中…</span>
+            <span v-else-if="loadError" role="status">{{ loadError }}</span>
+            <span v-else>左右滑动翻页</span>
+            <button type="button" :disabled="immersiveLoading || (!hasmore && immersivePage >= pagelist.length - 1)"
+              @click="turnPage(1)">{{ loadError && immersivePage >= pagelist.length - 1 ? '重试下一页' : '下一页' }}</button>
+          </footer>
+        </template>
+      </dialog>
       <div class="chapter-nav">
       <button class="nav-btn directory" @click="goToCatalog">
         <i class="iconfont icon-catalog"></i> 目录
@@ -36,11 +60,12 @@
   </template>
   
   <script setup>
-  import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
+  import { computed, nextTick, ref, watch, onMounted, onBeforeUnmount } from 'vue';
   import { getcartoonpage, getcartoonchapter, getcartoonbyid } from '@/api/cartoon';
   import { useRoute, useRouter } from 'vue-router';
   import useUserStore from '@/stores/modules/users';
   import { saveComicProgress, pushHistory } from '@/utils/acgnLocal';
+  import { optimizeImageUrl } from '@/utils/imageOptimizer';
 
   const route = useRoute();
   const router = useRouter();
@@ -54,18 +79,43 @@
   const previousChapter = computed(() => chapterIndex.value > 0 ? chapters.value[chapterIndex.value - 1] : null);
   const nextChapter = computed(() => chapterIndex.value >= 0 ? chapters.value[chapterIndex.value + 1] : null);
   const pagelist = ref([]);
-  const maintain = ref(null);
   const isloading = ref(false);
   const hasmore = ref(true);
   const loadError = ref('');
+  const canObserve = typeof IntersectionObserver !== 'undefined';
+  const loadMarker = ref(null);
+  const immersiveDialog = ref(null);
+  const immersivePage = ref(null);
+  const immersiveLoading = ref(false);
+  let openedPage = null;
+  let immersiveSession = 0;
+  let swipeStart = null;
+  let observer;
   let nextPage = 1;
+  let pageRequest = null;
   let disposed = false;
 
-  async function loadpage() {
-    if (!chapterId || isloading.value || !hasmore.value || disposed) return;
-    const page = nextPage;
+  watch(loadMarker, (marker) => {
+    observer?.disconnect();
+    if (!marker) return;
+    observer = new IntersectionObserver((entries) => {
+      if (loadMarker.value === marker && immersivePage.value === null && entries.some(entry => entry.isIntersecting)) {
+        void loadpage();
+      }
+    }, { rootMargin: '0px 0px 350px 0px' });
+    observer.observe(marker);
+  }, { flush: 'post' });
+
+  function loadpage() {
+    if (pageRequest) return pageRequest;
+    if (!chapterId || !hasmore.value || disposed) return;
     isloading.value = true;
     loadError.value = '';
+    pageRequest = Promise.resolve().then(() => requestPage(nextPage));
+    return pageRequest;
+  }
+
+  async function requestPage(page) {
     try {
       const result = await getcartoonpage(chapterId, page);
       if (disposed) return;
@@ -80,6 +130,7 @@
     } catch {
       if (!disposed) loadError.value = '漫画正文加载失败，请重试。';
     } finally {
+      pageRequest = null;
       isloading.value = false;
     }
   }
@@ -102,12 +153,60 @@
     }).catch(() => {});
   });
 
-  onBeforeUnmount(() => { disposed = true; });
+  onBeforeUnmount(() => {
+    disposed = true;
+    observer?.disconnect();
+  });
 
-  function handscroll() {
-    const container = maintain.value;
-    if (container && !loadError.value && container.scrollHeight - container.scrollTop - container.clientHeight < 900) {
-      void loadpage();
+  async function openImmersive(index) {
+    if (!immersiveDialog.value || immersivePage.value !== null) return;
+    immersiveSession++;
+    openedPage = index;
+    immersivePage.value = index;
+    await nextTick();
+    immersiveDialog.value?.showModal();
+  }
+
+  function finishImmersive() {
+    const current = immersivePage.value;
+    immersiveSession++;
+    immersivePage.value = null;
+    swipeStart = null;
+    if (current === null || current === openedPage) return;
+    const page = immersiveDialog.value?.parentElement?.querySelectorAll('.comic-page')[current];
+    page?.scrollIntoView({ block: 'start' });
+    page?.focus({ preventScroll: true });
+  }
+
+  async function turnPage(direction) {
+    const current = immersivePage.value;
+    if (current === null || immersiveLoading.value) return;
+    const session = immersiveSession;
+    const target = current + direction;
+    if (target < 0) return;
+    if (target >= pagelist.value.length && hasmore.value) {
+      immersiveLoading.value = true;
+      try {
+        await loadpage();
+      } finally {
+        immersiveLoading.value = false;
+      }
+    }
+    if (!disposed && session === immersiveSession && target < pagelist.value.length) immersivePage.value = target;
+  }
+
+  function startSwipe(event) {
+    if (!event.isPrimary || event.button !== 0) return;
+    swipeStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
+  }
+
+  function endSwipe(event) {
+    if (swipeStart?.id !== event.pointerId) return;
+    const dx = event.clientX - swipeStart.x;
+    const dy = event.clientY - swipeStart.y;
+    swipeStart = null;
+    if (Math.abs(dx) >= 45 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+      void turnPage(dx < 0 ? 1 : -1);
     }
   }
 
@@ -222,7 +321,52 @@
     position: relative;
     top: 200px;
   }
-  .more-pages { display: none; }
+.load-marker { height: 1px; }
+.more-pages { display: block; margin: 18px auto; padding: 0 16px; min-height: 44px; }
+.comic-page {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: #f5f5f5;
+  cursor: zoom-in;
+  scroll-margin-top: calc(var(--mobile-header-height, 80px) + 8px);
+}
+.comic-page img {
+  display: block;
+  width: 100%;
+  aspect-ratio: auto 2 / 3;
+}
+.immersive-reader[open] {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  border: 0;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background: #111;
+  color: #fff;
+}
+:global(html:has(.immersive-reader[open])) { overflow: hidden; }
+.immersive-stage { min-width: 0; min-height: 0; touch-action: pan-y pinch-zoom; }
+.immersive-stage img { width: 100%; height: 100%; object-fit: contain; display: block; user-select: none; }
+.immersive-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; }
+.immersive-bar span { text-align: center; }
+.immersive-bar button {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 4px 10px;
+  border: 1px solid #777;
+  border-radius: 8px;
+  background: #292929;
+  color: #fff;
+}
+.immersive-bar button:disabled { opacity: .45; }
 .retry-pages { min-height: 44px; margin-left: 8px; padding: 0 12px; }
 
 @media (max-width: 820px) {
@@ -233,7 +377,6 @@
     margin: 0 0 14px;
     padding: 0 0 76px;
   }
-  .acgn_container img { display: block; }
   .chapter-nav {
     bottom: calc(8px + env(safe-area-inset-bottom));
     width: min(360px, calc(100% - 16px));
@@ -242,7 +385,6 @@
   }
   .chapter-control { flex: 2; gap: 6px; padding-left: 6px; }
   .nav-btn { flex: 1; justify-content: center; min-height: 44px; padding: 4px 8px; white-space: nowrap; }
-  .more-pages { display: block; margin: 18px auto; padding: 0 16px; min-height: 44px; }
   .bottom { top: auto; }
 }
 </style>
