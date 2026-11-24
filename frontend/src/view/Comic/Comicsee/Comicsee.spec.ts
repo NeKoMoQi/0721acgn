@@ -3,13 +3,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ComicReader from './index.vue'
 import { getcartoonbyid, getcartoonchapter, getcartoonpage } from '@/api/cartoon'
 
-const { push, saveComicProgress } = vi.hoisted(() => ({
+const { push, saveComicProgress, routeQuery } = vi.hoisted(() => ({
   push: vi.fn(),
   saveComicProgress: vi.fn(),
+  routeQuery: {} as Record<string, string>,
 }))
 
 vi.mock('vue-router', () => ({
-  useRoute: () => ({ query: { comicid: '8', chapterid: '0018042', chapterno: '4' } }),
+  useRoute: () => ({ query: routeQuery }),
   useRouter: () => ({ push }),
 }))
 vi.mock('@/stores/modules/users', () => ({ default: () => ({}) }))
@@ -26,8 +27,20 @@ function mountReader() {
   return mount(ComicReader, { global: { stubs: { Headpage: true, Behind: true } } })
 }
 
+function stubDialog(dialog: HTMLDialogElement) {
+  Object.assign(dialog, {
+    showModal() { dialog.open = true },
+    close() {
+      dialog.open = false
+      dialog.dispatchEvent(new Event('close'))
+    },
+  })
+}
+
 beforeEach(() => {
   vi.resetAllMocks()
+  delete routeQuery.immersive
+  Object.assign(routeQuery, { comicid: '8', chapterid: '0018042', chapterno: '4' })
   vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
   vi.mocked(getcartoonbyid).mockResolvedValue({ code: 200, data: { name: '漫画' } })
   vi.mocked(getcartoonchapter).mockResolvedValue({ code: 200, data: [
@@ -87,6 +100,41 @@ describe('漫画阅读器', () => {
     wrapper.unmount()
   })
 
+  it('沉浸模式切换到真实章节，正文可用后从该章第 1 页继续沉浸阅读', async () => {
+    vi.mocked(getcartoonpage)
+      .mockResolvedValueOnce({ code: 200, data: pages.slice(0, 1) })
+      .mockRejectedValueOnce(new Error('新章节暂时离线'))
+      .mockResolvedValueOnce({ code: 200, data: [{ fileurl: '/chapter-7-page-1.jpg' }] })
+
+    const reader = mountReader()
+    stubDialog(reader.get<HTMLDialogElement>('dialog').element)
+    await flushPromises()
+    await reader.get('.comic-page').trigger('click')
+    const buttons = reader.get('.immersive-chapters').findAll('button')
+    await buttons[0].trigger('click')
+    await buttons[1].trigger('click')
+    expect(push.mock.calls.map(([target]) => target.query)).toEqual([
+      { comicid: 8, chapterid: '0018012', chapterno: 2, immersive: '1' },
+      { comicid: 8, chapterid: '0030871', chapterno: 7, immersive: '1' },
+    ])
+    reader.unmount()
+
+    Object.assign(routeQuery, push.mock.lastCall![0].query)
+    const destination = mountReader()
+    const dialog = destination.get<HTMLDialogElement>('dialog').element
+    stubDialog(dialog)
+    await flushPromises()
+    expect(dialog.open).toBe(false)
+    await destination.get('.retry-pages').trigger('click')
+    await flushPromises()
+    expect(dialog.open).toBe(true)
+    expect(destination.get('.immersive-chapters').text()).toContain('第 7 章')
+    expect(destination.get('.immersive-chapters button:last-child').attributes('disabled')).toBeDefined()
+    expect(destination.get('.immersive-stage img').attributes('src')).toBe('/chapter-7-page-1.jpg')
+    expect(destination.get('.immersive-stage img').attributes('alt')).toBe('漫画第 1 页')
+    destination.unmount()
+  })
+
   it('到达当前批次最后一张图前开始加载下一批，重复通知不会重复请求', async () => {
     const observe = vi.fn()
     let intersect: IntersectionObserverCallback
@@ -131,13 +179,7 @@ describe('漫画阅读器', () => {
     const wrapper = mountReader()
     await flushPromises()
     const dialog = wrapper.get<HTMLDialogElement>('dialog').element
-    Object.assign(dialog, {
-      showModal() { dialog.open = true },
-      close() {
-        dialog.open = false
-        dialog.dispatchEvent(new Event('close'))
-      },
-    })
+    stubDialog(dialog)
     await wrapper.findAll('.comic-page')[0].trigger('click')
     expect(dialog.open).toBe(true)
     expect(wrapper.findAll('dialog img[fetchpriority="low"]').map(img => img.attributes('src')))
@@ -164,7 +206,7 @@ describe('漫画阅读器', () => {
     await swipe(280, 80)
     expect(wrapper.get('.immersive-stage img').attributes('src')).toBe('/page-5.jpg')
     expect(vi.mocked(getcartoonpage).mock.calls).toEqual([['0018042', 1], ['0018042', 2]])
-    expect(wrapper.get('.immersive-bar:last-child button:last-child').attributes('disabled')).toBeDefined()
+    expect(wrapper.get('.immersive-page-controls button:last-child').attributes('disabled')).toBeDefined()
 
     const scrollIntoView = vi.fn()
     const lastPage = wrapper.findAll('.comic-page')[4].element

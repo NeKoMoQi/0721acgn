@@ -38,13 +38,21 @@
           <div hidden>
             <img v-for="src in upcomingImages" :key="src" :src="src" alt="" fetchpriority="low">
           </div>
-          <footer class="immersive-bar">
-            <button type="button" :disabled="immersivePage === 0" @click="turnPage(-1)">上一页</button>
-            <span v-if="immersiveLoading" role="status">加载中…</span>
-            <span v-else-if="loadError && immersivePage >= pagelist.length - 1" role="status">{{ loadError }}</span>
-            <span v-else>左右滑动翻页</span>
-            <button type="button" :disabled="immersiveLoading || (!hasmore && immersivePage >= pagelist.length - 1)"
-              @click="turnPage(1)">{{ loadError && immersivePage >= pagelist.length - 1 ? '重试下一页' : '下一页' }}</button>
+          <footer>
+            <div class="immersive-bar immersive-page-controls">
+              <button type="button" :disabled="immersivePage === 0" @click="turnPage(-1)">上一页</button>
+              <span v-if="immersiveLoading" role="status">加载中…</span>
+              <span v-else-if="loadError && immersivePage >= pagelist.length - 1" role="status">{{ loadError }}</span>
+              <span v-else-if="!hasmore && immersivePage >= pagelist.length - 1">本章已读完</span>
+              <span v-else>左右滑动翻页</span>
+              <button type="button" :disabled="immersiveLoading || (!hasmore && immersivePage >= pagelist.length - 1)"
+                @click="turnPage(1)">{{ loadError && immersivePage >= pagelist.length - 1 ? '重试下一页' : '下一页' }}</button>
+            </div>
+            <nav class="immersive-bar immersive-chapters" aria-label="章节导航">
+              <button type="button" :disabled="!previousChapter" @click="goToChapter(previousChapter, true)">上一章</button>
+              <span>第 {{ chapterNo }} 章</span>
+              <button type="button" :disabled="!nextChapter" @click="goToChapter(nextChapter, true)">下一章</button>
+            </nav>
           </footer>
         </template>
       </dialog>
@@ -107,6 +115,7 @@
   let nextPage = 1;
   let pageRequest = null;
   let disposed = false;
+  let resumeImmersive = route.query.immersive === '1';
 
   watch(loadMarker, (marker) => {
     observer?.disconnect();
@@ -146,6 +155,10 @@
       nextPage = page + 1;
       if (comicId && images.length) {
         saveComicProgress(comicId, { chapterId, chapterno: chapterNo, imagePage: page });
+      }
+      if (resumeImmersive && pagelist.value.length) {
+        resumeImmersive = false;
+        void openImmersive(0);
       }
     } catch {
       if (!disposed) loadError.value = '漫画正文加载失败，请重试。';
@@ -234,11 +247,12 @@
     router.push(comicId ? { name: 'ComicIntroduce', query: { comicid: comicId } } : { name: 'Comic' });
   }
 
-  function goToChapter(chapter) {
+  function goToChapter(chapter, immersive = false) {
     if (!chapter) return;
+    const query = { comicid: comicId, chapterid: chapter.chapterid, chapterno: chapter.chapterno };
     router.push({
       name: 'Comicsee',
-      query: { comicid: comicId, chapterid: chapter.chapterid, chapterno: chapter.chapterno },
+      query: immersive ? { ...query, immersive: '1' } : query,
     });
   }
   </script>
@@ -376,6 +390,7 @@
 .immersive-stage { min-width: 0; min-height: 0; touch-action: pan-y pinch-zoom; }
 .immersive-stage img { width: 100%; height: 100%; object-fit: contain; display: block; user-select: none; }
 .immersive-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; }
+.immersive-chapters { border-top: 1px solid #444; }
 .immersive-bar span { text-align: center; }
 .immersive-bar button {
   flex-shrink: 0;
