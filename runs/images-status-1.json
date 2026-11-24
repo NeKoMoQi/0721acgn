@@ -1,6 +1,10 @@
 {
-  "error": "no status line",
-  "log_tail": "shard map: 4488\nskip set: 50753\nto upload: 0\n",
+  "utc": "2026-11-24T04:56:06Z",
+  "ok": 2,
+  "fail": 0,
+  "mapped": 4490,
+  "seconds": 5.1,
+  "rate": 0.4,
   "shard": "1",
-  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/45092410116"
+  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/45329694649"
 }
