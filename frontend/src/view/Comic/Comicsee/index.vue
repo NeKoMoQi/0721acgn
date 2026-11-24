@@ -9,7 +9,9 @@
       <div class="acgn_container">
         <button v-for="(item, index) in pagelist" :key="index" type="button" class="comic-page"
           :aria-label="`从第 ${index + 1} 页进入沉浸阅读`" @click="openImmersive(index)">
-          <img :src="optimizeImageUrl(item.fileurl)" alt="" :loading="index === 0 ? 'eager' : 'lazy'" decoding="async">
+          <img :src="optimizeImageUrl(item.fileurl)" alt="" decoding="async"
+            :loading="index % PAGES_PER_BATCH === 0 ? 'eager' : 'lazy'"
+            :fetchpriority="index === 0 ? 'high' : 'auto'">
         </button>
         <template v-if="hasmore && pagelist.length && !isloading && !loadError && immersivePage === null">
           <div v-if="canObserve" ref="loadMarker" class="load-marker" aria-hidden="true"></div>
@@ -30,12 +32,16 @@
             <button type="button" autofocus @click="immersiveDialog.close()">退出沉浸模式</button>
           </header>
           <div class="immersive-stage" @pointerdown="startSwipe" @pointerup="endSwipe" @pointercancel="swipeStart = null">
-            <img :src="optimizeImageUrl(pagelist[immersivePage].fileurl)" :alt="`漫画第 ${immersivePage + 1} 页`" draggable="false">
+            <img :src="optimizeImageUrl(pagelist[immersivePage].fileurl)" :alt="`漫画第 ${immersivePage + 1} 页`"
+              fetchpriority="high" draggable="false">
+          </div>
+          <div hidden>
+            <img v-for="src in upcomingImages" :key="src" :src="src" alt="" fetchpriority="low">
           </div>
           <footer class="immersive-bar">
             <button type="button" :disabled="immersivePage === 0" @click="turnPage(-1)">上一页</button>
             <span v-if="immersiveLoading" role="status">加载中…</span>
-            <span v-else-if="loadError" role="status">{{ loadError }}</span>
+            <span v-else-if="loadError && immersivePage >= pagelist.length - 1" role="status">{{ loadError }}</span>
             <span v-else>左右滑动翻页</span>
             <button type="button" :disabled="immersiveLoading || (!hasmore && immersivePage >= pagelist.length - 1)"
               @click="turnPage(1)">{{ loadError && immersivePage >= pagelist.length - 1 ? '重试下一页' : '下一页' }}</button>
@@ -67,6 +73,8 @@
   import { saveComicProgress, pushHistory } from '@/utils/acgnLocal';
   import { optimizeImageUrl } from '@/utils/imageOptimizer';
 
+  const PAGES_PER_BATCH = 4;
+  const IMMERSIVE_LOOKAHEAD = 2;
   const route = useRoute();
   const router = useRouter();
   const store = useUserStore();
@@ -87,6 +95,11 @@
   const immersiveDialog = ref(null);
   const immersivePage = ref(null);
   const immersiveLoading = ref(false);
+  const upcomingImages = computed(() => {
+    if (immersivePage.value === null) return [];
+    const start = immersivePage.value + 1;
+    return pagelist.value.slice(start, start + IMMERSIVE_LOOKAHEAD).map(item => optimizeImageUrl(item.fileurl));
+  });
   let openedPage = null;
   let immersiveSession = 0;
   let swipeStart = null;
@@ -103,8 +116,15 @@
         void loadpage();
       }
     }, { rootMargin: '0px 0px 350px 0px' });
-    observer.observe(marker);
+    // 最后一张图片接近视口时就请求下一批，给长图留出阅读时间。
+    observer.observe(marker.previousElementSibling);
   }, { flush: 'post' });
+
+  watch([immersivePage, () => pagelist.value.length], ([current, count]) => {
+    if (current !== null && count - current - 1 < IMMERSIVE_LOOKAHEAD && !loadError.value) {
+      void loadpage();
+    }
+  });
 
   function loadpage() {
     if (pageRequest) return pageRequest;
@@ -122,7 +142,7 @@
       if (result?.code !== 200 || !Array.isArray(result.data)) throw new Error('漫画正文加载失败');
       const images = result.data;
       pagelist.value.push(...images);
-      hasmore.value = images.length >= 4;
+      hasmore.value = images.length >= PAGES_PER_BATCH;
       nextPage = page + 1;
       if (comicId && images.length) {
         saveComicProgress(comicId, { chapterId, chapterno: chapterNo, imagePage: page });

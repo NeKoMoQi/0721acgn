@@ -87,7 +87,7 @@ describe('漫画阅读器', () => {
     wrapper.unmount()
   })
 
-  it('滑到章节加载标记时自动追加正文，重复通知不会重复请求', async () => {
+  it('到达当前批次最后一张图前开始加载下一批，重复通知不会重复请求', async () => {
     const observe = vi.fn()
     let intersect: IntersectionObserverCallback
     vi.stubGlobal('IntersectionObserver', class {
@@ -102,11 +102,11 @@ describe('漫画阅读器', () => {
     const wrapper = mountReader()
     try {
       await flushPromises()
-      const marker = wrapper.get('.load-marker').element
-      expect(observe).toHaveBeenCalledWith(marker)
+      const lastImage = wrapper.findAll('.comic-page')[3].element
+      expect(observe).toHaveBeenCalledWith(lastImage)
       expect(wrapper.find('.more-pages').exists()).toBe(false)
       const notify = (isIntersecting: boolean) =>
-        intersect([{ target: marker, isIntersecting } as IntersectionObserverEntry], {} as IntersectionObserver)
+        intersect([{ target: lastImage, isIntersecting } as IntersectionObserverEntry], {} as IntersectionObserver)
       notify(false)
       expect(getcartoonpage).toHaveBeenCalledTimes(1)
       notify(true)
@@ -114,6 +114,8 @@ describe('漫画阅读器', () => {
       await flushPromises()
       expect(vi.mocked(getcartoonpage).mock.calls).toEqual([['0018042', 1], ['0018042', 2]])
       expect(wrapper.findAll('.comic-page')).toHaveLength(5)
+      expect(wrapper.findAll('.comic-page img').map(img => img.attributes('loading')))
+        .toEqual(['eager', 'lazy', 'lazy', 'lazy', 'eager'])
       expect(wrapper.text()).toContain('已经读完本章')
     } finally {
       wrapper.unmount()
@@ -136,9 +138,11 @@ describe('漫画阅读器', () => {
         dialog.dispatchEvent(new Event('close'))
       },
     })
-    await wrapper.findAll('.comic-page')[3].trigger('click')
+    await wrapper.findAll('.comic-page')[0].trigger('click')
     expect(dialog.open).toBe(true)
-    expect(wrapper.get('.immersive-stage img').attributes('src')).toBe('/page-4.jpg')
+    expect(wrapper.findAll('dialog img[fetchpriority="low"]').map(img => img.attributes('src')))
+      .toEqual(['/page-2.jpg', '/page-3.jpg'])
+    expect(getcartoonpage).toHaveBeenCalledTimes(1)
 
     const stage = wrapper.get('.immersive-stage')
     const swipe = async (from: number, to: number) => {
@@ -147,6 +151,13 @@ describe('漫画阅读器', () => {
       await stage.trigger('pointerup', { ...pointer, clientX: to })
       await flushPromises()
     }
+    await swipe(280, 80)
+    await swipe(280, 80)
+    expect(wrapper.get('.immersive-stage img').attributes('src')).toBe('/page-3.jpg')
+    expect(getcartoonpage).toHaveBeenCalledTimes(2)
+    expect(wrapper.findAll('dialog img[fetchpriority="low"]').map(img => img.attributes('src')))
+      .toEqual(['/page-4.jpg', '/page-5.jpg'])
+    await swipe(280, 80)
     await swipe(80, 280)
     expect(wrapper.get('.immersive-stage img').attributes('src')).toBe('/page-3.jpg')
     await swipe(280, 80)
