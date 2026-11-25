@@ -26,4 +26,5 @@ public class Cartoons {
     private String releasedate;
     private BigDecimal rating;
     private LocalDateTime updatedAt;
+    private Integer resourceEnd;
 }

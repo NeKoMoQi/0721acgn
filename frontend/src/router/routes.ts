@@ -1,5 +1,11 @@
 export const constantRoute = [
   {
+    path: '/shengdi/uji',
+    name: 'UjiPilgrimage',
+    component: () => import('@/view/shengdi/UjiWalk.vue'),
+    meta: { title: '宇治半日巡礼', name: 'UjiPilgrimage' },
+  },
+  {
     path: '/activity/:id',
     name: 'ActivityDetail',
     component: () => import('@/view/ActivityDetail/index.vue'),
@@ -7,7 +13,14 @@ export const constantRoute = [
       title: '活动详情',
       name: 'ActivityDetail',
     },
-  },  {
+  },
+  {
+    path: '/character/galgame/:slug/:person',
+    name: 'GalgameCharacter',
+    component: () => import('@/view/Character/index.vue'),
+    meta: { title: '角色介绍', name: 'GalgameCharacter' },
+  },
+  {
     path: '/character/:id',
     name: 'Character',
     component: () => import('@/view/Character/index.vue'),

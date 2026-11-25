@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GuestAccessTests {
     @ParameterizedTest
     @CsvSource({
+        "GET,/api/activity/hot", "GET,/api/activity/leibie", "POST,/api/activity/view", "POST,/api/media/report",
         "GET,/api/animation", "GET,/api/animation/byid", "GET,/api/animation/episodes",
         "GET,/api/cartoon", "GET,/api/cartoon/chapter", "GET,/api/cartoonpage",
         "GET,/api/novel", "GET,/api/novel/chapter/byid", "GET,/api/novel/content", "GET,/api/searchresult",

@@ -293,6 +293,10 @@
         </div>
   </div>
   <div class="map-container" >
+    <nav v-if="isUjiWalk" class="uji-map-links" aria-label="宇治巡礼导航">
+      <RouterLink :to="UJI_WALK">宇治半日巡礼</RouterLink>
+      <RouterLink :to="ujiWorkLink">作品详情</RouterLink>
+    </nav>
     <el-drawer
         :data="xunlibyidlist"
         v-model="clickdrawer"
@@ -317,6 +321,7 @@
               <span class="jianjie-small">{{ xunlibyidlist.city }}</span>
               <span class="dot-divider">·</span>
               <span class="jianjie-small">{{ xunlibyidlist.count }}地标</span>
+              <RouterLink v-if="Number(xunlibyidlist.xunliid) === UJI_WORK_ID" :to="UJI_WALK">宇治半日巡礼</RouterLink>
             </div>
           </div>
         </div>
@@ -437,7 +442,8 @@ import { ArrowLeftBold, Search } from '@element-plus/icons-vue'
 import { add, debounce, last } from 'lodash';
 import { da, fa, fr, tr } from 'element-plus/es/locales.mjs';
 import { nextTick } from 'vue';
-import { useRouter } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
+import { UJI_WALK, UJI_WORK_ID, ujiStops, ujiWorkLink } from '@/data/ujiPilgrimage';
 import useUserStore from '@/stores/modules/users';
 import { cleanupLive2D, mountShengdiLive2D } from '@/utils/live2d-loader';
 import { streamAgentChat } from '@/api/xunli/agentStream';
@@ -447,6 +453,8 @@ const FOURSQUARE_API_KEY = 'fsq3f+6iSSunbTbkSdAIzD1aWTueh0nYyR8cLQwd5SuaUNQ=';
 const FOURSQUARE_CATEGORIES = '16000,19001,19002,19003,19004'; 
 mapboxgl.accessToken = 'pk.eyJ1IjoiNHd4bm51dXYiLCJhIjoiY204N25oaGJ3MDk0NzJpcXU1YmtvcGM5OCJ9.05C4KGMpkW1QolRvxwSt_g';
 const $router = useRouter()
+const route = useRoute()
+const isUjiWalk = route.query.walk === 'uji'
 const userStore = useUserStore()
 const searching = ref(true)
 const xunlipointbyidlist = ref([])
@@ -2584,6 +2592,15 @@ onMounted(async () => {
 
   // AI returns enriched points; full manual-import data is fetched only when its popover opens.
   init();
+  if (isUjiWalk && map.value) {
+    map.value.once('load', () => {
+      travelMode.value = 'walking'
+      void applyRoutePicksToNavigation(ujiStops.map(stop => ({
+        name: stop.name, coordinates: stop.coordinates, xunliid: UJI_WORK_ID,
+        dbPointId: String(stop.id), address: '京都府宇治市',
+      }))).catch(() => ElMessage.warning('宇治步行路线暂时无法计算，可返回专题查看各个点位'))
+    })
+  }
   const initialViewportGen = mapViewportUpdateGen;
   const [works, points] = await Promise.allSettled([getXunli(zoom.value), getXunliPoint(zoom.value)]);
   if (!map.value || initialViewportGen !== mapViewportUpdateGen) return;
@@ -2615,6 +2632,9 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.uji-map-links { position: absolute; top: 12px; right: 12px; z-index: 3; display: flex; gap: 12px; padding: 8px 12px; border-radius: 8px; background: white; }
+.uji-map-links a { color: #246048; }
+
 .live2d-role-console {
   position: fixed;
   right: 24px;

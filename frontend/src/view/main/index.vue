@@ -17,6 +17,16 @@
         </div>
 
 
+        <section v-if="continueItems.length" class="home-continue" aria-label="继续观看与阅读">
+          <h2>继续观看 / 阅读</h2>
+          <div class="home-continue-list">
+            <RouterLink v-for="item in continueItems" :key="item.type + '-' + item.id" :to="resumeLocation(item)">
+              <img v-if="item.pic" :src="optimizeCoverUrl(item.pic)" alt="" width="44" height="58" loading="lazy">
+              <span><strong>{{ item.name }}</strong><small>{{ resumeLabel(item) }}</small></span>
+            </RouterLink>
+          </div>
+        </section>
+
         <div class="behinds">
             <div class="zixun" @scroll="handscroll" ref="scrollcontainer" >
               <RouterLink
@@ -176,54 +186,29 @@
                     transparent 100%);"></div>
 </div>
               </div>
-              <div class="hot">
-  <!-- 标题样式 -->
-  <div class="hottitle">🔥 最近热门 🔥</div>
-  <div style="display: flex;   justify-content: space-between; margin-top:10px ;">
-    <div class="littletitle">文章名</div>
-    <div class="littletitle">点击量</div>
-  </div>
-  <!-- 列表项样式 -->
-  <div 
-    v-for="(item, index) in hotlist" 
-    class="hot-item"
-  >
-    <!-- 左侧活动名称 -->
-    <p class="activity-name">{{index+1}}.{{ item.activityname }}</p>
-    
-    <!-- 右侧点击量 -->
-    <div class="click-wrapper">
-      <span class="click-count">{{ item.click }}</span>
-      <el-icon class="arrow-icon"><Right /></el-icon>
-    </div>
-  </div>
-</div>
+              <section class="hot">
+                <h2 class="hottitle">🔥 最近热门 🔥</h2>
+                <div class="ranking-columns"><span>文章名</span><span>近 7 日点击量</span></div>
+                <RouterLink v-for="(item, index) in hotlist" :key="item.id" :to="`/activity/${item.id}`" class="hot-item">
+                  <span class="activity-name">{{ index + 1 }}. {{ item.activityname }}</span>
+                  <span class="click-count">{{ item.click }}</span>
+                </RouterLink>
+                <p v-if="!hotlist.length" class="ranking-rule">{{ hotStatus }}</p>
+              </section>
               <div class="character sidebar-note">
                 <div class="hottitle">📌小窝公告📌</div>
                 <p class="sidebar-note-copy">游客可以直接浏览和搜索作品，挑一部感兴趣的慢慢看吧。</p>
-                <p class="sidebar-note-copy">想接着上次的进度？到「个人中心 · 继续观看 / 阅读」，就能找到上次看到的集数、章节或卷数。</p>
-                <p class="sidebar-note-copy">小窝的内容会逐步补充。遇到缺章、链接失效或资料有误，欢迎带上作品名和章节反馈。</p>
+                <p class="sidebar-note-copy">作品详情和阅读页可以反馈缺章、链接失效或资料有误。</p>
+                <RouterLink to="/shengdi/uji">宇治半日巡礼 · 吹响吧！上低音号</RouterLink>
               </div>
-              <div class="fenlei">
-                <div class="hottitle">🔀分类🔀</div>
-                <div style="display: flex;   justify-content: space-between; margin-top:10px ;">
-                  <div class="littletitle">类别</div>
-                  <div class="littletitle">数目</div>
-                </div>
-                <div 
-    v-for="(item, index) in leibielist" 
-    class="hot-item"
-  >
-    <!-- 左侧活动名称 -->
-    <p class="activity-name">{{index+1}}.{{ item.actleibie }}</p>
-    
-    <!-- 右侧点击量 -->
-    <div class="click-wrapper">
-      <span class="click-count">{{ item.count }}</span>
-      <el-icon class="arrow-icon"><Right /></el-icon>
-    </div>
-  </div>
-              </div>
+              <section class="fenlei">
+                <h2 class="hottitle">🔀 分类 🔀</h2>
+                <div class="ranking-columns"><span>作品类别</span><span>收录数</span></div>
+                <RouterLink v-for="item in categories" :key="item.path" :to="item.path" class="hot-item">
+                  <span class="activity-name">{{ item.label }}</span>
+                  <span class="click-count">{{ categoryCounts[item.id] ?? '—' }}</span>
+                </RouterLink>
+              </section>
               <div class="shengdi">
                 <div class="hottitle">🌍圣地巡礼热门榜🌍</div>
                 <p class="ranking-rule">按站内点击热度排序 · 左边是巡礼地点数，右边是点击数</p>
@@ -274,9 +259,11 @@ import { getPeopleCount } from '@/api/peoplecount'
 import {getAcgnUserRandom,getAcgnUserBirth} from '@/api/acgnuser/index'
 import { RouterLink, useRoute,useRouter } from 'vue-router'
 import { getShengDiHot } from '@/api/shengdi/index'
+import { resumeLabel, resumeLocation } from '@/utils/continueReading'
 import request from '@/utils/request'
 import { newsCoverUrl } from '@/utils/newsImages'
 import { optimizeCoverUrl } from '@/utils/imageOptimizer'
+import { ensureAcgnUserHydrated, listContinueItems, type ContinueItem } from '@/utils/acgnLocal'
 const scrollcontainer = ref<HTMLElement | null>(null)
 const visibleNewsCovers = reactive(new Set<string>())
 const failedNewsCovers = reactive(new Set<string>())
@@ -288,7 +275,11 @@ function observeNewsCover(element: unknown, id: string) {
   else newsObserver.observe(element)
 }
 
-onBeforeUnmount(() => newsObserver?.disconnect())
+onBeforeUnmount(() => {
+  newsObserver?.disconnect()
+  window.clearInterval(hotTimer)
+  document.removeEventListener('visibilitychange', refreshHot)
+})
 const qq = ref<boolean>(false)
 const wechat = ref<boolean>(false)
 const blbl = ref<boolean>(false)
@@ -296,7 +287,14 @@ const isScrolling = ref(false)
 const scrollDistance = ref(0)
 /** 占位：首页「图书馆」等区域点击入口 */
 const getactivity = (_activityId: number) => {}
-const leibielist  =  ref( [] )
+const categories = [
+  { id: 1, label: '番剧', path: '/Animation' },
+  { id: 2, label: '漫画', path: '/Comic' },
+  { id: 3, label: '轻小说', path: '/Novel' },
+  { id: 4, label: 'Galgame', path: '/Galagame' },
+]
+const categoryCounts = ref<Record<number, number>>({})
+const continueItems = ref<ContinueItem[]>([])
 const id = ref(1)
 const imgsrc = ref()
 const zihead = ref()
@@ -355,7 +353,24 @@ const shortText = (text?: string) => {
 }
 // 显式暴露模板中使用的三个纯函数，避免 vue-tsc 在首页模板类型推导时漏掉它们。
 defineExpose({ freshnessClass, freshnessLabel, shortText })
-const hotlist = ref([])
+const hotlist = ref<{ id: number; activityname: string; click: number }[]>([])
+const hotStatus = ref('正在读取点击量…')
+let hotTimer: number
+let loadingHot = false
+async function refreshHot() {
+  if (document.hidden || loadingHot) return
+  loadingHot = true
+  try {
+    const result = await getActivityHot()
+    if (result?.code !== 200 || !Array.isArray(result.data)) throw new Error('榜单读取失败')
+    hotlist.value = result.data
+    hotStatus.value = '近 7 日暂无文章浏览记录'
+  } catch {
+    hotStatus.value = '热门榜暂时无法读取'
+  } finally {
+    loadingHot = false
+  }
+}
 const bianjizhe = ref()
 const wenzhang = ref()
 const liulan = ref()
@@ -437,6 +452,10 @@ onMounted(async () => {
     })
   }
   void loadpage()
+  void ensureAcgnUserHydrated().then(() => { continueItems.value = listContinueItems().slice(0, 3) })
+  void refreshHot()
+  hotTimer = window.setInterval(refreshHot, 30_000)
+  document.addEventListener('visibilitychange', refreshHot)
   // 站内资讯并入下面的快讯流，失败就当作没有，不影响首页其它区块。
   request.get('/news', { params: { page: 1, featured: 1 } })
     .then((result: any) => {
@@ -450,14 +469,12 @@ onMounted(async () => {
     birthRes,
     roleRes,
     result1Res,
-    hotRes,
     liebieRes,
     hotshengdiRes,
   ] = await Promise.allSettled([
     getAcgnUserBirth(),
     getAcgnUserRandom(),
     getPeopleCount(),
-    getActivityHot(),
     getActivityLeibie(),
     getShengDiHot(),
   ])
@@ -466,7 +483,12 @@ onMounted(async () => {
     shengdihot.value = hotshengdiRes.value.data
   }
   if (liebieRes.status === 'fulfilled' && liebieRes.value?.data !== undefined) {
-    leibielist.value = liebieRes.value.data
+    const rows = liebieRes.value.data
+    if (Array.isArray(rows)) {
+      categoryCounts.value = Object.fromEntries(rows.filter(row =>
+        categories.some(category => category.label === row.actleibie && category.id === row.id),
+      ).map(row => [row.id, row.count]))
+    }
   }
   if (birthRes.status === 'fulfilled' && birthRes.value?.data) {
     const b = birthRes.value.data
@@ -482,9 +504,6 @@ onMounted(async () => {
     roletalent.value = r.talent
     roleid.value = r.id
     roleavatarfailed.value = false
-  }
-  if (hotRes.status === 'fulfilled' && hotRes.value?.data !== undefined) {
-    hotlist.value = hotRes.value.data
   }
   if (result1Res.status === 'fulfilled' && result1Res.value?.data) {
     const p = result1Res.value.data
@@ -1421,4 +1440,14 @@ const scrollDown = () => {
   .activity-more { display: block; min-height: 44px; margin: 12px auto; padding: 0 18px; }
   .meiriuser { min-width: 0; }
 }
+
+.home-continue { width: min(100% - 32px, 1120px); margin: 24px auto; }
+.home-continue h2 { margin-bottom: 12px; font-size: 20px; }
+.home-continue-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; }
+.home-continue-list a { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; background: #fff; color: #27433b; text-decoration: none; }
+.home-continue-list img { flex: none; border-radius: 4px; object-fit: cover; }
+.home-continue-list span { min-width: 0; overflow-wrap: anywhere; }
+.home-continue-list small { display: block; color: #526c62; }
+.ranking-columns { display: flex; justify-content: space-between; margin: 10px 0; color: #49534f; font-size: 13px; }
+a.hot-item { text-decoration: none; }
 </style>

@@ -28,6 +28,14 @@ public class ActivityController {
         if (activity == null) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "活动不存在");
         return Result.success(activity);
     }
+    @PostMapping("/api/activity/view")
+    public Result recordView(@RequestParam int id) {
+        Activity activity = activityService.recordView(id);
+        if (activity == null) throw new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.NOT_FOUND, "活动不存在");
+        return Result.success(activity.getClick());
+    }
+
     @GetMapping("/api/activity/all")
     public Result getAllActivity(){
         List<Activity> activities = activityService.getallActivity();

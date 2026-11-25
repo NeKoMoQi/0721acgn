@@ -46,6 +46,7 @@ export interface HistoryItem {
 
 let historyMem: HistoryItem[] = []
 let subsMem: SubscribeEntry[] = []
+const comicProgressWrites = new Map<number, Promise<void>>()
 const comicProgMem: Record<string, ComicProgress> = {}
 const novelProgMem: Record<string, { chapterno: number }> = {}
 const animEpMem: Record<string, number> = {}
@@ -108,7 +109,9 @@ function coerceComicProg(x: unknown): ComicProgress {
   return {
     chapterId: typeof o.chapterId === 'string' ? o.chapterId : String(o.chapterId ?? ''),
     chapterno: typeof o.chapterno === 'number' ? o.chapterno : Number(o.chapterno) || 1,
-    imagePage: typeof o.imagePage === 'number' ? o.imagePage : Number(o.imagePage) || 1,
+    imagePage: Number(o.imagePage) || 1,
+    pageNumber: Number.isSafeInteger(o.pageNumber) && Number(o.pageNumber) > 0 ? Number(o.pageNumber) : undefined,
+    updatedAt: Number(o.updatedAt) || undefined,
   }
 }
 
@@ -466,6 +469,7 @@ export function listHistory(): HistoryItem[] {
 export interface ContinueItem extends HistoryItem {
   position: number
   chapterId?: string
+  pageNumber?: number
 }
 
 /** 只列出实际有观看 / 阅读进度的作品，浏览过简介不算开始阅读。 */
@@ -478,7 +482,8 @@ export function listContinueItems(): ContinueItem[] {
     if (item.type === 'comic') {
       const progress = getComicProgress(item.id)
       return progress?.chapterId && Number.isInteger(progress.chapterno) && progress.chapterno > 0
-        ? [{ ...item, position: progress.chapterno, chapterId: progress.chapterId }] : []
+        ? [{ ...item, at: Math.max(item.at, progress.updatedAt || 0), position: progress.chapterno,
+          chapterId: progress.chapterId, pageNumber: progress.pageNumber }] : []
     }
     if (item.type === 'novel') {
       const progress = getNovelProgress(item.id)
@@ -498,36 +503,41 @@ export interface ComicProgress {
   chapterId: string
   chapterno: number
   imagePage?: number
+  pageNumber?: number
+  updatedAt?: number
+}
+
+function comicCheckpointKey(comicId: number) {
+  return `acgn_comic_checkpoint_${comicId}`
 }
 
 export function saveComicProgress(comicId: number, p: ComicProgress) {
-  void innerSaveComicProgress(comicId, p)
-}
-
-async function innerSaveComicProgress(comicId: number, p: ComicProgress) {
-  await ensureAcgnUserHydrated()
-  const before = { ...comicProgMem[String(comicId)] }
-  comicProgMem[String(comicId)] = { ...p, imagePage: p.imagePage ?? 1 }
+  const progress = { ...p, updatedAt: Date.now() }
+  const key = comicCheckpointKey(comicId)
   try {
-    const res = await postAcgnProgressSave(
-      'comic',
-      comicId,
-      comicProgMem[String(comicId)] as unknown as Record<string, unknown>,
-    )
-    if (res?.code !== 200) {
-      if (before && Object.keys(before).length) comicProgMem[String(comicId)] = before
-      else delete comicProgMem[String(comicId)]
-    } else {
-      await touchProgressHistory('comic', comicId)
-    }
+    localStorage.setItem(key, JSON.stringify(progress))
   } catch {
-    if (before && Object.keys(before).length) comicProgMem[String(comicId)] = before
-    else delete comicProgMem[String(comicId)]
+    // The server can still save progress when browser storage is unavailable.
   }
+  const previousWrite = comicProgressWrites.get(comicId) || Promise.resolve()
+  const write = previousWrite.then(async () => {
+    await ensureAcgnUserHydrated()
+    const latest = readLsJson<ComicProgress | null>(key, null)
+    if ((latest?.updatedAt || 0) > progress.updatedAt) return
+    comicProgMem[String(comicId)] = progress
+    const result = await postAcgnProgressSave('comic', comicId, { ...progress })
+    if (result?.code === 200) await touchProgressHistory('comic', comicId)
+  }).catch(() => {}).finally(() => {
+    if (comicProgressWrites.get(comicId) === write) comicProgressWrites.delete(comicId)
+  })
+  comicProgressWrites.set(comicId, write)
 }
 
 export function getComicProgress(comicId: number): ComicProgress | null {
-  return comicProgMem[String(comicId)] ?? null
+  const server = comicProgMem[String(comicId)]
+  const checkpoint = readLsJson<ComicProgress | null>(comicCheckpointKey(comicId), null)
+  if (checkpoint?.chapterId && (checkpoint.updatedAt || 0) >= (server?.updatedAt || 0)) return checkpoint
+  return server ?? null
 }
 
 export function saveNovelProgress(novelId: number, chapterno: number) {

@@ -4,6 +4,7 @@ import Watch from './index.vue'
 import { getAnimationById, getAnimationEpisodeById, getAnimationEpisodes } from '@/api/animation'
 
 const query = vi.hoisted(() => ({ animationid: '3', episodeid: undefined as string | undefined }))
+vi.mock('@/utils/request', () => ({ default: { post: vi.fn() } }))
 vi.mock('vue-router', () => ({ useRoute: () => ({ query }), useRouter: () => ({ push: vi.fn() }) }))
 vi.mock('@/api/animation', () => ({
   getAnimationById: vi.fn(), getAnimationEpisodeById: vi.fn(), getAnimationEpisodes: vi.fn(),

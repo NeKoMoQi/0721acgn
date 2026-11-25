@@ -19,4 +19,5 @@ public class SearchResult {
     /** 用于热搜排序展示；可为 null */
     private BigDecimal rating;
     private LocalDateTime updatedAt;
+    private Integer resourceEnd;
 }

@@ -41,11 +41,13 @@
 </div>
       </div>
         
+      <MediaResource v-if="novelId" class="reader-report" type="novel" :id="novelId" :position="`第 ${currentVolume} 卷`" :report-only="!loadError" :unavailable="!!loadError" />
       <Behind class="bottom"></Behind>
     </div>
   </template>
   
   <script setup>
+import MediaResource from '@/components/MediaResource.vue'
 import { ref, shallowRef, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import useUserStore from '@/stores/modules/users'
@@ -197,6 +199,7 @@ onBeforeUnmount(() => {
 })
   </script>
   <style scoped>
+.reader-report { max-width: 900px; margin: 20px auto 72px; padding-inline: 16px; }
 .reader-status { padding: 20px; color: #675642; line-height: 1.8; }
 .reader-status button, .reader-status a { margin-right: 16px; }
 

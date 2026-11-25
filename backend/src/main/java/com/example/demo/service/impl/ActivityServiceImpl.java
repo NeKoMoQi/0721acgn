@@ -22,6 +22,13 @@ public class ActivityServiceImpl implements ActivityService {
     public Activity getActivityDetail(int id){
         return activityMapper.getActivityDetail(id);
     }
+    @org.springframework.transaction.annotation.Transactional(transactionManager = "mysqlTransactionManager")
+    public Activity recordView(int id) {
+        if (activityMapper.incrementView(id) == 0) return null;
+        activityMapper.incrementDailyView(id);
+        return activityMapper.getActivityDetail(id);
+    }
+
     public List<Activity> getallActivity(){
         return activityMapper.getallActivity();
     }

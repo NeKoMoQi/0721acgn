@@ -3,6 +3,22 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.mapper.mysql.SearchResultMapper">
+    <sql id="animationResourceEnd">
+        COALESCE((SELECT MAX(e.episode_no) FROM 0721acgn.tb_animation_episode e
+            WHERE e.animation_id = work.id AND e.video_url IS NOT NULL AND TRIM(e.video_url) != ''), 0)
+    </sql>
+    <sql id="comicResourceEnd">
+        COALESCE((SELECT MAX(c.chapterno) FROM 0721acgn.tb_cartoonchapters c
+            WHERE c.comicid = work.comicid AND EXISTS (
+                SELECT 1 FROM 0721acgn.tb_cartoonpage p
+                WHERE p.chapterid = c.chapterid AND p.fileurl IS NOT NULL AND TRIM(p.fileurl) != ''
+            )), 0)
+    </sql>
+    <sql id="novelResourceEnd">
+        COALESCE((SELECT MAX(n.chapterno) FROM 0721acgn.tb_novelchapter n
+            WHERE n.novelid = work.novelid AND n.novelurl IS NOT NULL AND TRIM(n.novelurl) != ''), 0)
+    </sql>
+
     <sql id="genreCond">
         <if test="genre != null and genre != ''">
             AND (
@@ -67,6 +83,15 @@
         ORDER BY sourcetype, id;
     </select>
 
+    <select id="searchCharacters" resultType="com.example.demo.com.SearchResult">
+        SELECT id, name, avatarurl AS picurl, '角色' AS sourcetype
+        FROM 0721acgn.tb_acgnuser
+        WHERE id REGEXP '^[0-9]+$' AND CAST(id AS UNSIGNED) &gt; 0 AND TRIM(name) != ''
+          AND LOCATE(#{search}, name) &gt; 0
+        ORDER BY (name = #{search}) DESC, (LOCATE(#{search}, name) = 1) DESC, CAST(id AS UNSIGNED)
+        LIMIT #{limit}
+    </select>
+
     <select id="searchComicsGlobal" resultType="com.example.demo.com.SearchResult">
         SELECT
             '漫画' AS sourcetype,
@@ -74,8 +99,9 @@
             name,
             picurl AS picurl,
             rating,
-            updated_at AS updatedAt
-        FROM 0721acgn.tb_cartoons
+            updated_at AS updatedAt,
+            <include refid="comicResourceEnd"/> AS resourceEnd
+        FROM 0721acgn.tb_cartoons work
         <where>
             <include refid="searchNameCond"/>
             <include refid="genreCond"/>
@@ -93,8 +119,9 @@
             name,
             bcimg AS picurl,
             rating,
-            updated_at AS updatedAt
-        FROM 0721acgn.tb_animation
+            updated_at AS updatedAt,
+            <include refid="animationResourceEnd"/> AS resourceEnd
+        FROM 0721acgn.tb_animation work
         <where>
             <include refid="searchNameCond"/>
             <include refid="genreCond"/>
@@ -112,8 +139,9 @@
             name,
             picurl AS picurl,
             rating,
-            updated_at AS updatedAt
-        FROM 0721acgn.tb_novel
+            updated_at AS updatedAt,
+            <include refid="novelResourceEnd"/> AS resourceEnd
+        FROM 0721acgn.tb_novel work
         <where>
             <include refid="searchNameCond"/>
             <include refid="genreCond"/>

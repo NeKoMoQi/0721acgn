@@ -23,14 +23,16 @@
 cartoondata.longcomment
  }}
     </p>
-    <div class="intro-actions">
-      <button v-if="hasProgress" class="action-button" @click="continueRead">继续阅读</button>
-      <button class="action-button" @click="toTop">从头开始</button>
+    <MediaResource v-if="comicIdNum" type="comic" :id="comicIdNum" :end="cartoondata.resourceEnd" :unavailable="catalogFailed" />
+      <div class="intro-actions">
+      <button v-if="hasProgress" class="action-button" @click="continueRead">继续阅读{{ progressLabel }}</button>
+      <button class="action-button" :disabled="!chapter.length || cartoondata.resourceEnd === 0" @click="toTop">从头开始</button>
       <button class="action-button" :class="{ 'is-shelf': shelfActive }" type="button" @click="toggleShelf">{{ shelfActive ? '已在书架' : '追漫' }}</button>
     </div>
   </div>
 </div>
 <div class="chapter">
+  <p v-if="catalogFailed" role="status">漫画目录暂时无法读取。</p>
   <div class="chapter-list-scroll">
     <div class="chapter-list">
       <div v-for="(item, index) in chapter" :key="index">
@@ -49,6 +51,7 @@ cartoondata.longcomment
   :shelf-active="shelfActive"
   @toggle-shelf="toggleShelf"
 />
+<WorkCharacters v-if="comicIdNum" type="comic" :id="comicIdNum" />
 <RelatedWorks v-if="comicIdNum" src-type="comic" :src-id="comicIdNum" />
       </div>
 
@@ -58,12 +61,14 @@ cartoondata.longcomment
   </template>
   
   <script setup>
+import MediaResource from '@/components/MediaResource.vue'
   import { ref, onMounted, computed } from 'vue';
   import { ElMessage } from 'element-plus';
   import { getcartoonchapter,getcartoonbyid } from '@/api/cartoon';
   import { useRoute,useRouter } from 'vue-router';
   import useUserStore from '@/stores/modules/users';
-  import RelatedWorks from '@/components/RelatedWorks.vue';
+  import WorkCharacters from '@/components/WorkCharacters.vue'
+import RelatedWorks from '@/components/RelatedWorks.vue';
   import AcgnCommunityPanel from '@/components/AcgnCommunityPanel.vue';
   import {
     pushHistory,
@@ -75,19 +80,28 @@ cartoondata.longcomment
 
   const cartoondata = ref()
   const chapter = ref([])
+  const catalogFailed = ref(false)
   const $router = useRouter()
   const route = useRoute()
   const useStore = useUserStore();
   const comicIdNum = computed(() => Number(route.query.comicid))
   const shelfActive = ref(false)
   const hasProgress = ref(false)
+  const progressLabel = computed(() => {
+    if (!hasProgress.value) return ''
+    const progress = getComicProgress(comicIdNum.value)
+    return progress?.pageNumber ? ` · 第 ${progress.chapterno} 章，第 ${progress.pageNumber} 页` : ''
+  })
 
   onMounted(async() => {
     const id = route.query.comicid;
-    const result =await getcartoonchapter(id);
-    const result1 = await getcartoonbyid(id)
-    cartoondata.value = await result1.data;
-    chapter.value = await result.data;
+    const [info, chapters] = await Promise.allSettled([getcartoonbyid(id), getcartoonchapter(id)])
+    if (info.status === 'fulfilled' && info.value?.code === 200) cartoondata.value = info.value.data
+    if (chapters.status === 'fulfilled' && chapters.value?.code === 200 && Array.isArray(chapters.value.data)) {
+      chapter.value = chapters.value.data
+    } else {
+      catalogFailed.value = true
+    }
     useStore.cartooncomicid = id
     useStore.cartoonchapterlength = chapter.value.length
     const nid = Number(id)
@@ -111,7 +125,7 @@ cartoondata.longcomment
     const id = comicIdNum.value
     const p = getComicProgress(id)
     if (p?.chapterId) {
-      $router.push({ name: 'Comicsee', query: { comicid: id, chapterid: p.chapterId, chapterno: p.chapterno } })
+      $router.push({ name: 'Comicsee', query: { comicid: id, chapterid: p.chapterId, chapterno: p.chapterno, pageNumber: p.pageNumber } })
       return
     }
     toTop()

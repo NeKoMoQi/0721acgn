@@ -11,6 +11,11 @@
           </button>
           <h1>巡礼图片对照</h1>
           <p>{{ spotTitle }}</p>
+          <p v-if="ujiStop">第一季第 {{ ujiStop.ep }} 集 · 资料核对于 {{ UJI_SOURCES_CHECKED }}</p>
+          <nav v-if="ujiStop" class="uji-compare-links" aria-label="宇治巡礼导航">
+            <RouterLink :to="UJI_WALK">返回宇治半日巡礼</RouterLink>
+            <RouterLink :to="ujiWorkLink">作品详情</RouterLink>
+          </nav>
         </div>
       </section>
 
@@ -48,7 +53,7 @@
 
             <label class="image-box upload-box" data-label="现实照片">
               <div class="scene-tag real">REAL TAKE</div>
-              <img v-if="realImage" :src="realImage" @error="showPhotoError" alt="现实照片" />
+              <img v-if="visiblePhoto" :src="visiblePhoto" @error="showPhotoError" :alt="realImage ? '本机照片' : spotTitle + '的实景参考照片'" />
               <div v-else class="empty-image">
                 <el-icon><UploadFilled /></el-icon>
                 <span>选择本机照片</span>
@@ -61,9 +66,13 @@
           <div class="toolbar">
             <button class="plain-btn" type="button" :disabled="!realImage" @click="resetComparison">
               <el-icon><Refresh /></el-icon>
-              重置照片
+              {{ ujiStop ? '恢复参考照片' : '重置照片' }}
             </button>
           </div>
+          <p v-if="ujiStop && visiblePhoto && !realImage" class="photo-credit">
+            实景参考可点击换成自己的照片。摄影 <a :href="ujiStop.photo.source" target="_blank" rel="noopener noreferrer">{{ ujiStop.photo.author }}</a>
+            · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a> · 缩放并转为 WebP
+          </p>
           <p v-if="photoError" class="comparison-status" role="alert">{{ photoError }}</p>
           <p class="comparison-status">自动比对服务暂不可用。可在本机预览照片，手动对照截图。</p>
 
@@ -149,7 +158,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import {
   ArrowLeft,
   Camera,
@@ -166,6 +175,7 @@ import Headpage from '@/components/Headpage/index.vue'
 import useUserStore from '@/stores/modules/users'
 import { processFile } from '@/ts/picyanzheng'
 import { getXunliPointById } from '@/api/xunli'
+import { UJI_SOURCES_CHECKED, UJI_WALK, UJI_WORK_ID, ujiMapLink, ujiStops, ujiWorkLink } from '@/data/ujiPilgrimage'
 
 const router = useRouter()
 const route = useRoute()
@@ -174,10 +184,13 @@ type CompareSpot = { id?: number; gaoqingpic?: string; name?: string; pointXunli
 const currentSpot = ref<CompareSpot>({})
 const spotId = Number(route.query.spot ?? (userStore.xunlilist as CompareSpot)?.id)
 const workId = Number(route.query.work)
+const ujiStop = workId === UJI_WORK_ID ? ujiStops.find(stop => stop.id === spotId) : undefined
 const reviewKey = Number.isSafeInteger(spotId) && spotId > 0 ? `0721acgn:pilgrimage-note:${spotId}` : ''
 
 const animeImage = ref('')
 const realImage = ref<string | null>(null)
+const referencePhotoFailed = ref(false)
+const visiblePhoto = computed(() => realImage.value || (!referencePhotoFailed.value ? ujiStop?.photo.src : ''))
 const photoError = ref('')
 const userRating = ref(4)
 const reviewText = ref('')
@@ -236,7 +249,12 @@ function resetComparison() {
   photoError.value = ''
 }
 
-function showPhotoError() {
+function showPhotoError(event?: Event) {
+  if (event && !realImage.value) {
+    referencePhotoFailed.value = true
+    photoError.value = '实景参考照片暂时无法读取，可以选择本机照片。'
+    return
+  }
   realImage.value = null
   photoError.value = '照片无法预览，请尝试选择其他图片。'
 }
@@ -244,7 +262,7 @@ function showPhotoError() {
 onBeforeUnmount(resetComparison)
 
 const goBack = () => {
-  router.push({ path: '/shengdi' })
+  router.push(ujiStop ? ujiMapLink : { path: '/shengdi' })
   userStore.xunlilist = {}
   ;(useUserStore as unknown as { xunlilist?: unknown }).xunlilist = null
 }
@@ -300,7 +318,11 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.uji-compare-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+.uji-compare-links a { color: #245a47; text-decoration: underline; }
 .comparison-status { margin: 12px 0; }
+.photo-credit { font-size: 13px; }
+.photo-credit a { color: #245a47; text-decoration: underline; }
 * {
   box-sizing: border-box;
 }

@@ -113,11 +113,13 @@
       </section>
     </main>
 
-    <Behind class="footer" />
+    <MediaResource v-if="animationIdNum" class="reader-report" type="animation" :id="animationIdNum" :position="reportPosition" :report-only="!playbackFailed && watchState !== 'error'" :unavailable="playbackFailed || watchState === 'error'" />
+      <Behind class="footer" />
   </div>
 </template>
 
 <script setup lang="ts">
+import MediaResource from '@/components/MediaResource.vue'
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getAnimationById, getAnimationEpisodeById, getAnimationEpisodes } from '@/api/animation';
@@ -143,6 +145,10 @@ const requestedAnimation = Number(route.query.animationid);
 const animationIdNum = Number.isInteger(requestedAnimation) && requestedAnimation > 0 ? requestedAnimation : 0;
 const episodeId = Number(route.query.episodeid);
 const resumeEpisode = Number(route.query.episode);
+const reportPosition = computed(() => {
+  const number = Number(currentEpisode.value?.episodeNo || route.query.episode);
+  return number > 0 ? `第 ${number} 集` : episodeId > 0 ? `分集编号 ${episodeId}` : '';
+});
 const currentIndex = computed(() =>
   episodes.value.findIndex((item) => Number(item.id) === Number(currentEpisode.value?.id)),
 );
@@ -279,6 +285,7 @@ function handleKeydown(event: KeyboardEvent) {
 </script>
 
 <style scoped>
+.reader-report { max-width: 900px; margin: 20px auto 72px; padding-inline: 16px; }
 .watch-root {
   min-height: 100vh;
   display: flex;

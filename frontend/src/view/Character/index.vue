@@ -20,27 +20,48 @@
         <div class="copy">
           <span class="eyebrow">0721 ACGN · 角色介绍</span>
           <h1>{{ character.name }}</h1>
-          <dl class="facts">
+          <p v-if="workTitle" class="work-title">出自《{{ workTitle }}》</p>
+          <p v-if="selectedGame?.person.originalName && selectedGame.person.originalName !== character.name" class="original-name">{{ selectedGame.person.originalName }}</p>
+          <dl v-if="!selectedGame && (character.sex || character.birthday)" class="facts">
             <div><dt>性别</dt><dd>{{ character.sex || '未填写' }}</dd></div>
             <div><dt>生日</dt><dd>{{ character.birthday || '未填写' }}</dd></div>
           </dl>
           <section v-if="introParagraphs.length" class="intro">
             <h2>简介</h2>
             <p v-for="(paragraph, index) in introParagraphs" :key="index">{{ paragraph }}</p>
-            <small v-if="sourceUrl">
+            <ul v-if="profile" class="profile-sources" aria-label="角色资料来源">
+              <li v-for="source in profile.sources" :key="source.url">
+                <a :href="source.url" target="_blank" rel="noopener noreferrer">{{ source.title }}</a>
+              </li>
+            </ul>
+            <small v-else-if="selectedGame">
+              <a :href="selectedGame.person.sourceUrl" target="_blank" rel="noopener noreferrer">角色资料来源</a>
+            </small>
+            <small v-else-if="sourceUrl">
               内容摘自
               <a :href="sourceUrl" target="_blank" rel="noopener noreferrer">萌娘百科</a>
               ，依 CC BY-NC-SA 3.0 CN 使用。
             </small>
           </section>
-          <h2>萌点</h2>
-          <ul v-if="tags.length" class="tags">
-            <li v-for="tag in tags" :key="tag">{{ tag }}</li>
-          </ul>
-          <p v-else class="empty">这个角色还没有录入萌点。</p>
+          <p v-else class="empty">这个角色还没有录入简介。</p>
+          <section v-if="associatedWorks.length || selectedGame" class="character-works">
+            <h2>登场作品</h2>
+            <ul>
+              <li v-for="work in associatedWorks" :key="`${work.type}:${work.id}`">
+                <RouterLink :to="workLocation(work)">{{ work.title }} · {{ workTypeLabel(work.type) }}</RouterLink>
+              </li>
+              <li v-if="selectedGame">
+                <RouterLink :to="{ name: 'GalgameIntroduce', query: { slug: gameSlug } }">{{ selectedGame.title || '返回 Galgame 详情' }}</RouterLink>
+              </li>
+            </ul>
+          </section>
+          <template v-if="tags.length">
+            <h2>萌点</h2>
+            <ul class="tags"><li v-for="tag in tags" :key="tag">{{ tag }}</li></ul>
+          </template>
           <div class="actions">
             <button type="button" @click="next">换一个角色</button>
-            <RouterLink to="/news" class="ghost">看看资讯</RouterLink>
+            <RouterLink :to="{ name: 'SiteSearch', query: { mediaType: 'character' } }" class="ghost">搜索角色</RouterLink>
           </div>
         </div>
       </article>
@@ -53,14 +74,17 @@ import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import Headpage from '@/components/Headpage/index.vue'
 import request from '@/utils/request'
+import { getCharacterProfile } from '@/data/characterProfiles'
+import { editorialCharacter, workLocation, workTypeLabel, worksForCharacter } from '@/data/characterAssociations'
+import { galgameCharacter } from '@/data/galgameMedia'
 
 interface Character {
   id: number | string
   name: string
-  sex: string
-  birthday: string
-  talent: string
-  avatarurl: string
+  sex?: string
+  birthday?: string
+  talent?: string
+  avatarurl?: string
   intro?: string
   introsource?: string
 }
@@ -71,37 +95,55 @@ const character = ref<Character | null>(null)
 const loading = ref(false)
 const error = ref('')
 const avatarOk = ref(true)
+let loadGeneration = 0
 
 const tags = computed(() =>
   (character.value?.talent || '').split(/[、,，]/).map((tag) => tag.trim()).filter(Boolean),
 )
-const introParagraphs = computed(() =>
-  (character.value?.intro || '').split(/\n{2,}/).map((paragraph) => paragraph.trim()).filter(Boolean),
+const gameSlug = computed(() => String(route.params.slug || ''))
+const selectedGame = computed(() => galgameCharacter(gameSlug.value, String(route.params.person || '')))
+const associatedWorks = computed(() => selectedGame.value ? [] : worksForCharacter(character.value?.id))
+const profile = computed(() => selectedGame.value ? undefined : getCharacterProfile(character.value?.name))
+const workTitle = computed(() => selectedGame.value?.title || profile.value?.work)
+const introParagraphs = computed(() => profile.value?.paragraphs ??
+  (character.value?.intro || '').split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean),
 )
 const sourceUrl = computed(() =>
   /^https:\/\/zh\.moegirl\.org\.cn\//.test(character.value?.introsource || '') ? character.value?.introsource : '',
 )
 // 头像只接受站内路径或 https，避免把外部字段直接塞进 img。
-const safeAvatar = (url: string) => /^\/(?!\/)/.test(url || '') || /^https:\/\//i.test(url || '') ? url : ''
+const safeAvatar = (url = '') => /^\/(?!\/)/.test(url || '') || /^https:\/\//i.test(url || '') ? url : ''
 
 async function load() {
+  const current = ++loadGeneration
   const id = String(route.params.id || '')
-  if (!/^\d+$/.test(id)) {
-    error.value = '角色编号不对。'
-    return
-  }
-  loading.value = true
+  loading.value = false
   error.value = ''
   character.value = null
   avatarOk.value = true
+  const game = selectedGame.value?.person
+  if (game) {
+    character.value = { id: game.name, name: game.name, intro: game.summary, avatarurl: game.image }
+    return
+  }
+  const editorial = editorialCharacter(id)
+  if (editorial) {
+    character.value = { id, name: editorial.name }
+    return
+  }
+  if (!/^\d+$/.test(id)) {
+    error.value = '没有找到这个角色。'
+    return
+  }
+  loading.value = true
   try {
     const result: any = await request.get('/acgn/user/byid', { params: { id } })
     if (result?.code !== 200 || !result.data) throw new Error('empty')
-    character.value = result.data
+    if (current === loadGeneration) character.value = result.data
   } catch {
-    error.value = '这个角色暂时读不到，可能是编号不存在。'
+    if (current === loadGeneration) error.value = '这个角色暂时读不到，可能是编号不存在。'
   } finally {
-    loading.value = false
+    if (current === loadGeneration) loading.value = false
   }
 }
 
@@ -115,10 +157,17 @@ async function next() {
   }
 }
 
-watch(() => route.params.id, () => { void load() }, { immediate: true })
+watch(() => [route.params.id, route.params.slug, route.params.person], () => { void load() }, { immediate: true })
 </script>
 
 <style scoped>
+.original-name { color: #526f64; }
+.character-works { margin: 20px 0; }
+.character-works ul { padding-left: 18px; }
+.character-works a { color: #246048; text-decoration: underline; }
+.work-title { margin: -12px 0 20px; color: #506e62; }
+.profile-sources { padding-left: 18px; font-size: 14px; }
+.profile-sources a { color: #246048; }
 .character-root {
   min-height: 100vh;
   background: #f5f7f5;

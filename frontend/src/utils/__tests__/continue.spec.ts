@@ -47,6 +47,17 @@ describe('继续观看 / 阅读数据', () => {
     expect(data.listContinueItems()).toEqual([])
   })
 
+  it('刷新后优先续读最新的确切页码，且不把旧版接口批次当页码', async () => {
+    const data = await import('../acgnLocal')
+    await data.ensureAcgnUserHydrated()
+    expect(data.listContinueItems()[0].pageNumber).toBeUndefined()
+    data.saveComicProgress(2, { chapterId: '0000204', chapterno: 4, pageNumber: 13 })
+    vi.resetModules()
+    const reloaded = await import('../acgnLocal')
+    await reloaded.ensureAcgnUserHydrated()
+    expect(reloaded.listContinueItems()[0]).toMatchObject({ chapterId: '0000204', position: 4, pageNumber: 13 })
+  })
+
   it.each(['animation', 'comic', 'novel'] as const)('保存 %s 进度后，该作品成为最近观看 / 阅读', async (type) => {
     const data = await import('../acgnLocal')
     await data.ensureAcgnUserHydrated()

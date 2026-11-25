@@ -13,7 +13,7 @@
               <img v-if="it.pic" :src="optimizeCoverUrl(it.pic)" loading="lazy" decoding="async" alt="" class="thumb" />
               <div class="resume-copy">
                 <div class="tit">{{ it.name }}</div>
-                <div class="muted2">{{ typ(it.type) }} · 上次{{ it.type === 'animation' ? '观看' : '阅读' }}至第 {{ it.position }} {{ it.type === 'animation' ? '集' : it.type === 'comic' ? '章' : '卷' }}</div>
+                <div class="muted2">{{ typ(it.type) }} · 上次{{ it.type === 'animation' ? '观看' : '阅读' }}至{{ resumeLabel(it) }}</div>
                 <div class="muted2">{{ fmtAt(it.at) }}</div>
               </div>
               <el-button type="primary" size="small" @click="resume(it)">{{ it.type === 'animation' ? '继续观看' : '继续阅读' }}</el-button>
@@ -126,6 +126,7 @@ import {
   type ContinueItem,
   type AcgnMediaType,
 } from '@/utils/acgnLocal'
+import { resumeLabel, resumeLocation } from '@/utils/continueReading'
 import { listMyPublishedComments, listUserUploadRecords, type UserUploadRecord } from '@/utils/acgnPersonalFeed'
 
 const store = useUserStore()
@@ -179,13 +180,7 @@ function goRev(r: ReturnType<typeof listMyPublishedComments>[0]) {
 }
 
 function resume(it: ContinueItem) {
-  if (it.type === 'animation') {
-    router.push({ name: 'AnimationWatch', query: { animationid: it.id, episode: it.position } })
-  } else if (it.type === 'comic') {
-    router.push({ name: 'Comicsee', query: { comicid: it.id, chapterid: it.chapterId, chapterno: it.position } })
-  } else {
-    router.push({ name: 'Novelsee', query: { novelid: it.id } })
-  }
+  router.push(resumeLocation(it))
 }
 
 function channel(c: string) {

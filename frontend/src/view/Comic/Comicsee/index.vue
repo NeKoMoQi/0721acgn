@@ -6,10 +6,10 @@
       <div class="background-layer"></div>
   
       <!-- 内容容器 -->
-      <div class="acgn_container">
+      <div ref="readingContainer" class="acgn_container">
         <button v-for="(item, index) in pagelist" :key="index" type="button" class="comic-page"
           :aria-label="`从第 ${index + 1} 页进入沉浸阅读`" @click="openImmersive(index)">
-          <img :src="optimizeImageUrl(item.fileurl)" alt="" decoding="async"
+          <img :src="optimizeImageUrl(item.fileurl)" alt="" decoding="async" @load="restoreScroll"
             :loading="index % PAGES_PER_BATCH === 0 ? 'eager' : 'lazy'"
             :fetchpriority="index === 0 ? 'high' : 'auto'">
         </button>
@@ -61,6 +61,7 @@
         <i class="iconfont icon-catalog"></i> 目录
       </button>
       <div class="chapter-control" v-if="chapterId">
+        <span v-if="lastSavedPage" class="current-page">第 {{ lastSavedPage }} 页</span>
         <button class="nav-btn prev" @click="goToChapter(previousChapter)" :disabled="!previousChapter">
           上一章
         </button>
@@ -69,11 +70,13 @@
         </button>
       </div>
     </div>
+      <MediaResource v-if="comicId && chapterId" class="reader-report" type="comic" :id="comicId" :position="reportPosition" :report-only="!loadError" :unavailable="!!loadError" />
       <Behind class="bottom"></Behind>
     </div>
   </template>
   
   <script setup>
+import MediaResource from '@/components/MediaResource.vue'
   import { computed, nextTick, ref, watch, onMounted, onBeforeUnmount } from 'vue';
   import { getcartoonpage, getcartoonchapter, getcartoonbyid } from '@/api/cartoon';
   import { useRoute, useRouter } from 'vue-router';
@@ -94,6 +97,7 @@
   const chapterIndex = computed(() => chapters.value.findIndex(row => String(row.chapterid) === chapterId));
   const previousChapter = computed(() => chapterIndex.value > 0 ? chapters.value[chapterIndex.value - 1] : null);
   const nextChapter = computed(() => chapterIndex.value >= 0 ? chapters.value[chapterIndex.value + 1] : null);
+  const readingContainer = ref(null);
   const pagelist = ref([]);
   const isloading = ref(false);
   const hasmore = ref(true);
@@ -115,11 +119,88 @@
   let nextPage = 1;
   let pageRequest = null;
   let disposed = false;
-  let resumeImmersive = route.query.immersive === '1';
+  const requestedPage = Number(route.query.pageNumber);
+  const restoreTarget = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+  const resumeImmersive = route.query.immersive === '1';
+  let restoring = restoreTarget > 1 || resumeImmersive;
+  let scrollRestoreIndex = null;
+  const lastSavedPage = ref(0);
+  const reportPosition = computed(() => `第 ${chapterNo} 章${lastSavedPage.value ? `第 ${lastSavedPage.value} 页` : ''}`);
+  let scrollFrame = 0;
+
+  function recordPage(pageNumber) {
+    if (!comicId || pageNumber === lastSavedPage.value) return;
+    lastSavedPage.value = pageNumber;
+    saveComicProgress(comicId, { chapterId, chapterno: chapterNo, pageNumber });
+  }
+
+  function pageElements() {
+    return readingContainer.value?.querySelectorAll('.comic-page') ?? [];
+  }
+
+  function restoreScroll(event) {
+    if (scrollRestoreIndex === null) return;
+    const pages = pageElements();
+    if (event && !Array.from(pages).slice(0, scrollRestoreIndex + 1).some(page => page.contains(event.target))) return;
+    pages[scrollRestoreIndex]?.scrollIntoView?.({ block: 'start' });
+  }
+
+  function releaseScrollRestore() {
+    scrollRestoreIndex = null;
+  }
+
+  function recordScrollPosition() {
+    if (restoring || scrollRestoreIndex !== null || immersivePage.value !== null || scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(() => {
+      scrollFrame = 0;
+      if (restoring || scrollRestoreIndex !== null || immersivePage.value !== null) return;
+      const container = readingContainer.value?.getBoundingClientRect();
+      const top = Math.max(0, container?.top ?? 0);
+      const bottom = Math.min(window.innerHeight, container?.bottom ?? window.innerHeight);
+      if (bottom <= top) return;
+      const readingLine = top + (bottom - top) * 0.38;
+      const pages = pageElements();
+      let low = 0;
+      let high = pages.length - 1;
+      while (low <= high) {
+        const middle = Math.floor((low + high) / 2);
+        const { top, bottom } = pages[middle].getBoundingClientRect();
+        if (bottom <= readingLine) low = middle + 1;
+        else if (top > readingLine) high = middle - 1;
+        else {
+          recordPage(middle + 1);
+          return;
+        }
+      }
+    });
+  }
+
+  async function finishLoadingPage() {
+    if (disposed || loadError.value || !pagelist.value.length) return;
+    if (!restoring) {
+      if (!lastSavedPage.value) recordPage(1);
+      return;
+    }
+    if (pagelist.value.length < restoreTarget && hasmore.value) {
+      void loadpage();
+      return;
+    }
+    const index = Math.min(restoreTarget, pagelist.value.length) - 1;
+    restoring = false;
+    if (resumeImmersive) {
+      void openImmersive(index);
+      return;
+    }
+    scrollRestoreIndex = index;
+    await nextTick();
+    if (disposed) return;
+    restoreScroll();
+    recordPage(index + 1);
+  }
 
   watch(loadMarker, (marker) => {
     observer?.disconnect();
-    if (!marker) return;
+    if (!marker || restoring) return;
     observer = new IntersectionObserver((entries) => {
       if (loadMarker.value === marker && immersivePage.value === null && entries.some(entry => entry.isIntersecting)) {
         void loadpage();
@@ -153,19 +234,13 @@
       pagelist.value.push(...images);
       hasmore.value = images.length >= PAGES_PER_BATCH;
       nextPage = page + 1;
-      if (comicId && images.length) {
-        saveComicProgress(comicId, { chapterId, chapterno: chapterNo, imagePage: page });
-      }
-      if (resumeImmersive && pagelist.value.length) {
-        resumeImmersive = false;
-        void openImmersive(0);
-      }
     } catch {
       if (!disposed) loadError.value = '漫画正文加载失败，请重试。';
     } finally {
       pageRequest = null;
       isloading.value = false;
     }
+    void finishLoadingPage();
   }
 
   onMounted(() => {
@@ -174,6 +249,11 @@
       return;
     }
     window.scrollTo({ top: 0 });
+    window.addEventListener('scroll', recordScrollPosition, { capture: true, passive: true });
+    window.addEventListener('wheel', releaseScrollRestore, { passive: true });
+    window.addEventListener('touchstart', releaseScrollRestore, { passive: true });
+    window.addEventListener('keydown', releaseScrollRestore);
+    window.addEventListener('pointerdown', releaseScrollRestore, { passive: true });
     void loadpage();
     if (!comicId) return;
     getcartoonchapter(comicId).then((result) => {
@@ -189,6 +269,12 @@
   onBeforeUnmount(() => {
     disposed = true;
     observer?.disconnect();
+    window.cancelAnimationFrame(scrollFrame);
+    window.removeEventListener('scroll', recordScrollPosition, true);
+    window.removeEventListener('wheel', releaseScrollRestore);
+    window.removeEventListener('touchstart', releaseScrollRestore);
+    window.removeEventListener('keydown', releaseScrollRestore);
+    window.removeEventListener('pointerdown', releaseScrollRestore);
   });
 
   async function openImmersive(index) {
@@ -196,6 +282,7 @@
     immersiveSession++;
     openedPage = index;
     immersivePage.value = index;
+    recordPage(index + 1);
     await nextTick();
     immersiveDialog.value?.showModal();
   }
@@ -206,7 +293,7 @@
     immersivePage.value = null;
     swipeStart = null;
     if (current === null || current === openedPage) return;
-    const page = immersiveDialog.value?.parentElement?.querySelectorAll('.comic-page')[current];
+    const page = pageElements()[current];
     page?.scrollIntoView({ block: 'start' });
     page?.focus({ preventScroll: true });
   }
@@ -225,7 +312,10 @@
         immersiveLoading.value = false;
       }
     }
-    if (!disposed && session === immersiveSession && target < pagelist.value.length) immersivePage.value = target;
+    if (!disposed && session === immersiveSession && target < pagelist.value.length) {
+      immersivePage.value = target;
+      recordPage(target + 1);
+    }
   }
 
   function startSwipe(event) {
@@ -257,6 +347,8 @@
   }
   </script>
   <style scoped>
+.reader-report { max-width: 900px; margin: 20px auto 72px; padding-inline: 16px; }
+  .current-page { align-self: center; color: white; font-size: 14px; white-space: nowrap; }
   .tishi{
   text-align: center;    /* 文字居中 */
   padding: 1rem;         /* 内边距 */

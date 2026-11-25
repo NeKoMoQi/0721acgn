@@ -10,6 +10,8 @@ import java.util.List;
 public interface SearchResultMapper {
     List<SearchResult> getSearchResult(@Param("search") String search);
 
+    List<SearchResult> searchCharacters(@Param("search") String search, @Param("limit") int limit);
+
     List<SearchResult> searchComicsGlobal(@Param("search") String search,
                                           @Param("genre") String genre,
                                           @Param("status") String status,

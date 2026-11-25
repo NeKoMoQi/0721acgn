@@ -14,7 +14,7 @@
       <el-input
       v-model="searchText"
       type="text"
-      placeholder="您要搜索什么喵？(๑•̀ㅂ•́)و✧"
+      placeholder="搜作品或角色喵"
       class="kuang"
       :suffix-icon="Search"
       @input = "allsearch(searchText)"
@@ -32,7 +32,7 @@
             @mousedown.prevent
             @click="goFullSearch"
           >
-            打开作品搜索与筛选
+            打开全站搜索与筛选
           </button>
           <div v-if="searchPending" class="search-empty-pill" role="status">正在搜索…</div>
           <div v-else-if="searchError" class="search-empty-pill" role="status">{{ searchError }}</div>
@@ -50,7 +50,7 @@
             <span class="result-name">{{ item.name }}</span>
             
             <!-- 右侧类型 -->
-            <span class="result-type">{{ item.sourcetype }}</span>
+            <span class="result-type">{{ item.sourcetype }}<template v-if="item.workTitle"> · {{ item.workTitle }}</template></span>
           </button>
     </div>
     <div class="user-wrap">
@@ -218,7 +218,8 @@ import { onMounted, onUnmounted, ref, watch, nextTick } from 'vue';
 import useUserStore from '@/stores/modules/users';
 import { ElMessage } from 'element-plus'
 import { useRouter,useRoute } from 'vue-router'
-import { getAllSearch } from '@/api/AllSearch'
+import { getAllSearch, type SearchRow } from '@/api/AllSearch'
+import { searchResultLocation } from '@/utils/searchResultLocation'
 import { unreadNotificationCount } from '@/utils/acgnNotifications'
 let $router = useRouter()
 const showResults = ref(false)
@@ -240,7 +241,7 @@ const accountLinks = [
   { to: '/user/activity', label: '我的动态' },
   { to: '/bookshelf', label: '历史记录' },
 ]
-const searchResults = ref([])
+const searchResults = ref<SearchRow[]>([])
 const searchText = ref("")
 const route = useRoute()
 let useStore = useUserStore()
@@ -276,39 +277,16 @@ async function allsearch(search: string) {
     if (result?.code !== 200 || !Array.isArray(result.data)) throw new Error('快速搜索失败')
     searchResults.value = result.data
   } catch {
-    if (request === searchRequest) searchError.value = '快速搜索失败，可重试或打开作品搜索。'
+    if (request === searchRequest) searchError.value = '快速搜索失败，可重试或打开全站搜索。'
   } finally {
     if (request === searchRequest) searchPending.value = false
   }
 }
-const selectResult = (item: any) => {
-  if (item.sourcetype === "轻小说") {
-    $router.push({
-      name:'NovelIntroduce',
-      query: {
-        novelid:item.id
-    }
-  })
-  }
-  if (item.sourcetype === "漫画") {
-    $router.push({
-      name:'ComicIntroduce',
-      query: {
-        comicid:item.id
-    }
-  })
-  }
-  if (item.sourcetype === "动漫") {
-    $router.push({
-      name:'Animationintroduce',
-      query: {
-        animationid:item.id
-    }
-  })
-  }
-  closeSearch();
-  searchText.value = "";
-};
+const selectResult = (item: SearchRow) => {
+  void $router.push(searchResultLocation(item))
+  closeSearch()
+  searchText.value = ''
+}
 const gotoHistoryShelf = () => {
   $router.push('/bookshelf')
   window.scrollTo({ top: 0, behavior: 'smooth' })

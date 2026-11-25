@@ -23,18 +23,20 @@
 noveldata.longcomment
  }}
     </p>
-    <div class="intro-actions">
+    <MediaResource v-if="novelIdNum" type="novel" :id="novelIdNum" :end="noveldata.resourceEnd" :unavailable="catalogFailed" />
+      <div class="intro-actions">
       <button v-if="hasProgress" class="action-button" @click="continueRead">继续阅读</button>
-      <button class="action-button" @click="toTop">从头开始</button>
+      <button class="action-button" :disabled="!chapter.some(item => item.novelurl)" @click="toTop">从头开始</button>
       <button class="action-button" :class="{ 'is-shelf': shelfActive }" type="button" @click="toggleShelf">{{ shelfActive ? '已在书架' : '追书' }}</button>
     </div>
   </div>
 </div>
 <div class="chapter">
+  <p v-if="catalogFailed" role="status">轻小说目录暂时无法读取。</p>
   <div class="chapter-list-scroll">
     <div class="chapter-list">
       <div v-for="(item, index) in chapter" :key="index">
-        <button @click="tomain(item.chapterno)">{{ item.title }}</button>
+        <button :disabled="!item.novelurl" @click="tomain(item.chapterno)">{{ item.title }}</button>
       </div>
     </div>
   </div>
@@ -49,6 +51,7 @@ noveldata.longcomment
   :shelf-active="shelfActive"
   @toggle-shelf="toggleShelf"
 />
+<WorkCharacters v-if="novelIdNum" type="novel" :id="novelIdNum" />
 <RelatedWorks v-if="novelIdNum" src-type="novel" :src-id="novelIdNum" />
       </div>
 
@@ -58,17 +61,20 @@ noveldata.longcomment
   </template>
   
   <script setup>
+import MediaResource from '@/components/MediaResource.vue'
   import { ref, onMounted, computed } from 'vue';
   import { ElMessage } from 'element-plus';
   import {getnovelbyid,getnovelchapter} from '@/api/novel/index'
   import { useRoute,useRouter } from 'vue-router';
   import useUserStore from '@/stores/modules/users';
-  import RelatedWorks from '@/components/RelatedWorks.vue';
+  import WorkCharacters from '@/components/WorkCharacters.vue'
+import RelatedWorks from '@/components/RelatedWorks.vue';
   import AcgnCommunityPanel from '@/components/AcgnCommunityPanel.vue';
   import { pushHistory, toggleBookshelf, isInBookshelf, getNovelProgress, ensureAcgnUserHydrated } from '@/utils/acgnLocal';
 
   const noveldata = ref()
   const chapter = ref([])
+  const catalogFailed = ref(false)
   const $router = useRouter()
   const route = useRoute()
   const useStore = useUserStore();
@@ -78,10 +84,13 @@ noveldata.longcomment
 
   onMounted(async() => {
     const id = route.query.novelid;
-    const result =await getnovelbyid(id);
-    const result1 = await getnovelchapter(id);
-    noveldata.value = await result.data
-    chapter.value = await result1.data
+    const [info, chapters] = await Promise.allSettled([getnovelbyid(id), getnovelchapter(id)])
+    if (info.status === 'fulfilled' && info.value?.code === 200) noveldata.value = info.value.data
+    if (chapters.status === 'fulfilled' && chapters.value?.code === 200 && Array.isArray(chapters.value.data)) {
+      chapter.value = chapters.value.data
+    } else {
+      catalogFailed.value = true
+    }
     const nid = Number(id)
     useStore.novelid = String(nid)
     await ensureAcgnUserHydrated()
@@ -109,13 +118,8 @@ noveldata.longcomment
   }
 
    const toTop =() =>{
-    const id = novelIdNum.value
-    useStore.novelid = String(id)
-    $router.push({
-      name:'Novelsee',
-      query: { novelid: id, chapterno: 1 },
-  })
-   useStore.novelchapter = 1
+    const first = chapter.value.find(item => item.novelurl)
+    if (first) tomain(first.chapterno)
    }
     const tomain = (no) => {
       useStore.novelid = String(novelIdNum.value)

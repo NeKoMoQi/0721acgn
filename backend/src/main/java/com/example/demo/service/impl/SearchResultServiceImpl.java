@@ -22,7 +22,9 @@ public class SearchResultServiceImpl implements SearchResultService {
 
     @Override
     public List<SearchResult> getSearchResults(String search) {
-        return ImageCdnRewriter.applyCdnToSearchResults(searchResultMapper.getSearchResult(search));
+        List<SearchResult> rows = new ArrayList<>(searchResultMapper.getSearchResult(search));
+        if (search != null && !search.isBlank()) rows.addAll(searchResultMapper.searchCharacters(search.trim(), 50));
+        return ImageCdnRewriter.applyCdnToSearchResults(rows);
     }
 
     @Override
@@ -55,8 +57,15 @@ public class SearchResultServiceImpl implements SearchResultService {
         String mtRaw = mediaType == null ? "" : mediaType.trim().toLowerCase();
         int lim = limit == null ? 120 : Math.min(300, Math.max(1, limit));
 
+        if ("character".equals(mtRaw)) {
+            return ImageCdnRewriter.applyCdnToSearchResults(searchResultMapper.searchCharacters(sTrim, lim));
+        }
+
         List<SearchResult> merged = new ArrayList<>();
         if (mtRaw.isEmpty()) {
+            if (!sTrim.isEmpty() && g == null && st == null && yearMin == null && yearMax == null) {
+                merged.addAll(searchResultMapper.searchCharacters(sTrim, Math.min(lim, 50)));
+            }
             merged.addAll(searchResultMapper.searchComicsGlobal(sTrim, g, st, yearMin, yearMax));
             merged.addAll(searchResultMapper.searchAnimationGlobal(sTrim, g, st, yearMin, yearMax));
             merged.addAll(searchResultMapper.searchNovelGlobal(sTrim, g, st, yearMin, yearMax));

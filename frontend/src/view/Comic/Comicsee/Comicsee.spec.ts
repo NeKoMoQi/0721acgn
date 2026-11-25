@@ -9,6 +9,7 @@ const { push, saveComicProgress, routeQuery } = vi.hoisted(() => ({
   routeQuery: {} as Record<string, string>,
 }))
 
+vi.mock('@/utils/request', () => ({ default: { post: vi.fn() } }))
 vi.mock('vue-router', () => ({
   useRoute: () => ({ query: routeQuery }),
   useRouter: () => ({ push }),
@@ -40,6 +41,7 @@ function stubDialog(dialog: HTMLDialogElement) {
 beforeEach(() => {
   vi.resetAllMocks()
   delete routeQuery.immersive
+  delete routeQuery.pageNumber
   Object.assign(routeQuery, { comicid: '8', chapterid: '0018042', chapterno: '4' })
   vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
   vi.mocked(getcartoonbyid).mockResolvedValue({ code: 200, data: { name: '漫画' } })
@@ -68,7 +70,7 @@ describe('漫画阅读器', () => {
     wrapper.unmount()
   })
 
-  it('后续批次失败后保留图片和进度，重试相同页码', async () => {
+  it('后续批次失败后保留图片和进度，预载下一批不推进实际页码', async () => {
     vi.mocked(getcartoonpage)
       .mockResolvedValueOnce({ code: 200, data: pages })
       .mockResolvedValueOnce({ code: 500, data: [] })
@@ -84,7 +86,50 @@ describe('漫画阅读器', () => {
     await flushPromises()
     expect(vi.mocked(getcartoonpage).mock.calls).toEqual([['0018042', 1], ['0018042', 2], ['0018042', 2]])
     expect(wrapper.findAll('.acgn_container img')).toHaveLength(5)
-    expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, imagePage: 2 })
+    expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, pageNumber: 1 })
+    wrapper.unmount()
+  })
+
+  it('续读等待目标页成功加载，从第二批的第五张实际图页恢复', async () => {
+    routeQuery.pageNumber = '5'
+    const scrollIntoView = vi.fn()
+    const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'scrollIntoView')
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { value: scrollIntoView, configurable: true })
+    vi.mocked(getcartoonpage)
+      .mockResolvedValueOnce({ code: 200, data: pages })
+      .mockRejectedValueOnce(new Error('暂时离线'))
+      .mockResolvedValueOnce({ code: 200, data: [{ fileurl: '/page-5.jpg' }] })
+    const wrapper = mountReader()
+    try {
+      await flushPromises()
+      expect(saveComicProgress).not.toHaveBeenCalled()
+      await wrapper.get('.retry-pages').trigger('click')
+      await flushPromises()
+      expect(vi.mocked(getcartoonpage).mock.calls).toEqual([['0018042', 1], ['0018042', 2], ['0018042', 2]])
+      expect(scrollIntoView.mock.contexts[0]).toBe(wrapper.findAll('.comic-page')[4].element)
+      expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, pageNumber: 5 })
+    } finally {
+      wrapper.unmount()
+      if (original) Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', original)
+      else Reflect.deleteProperty(HTMLElement.prototype, 'scrollIntoView')
+    }
+  })
+
+  it('普通滚动记录进入阅读位置的实际图页', async () => {
+    vi.mocked(getcartoonpage).mockResolvedValueOnce({ code: 200, data: pages })
+    const wrapper = mountReader()
+    await flushPromises()
+    wrapper.findAll('.comic-page').forEach(({ element }, index) => {
+      const top = 1000 * (index - 2)
+      vi.spyOn(element, 'getBoundingClientRect').mockReturnValue({ top, bottom: top + 1000 } as DOMRect)
+    })
+    const container = wrapper.get('.acgn_container').element
+    vi.spyOn(container, 'getBoundingClientRect').mockReturnValue({ top: 0, bottom: 700 } as DOMRect)
+    document.body.append(wrapper.element)
+    container.dispatchEvent(new Event('scroll'))
+    await vi.waitFor(() => {
+      expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, pageNumber: 3 })
+    })
     wrapper.unmount()
   })
 
@@ -207,6 +252,8 @@ describe('漫画阅读器', () => {
     expect(wrapper.get('.immersive-stage img').attributes('src')).toBe('/page-5.jpg')
     expect(vi.mocked(getcartoonpage).mock.calls).toEqual([['0018042', 1], ['0018042', 2]])
     expect(wrapper.get('.immersive-page-controls button:last-child').attributes('disabled')).toBeDefined()
+
+    expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, pageNumber: 5 })
 
     const scrollIntoView = vi.fn()
     const lastPage = wrapper.findAll('.comic-page')[4].element
