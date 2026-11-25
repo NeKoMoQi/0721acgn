@@ -284,3 +284,39 @@ Get-ScheduledTaskInfo -TaskName '0721ACGN Anitabi Crawler'
 - 手动跑一次：`powershell -NoProfile -ExecutionPolicy Bypass -File scripts\auto-deploy-frontend.ps1`
 - 只看会做什么：加 `-DryRun`；强制重建：加 `-Force`
 - 停用：`Disable-ScheduledTask -TaskName '0721ACGN AutoDeploy Frontend'`
+
+## 轻之国度榜单爬虫（2026-11-25）
+
+从 `lightnovel.fun` 的「综合热度」榜按名次顺序检查，每天最多新增 5 本、已有书继续补卷；整卷正文打成纯文字 EPUB 传 OSS，再写 `tb_novel` / `tb_novelchapter`。北京时间跨天。
+
+| 项目 | 值 |
+| --- | --- |
+| 代码 | `C:\apps\0721acgn-server\novel-crawler\app`（原包原样，未改动） |
+| venv | `C:\apps\0721acgn-server\novel-crawler\.venv`（Python 3.13.7 x64） |
+| 榜单配置 | `C:\apps\0721acgn-server\novel-crawler\lk-rank.json` |
+| 受限凭据 | `C:\apps\0721acgn-server\config\novel-crawler.properties.local`（ACL 只留 SYSTEM / Administrators 可读） |
+| 日志 | `C:\apps\0721acgn-server\novel-crawler\logs\crawler.log`（轮转 2 MB × 5） |
+| EPUB 暂存 | `C:\apps\0721acgn-server\novel-crawler\epubs` |
+| 计划任务 | **`0721ACGN LightNovel Ranking`**，每天 03:30（服务器本地时间），SYSTEM，`IgnoreNew`，时限 4 h |
+
+- MySQL 用专用账号 `novel_crawler`@`localhost`，只对 `tb_novel`、`tb_novelchapter`、`tb_novel_lk_source` 有 `SELECT/INSERT/UPDATE`；表由 `app\lk-rank-schema.sql` 建（`tb_novel_lk_source` 记源站卷 → 站内卷映射、指纹和当天新增日期）。
+- OSS 走 bucket `acgn0721` 的 `novel-crawler/` 前缀，写完会自己按站内匿名地址回读校验（需该前缀可匿名读，与 `novel/` 一致）；阅读仍走 `/api/novel/content?id=&no=`。
+- 榜单页 `/rank` 只渲染 30 条、无公开分页（前端 `items.slice(0,30)`），所以 `additional_rank_pages` 留空。
+- `existing_book_ids` 需要显式绑定，因为源站作者名和库里不一致（位置保护按名次对齐，库里的旧卷不动）：
+  `1338→3`（败犬女主太多了，源站作者 `雨森たきび` vs 库里 `雨森焚火`）、`5143→16`（义妹生活，`三河 ごーすと` vs `三河ごーすと`）、`2409→1`（欢迎来到实力至上主义的教室，`衣笠彰梧×トモセシュンサク` vs `衣笠彰梧`）。
+- 首轮实跑（2026-11-25 10:56–11:54）：榜 30 条全部检查，新增 5 本（`不迷途的羔羊`、`请别来管我…`、`奇幻探险者`、`我想成為影之強者！`、`自稱賢者弟子的賢者`），更新 3 本已有作品（novelid 1/3/16 补卷），`tb_novel` 22→27、`tb_novelchapter` 404→454。用同一任务以 SYSTEM 重跑一次，全部 `no readable changes`、退出码 0，确认幂等。
+- 已知问题：
+  1. **`tb_novel.chaptercount` 语义不一致**：爬虫给新书写的是「源站章节总数」（例：`自稱賢者弟子的賢者` 24 卷写成 522），而站点旧数据里这个字段等于卷数。阅读本身不看它，但详情页「现已更新至 N 章」会偏大。要修就把 `crawl_lk_rank.py` 里 `publish_book` 的 `chapter_count = sum(...)` 改成 `len(history)`。
+  2. `败犬女主太多了`（novelid 3）补到的第 11 卷标题也是「SSS短篇集」，与库里原有第 8 卷重复 —— 库里的旧卷是「第一~七卷 + SSS短篇集」，按名次对齐后源站「8卷/8.5卷/作者访谈/第九卷」都补上了，但短篇集多出一份。删卷会破坏章节号连续，爬虫下一轮会判整本异常，故保留。
+  3. 源站受限/空正文的卷会跳过并记 `WARNING`：本次 `1207`（理想的圣女）第 42254 卷空正文、`3457`（我想成為影之強者！）第 7630 卷含受限章节。
+  4. `歡迎來到實力至上主義的教室 2年級篇`（源站 1166）内容与 novelid 1 已有的二年级篇重复，但 `tb_novel_lk_source.novelid` 唯一键只允许绑一条，已把主系列 2409 绑到 1。若哪天队列排到 1166，它会作为新作品再建一份，需要人工处理。
+
+```powershell
+# 手动跑一轮 / 看任务状态
+Start-ScheduledTask -TaskName '0721ACGN LightNovel Ranking'
+Get-Content C:\apps\0721acgn-server\novel-crawler\logs\crawler.log -Tail 30
+Get-ScheduledTaskInfo -TaskName '0721ACGN LightNovel Ranking'
+
+# 停用 / 长期停用
+Disable-ScheduledTask -TaskName '0721ACGN LightNovel Ranking'
+```
