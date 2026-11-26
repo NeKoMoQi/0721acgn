@@ -1,13 +1,13 @@
 {
-  "utc": "2026-11-25T03:41:34Z",
-  "ok": 2,
+  "utc": "2026-11-26T03:00:16Z",
+  "ok": 7,
   "fail": 1,
-  "mapped": 4446,
-  "seconds": 5.1,
-  "rate": 0.4,
+  "mapped": 4453,
+  "seconds": 4.1,
+  "rate": 1.7,
   "errors_sample": [
     "https://image.anitabi.cn/user/0/bangumi/300648/points/cyitg80-1775219398169.jpg?plan=h360 :: HTTPError"
   ],
   "shard": "2",
-  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/45541650205"
+  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/45746018313"
 }
