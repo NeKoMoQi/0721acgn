@@ -12,14 +12,14 @@
           <img
             v-if="avatarOk && safeAvatar(character.avatarurl)"
             :src="safeAvatar(character.avatarurl)"
-            :alt="character.name"
+            :alt="displayName"
             @error="avatarOk = false"
           />
-          <div v-else class="portrait-fallback">{{ character.name }}</div>
+          <div v-else class="portrait-fallback">{{ displayName }}</div>
         </div>
         <div class="copy">
           <span class="eyebrow">0721 ACGN · 角色介绍</span>
-          <h1>{{ character.name }}</h1>
+          <h1>{{ displayName }}</h1>
           <p v-if="workTitle" class="work-title">出自《{{ workTitle }}》</p>
           <p v-if="selectedGame?.person.originalName && selectedGame.person.originalName !== character.name" class="original-name">{{ selectedGame.person.originalName }}</p>
           <dl v-if="!selectedGame && (character.sex || character.birthday)" class="facts">
@@ -76,7 +76,7 @@ import Headpage from '@/components/Headpage/index.vue'
 import request from '@/utils/request'
 import { getCharacterProfile } from '@/data/characterProfiles'
 import { editorialCharacter, workLocation, workTypeLabel, worksForCharacter } from '@/data/characterAssociations'
-import { galgameCharacter } from '@/data/galgameMedia'
+import { animationWorksForGalgame, galgameCharacter } from '@/data/galgameMedia'
 
 interface Character {
   id: number | string
@@ -102,9 +102,10 @@ const tags = computed(() =>
 )
 const gameSlug = computed(() => String(route.params.slug || ''))
 const selectedGame = computed(() => galgameCharacter(gameSlug.value, String(route.params.person || '')))
-const associatedWorks = computed(() => selectedGame.value ? [] : worksForCharacter(character.value?.id))
-const profile = computed(() => selectedGame.value ? undefined : getCharacterProfile(character.value?.name))
-const workTitle = computed(() => selectedGame.value?.title || profile.value?.work)
+const associatedWorks = computed(() => selectedGame.value ? animationWorksForGalgame(gameSlug.value) : worksForCharacter(character.value?.id))
+const profile = computed(() => selectedGame.value ? undefined : getCharacterProfile(character.value?.name, character.value?.id))
+const displayName = computed(() => profile.value?.displayName || character.value?.name || '')
+const workTitle = computed(() => selectedGame.value?.title || profile.value?.work || associatedWorks.value[0]?.title)
 const introParagraphs = computed(() => profile.value?.paragraphs ??
   (character.value?.intro || '').split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean),
 )

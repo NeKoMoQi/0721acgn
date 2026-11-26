@@ -20,7 +20,7 @@ async function loadReleases(entry: SubscribeEntry): Promise<Release[]> {
     if (entry.type === 'animation' && row.id && row.videoUrl?.trim()) {
       releases.push({ id: String(row.id), label: row.title || `第 ${row.episodeNo} 集`,
         to: { name: 'AnimationWatch', query: { animationid: id, episodeid: row.id } } })
-    } else if (entry.type === 'comic' && row.chapterid) {
+    } else if (entry.type === 'comic' && row.chapterid && row.available === true) {
       releases.push({ id: String(row.chapterid), label: row.title || `第 ${row.chapterno} 章`,
         to: { name: 'Comicsee', query: { comicid: id, chapterid: row.chapterid, chapterno: row.chapterno } } })
     } else if (entry.type === 'novel' && row.novelurl?.trim()) {
@@ -44,7 +44,7 @@ export function checkSubscription(entry: SubscribeEntry): Promise<void> {
     const releases = await loadReleases(entry)
     if (!listSubscriptions().some(item => item.type === entry.type && item.id === entry.id
       && item.subscribedAt === entry.subscribedAt)) return
-    const storageKey = `acgn_subscription_releases_v1:${entry.type}:${entry.id}`
+    const storageKey = `acgn_subscription_releases_v2:${entry.type}:${entry.id}`
     const raw = localStorage.getItem(storageKey)
     const previous = new Set<string>(raw ? JSON.parse(raw) : [])
     for (const release of releases) {

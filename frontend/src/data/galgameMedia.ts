@@ -1,5 +1,6 @@
 import data from './galgameMedia.json'
 import discovery from './galgameDiscovery.json'
+import type { CharacterWork } from './characterAssociations'
 
 export interface GalgameCharacter {
   name: string
@@ -44,4 +45,19 @@ export function searchGalgameCharacters(keyword: string) {
       title: discovery.entries.find(entry => entry.slug === slug)?.name || '',
     })),
   )
+}
+const animeAdaptations: Record<string, CharacterWork[]> = {
+  atri: [{ type: 'animation', id: 11791, title: '亚托莉 -我挚爱的时光-' }],
+  clannad: [
+    { type: 'animation', id: 10949, title: 'CLANNAD' },
+    { type: 'animation', id: 11206, title: 'CLANNAD ～AFTER STORY～' },
+  ],
+}
+
+export function animationWorksForGalgame(slug: string) {
+  return Object.hasOwn(animeAdaptations, slug) ? animeAdaptations[slug] : []
+}
+
+export function galgameForAnimation(id: number) {
+  return Object.entries(animeAdaptations).find(([, works]) => works.some(work => work.id === id))?.[0]
 }

@@ -1,0 +1,649 @@
+[
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 10889,
+        "title": "Charlotte"
+      }
+    ],
+    "people": [
+      {
+        "id": 363,
+        "name": "西森柚咲"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11682,
+        "title": "Love Live！虹咲学园学园偶像同好会"
+      }
+    ],
+    "people": [
+      {
+        "id": 320,
+        "name": "天王寺璃奈"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11421,
+        "title": "NEW GAME!!"
+      }
+    ],
+    "people": [
+      {
+        "id": 25,
+        "name": "望月红叶"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11208,
+        "title": "URARA迷路帖"
+      }
+    ],
+    "people": [
+      {
+        "id": 36,
+        "name": "巽时江"
+      },
+      {
+        "id": 40,
+        "name": "雪见小梅"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 12875,
+        "title": "三颗星彩色冒险"
+      }
+    ],
+    "people": [
+      {
+        "id": 79,
+        "name": "青山琴叶"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11010,
+        "title": "会长是女仆大人！"
+      }
+    ],
+    "people": [
+      {
+        "id": 277,
+        "name": "鲇泽美咲"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 13611,
+        "title": "侦探歌剧 少女福尔摩斯"
+      }
+    ],
+    "people": [
+      {
+        "id": 355,
+        "name": "柯蒂妮娅·格拉卡"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 10919,
+        "title": "名侦探柯南"
+      }
+    ],
+    "people": [
+      {
+        "id": 133,
+        "name": "江户川柯南(工藤新一)"
+      },
+      {
+        "id": 146,
+        "name": "毛利兰"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11568,
+        "title": "四叠半神话大系"
+      }
+    ],
+    "people": [
+      {
+        "id": 187,
+        "name": "明石"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 10878,
+        "title": "四月是你的谎言"
+      }
+    ],
+    "people": [
+      {
+        "id": 192,
+        "name": "宫园薰"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 10871,
+        "title": "埃罗芒阿老师"
+      }
+    ],
+    "people": [
+      {
+        "id": 346,
+        "name": "和泉纱雾"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 10944,
+        "title": "境界的彼方"
+      }
+    ],
+    "people": [
+      {
+        "id": 308,
+        "name": "名濑美月"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11056,
+        "title": "声之形"
+      }
+    ],
+    "people": [
+      {
+        "id": 165,
+        "name": "西宫硝子"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11551,
+        "title": "天体的秩序"
+      }
+    ],
+    "people": [
+      {
+        "id": 310,
+        "name": "诺艾尔"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11075,
+        "title": "奇蛋物语 / WONDER EGG PRIORITY"
+      }
+    ],
+    "people": [
+      {
+        "id": 173,
+        "name": "大户爱"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11008,
+        "title": "女高中生的虚度日常"
+      }
+    ],
+    "people": [
+      {
+        "id": 209,
+        "name": "百井咲久"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11252,
+        "title": "学园孤岛"
+      }
+    ],
+    "people": [
+      {
+        "id": 287,
+        "name": "若狭悠里"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11293,
+        "title": "幸运星"
+      }
+    ],
+    "people": [
+      {
+        "id": 2,
+        "name": "泉此方"
+      },
+      {
+        "id": 301,
+        "name": "高良美幸"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "comic",
+        "id": 2,
+        "title": "异世界舅舅"
+      }
+    ],
+    "people": [
+      {
+        "id": 161,
+        "name": "藤宫澄夏"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11151,
+        "title": "弱势角色友崎君"
+      }
+    ],
+    "people": [
+      {
+        "id": 87,
+        "name": "日南葵"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "comic",
+        "id": 27,
+        "title": "憧憬成为魔法少女"
+      }
+    ],
+    "people": [
+      {
+        "id": 321,
+        "name": "柊舞缇娜"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "novel",
+        "id": 5,
+        "title": "文学少女"
+      },
+      {
+        "type": "animation",
+        "id": 13571,
+        "title": "文学少女"
+      }
+    ],
+    "people": [
+      {
+        "id": 83,
+        "name": "天野远子"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 13593,
+        "title": "星梦手记"
+      }
+    ],
+    "people": [
+      {
+        "id": 51,
+        "name": "早川心樱"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 12836,
+        "title": "梦色蛋糕师"
+      }
+    ],
+    "people": [
+      {
+        "id": 26,
+        "name": "奶糖"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "novel",
+        "id": 1,
+        "title": "欢迎来到实力至上主义的教室"
+      },
+      {
+        "type": "animation",
+        "id": 10872,
+        "title": "欢迎来到实力至上主义的教室"
+      }
+    ],
+    "people": [
+      {
+        "id": 59,
+        "name": "神室真澄"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11514,
+        "title": "浪客剑心"
+      }
+    ],
+    "people": [
+      {
+        "id": 178,
+        "name": "绯村剑心"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 10995,
+        "title": "珈百璃的堕落"
+      }
+    ],
+    "people": [
+      {
+        "id": 162,
+        "name": "千咲·塔普莉丝·修格贝尔"
+      },
+      {
+        "id": 286,
+        "name": "月乃濑·薇奈特·艾普利尔"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 13134,
+        "title": "甜梦猫"
+      }
+    ],
+    "people": [
+      {
+        "id": 234,
+        "name": "日向梦"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11535,
+        "title": "神推偶像登上武道馆我就死而无憾"
+      }
+    ],
+    "people": [
+      {
+        "id": 366,
+        "name": "水守梦莉"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "novel",
+        "id": 12,
+        "title": "精灵幻想记"
+      },
+      {
+        "type": "animation",
+        "id": 11094,
+        "title": "精灵幻想记"
+      }
+    ],
+    "people": [
+      {
+        "id": 360,
+        "name": "瑟莉亚·库列尔"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11607,
+        "title": "纯白交响曲"
+      }
+    ],
+    "people": [
+      {
+        "id": 300,
+        "name": "濑名爱理"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11176,
+        "title": "街角魔族"
+      }
+    ],
+    "people": [
+      {
+        "id": 350,
+        "name": "小仓紫苑"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "novel",
+        "id": 2,
+        "title": "路人女主的养成方法"
+      },
+      {
+        "type": "animation",
+        "id": 10932,
+        "title": "路人女主的养成方法"
+      }
+    ],
+    "people": [
+      {
+        "id": 88,
+        "name": "泽村·斯宾塞·英梨梨"
+      },
+      {
+        "id": 354,
+        "name": "安艺伦也"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "comic",
+        "id": 21,
+        "title": "辉夜大小姐想让我告白 ~天才们的恋爱头脑战~"
+      },
+      {
+        "type": "animation",
+        "id": 10869,
+        "title": "辉夜大小姐想让我告白？～天才们的恋爱头脑战～"
+      },
+      {
+        "type": "animation",
+        "id": 10864,
+        "title": "辉夜大小姐想让我告白～天才们的恋爱头脑战～"
+      }
+    ],
+    "people": [
+      {
+        "id": 9,
+        "name": "四宫辉夜"
+      },
+      {
+        "id": 101,
+        "name": "早坂爱"
+      },
+      {
+        "id": 219,
+        "name": "白银圭"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11063,
+        "title": "迷宫饭"
+      }
+    ],
+    "people": [
+      {
+        "id": 118,
+        "name": "玛露西尔"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11625,
+        "title": "铃芽之旅"
+      }
+    ],
+    "people": [
+      {
+        "id": 63,
+        "name": "宗像草太"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11324,
+        "title": "雏子的笔记"
+      }
+    ],
+    "people": [
+      {
+        "id": 129,
+        "name": "樱木雏子"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 11307,
+        "title": "零之使魔"
+      }
+    ],
+    "people": [
+      {
+        "id": 49,
+        "name": "露易丝"
+      },
+      {
+        "id": 55,
+        "name": "塔巴萨"
+      }
+    ]
+  },
+  {
+    "works": [
+      {
+        "type": "animation",
+        "id": 10964,
+        "title": "龙与虎"
+      }
+    ],
+    "people": [
+      {
+        "id": 132,
+        "name": "高须龙儿"
+      }
+    ]
+  }
+]

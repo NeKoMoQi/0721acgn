@@ -638,7 +638,7 @@ export async function toggleSubscribeAsync(
         0,
         320,
       )
-      try { localStorage.removeItem(`acgn_subscription_releases_v1:${item.type}:${item.id}`) } catch { /* storage unavailable */ }
+      try { localStorage.removeItem(`acgn_subscription_releases_v2:${item.type}:${item.id}`) } catch { /* storage unavailable */ }
       const entry = subsMem[0]
       void import('./subscriptionUpdates').then(({ checkSubscription }) => checkSubscription(entry)).catch(() => {})
     } else {

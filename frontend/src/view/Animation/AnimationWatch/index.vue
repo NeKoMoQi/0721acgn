@@ -24,6 +24,7 @@
             <div class="watch-actions">
               <button type="button" class="tool-button" @click="goPrev" :disabled="!prevEpisode">上一集</button>
               <button type="button" class="tool-button primary" @click="goNext" :disabled="!nextEpisode">下一集</button>
+              <button type="button" class="tool-button" :disabled="!playbackReady || playbackFailed" @click="restartPlayback">从头播放</button>
               <button type="button" class="icon-toggle" :class="{ active: autoNext }" @click="autoNext = !autoNext">自动连播</button>
               <button type="button" class="icon-toggle" :class="{ active: lightsOff }" @click="lightsOff = !lightsOff">熄灯</button>
             </div>
@@ -43,7 +44,7 @@
               playsinline
               preload="metadata"
               :src="currentEpisode.videoUrl"
-              @error="playbackFailed = true"
+              @error="playbackReady = false; playbackFailed = true"
               @ended="onEnded"
               @loadedmetadata="restorePlayback"
               @play="persistCurrentEpisode"
@@ -140,7 +141,7 @@ const emptyMessage = ref('暂无视频资源');
 const playbackFailed = ref(false);
 let disposed = false;
 let lastPlaybackSave = 0;
-let playbackReady = false;
+const playbackReady = ref(false);
 const player = ref<HTMLVideoElement | null>(null);
 const lightsOff = ref(false);
 const autoNext = ref(true);
@@ -281,10 +282,18 @@ async function restorePlayback(event: Event) {
   const video = event.currentTarget as HTMLVideoElement;
   await ensureAcgnUserHydrated().catch(() => {});
   if (disposed || player.value !== video) return;
-  playbackReady = true;
+  playbackReady.value = true;
   if (route.query.restart === '1' && (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined)?.type !== 'reload') return;
   const seconds = getAnimationPosition(animationIdNum, Number(currentEpisode.value?.episodeNo));
   if (seconds > 0 && Number.isFinite(video.duration) && seconds < video.duration) video.currentTime = seconds;
+}
+
+function restartPlayback() {
+  const video = player.value;
+  if (!video || !playbackReady.value) return;
+  video.currentTime = 0;
+  persistCurrentEpisode();
+  void video.play().catch(() => {});
 }
 
 function saveOnExit() {
@@ -296,7 +305,7 @@ function savePlaybackPeriodically() {
 }
 
 function persistCurrentEpisode() {
-  if (!playbackReady) return;
+  if (!playbackReady.value) return;
   const animationId = animationIdNum;
   const episodeNo = Number(currentEpisode.value?.episodeNo);
   if (animationId && episodeNo) {

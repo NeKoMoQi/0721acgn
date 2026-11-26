@@ -40,6 +40,7 @@ interface SearchResponse {
 export async function getAllSearch(input: GlobalSearchParams | string): Promise<SearchResponse> {
   const params: GlobalSearchParams = typeof input === 'string' ? { search: input } : input
   const search = params.search?.trim() || ''
+  const normalized = search.normalize('NFKC').toLowerCase()
   const q = new URLSearchParams()
   if (search) q.set('search', search)
   if (params.genre) q.set('genre', params.genre)
@@ -67,7 +68,8 @@ export async function getAllSearch(input: GlobalSearchParams | string): Promise<
     import('@/data/galgameMedia'),
   ])
   if (response?.code !== 200 || !Array.isArray(response.data)) return response
-  const editorial: SearchRow[] = matchingCast(search).filter(person => !params.page || typeof person.id === 'string').map(person => ({
+  const editorial: SearchRow[] = matchingCast(search).filter(person => !params.page || typeof person.id === 'string'
+    || (normalized && (person.id === 1 || !person.name.normalize('NFKC').toLowerCase().includes(normalized)))).map(person => ({
     id: person.id, name: person.name, sourcetype: '角色', workTitle: person.title,
   }))
   const galgame: SearchRow[] = searchGalgameCharacters(search).map(({ slug, person, title }) => ({
@@ -82,7 +84,6 @@ export async function getAllSearch(input: GlobalSearchParams | string): Promise<
   const local = added.filter(row => !serverCharacters.has(String(row.id)))
   const data = params.mediaType === 'character' && !search ? [...local, ...server] : [...server, ...local]
   if (!params.page && search && (!params.sortBy || params.sortBy === 'default' || params.mediaType === 'character')) {
-    const normalized = search.normalize('NFKC').toLowerCase()
     const rank = (name: string) => {
       const value = name.normalize('NFKC').toLowerCase()
       return value === normalized ? 0 : value.startsWith(normalized) ? 1 : 2

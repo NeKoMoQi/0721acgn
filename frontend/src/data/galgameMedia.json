@@ -34,6 +34,18 @@
         "image": "/galgame/media/atri/character-4.avif",
         "imageOriginalUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/extras/4b30a744035d8abcc4d0b58f25fa09ec.avif?t=1761759369",
         "imagePosition": "20% center"
+      },
+      {
+        "name": "凯瑟琳",
+        "originalName": "キャサリン",
+        "summary": "凯瑟琳自称来向夏生讨债，也主动提出一起打捞海底的遗物。她打听得很勤快，却很少认真回答别人问起自己时的问题。\n\n水菜萌对她的身份有疑虑，夏生则需要衡量是否与她合作。两人的最初计划最终把藏在水下的亚托莉带到了岸上。",
+        "sourceUrl": "https://atri-anime.com/character/catherine.html"
+      },
+      {
+        "name": "名波凛凛花",
+        "originalName": "名波凜々花",
+        "summary": "凛凛花是沿海小镇的孩子，也是学校一群学生中年纪较小的一位。她会主动跟夏生等人搭话，经常通过学校的生活和其他孩子一起行动。\n\n随着小镇的日常逐渐展开，她让夏生看见留在这里的孩子还想怎样上学和生活。她的日文名字写作名波凜々花。",
+        "sourceUrl": "https://moegirl.uk/ATRI"
       }
     ],
     "screenshots": [
@@ -130,6 +142,36 @@
         "name": "椎名真由理",
         "summary": "冈部的青梅竹马，也是研究所的成员，喜欢制作角色扮演服装。",
         "sourceUrl": "https://steinsgate.jp/elite/"
+      },
+      {
+        "name": "桥田至",
+        "originalName": "橋田至",
+        "summary": "桥田至是冈部在学校认识的朋友，也是未来道具研究所的创始成员之一，常被叫作达鲁。他对电脑和电子设备很熟，能把许多口头上的设想变成能测试的东西。\n\n他平时爱谈游戏和网络文化。研究所遇到需要拆解设备、编写程序或分析记录的事时，他往往比其他成员更快弄清从哪里着手。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
+      },
+      {
+        "name": "阿万音铃羽",
+        "originalName": "阿万音鈴羽",
+        "summary": "在《命运石之门》本篇，她在研究所楼下的店里打工，和冈部等人熟悉以后仍有一些心事闭口不谈。她很喜欢自行车，做决定和行动的速度都很快。\n\n她在《命运石之门 0》里也有重要行动。不同故事分支会改变她与其他角色相识的方式，初读时可以先从她怎样赢得队友的信任看起。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
+      },
+      {
+        "name": "菲莉丝·喵喵",
+        "originalName": "フェイリス・ニャンニャン",
+        "summary": "菲莉丝在秋叶原经营的女仆咖啡店里以这个名字与人来往。她擅长把说话和表演做成一套自己的风格，和冈部碰面时很容易互相接住夸张设定。\n\n她很会玩竞技性质的桌游，也熟悉秋叶原的商店与人脉。涉及旧城区和个人过去的故事，会看到她在习惯的俏皮表现之外怎样做决定。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
+      },
+      {
+        "name": "漆原琉华",
+        "originalName": "漆原るか",
+        "summary": "琉华是柳林神社神主的孩子，和真由理很熟，说话和行动都温和内敛。冈部有时会把他叫到研究所，大家也会到神社找他。\n\n他跟冈部有自己一套相处方式，冈部还给他安排过带有玩笑性质的练习。实验逐渐影响身边的人时，琉华也需要认真看待自己的愿望。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
+      },
+      {
+        "name": "桐生萌郁",
+        "originalName": "桐生萌郁",
+        "summary": "萌郁在现实里很少主动开口，用手机发信息时却能说得非常详细。她因寻找一台老式电脑，与冈部等人有了交集。\n\n对她来说，手机既是平时沟通的方式，也连接着她很在意的人。研究所认识她的经过和她后来的选择，会随游戏分支有所变化。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
       }
     ],
     "screenshots": [
@@ -221,6 +263,48 @@
         "name": "藤林杏",
         "summary": "朋也隔壁班的班长，说话直接，行事大大咧咧，却也很会照顾身边的人。",
         "sourceUrl": "https://key.visualarts.gr.jp/product/clannad/character/"
+      },
+      {
+        "name": "一之濑琴美",
+        "originalName": "一ノ瀬ことみ",
+        "summary": "琴美是朋也在图书室认识的学生，读过很多书，学习上很有天分。她在与同龄人聊天时却不太熟练，往往从自己擅长的话题与朋友开始交流。\n\n她也热心拉小提琴，结果常让听众印象很深。她和朋也的共同记忆，需要等相处久了才能逐步连起来。",
+        "sourceUrl": "https://kaginado.com/character/clannad/"
+      },
+      {
+        "name": "伊吹风子",
+        "originalName": "伊吹風子",
+        "summary": "风子喜欢拿小刀雕小木块，刻成她喜欢的海星形状。她把木雕带到学校，向遇见的人送出邀请，希望更多人祝福姐姐。\n\n朋也和古河渚逐渐参与她的计划。她为什么急着把这些海星送出去，是这一段学校生活往前发展的线索。",
+        "sourceUrl": "https://kaginado.com/character/clannad/"
+      },
+      {
+        "name": "坂上智代",
+        "originalName": "坂上智代",
+        "summary": "智代转入学校后，遇到在校门附近闹事的人会主动出面。她身体能力很强，有事时也愿意用行动解决。\n\n她准备竞选学生会长，对学校和附近的樱花树都有自己的打算。朋也和春原等人由此认识了她平日不太谈起的一面。",
+        "sourceUrl": "https://kaginado.com/character/clannad/"
+      },
+      {
+        "name": "藤林椋",
+        "originalName": "藤林椋",
+        "summary": "藤林椋是藤林杏的双胞胎妹妹。她待人温和，面对不熟悉的人讲话会格外谨慎，也喜欢做占卜。\n\n姐妹在同一个学校，处理烦恼时各有自己的习惯。她的选择和杏对她的关心在游戏的一部分路线里会发生交集。",
+        "sourceUrl": "https://kaginado.com/character/clannad/"
+      },
+      {
+        "name": "春原阳平",
+        "originalName": "春原陽平",
+        "summary": "春原阳平是朋也在学校里的朋友，住在宿舍里。两人常一块聊天、逃避麻烦或做些不太正经的事。\n\n妹妹芽衣出现时，可以看到他和朋友面前不同的态度。即使常被捉弄，他也会在朋也等人真的需要帮忙时参与进来。",
+        "sourceUrl": "https://kaginado.com/character/clannad/"
+      },
+      {
+        "name": "古河早苗",
+        "originalName": "古河早苗",
+        "summary": "古河早苗和丈夫秋生经营面包店，是古河渚的母亲。她待人亲切，也会尝试做些配方特别的面包，家人对新品常有热闹的反应。\n\n朋也认识渚后，早苗和秋生都在古河家的日常中承担了很重要的角色。她经常先察觉一个人需要怎样的照顾。",
+        "sourceUrl": "https://kaginado.com/character/clannad/"
+      },
+      {
+        "name": "古河秋生",
+        "originalName": "古河秋生",
+        "summary": "古河秋生是古河渚的父亲，与妻子早苗一起经营面包店。他很爱打棒球，说话有时粗声粗气，也能很自然地跟年轻人开玩笑。\n\n谈到女儿的事，他愿意付出时间和精力陪她。渚把朋也带进古河家的生活后，秋生也成了朋也可以相处和求助的成年人。",
+        "sourceUrl": "https://kaginado.com/character/clannad/"
       }
     ],
     "screenshots": [
@@ -585,6 +669,36 @@
         "name": "空门苍",
         "summary": "在岛上粗点心店打工的少女，待人随和，常在岛上各处睡着，大家早已习以为常。",
         "sourceUrl": "https://summerpockets-anime.jp/"
+      },
+      {
+        "name": "鹰原羽依里",
+        "originalName": "鷹原羽依里",
+        "summary": "羽依里从岛外来到鸟白岛，帮忙整理祖母留下的物件。他刚开始不太适应岛上的生活，遇见岛上几位同龄人后，放暑假的方式也慢慢变了。\n\n他和不同角色认识的段落各有自己的故事。岛上的学校、海岸、旧房子与节日，都是他逐渐熟悉这里时会经过的地方。",
+        "sourceUrl": "https://summerpockets-anime.jp/#character"
+      },
+      {
+        "name": "久岛鸥",
+        "originalName": "久島鴎",
+        "summary": "久岛鸥总带着一只醒目的行李箱，和羽依里见面后邀请他一起探险。两人从岛上流传的线索出发，认真去找过去留下的东西。\n\n探险既有她临时起意的部分，也牵涉她此前就惦记的事。她和羽依里走过的地方，在不同时间会呈现出不同的意义。",
+        "sourceUrl": "https://summerpockets-anime.jp/#character"
+      },
+      {
+        "name": "䌷·文德斯",
+        "originalName": "紬 ヴェンダース",
+        "summary": "䌷是羽依里在岛上灯塔附近认识的女孩。她的语气有点独特，谈到夏天时很想找到自己真正想做的事。\n\n她与水织静久熟悉，三人一起活动的日常是了解角色的重要部分。她为什么在意灯塔与暑假的时间，要到自己的故事段落才会逐渐明朗。",
+        "sourceUrl": "https://summerpockets-anime.jp/#character"
+      },
+      {
+        "name": "加藤羽未",
+        "originalName": "加藤うみ",
+        "summary": "羽未在羽依里暂住的家里活动，平时会和他聊天，也熟悉这边的生活。她会做炒饭，经常自然地把准备吃饭变成两人相处的开端。\n\n她在游戏主线里有专门的戏份。初次游玩时，可以先从她和羽依里之间说话的方式认识她，把有关她来历的解释留给故事。",
+        "sourceUrl": "https://summerpockets-anime.jp/#character"
+      },
+      {
+        "name": "水织静久",
+        "originalName": "水織静久",
+        "summary": "静久是鸟白岛上的学生，和䌷很熟。她常直白地说出自己的想法，也会陪朋友出门或帮忙张罗活动。\n\n她的性格鲜明，说话不容易让人忽略。在岛上日常的相处中，可以看到她对朋友的照顾比她随口说的话更细致。",
+        "sourceUrl": "https://summerpockets-anime.jp/#character"
       }
     ],
     "screenshots": [
@@ -1199,6 +1313,18 @@
         "name": "国崎往人",
         "summary": "带着人偶四处旅行的青年。能不用手触碰就让人偶活动，受母亲所托寻找一名少女。",
         "sourceUrl": "https://key.visualarts.gr.jp/product/air/character/"
+      },
+      {
+        "name": "雾岛佳乃",
+        "originalName": "霧島佳乃",
+        "summary": "佳乃是生活在海边小镇的少女，姐姐圣在镇上开诊所。她总把黄色丝带缠在手腕上，也和一只叫土豆的小狗很亲近。\n\n国崎往人在镇上活动时，经常通过遇见她和小狗被带到不熟悉的地方。她怎样看待手上的丝带，在她自己的故事里会交代。",
+        "sourceUrl": "https://key.visualarts.gr.jp/product/air/character/"
+      },
+      {
+        "name": "远野美凪",
+        "originalName": "遠野美凪",
+        "summary": "美凪是镇上的学生，对星空和天文感兴趣。她讲话很慢，常和朋友小满一起出现，还会用米券当作谢礼。\n\n她的安静与小满的活泼形成反差。往人通过两人了解镇上的学校和她们的日常，也慢慢认识到她在不同场合说话方式的变化。",
+        "sourceUrl": "https://key.visualarts.gr.jp/product/air/character/"
       }
     ],
     "screenshots": [
@@ -1294,6 +1420,24 @@
         "originalName": "園崎 魅音",
         "summary": "活跃外向的学姐与班长，喜欢桌游和卡牌，常把伙伴们卷进热闹的游戏。",
         "sourceUrl": "https://07th-expansion.net/Soft/Character.htm"
+      },
+      {
+        "name": "古手梨花",
+        "originalName": "古手梨花",
+        "summary": "梨花住在雏见泽，是古手神社一家的孩子。她和北条沙都子关系很好，在村里有固定的社团伙伴，也参与当地的祭典。\n\n她平日时常用天真的语气说话，有时又会突然显得比其他孩子更了解情况。游戏通过多个篇章逐步交代这些反应从何而来。",
+        "sourceUrl": "https://07th-expansion.net/hig_gensaku"
+      },
+      {
+        "name": "北条沙都子",
+        "originalName": "北条沙都子",
+        "summary": "沙都子在雏见泽分校上学，擅长制作让人措手不及的小机关，在放学后的社团游戏里常靠布置陷阱给同伴增加难度。\n\n她和古手梨花很亲近，也非常在意自己的哥哥悟史。和朋友们玩闹的片段与她在家里遇到的事情，共同组成了她在不同章节中的经历。",
+        "sourceUrl": "https://07th-expansion.net/hig_gensaku"
+      },
+      {
+        "name": "园崎诗音",
+        "originalName": "園崎詩音",
+        "summary": "诗音是园崎魅音的双胞胎妹妹，两人长相非常相似。她和雏见泽园崎家有紧密关系，也在村外的兴宫生活过。\n\n她关注北条悟史的事情，有时会用出人意料的方式追问经过。游戏特意利用姐妹容易被错认这一点，改变玩家理解同一件事的角度。",
+        "sourceUrl": "https://07th-expansion.net/hig_gensaku"
       }
     ],
     "screenshots": [
@@ -1452,6 +1596,36 @@
         "name": "椎名真由理",
         "summary": "冈部的青梅竹马，也是研究所的成员。仍在关心着变得消沉的他。",
         "sourceUrl": "https://steinsgate0.jp/cast/"
+      },
+      {
+        "name": "桥田至",
+        "originalName": "橋田至",
+        "summary": "桥田至是冈部在学校认识的朋友，也是未来道具研究所的创始成员之一，常被叫作达鲁。他对电脑和电子设备很熟，能把许多口头上的设想变成能测试的东西。\n\n他平时爱谈游戏和网络文化。研究所遇到需要拆解设备、编写程序或分析记录的事时，他往往比其他成员更快弄清从哪里着手。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
+      },
+      {
+        "name": "阿万音铃羽",
+        "originalName": "阿万音鈴羽",
+        "summary": "在《命运石之门》本篇，她在研究所楼下的店里打工，和冈部等人熟悉以后仍有一些心事闭口不谈。她很喜欢自行车，做决定和行动的速度都很快。\n\n她在《命运石之门 0》里也有重要行动。不同故事分支会改变她与其他角色相识的方式，初读时可以先从她怎样赢得队友的信任看起。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
+      },
+      {
+        "name": "菲莉丝·喵喵",
+        "originalName": "フェイリス・ニャンニャン",
+        "summary": "菲莉丝在秋叶原经营的女仆咖啡店里以这个名字与人来往。她擅长把说话和表演做成一套自己的风格，和冈部碰面时很容易互相接住夸张设定。\n\n她很会玩竞技性质的桌游，也熟悉秋叶原的商店与人脉。涉及旧城区和个人过去的故事，会看到她在习惯的俏皮表现之外怎样做决定。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
+      },
+      {
+        "name": "漆原琉华",
+        "originalName": "漆原るか",
+        "summary": "琉华是柳林神社神主的孩子，和真由理很熟，说话和行动都温和内敛。冈部有时会把他叫到研究所，大家也会到神社找他。\n\n他跟冈部有自己一套相处方式，冈部还给他安排过带有玩笑性质的练习。实验逐渐影响身边的人时，琉华也需要认真看待自己的愿望。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
+      },
+      {
+        "name": "桐生萌郁",
+        "originalName": "桐生萌郁",
+        "summary": "萌郁在现实里很少主动开口，用手机发信息时却能说得非常详细。她因寻找一台老式电脑，与冈部等人有了交集。\n\n对她来说，手机既是平时沟通的方式，也连接着她很在意的人。研究所认识她的经过和她后来的选择，会随游戏分支有所变化。",
+        "sourceUrl": "https://steinsgate0.jp/cast/"
       }
     ],
     "screenshots": [
@@ -1538,6 +1712,24 @@
         "name": "水濑名雪",
         "summary": "祐一的表妹。七年后与他重逢，如今住在同一屋檐下，也成了同班同学。",
         "sourceUrl": "https://key.visualarts.gr.jp/product/kanon/character/"
+      },
+      {
+        "name": "泽渡真琴",
+        "originalName": "沢渡真琴",
+        "summary": "真琴刚出现时记不得大多数自己的事，只记得对相泽祐一有怨气。她后来住进水濑家，经常趁祐一放松时想办法捉弄他。\n\n她怎样找到祐一、又为什么留下来，是个人故事里的重要问题。看她对家里其他人的态度，可以看出她并非只想和祐一斗嘴。",
+        "sourceUrl": "https://key.visualarts.co.jp/product/kanon/character/"
+      },
+      {
+        "name": "美坂栞",
+        "originalName": "美坂栞",
+        "summary": "栞是祐一所在学校的低年级学生，身体原因让她曾有很长一段时间不能正常出席。两人相识后，她常在校园里找机会跟他聊天。\n\n她说话很有礼貌，情绪却并不总像笑容看起来那样轻松。她和姐姐香里的关系，在自己的剧情里有一条独立的发展线。",
+        "sourceUrl": "https://key.visualarts.co.jp/product/kanon/character/"
+      },
+      {
+        "name": "川澄舞",
+        "originalName": "川澄舞",
+        "summary": "舞是相泽祐一的学姐。祐一在夜里的学校见过她持剑行动，也因此开始留意那段与白天不同的校园生活。\n\n她和仓田佐佑理是亲友，平日少言，与值得信赖的人相处时会显示不同的态度。她留在夜间校园的缘由是个人路线的主线。",
+        "sourceUrl": "https://key.visualarts.co.jp/product/kanon/character/"
       }
     ],
     "screenshots": [

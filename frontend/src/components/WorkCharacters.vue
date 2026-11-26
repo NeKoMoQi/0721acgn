@@ -1,9 +1,12 @@
 <template>
-  <section v-if="people.length" class="work-characters" aria-label="登场人物">
+  <section v-if="people.length || gamePeople.length" class="work-characters" aria-label="登场人物">
     <h2>登场人物</h2>
     <ul>
       <li v-for="person in people" :key="person.id">
         <RouterLink :to="{ name: 'Character', params: { id: person.id } }">{{ person.name }} <span aria-hidden="true">→</span></RouterLink>
+      </li>
+      <li v-for="person in gamePeople" :key="person.name">
+        <RouterLink :to="galgameCharacterLocation(gameSlug, person.name)">{{ person.name }} <span aria-hidden="true">→</span></RouterLink>
       </li>
     </ul>
   </section>
@@ -13,9 +16,13 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { castForWork, type CharacterWork } from '@/data/characterAssociations'
+import { galgameForAnimation, mediaFor } from '@/data/galgameMedia'
+import { galgameCharacterLocation } from '@/utils/searchResultLocation'
 
 const props = defineProps<{ type: CharacterWork['type']; id: number }>()
 const people = computed(() => castForWork(props.type, props.id))
+const gameSlug = computed(() => props.type === 'animation' ? galgameForAnimation(props.id) || '' : '')
+const gamePeople = computed(() => mediaFor(gameSlug.value)?.characters ?? [])
 </script>
 
 <style scoped>
