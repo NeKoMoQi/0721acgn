@@ -13,10 +13,28 @@
     <select id="getallActivity" resultType="com.example.demo.com.Activity">
         select * from 0721acgn.tb_activity LIMIT 9
     </select>
+    <update id="incrementView">
+        UPDATE 0721acgn.tb_activity SET click = COALESCE(click, 0) + 1 WHERE id = #{id}
+    </update>
+    <insert id="incrementDailyView">
+        INSERT INTO 0721acgn.tb_activity_daily_views (activity_id, view_date, views)
+        VALUES (#{id}, DATE(UTC_TIMESTAMP() + INTERVAL 8 HOUR), 1)
+        ON DUPLICATE KEY UPDATE views = views + 1
+    </insert>
     <select id="gethotActivity" resultType="com.example.demo.com.Activity">
-        select id,activityname,click from 0721acgn.tb_activity order by click desc LIMIT 9;
+        SELECT a.id, a.activityname, SUM(v.views) AS click
+        FROM 0721acgn.tb_activity_daily_views v
+        JOIN 0721acgn.tb_activity a ON a.id = v.activity_id
+        WHERE v.view_date >= DATE(UTC_TIMESTAMP() + INTERVAL 8 HOUR) - INTERVAL 6 DAY
+        GROUP BY a.id, a.activityname
+        ORDER BY click DESC, a.id
+        LIMIT 9
     </select>
     <select id="getLiebieActivity" resultType="com.example.demo.com.LeiBie">
-        select id,Actleibie,count from 0721acgn.tb_leibie;
+        SELECT 1 AS id, '番剧' AS Actleibie, COUNT(*) AS count FROM 0721acgn.tb_animation
+        UNION ALL SELECT 2, '漫画', COUNT(*) FROM 0721acgn.tb_cartoons
+        UNION ALL SELECT 3, '轻小说', COUNT(*) FROM 0721acgn.tb_novel
+        UNION ALL SELECT 4, 'Galgame', COUNT(*) FROM 0721acgn.tb_galgame
+        ORDER BY id
     </select>
 </mapper>

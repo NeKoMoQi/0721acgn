@@ -71,7 +71,19 @@ async function load() {
   try {
     const result: any = await request.get('/activity/byid', { params: { id } })
     if (result?.code !== 200 || !result.data) throw new Error('empty')
-    activity.value = result.data
+    const article = result.data as Activity
+    activity.value = article
+    const key = `activity-view:${id}`
+    try {
+      if (Date.now() - Number(sessionStorage.getItem(key)) < 30 * 60_000) return
+    } catch {
+      // A visible article can still be counted without session storage.
+    }
+    void request.post('/activity/view', null, { params: { id } }).then((view: any) => {
+      if (view?.code !== 200 || typeof view.data !== 'number') return
+      if (activity.value?.id === article.id) activity.value.click = view.data
+      try { sessionStorage.setItem(key, String(Date.now())) } catch {}
+    }).catch(() => {})
   } catch {
     error.value = '这个活动暂时读不到。'
   } finally {

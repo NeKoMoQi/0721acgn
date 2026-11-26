@@ -59,7 +59,7 @@
         <h1>猜你喜欢</h1>
         <AcgnFilterBar @change="onFilterChange" />
       </div>
-      <div class="acgn_show">
+      <div ref="catalogResults" class="acgn_show">
         <div v-for="item in comicGridList" :key="'g' + item.comicid" class="card-container" @click="gotocomic(item.comicid)">
           <div class="card-inner">
             <div class="image-wrapper">
@@ -72,6 +72,8 @@
           </div>
         </div>
       </div>
+      <PageJump v-if="comicGridList.length" :page="catalogPage" :busy="isloading || jumpingPage" @jump="jumpCatalogPage" />
+      <p v-if="pageError" class="tishi" role="alert">{{ pageError }}</p>
       <!-- 瀑布式加载：哨兵滚到视口附近就自动续载，不用按钮 -->
       <div ref="sentinel" class="load-sentinel" aria-hidden="true"></div>
       <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
@@ -87,6 +89,7 @@ import { optimizeCoverUrl } from '@/utils/imageOptimizer'
 import { getcartoon, getcartoonhot } from '@/api/cartoon'
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import PageJump from '@/components/PageJump.vue'
 import AcgnFilterBar from '@/components/AcgnFilterBar.vue'
 import { decadeRange } from '@/utils/acgnConstants'
 
@@ -100,7 +103,41 @@ const nomore = ref(true)
 const currentpage = ref(2)
 const listParams = ref({})
 
+const catalogResults = ref(null)
+const catalogPage = ref(1)
+const jumpingPage = ref(false)
+const pageError = ref('')
+
+async function jumpCatalogPage(target) {
+  if (isloading.value || jumpingPage.value) return
+  const filters = listParams.value
+  jumpingPage.value = true
+  pageError.value = ''
+  try {
+    const result = await getcartoon(target, filters)
+    if (filters !== listParams.value) return
+    if (result?.code !== 200 || !Array.isArray(result.data)) throw new Error('分页请求失败')
+    if (!result.data.length) {
+      pageError.value = '这一页没有作品。'
+      return
+    }
+    comicGridList.value = result.data
+    catalogPage.value = target
+    currentpage.value = target + 1
+    nomore.value = result.data.length >= 20
+    await nextTick()
+    catalogResults.value?.scrollIntoView?.({ block: 'start' })
+  } catch {
+    if (filters === listParams.value) pageError.value = '暂时无法跳转，请重试。'
+  } finally {
+    jumpingPage.value = false
+  }
+}
+
 async function reloadList() {
+  catalogPage.value = 1
+  pageError.value = ''
+
   nomore.value = true
   currentpage.value = 2
   const result = await getcartoon(1, listParams.value)
@@ -155,14 +192,14 @@ const getMore = async () => {
 }
 
 const load = async () => {
-  if (isloading.value || !nomore.value) return
+  if (isloading.value || jumpingPage.value || !nomore.value) return
   isloading.value = true
   getMore()
 }
 
 /** 首屏或筛选后列表还没填满一屏时继续续载，瀑布流不会停在半页 */
 function checkAutoFill() {
-  if (isloading.value || !nomore.value) return
+  if (isloading.value || jumpingPage.value || !nomore.value) return
   const el = sentinel.value
   if (!el) return
   if (el.getBoundingClientRect().top <= window.innerHeight + 400) load()

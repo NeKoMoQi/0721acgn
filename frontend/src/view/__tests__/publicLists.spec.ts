@@ -3,10 +3,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Home from '@/view/main/index.vue'
 import Search from '@/view/Search/index.vue'
 import Animation from '@/view/Animation/index.vue'
-import { getAllActivity, getpageActivity } from '@/api/activity'
+import { getActivityHot, getActivityLeibie, getAllActivity, getpageActivity } from '@/api/activity'
 import { getAllSearch } from '@/api/AllSearch'
 import { getAnimation, getAnimationhot } from '@/api/animation'
 import request from '@/utils/request'
+import { listContinueItems } from '@/utils/acgnLocal'
 
 vi.mock('vue-router', async (importOriginal) => ({
   ...await importOriginal<typeof import('vue-router')>(),
@@ -15,6 +16,7 @@ vi.mock('vue-router', async (importOriginal) => ({
 }))
 vi.mock('@/components/Headpage/index.vue', () => ({ default: { template: '<header />' } }))
 vi.mock('@/components/behind/index.vue', () => ({ default: { template: '<footer />' } }))
+vi.mock('@/utils/acgnLocal', () => ({ ensureAcgnUserHydrated: vi.fn().mockResolvedValue(undefined), listContinueItems: vi.fn() }))
 vi.mock('@/utils/request', () => ({ default: { get: vi.fn().mockResolvedValue({ code: 200, data: { items: [] } }) } }))
 vi.mock('@/api/activity', () => ({
   getAllActivity: vi.fn(),
@@ -50,10 +52,32 @@ const global = {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  vi.mocked(listContinueItems).mockReturnValue([])
+  vi.mocked(getActivityHot).mockResolvedValue({ code: 200, data: [] })
+  vi.mocked(getActivityLeibie).mockResolvedValue({ code: 200, data: [] })
   vi.mocked(getAnimationhot).mockResolvedValue({ code: 200, data: [] })
 })
 
 describe('公开列表', () => {
+  it('游客首页显示续看页码、热门文章和可浏览的实际分类', async () => {
+    vi.mocked(listContinueItems).mockReturnValue([
+      { type: 'comic', id: 2, name: '测试漫画', at: 20, position: 3, chapterId: '0000203', pageNumber: 9 },
+    ])
+    vi.mocked(getAllActivity).mockResolvedValue({ code: 200, data: [] })
+    vi.mocked(getActivityHot).mockResolvedValue({ code: 200, data: [{ id: 5, activityname: '热门文章', click: 21 }] })
+    vi.mocked(getActivityLeibie).mockResolvedValue({ code: 200, data: [{ id: 2, actleibie: '漫画', count: 35 }] })
+    const view = mount(Home, { global })
+    try {
+      await flushPromises()
+      expect(view.get('.home-continue').text()).toContain('第 3 章 · 第 9 页')
+      expect(view.get('.hot .hot-item').text()).toContain('热门文章')
+      expect(view.get('.hot .click-count').text()).toBe('21')
+      expect(view.get('.fenlei a[to="/Comic"]').text()).toBe('漫画35')
+    } finally {
+      view.unmount()
+    }
+  })
+
   it('首页资讯滚入视口后才挂载 WebP 缩略图，失败不回退到原图', async () => {
     const observe = vi.fn()
     const disconnect = vi.fn()

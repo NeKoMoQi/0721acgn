@@ -41,18 +41,28 @@
 </div>
       </div>
         
+      <section v-if="loadedSuccessfully" class="reader-report" aria-label="轻小说分页">
+        <PageJump :page="currentVolume" :max="maxVolume" label="目标卷号" @jump="jumpVolume" />
+        <button v-if="!locationCount" type="button" :disabled="indexing" @click="indexPages">{{ indexing ? '正在计算阅读页…' : '打开卷内页码跳转' }}</button>
+        <PageJump v-else :page="readingPage" :max="locationCount" label="卷内目标页码" @jump="jumpReadingPage" />
+        <p v-if="pageError" role="status">{{ pageError }}</p>
+      </section>
+      <MediaResource v-if="novelId" class="reader-report" type="novel" :id="novelId" :position="`第 ${currentVolume} 卷`" :report-only="!loadError" :unavailable="!!loadError" />
       <Behind class="bottom"></Behind>
     </div>
   </template>
   
   <script setup>
+import PageJump from '@/components/PageJump.vue'
+import MediaResource from '@/components/MediaResource.vue'
 import { ref, shallowRef, onMounted, onBeforeUnmount } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import useUserStore from '@/stores/modules/users'
 import ePub from 'epubjs'
 import { getnovelcount, getnovelbyid, getnovelcontent } from '@/api/novel/index'
 import { getNovelProgress, saveNovelProgress, ensureAcgnUserHydrated, pushHistory } from '@/utils/acgnLocal'
 const route = useRoute()
+const router = useRouter()
 const usestore = useUserStore()
 const novelId = Number(route.query.novelid || usestore.novelid)
 const currentVolume = ref(1)
@@ -67,7 +77,43 @@ const showToc = ref(false)
 const loading = ref(false)
 const loadError = ref('')
 let disposed = false
-let loadedSuccessfully = false
+const loadedSuccessfully = ref(false)
+const locationCount = ref(0)
+const readingPage = ref(1)
+const indexing = ref(false)
+const pageError = ref('')
+let lastCfi = ''
+let lastSave = 0
+const reloading = performance.getEntriesByType('navigation')[0]?.type === 'reload'
+let allowRestart = route.query.restart === '1' && !reloading
+
+async function indexPages() {
+  const active = book.value
+  if (!active || indexing.value) return
+  indexing.value = true
+  pageError.value = ''
+  try {
+    await active.locations.generate(1600)
+    if (active !== book.value) return
+    locationCount.value = active.locations.length()
+    if (lastCfi) readingPage.value = Math.max(1, active.locations.locationFromCfi(lastCfi) + 1)
+  } catch {
+    if (active === book.value) pageError.value = '这卷暂时无法计算页码，可继续使用目录。'
+  } finally {
+    if (active === book.value) indexing.value = false
+  }
+}
+
+async function jumpReadingPage(page) {
+  const target = book.value?.locations.cfiFromLocation(page - 1)
+  if (!target || !rendition.value) return
+  try { await rendition.value.display(target) }
+  catch { pageError.value = '无法跳到这一页。' }
+}
+
+function saveReadingPosition() {
+  if (loadedSuccessfully.value && lastCfi) saveNovelProgress(novelId, currentVolume.value, lastCfi)
+}
 let historyRecorded = false
 
 const navigateTo = async (href) => {
@@ -97,7 +143,13 @@ async function loadVolume(volume) {
   requestedVolume.value = volume
   loading.value = true
   loadError.value = ''
-  loadedSuccessfully = false
+  saveReadingPosition()
+  loadedSuccessfully.value = false
+  lastCfi = ''
+  locationCount.value = 0
+  readingPage.value = 1
+  indexing.value = false
+  pageError.value = ''
   showToc.value = false
   toc.value = []
   destroyBook()
@@ -119,12 +171,25 @@ async function loadVolume(volume) {
     reader.themes.select('lightnovel')
     const navigation = await instance.loaded.navigation
     toc.value = navigation.toc.map(item => ({ id: item.id, label: item.label, href: item.href }))
-    await reader.display()
+    const saved = getNovelProgress(novelId)
+    const cfi = !allowRestart && saved?.chapterno === volume ? saved.cfi : undefined
+    allowRestart = false
+    reader.on('relocated', location => {
+      if (reader !== rendition.value) return
+      lastCfi = location?.start?.cfi || lastCfi
+      if (locationCount.value && lastCfi) readingPage.value = Math.max(1, instance.locations.locationFromCfi(lastCfi) + 1)
+      if (Date.now() - lastSave >= 5000) { lastSave = Date.now(); saveReadingPosition() }
+    })
+    try { await reader.display(cfi) }
+    catch (error) {
+      if (!cfi) throw error
+      await reader.display()
+    }
     if (disposed) return
     currentVolume.value = volume
     usestore.novelchapter = volume
-    loadedSuccessfully = true
-    saveNovelProgress(novelId, volume)
+    loadedSuccessfully.value = true
+    saveNovelProgress(novelId, volume, lastCfi || undefined)
     if (!historyRecorded) {
       // 每次成功打开都是补写历史的机会，包括首卷失败后的重试。
       historyRecorded = true
@@ -148,10 +213,13 @@ async function loadVolume(volume) {
   }
 }
 
-const switchVolume = async (delta) => {
-  const volume = currentVolume.value + delta
-  if (volume >= 1 && volume <= maxVolume.value) await loadVolume(volume)
+function jumpVolume(volume) {
+  if (loading.value || volume < 1 || volume > maxVolume.value) return
+  saveReadingPosition()
+  void router.push({ name: 'Novelsee', query: { novelid: novelId, chapterno: volume } })
 }
+
+const switchVolume = (delta) => jumpVolume(currentVolume.value + delta)
 const handleResize = () => { rendition.value?.resize() }
 function handscroll() {}
 
@@ -188,15 +256,18 @@ function retry() {
 onMounted(() => {
   initializeReader()
   window.addEventListener('resize', handleResize)
+  window.addEventListener('pagehide', saveReadingPosition)
 })
 onBeforeUnmount(() => {
   disposed = true
-  if (loadedSuccessfully) saveNovelProgress(novelId, currentVolume.value)
+  saveReadingPosition()
+  window.removeEventListener('pagehide', saveReadingPosition)
   destroyBook()
   window.removeEventListener('resize', handleResize)
 })
   </script>
   <style scoped>
+.reader-report { max-width: 900px; margin: 20px auto 72px; padding-inline: 16px; }
 .reader-status { padding: 20px; color: #675642; line-height: 1.8; }
 .reader-status button, .reader-status a { margin-right: 16px; }
 

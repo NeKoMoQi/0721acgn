@@ -50,6 +50,7 @@ __pycache__/
 
 # generated WebP copies (regenerate with scripts/convert-webp.mjs)
 frontend/public/**/*.webp
+!frontend/public/xunli/uji/*.webp
 
 # 本机私有配置（含本机路径）
 *.local.json

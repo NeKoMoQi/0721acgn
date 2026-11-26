@@ -33,7 +33,6 @@ import { ref } from 'vue'
 import Headpage from '@/components/Headpage/index.vue'
 import { ElMessage } from 'element-plus'
 import { appendUserUploadRecord } from '@/utils/acgnPersonalFeed'
-import { pushNotification } from '@/utils/acgnNotifications'
 
 const media = ref<'animation' | 'comic' | 'novel'>('animation')
 const title = ref('')
@@ -54,14 +53,7 @@ function submit() {
     relatedName: t,
     auditStatus: 'pending',
   })
-  pushNotification({
-    id: `up_${Date.now()}`,
-    kind: 'review_result',
-    title: '投稿已收到（演示）',
-    body: `「${t}」将进入人工审核占位流程，可随时在「个人中心 · 上传记录」查看状态。`,
-    at: Date.now(),
-  })
-  ElMessage.success('已记录并开始排队（演示），消息页可查看推送')
+  ElMessage.success('已保存到本机上传记录')
   title.value = ''
   detail.value = ''
 }

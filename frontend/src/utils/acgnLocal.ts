@@ -46,8 +46,10 @@ export interface HistoryItem {
 
 let historyMem: HistoryItem[] = []
 let subsMem: SubscribeEntry[] = []
+const comicProgressWrites = new Map<number, Promise<void>>()
 const comicProgMem: Record<string, ComicProgress> = {}
-const novelProgMem: Record<string, { chapterno: number }> = {}
+const novelProgMem: Record<string, NovelPosition> = {}
+let animationPositions: Record<string, AnimationPosition> = {}
 const animEpMem: Record<string, number> = {}
 
 let hydrated = false
@@ -86,6 +88,7 @@ function applyServerState(raw: AcgnUserStateDto) {
   Object.keys(comicProgMem).forEach((k) => delete comicProgMem[k])
   Object.keys(novelProgMem).forEach((k) => delete novelProgMem[k])
   Object.keys(animEpMem).forEach((k) => delete animEpMem[k])
+  animationPositions = p.animationPositions || {}
   const an = p.animation || {}
   for (const k of Object.keys(an)) {
     const v = (an as Record<string, number>)[k]
@@ -97,8 +100,8 @@ function applyServerState(raw: AcgnUserStateDto) {
   }
   const nv = p.novel || {}
   for (const k of Object.keys(nv)) {
-    const row = (nv as Record<string, { chapterno: number }>)[k]
-    if (row && typeof row.chapterno === 'number') novelProgMem[k] = { chapterno: row.chapterno }
+    const row = nv[k]
+    if (row && typeof row.chapterno === 'number') novelProgMem[k] = row
   }
 }
 
@@ -108,7 +111,9 @@ function coerceComicProg(x: unknown): ComicProgress {
   return {
     chapterId: typeof o.chapterId === 'string' ? o.chapterId : String(o.chapterId ?? ''),
     chapterno: typeof o.chapterno === 'number' ? o.chapterno : Number(o.chapterno) || 1,
-    imagePage: typeof o.imagePage === 'number' ? o.imagePage : Number(o.imagePage) || 1,
+    imagePage: Number(o.imagePage) || 1,
+    pageNumber: Number.isSafeInteger(o.pageNumber) && Number(o.pageNumber) > 0 ? Number(o.pageNumber) : undefined,
+    updatedAt: Number(o.updatedAt) || undefined,
   }
 }
 
@@ -466,6 +471,7 @@ export function listHistory(): HistoryItem[] {
 export interface ContinueItem extends HistoryItem {
   position: number
   chapterId?: string
+  pageNumber?: number
 }
 
 /** 只列出实际有观看 / 阅读进度的作品，浏览过简介不算开始阅读。 */
@@ -478,7 +484,8 @@ export function listContinueItems(): ContinueItem[] {
     if (item.type === 'comic') {
       const progress = getComicProgress(item.id)
       return progress?.chapterId && Number.isInteger(progress.chapterno) && progress.chapterno > 0
-        ? [{ ...item, position: progress.chapterno, chapterId: progress.chapterId }] : []
+        ? [{ ...item, at: Math.max(item.at, progress.updatedAt || 0), position: progress.chapterno,
+          chapterId: progress.chapterId, pageNumber: progress.pageNumber }] : []
     }
     if (item.type === 'novel') {
       const progress = getNovelProgress(item.id)
@@ -498,94 +505,99 @@ export interface ComicProgress {
   chapterId: string
   chapterno: number
   imagePage?: number
+  pageNumber?: number
+  updatedAt?: number
+}
+
+function comicCheckpointKey(comicId: number) {
+  return `acgn_comic_checkpoint_${comicId}`
 }
 
 export function saveComicProgress(comicId: number, p: ComicProgress) {
-  void innerSaveComicProgress(comicId, p)
-}
-
-async function innerSaveComicProgress(comicId: number, p: ComicProgress) {
-  await ensureAcgnUserHydrated()
-  const before = { ...comicProgMem[String(comicId)] }
-  comicProgMem[String(comicId)] = { ...p, imagePage: p.imagePage ?? 1 }
+  const progress = { ...p, updatedAt: Date.now() }
+  const key = comicCheckpointKey(comicId)
   try {
-    const res = await postAcgnProgressSave(
-      'comic',
-      comicId,
-      comicProgMem[String(comicId)] as unknown as Record<string, unknown>,
-    )
-    if (res?.code !== 200) {
-      if (before && Object.keys(before).length) comicProgMem[String(comicId)] = before
-      else delete comicProgMem[String(comicId)]
-    } else {
-      await touchProgressHistory('comic', comicId)
-    }
+    localStorage.setItem(key, JSON.stringify(progress))
   } catch {
-    if (before && Object.keys(before).length) comicProgMem[String(comicId)] = before
-    else delete comicProgMem[String(comicId)]
+    // The server can still save progress when browser storage is unavailable.
   }
+  const previousWrite = comicProgressWrites.get(comicId) || Promise.resolve()
+  const write = previousWrite.then(async () => {
+    await ensureAcgnUserHydrated()
+    const latest = readLsJson<ComicProgress | null>(key, null)
+    if ((latest?.updatedAt || 0) > progress.updatedAt) return
+    comicProgMem[String(comicId)] = progress
+    const result = await postAcgnProgressSave('comic', comicId, { ...progress })
+    if (result?.code === 200) await touchProgressHistory('comic', comicId)
+  }).catch(() => {}).finally(() => {
+    if (comicProgressWrites.get(comicId) === write) comicProgressWrites.delete(comicId)
+  })
+  comicProgressWrites.set(comicId, write)
 }
 
 export function getComicProgress(comicId: number): ComicProgress | null {
-  return comicProgMem[String(comicId)] ?? null
+  const server = comicProgMem[String(comicId)]
+  const checkpoint = readLsJson<ComicProgress | null>(comicCheckpointKey(comicId), null)
+  if (checkpoint?.chapterId && (checkpoint.updatedAt || 0) >= (server?.updatedAt || 0)) return checkpoint
+  return server ?? null
 }
 
-export function saveNovelProgress(novelId: number, chapterno: number) {
-  void innerSaveNovelProg(novelId, chapterno)
+interface NovelPosition { chapterno: number; cfi?: string; updatedAt?: number }
+interface AnimationPosition { episode: number; seconds?: number; updatedAt?: number }
+
+const exactProgressWrites = new Map<string, Promise<void>>()
+
+function saveExactProgress<T extends NovelPosition | AnimationPosition>(type: 'novel' | 'animation', id: number, position: T): T & { updatedAt: number } {
+  const key = `acgn_${type}_checkpoint_${id}`
+  const next = { ...position, updatedAt: Date.now() }
+  try { localStorage.setItem(key, JSON.stringify(next)) } catch { /* server remains available */ }
+
+  const previous = exactProgressWrites.get(key) || Promise.resolve()
+  const write = previous.then(async () => {
+    await ensureAcgnUserHydrated()
+    if ((readLsJson<typeof next | null>(key, null)?.updatedAt ?? 0) > next.updatedAt) return
+    const result = await postAcgnProgressSave(type, id, { ...next })
+    if (result?.code === 200) await touchProgressHistory(type, id)
+  }).catch(() => {}).finally(() => {
+    if (exactProgressWrites.get(key) === write) exactProgressWrites.delete(key)
+  })
+  exactProgressWrites.set(key, write)
+  return next
 }
 
-async function innerSaveNovelProg(novelId: number, chapterno: number) {
-  await ensureAcgnUserHydrated()
-  const k = String(novelId)
-  const before = novelProgMem[k]
-  novelProgMem[k] = { chapterno }
-  try {
-    const res = await postAcgnProgressSave('novel', novelId, { chapterno })
-    if (res?.code !== 200) {
-      if (before) novelProgMem[k] = before
-      else delete novelProgMem[k]
-    } else {
-      await touchProgressHistory('novel', novelId)
-    }
-  } catch {
-    if (before) novelProgMem[k] = before
-    else delete novelProgMem[k]
-  }
+export function saveNovelProgress(novelId: number, chapterno: number, cfi?: string) {
+  const before = getNovelProgress(novelId)
+  const next = { chapterno, cfi: cfi ?? (before?.chapterno === chapterno ? before.cfi : undefined) }
+  novelProgMem[String(novelId)] = saveExactProgress('novel', novelId, next)
 }
 
-export function getNovelProgress(novelId: number): { chapterno: number } | null {
-  return novelProgMem[String(novelId)] ?? null
+export function getNovelProgress(novelId: number): NovelPosition | null {
+  const server = novelProgMem[String(novelId)]
+  const local = readLsJson<NovelPosition | null>(`acgn_novel_checkpoint_${novelId}`, null)
+  return local && (local.updatedAt ?? 0) >= (server?.updatedAt ?? 0) ? local : server ?? null
 }
 
-export function saveAnimationEpisode(animationId: number, episode: number) {
-  void innerSaveAnimEp(animationId, episode)
+export function saveAnimationEpisode(animationId: number, episode: number, seconds?: number) {
+  const time = seconds ?? (getAnimationEpisode(animationId) === episode ? getAnimationPosition(animationId, episode) : undefined)
+  animEpMem[String(animationId)] = episode
+  animationPositions[String(animationId)] = saveExactProgress('animation', animationId, { episode, seconds: time })
 }
 
-async function innerSaveAnimEp(animationId: number, episode: number) {
-  await ensureAcgnUserHydrated()
-  const k = String(animationId)
-  const prev = animEpMem[k]
-  animEpMem[k] = episode
-  try {
-    const res = await postAcgnProgressSave('animation', animationId, { episode })
-    if (res?.code !== 200) {
-      if (typeof prev === 'number') animEpMem[k] = prev
-      else delete animEpMem[k]
-    } else {
-      await touchProgressHistory('animation', animationId)
-    }
-  } catch {
-    if (typeof prev === 'number') animEpMem[k] = prev
-    else delete animEpMem[k]
-  }
+function getAnimationCheckpoint(animationId: number): AnimationPosition | undefined {
+  const server = animationPositions[String(animationId)]
+  const local = readLsJson<AnimationPosition | null>(`acgn_animation_checkpoint_${animationId}`, null)
+  return local && (local.updatedAt ?? 0) >= (server?.updatedAt ?? 0) ? local : server
+}
+
+export function getAnimationPosition(animationId: number, episode: number): number {
+  const position = getAnimationCheckpoint(animationId)
+  return position?.episode === episode && Number.isFinite(position.seconds) ? Math.max(0, position.seconds!) : 0
 }
 
 export function getAnimationEpisode(animationId: number): number | null {
-  const v = animEpMem[String(animationId)]
-  return typeof v === 'number' ? v : null
+  return getAnimationCheckpoint(animationId)?.episode ?? animEpMem[String(animationId)] ?? null
 }
 
-// --- 订阅 ---
 export interface SubscribeEntry {
   type: AcgnMediaType
   id: number
@@ -626,6 +638,9 @@ export async function toggleSubscribeAsync(
         0,
         320,
       )
+      try { localStorage.removeItem(`acgn_subscription_releases_v2:${item.type}:${item.id}`) } catch { /* storage unavailable */ }
+      const entry = subsMem[0]
+      void import('./subscriptionUpdates').then(({ checkSubscription }) => checkSubscription(entry)).catch(() => {})
     } else {
       subsMem = subsMem.filter((s) => !(s.type === item.type && s.id === item.id))
     }

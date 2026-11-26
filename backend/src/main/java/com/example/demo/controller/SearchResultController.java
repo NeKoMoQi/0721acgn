@@ -30,7 +30,11 @@ public class SearchResultController {
             @RequestParam(required = false) Integer yearMax,
             @RequestParam(required = false, defaultValue = "default") String sortBy,
             @RequestParam(required = false) String mediaType,
-            @RequestParam(required = false) Integer limit) {
+            @RequestParam(required = false) Integer limit,
+            @RequestParam(required = false) Integer page) {
+        if (page != null) {
+            return Result.success(searchResultService.searchPage(search, genre, status, yearMin, yearMax, sortBy, mediaType, page, limit));
+        }
         List<SearchResult> rows =
                 searchResultService.getSearchResultsAdvanced(
                         search, genre, status, yearMin, yearMax, sortBy, mediaType, limit);

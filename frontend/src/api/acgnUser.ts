@@ -25,8 +25,9 @@ export interface AcgnUserStateDto {
   subscriptions: AcgnSubscribeItemDto[]
   progress: {
     animation?: Record<string, number>
+    animationPositions?: Record<string, { episode: number; seconds?: number; updatedAt?: number }>
     comic?: Record<string, Record<string, unknown>>
-    novel?: Record<string, { chapterno: number }>
+    novel?: Record<string, { chapterno: number; cfi?: string; updatedAt?: number }>
   }
 }
 

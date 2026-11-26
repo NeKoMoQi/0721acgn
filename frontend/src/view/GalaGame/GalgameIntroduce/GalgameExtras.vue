@@ -13,13 +13,13 @@
       <p class="fine-print">{{ media.offers.length ? `中国区商店 · ${media.checkedAt} 采集，现价以商品页为准。` : '不同平台的版本、语言与内容可能有差异，请以具体商品页为准。' }}</p>
     </section>
 
-    <section class="extra-card character-card">
+    <section v-if="media.characters.length" class="extra-card character-card">
       <div class="card-heading"><h2>角色速览</h2><span>登场人物</span></div>
-      <button v-for="person in media.characters.slice(0, 2)" :key="person.name" type="button" class="character-row" @click="charactersOpen = true">
+      <RouterLink v-for="person in media.characters.slice(0, 2)" :key="person.name" class="character-row" :to="galgameCharacterLocation(media.slug, person.name)">
         <span class="portrait"><img v-if="person.image && !failedImages[person.image]" :src="person.image" :alt="person.name" :style="{ objectPosition: person.imagePosition || 'center 18%' }" loading="lazy" @error="failedImages[person.image] = true"><span v-else>{{ person.name.slice(0, 2) }}</span></span>
         <span class="character-copy"><strong>{{ person.name }}</strong><span>{{ person.summary }}</span></span>
-        <span class="row-arrow" aria-hidden="true">↗</span>
-      </button>
+        <span class="row-arrow" aria-hidden="true">→</span>
+      </RouterLink>
       <button v-if="media.characters.length" type="button" class="text-button" @click="charactersOpen = true">查看角色介绍（{{ media.characters.length }}） →</button>
     </section>
 
@@ -47,7 +47,7 @@
     <div class="all-characters">
       <article v-for="person in media?.characters" :key="person.name" class="character-profile">
         <span class="portrait profile-portrait"><img v-if="person.image && !failedImages[person.image]" :src="person.image" :alt="person.name" :style="{ objectPosition: person.imagePosition || 'center 18%' }" @error="failedImages[person.image] = true"><span v-else>{{ person.name.slice(0, 2) }}</span></span>
-        <div><h3>{{ person.name }}</h3><small v-if="person.originalName && person.originalName !== person.name">{{ person.originalName }}</small><p>{{ person.summary }}</p><a :href="person.sourceUrl" target="_blank" rel="noopener noreferrer">角色资料来源 ↗</a></div>
+        <div><h3><RouterLink v-if="media" :to="galgameCharacterLocation(media.slug, person.name)">{{ person.name }}</RouterLink></h3><small v-if="person.originalName && person.originalName !== person.name">{{ person.originalName }}</small><p>{{ person.summary }}</p><a :href="person.sourceUrl" target="_blank" rel="noopener noreferrer">角色资料来源 ↗</a></div>
       </article>
     </div>
   </el-dialog>
@@ -63,7 +63,9 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
+import { RouterLink } from 'vue-router'
 import type { GalgameMedia } from '@/data/galgameMedia'
+import { galgameCharacterLocation } from '@/utils/searchResultLocation'
 const props = defineProps<{ media?: GalgameMedia; title: string; officialUrl: string }>()
 const charactersOpen = ref(false)
 const previewOpen = ref(false)
@@ -96,7 +98,7 @@ watch(() => props.media?.slug, () => { charactersOpen.value = false; previewOpen
 .offer-row{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px dashed #e1e7ec;text-decoration:none;color:#324d5d}
 .offer-row:last-child{border-bottom:0}.offer-row strong{font-size:14px}.offer-row small{display:block;margin-top:6px;color:#778b98;font-size:12px;overflow-wrap:anywhere}.offer-row b{white-space:nowrap;color:#277d77;font-size:17px}.offer-row b span{font-size:12px}
 .fine-print{font-size:12px;line-height:1.7;color:#85939d;margin:18px 0 0}.fine-print a{color:#547a91;margin:0 3px}
-.character-row{width:100%;border:0;padding:0;margin:0 0 16px;display:flex;align-items:center;gap:13px;text-align:left;background:transparent;cursor:pointer;color:inherit;font:inherit}
+.character-row{width:100%;border:0;padding:0;margin:0 0 16px;display:flex;align-items:center;gap:13px;text-align:left;background:transparent;cursor:pointer;color:inherit;font:inherit;text-decoration:none}
 .portrait{flex:none;display:flex;align-items:center;justify-content:center;width:56px;height:64px;border-radius:11px;background:linear-gradient(145deg,#e7edf6,#cfdfeb);overflow:hidden;color:#607b8e;font-size:14px}
 .portrait img{width:100%;height:100%;object-fit:cover;object-position:center 18%}.character-copy{min-width:0;flex:1}.character-copy strong{display:block;color:#30495c;font-size:15px;margin-bottom:5px}.character-copy>span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;line-height:1.6;color:#7a8b98}.row-arrow{color:#9eafba}
 .text-button{border:0;background:#f3f8fa;border-radius:8px;padding:10px 13px;width:100%;text-align:left;cursor:pointer;color:#53758c;font:inherit;font-size:13px}

@@ -3,18 +3,20 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ComicReader from './index.vue'
 import { getcartoonbyid, getcartoonchapter, getcartoonpage } from '@/api/cartoon'
 
-const { push, saveComicProgress, routeQuery } = vi.hoisted(() => ({
+const { push, saveComicProgress, getComicProgress, routeQuery } = vi.hoisted(() => ({
   push: vi.fn(),
   saveComicProgress: vi.fn(),
+  getComicProgress: vi.fn(),
   routeQuery: {} as Record<string, string>,
 }))
 
+vi.mock('@/utils/request', () => ({ default: { post: vi.fn() } }))
 vi.mock('vue-router', () => ({
   useRoute: () => ({ query: routeQuery }),
   useRouter: () => ({ push }),
 }))
 vi.mock('@/stores/modules/users', () => ({ default: () => ({}) }))
-vi.mock('@/utils/acgnLocal', () => ({ saveComicProgress, pushHistory: vi.fn() }))
+vi.mock('@/utils/acgnLocal', () => ({ saveComicProgress, getComicProgress, ensureAcgnUserHydrated: vi.fn(), pushHistory: vi.fn() }))
 vi.mock('@/api/cartoon', () => ({
   getcartoonbyid: vi.fn(),
   getcartoonchapter: vi.fn(),
@@ -40,6 +42,7 @@ function stubDialog(dialog: HTMLDialogElement) {
 beforeEach(() => {
   vi.resetAllMocks()
   delete routeQuery.immersive
+  delete routeQuery.pageNumber
   Object.assign(routeQuery, { comicid: '8', chapterid: '0018042', chapterno: '4' })
   vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
   vi.mocked(getcartoonbyid).mockResolvedValue({ code: 200, data: { name: '漫画' } })
@@ -51,6 +54,35 @@ beforeEach(() => {
 })
 
 describe('漫画阅读器', () => {
+  it('输入第 5 页，加载第二批并保存实际页码', async () => {
+    vi.mocked(getcartoonpage)
+      .mockResolvedValueOnce({ code: 200, data: pages })
+      .mockResolvedValueOnce({ code: 200, data: [{ fileurl: '/page-5.jpg' }] })
+    const wrapper = mountReader()
+    await flushPromises()
+    await wrapper.get('input[aria-label="目标页码"]').setValue('5')
+    await wrapper.get('form.page-jump').trigger('submit')
+    await flushPromises()
+    expect(getcartoonpage).toHaveBeenLastCalledWith('0018042', 2)
+    expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, pageNumber: 5 })
+    wrapper.unmount()
+  })
+
+  it('刷新时同一章节用新保存的页码覆盖续读链接里的旧页码', async () => {
+    routeQuery.pageNumber = '2'
+    const navigation = vi.spyOn(performance, 'getEntriesByType').mockReturnValue([{ type: 'reload' }] as any)
+    getComicProgress.mockReturnValue({ chapterId: '0018042', chapterno: 4, pageNumber: 3 })
+    vi.mocked(getcartoonpage).mockResolvedValueOnce({ code: 200, data: pages })
+    const wrapper = mountReader()
+    try {
+      await flushPromises()
+      expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, pageNumber: 3 })
+    } finally {
+      wrapper.unmount()
+      navigation.mockRestore()
+    }
+  })
+
   it('正文独立于目录与作品资料，首批失败后可重试', async () => {
     vi.mocked(getcartoonbyid).mockRejectedValueOnce(new Error('作品资料离线'))
     vi.mocked(getcartoonchapter).mockRejectedValueOnce(new Error('目录离线'))
@@ -68,7 +100,7 @@ describe('漫画阅读器', () => {
     wrapper.unmount()
   })
 
-  it('后续批次失败后保留图片和进度，重试相同页码', async () => {
+  it('后续批次失败后保留图片和进度，预载下一批不推进实际页码', async () => {
     vi.mocked(getcartoonpage)
       .mockResolvedValueOnce({ code: 200, data: pages })
       .mockResolvedValueOnce({ code: 500, data: [] })
@@ -84,7 +116,50 @@ describe('漫画阅读器', () => {
     await flushPromises()
     expect(vi.mocked(getcartoonpage).mock.calls).toEqual([['0018042', 1], ['0018042', 2], ['0018042', 2]])
     expect(wrapper.findAll('.acgn_container img')).toHaveLength(5)
-    expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, imagePage: 2 })
+    expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, pageNumber: 1 })
+    wrapper.unmount()
+  })
+
+  it('续读等待目标页成功加载，从第二批的第五张实际图页恢复', async () => {
+    routeQuery.pageNumber = '5'
+    const scrollIntoView = vi.fn()
+    const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'scrollIntoView')
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { value: scrollIntoView, configurable: true })
+    vi.mocked(getcartoonpage)
+      .mockResolvedValueOnce({ code: 200, data: pages })
+      .mockRejectedValueOnce(new Error('暂时离线'))
+      .mockResolvedValueOnce({ code: 200, data: [{ fileurl: '/page-5.jpg' }] })
+    const wrapper = mountReader()
+    try {
+      await flushPromises()
+      expect(saveComicProgress).not.toHaveBeenCalled()
+      await wrapper.get('.retry-pages').trigger('click')
+      await flushPromises()
+      expect(vi.mocked(getcartoonpage).mock.calls).toEqual([['0018042', 1], ['0018042', 2], ['0018042', 2]])
+      expect(scrollIntoView.mock.contexts[0]).toBe(wrapper.findAll('.comic-page')[4].element)
+      expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, pageNumber: 5 })
+    } finally {
+      wrapper.unmount()
+      if (original) Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', original)
+      else Reflect.deleteProperty(HTMLElement.prototype, 'scrollIntoView')
+    }
+  })
+
+  it('普通滚动记录进入阅读位置的实际图页', async () => {
+    vi.mocked(getcartoonpage).mockResolvedValueOnce({ code: 200, data: pages })
+    const wrapper = mountReader()
+    await flushPromises()
+    wrapper.findAll('.comic-page').forEach(({ element }, index) => {
+      const top = 1000 * (index - 2)
+      vi.spyOn(element, 'getBoundingClientRect').mockReturnValue({ top, bottom: top + 1000 } as DOMRect)
+    })
+    const container = wrapper.get('.acgn_container').element
+    vi.spyOn(container, 'getBoundingClientRect').mockReturnValue({ top: 0, bottom: 700 } as DOMRect)
+    document.body.append(wrapper.element)
+    container.dispatchEvent(new Event('scroll'))
+    await vi.waitFor(() => {
+      expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, pageNumber: 3 })
+    })
     wrapper.unmount()
   })
 
@@ -207,6 +282,8 @@ describe('漫画阅读器', () => {
     expect(wrapper.get('.immersive-stage img').attributes('src')).toBe('/page-5.jpg')
     expect(vi.mocked(getcartoonpage).mock.calls).toEqual([['0018042', 1], ['0018042', 2]])
     expect(wrapper.get('.immersive-page-controls button:last-child').attributes('disabled')).toBeDefined()
+
+    expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, pageNumber: 5 })
 
     const scrollIntoView = vi.fn()
     const lastPage = wrapper.findAll('.comic-page')[4].element

@@ -70,7 +70,7 @@
     <h1>猜你喜欢</h1>
     <AcgnFilterBar @change="onFilterChange" />
   </div>
-  <div class="acgn_show" >
+  <div ref="catalogResults" class="acgn_show" >
     <div v-for="(item,index) in animationlist" :key="'g' + item.id" class="card-container" @click="gotoanimation(item.id)">
   <div class="card-inner">
     <div class="image-wrapper">
@@ -92,7 +92,9 @@
   </div>
 </div>
   </div>
-  <button v-if="nomore && !isloading" type="button" class="catalog-more" @click="load">加载更多</button>
+  <PageJump v-if="animationlist.length" :page="catalogPage" :busy="isloading || jumpingPage" @jump="jumpCatalogPage" />
+      <p v-if="pageError" class="tishi" role="alert">{{ pageError }}</p>
+      <button v-if="nomore && !isloading && !jumpingPage" type="button" class="catalog-more" @click="load">加载更多</button>
   <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
   <div v-if="!nomore"  class="tishi">已经到底啦~亲(๑•̀ㅂ•́)و✧</div>
     </div>
@@ -104,9 +106,10 @@
   <script setup>
 import { optimizeCoverUrl } from '@/utils/imageOptimizer'
     import { getAnimation, getAnimationhot } from '@/api/animation/index';
-    import { ref, onMounted } from 'vue';
+    import { nextTick, ref, onMounted } from 'vue';
     import { useRouter } from 'vue-router';
-    import AcgnFilterBar from '@/components/AcgnFilterBar.vue';
+    import PageJump from '@/components/PageJump.vue'
+import AcgnFilterBar from '@/components/AcgnFilterBar.vue';
     import { decadeRange } from '@/utils/acgnConstants';
 
     const animationlist = ref([]);
@@ -118,7 +121,41 @@ import { optimizeCoverUrl } from '@/utils/imageOptimizer'
     const $router = useRouter();
     const listParams = ref({});
 
-    async function reloadList() {
+    const catalogResults = ref(null)
+const catalogPage = ref(1)
+const jumpingPage = ref(false)
+const pageError = ref('')
+
+async function jumpCatalogPage(target) {
+  if (isloading.value || jumpingPage.value) return
+  const filters = listParams.value
+  jumpingPage.value = true
+  pageError.value = ''
+  try {
+    const result = await getAnimation(target, filters)
+    if (filters !== listParams.value) return
+    if (result?.code !== 200 || !Array.isArray(result.data)) throw new Error('分页请求失败')
+    if (!result.data.length) {
+      pageError.value = '这一页没有作品。'
+      return
+    }
+    animationlist.value = result.data
+    catalogPage.value = target
+    currentpage.value = target + 1
+    nomore.value = result.data.length >= 20
+    await nextTick()
+    catalogResults.value?.scrollIntoView?.({ block: 'start' })
+  } catch {
+    if (filters === listParams.value) pageError.value = '暂时无法跳转，请重试。'
+  } finally {
+    jumpingPage.value = false
+  }
+}
+
+async function reloadList() {
+  catalogPage.value = 1
+  pageError.value = ''
+
       nomore.value = true;
       currentpage.value = 2;
       const result = await getAnimation(1, listParams.value);
@@ -164,7 +201,7 @@ import { optimizeCoverUrl } from '@/utils/imageOptimizer'
     };
 
     const load = async () => {
-      if (isloading.value || !nomore.value) return;
+      if (isloading.value || jumpingPage.value || !nomore.value) return;
       isloading.value = true;
       getMore();
     };
