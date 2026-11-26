@@ -7,6 +7,7 @@
   
       <!-- 内容容器 -->
       <div class="acgn_container" ref="maintain" @scroll="handscroll">
+        <WorkLoadError v-if="detailFailed" catalog="/Comic" @retry="loadDetail" />
         <div class="introduce" v-if="cartoondata">
   <div class="intro-image">
     <img :src=cartoondata.picurl alt="漫画封面">
@@ -67,6 +68,7 @@ import MediaResource from '@/components/MediaResource.vue'
   import { getcartoonchapter,getcartoonbyid } from '@/api/cartoon';
   import { useRoute,useRouter } from 'vue-router';
   import useUserStore from '@/stores/modules/users';
+  import WorkLoadError from '@/components/WorkLoadError.vue'
   import WorkCharacters from '@/components/WorkCharacters.vue'
 import RelatedWorks from '@/components/RelatedWorks.vue';
   import AcgnCommunityPanel from '@/components/AcgnCommunityPanel.vue';
@@ -80,6 +82,7 @@ import RelatedWorks from '@/components/RelatedWorks.vue';
 
   const cartoondata = ref()
   const chapter = ref([])
+  const detailFailed = ref(false)
   const catalogFailed = ref(false)
   const $router = useRouter()
   const route = useRoute()
@@ -90,15 +93,20 @@ import RelatedWorks from '@/components/RelatedWorks.vue';
   const progressLabel = computed(() => {
     if (!hasProgress.value) return ''
     const progress = getComicProgress(comicIdNum.value)
-    return progress?.pageNumber ? ` · 第 ${progress.chapterno} 章，第 ${progress.pageNumber} 页` : ''
+    if (!progress?.chapterId) return ''
+    const page = progress.pageNumber ? `第 ${progress.pageNumber} 页` : '页码未记录'
+    return ` · 第 ${progress.chapterno} 章，${page}`
   })
 
-  onMounted(async() => {
+  async function loadDetail() {
+    detailFailed.value = false
     const id = route.query.comicid;
     const [info, chapters] = await Promise.allSettled([getcartoonbyid(id), getcartoonchapter(id)])
     if (info.status === 'fulfilled' && info.value?.code === 200) cartoondata.value = info.value.data
+    detailFailed.value = !cartoondata.value
     if (chapters.status === 'fulfilled' && chapters.value?.code === 200 && Array.isArray(chapters.value.data)) {
       chapter.value = chapters.value.data
+      catalogFailed.value = false
     } else {
       catalogFailed.value = true
     }
@@ -111,7 +119,8 @@ import RelatedWorks from '@/components/RelatedWorks.vue';
       shelfActive.value = isInBookshelf('comic', nid)
     }
     hasProgress.value = !!(comicIdNum.value && getComicProgress(comicIdNum.value))
-  });
+  }
+  onMounted(loadDetail)
 
   function toggleShelf() {
     const id = comicIdNum.value

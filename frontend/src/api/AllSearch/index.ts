@@ -25,6 +25,7 @@ export interface SearchRow {
   resourceEnd?: number | null
   workTitle?: string
   galgameSlug?: string
+  matchRank?: number | null
 }
 
 export async function getAllSearch(input: GlobalSearchParams | string) {
@@ -70,7 +71,7 @@ export async function getAllSearch(input: GlobalSearchParams | string) {
       const value = name.normalize('NFKC').toLowerCase()
       return value === normalized ? 0 : value.startsWith(normalized) ? 1 : 2
     }
-    data.sort((a, b) => rank(a.name) - rank(b.name))
+    data.sort((a, b) => (a.matchRank ?? rank(a.name)) - (b.matchRank ?? rank(b.name)))
   }
   return { ...response, data: params.limit ? data.slice(0, params.limit) : data }
 }

@@ -83,6 +83,24 @@
         ORDER BY sourcetype, id;
     </select>
 
+    <select id="searchGalgame" resultType="com.example.demo.com.SearchResult">
+        SELECT id, name_zh AS name, cover AS picurl, 'Galgame' AS sourcetype, rating, updated_at AS updatedAt,
+               CASE WHEN name_zh = #{search} OR name_original = #{search} THEN 0
+                    WHEN LOCATE(#{search}, name_zh) = 1 OR LOCATE(#{search}, name_original) = 1 THEN 1
+                    ELSE 2 END AS matchRank
+        FROM 0721acgn.tb_galgame
+        <where>
+            <if test="search != ''">
+                (LOCATE(#{search}, name_zh) &gt; 0 OR LOCATE(#{search}, name_original) &gt; 0
+                 OR LOCATE(#{search}, aliases) &gt; 0)
+            </if>
+            <if test="genre != null">AND LOCATE(#{genre}, genres) &gt; 0</if>
+            <if test="yearMin != null">AND release_year &gt;= #{yearMin}</if>
+            <if test="yearMax != null">AND release_year &lt;= #{yearMax}</if>
+        </where>
+        ORDER BY matchRank, id
+    </select>
+
     <select id="searchCharacters" resultType="com.example.demo.com.SearchResult">
         SELECT id, name, avatarurl AS picurl, '角色' AS sourcetype
         FROM 0721acgn.tb_acgnuser

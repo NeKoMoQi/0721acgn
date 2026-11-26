@@ -20,4 +20,5 @@ public class SearchResult {
     private BigDecimal rating;
     private LocalDateTime updatedAt;
     private Integer resourceEnd;
+    private Integer matchRank;
 }

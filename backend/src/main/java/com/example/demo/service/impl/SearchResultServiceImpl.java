@@ -23,7 +23,12 @@ public class SearchResultServiceImpl implements SearchResultService {
     @Override
     public List<SearchResult> getSearchResults(String search) {
         List<SearchResult> rows = new ArrayList<>(searchResultMapper.getSearchResult(search));
-        if (search != null && !search.isBlank()) rows.addAll(searchResultMapper.searchCharacters(search.trim(), 50));
+        if (search != null && !search.isBlank()) {
+            String term = search.trim();
+            rows.addAll(searchResultMapper.searchGalgame(term, null, null, null));
+            rows.addAll(searchResultMapper.searchCharacters(term, 50));
+            rows.sort(Comparator.comparingInt(row -> matchRank(row, term)));
+        }
         return ImageCdnRewriter.applyCdnToSearchResults(rows);
     }
 
@@ -66,6 +71,7 @@ public class SearchResultServiceImpl implements SearchResultService {
             if (!sTrim.isEmpty() && g == null && st == null && yearMin == null && yearMax == null) {
                 merged.addAll(searchResultMapper.searchCharacters(sTrim, Math.min(lim, 50)));
             }
+            if (st == null) merged.addAll(searchResultMapper.searchGalgame(sTrim, g, yearMin, yearMax));
             merged.addAll(searchResultMapper.searchComicsGlobal(sTrim, g, st, yearMin, yearMax));
             merged.addAll(searchResultMapper.searchAnimationGlobal(sTrim, g, st, yearMin, yearMax));
             merged.addAll(searchResultMapper.searchNovelGlobal(sTrim, g, st, yearMin, yearMax));
@@ -80,6 +86,9 @@ public class SearchResultServiceImpl implements SearchResultService {
                 case "donghua":
                     merged.addAll(searchResultMapper.searchAnimationGlobal(sTrim, g, st, yearMin, yearMax));
                     break;
+                case "galgame":
+                    merged.addAll(searchResultMapper.searchGalgame(sTrim, g, yearMin, yearMax));
+                    break;
                 case "novel":
                     merged.addAll(searchResultMapper.searchNovelGlobal(sTrim, g, st, yearMin, yearMax));
                     break;
@@ -90,11 +99,23 @@ public class SearchResultServiceImpl implements SearchResultService {
             }
         }
 
-        merged.sort(buildComparator(normalizedSort));
+        Comparator<SearchResult> order = buildComparator(normalizedSort);
+        if ("default".equals(normalizedSort) && !sTrim.isEmpty()) {
+            order = Comparator.<SearchResult>comparingInt(row -> matchRank(row, sTrim)).thenComparing(order);
+        }
+        merged.sort(order);
         if (merged.size() > lim) {
             return ImageCdnRewriter.applyCdnToSearchResults(new ArrayList<>(merged.subList(0, lim)));
         }
         return ImageCdnRewriter.applyCdnToSearchResults(merged);
+    }
+
+    private static int matchRank(SearchResult row, String term) {
+        if (row.getMatchRank() != null) return row.getMatchRank();
+        String name = row.getName();
+        if (name == null) return 2;
+        if (name.equalsIgnoreCase(term)) return 0;
+        return name.regionMatches(true, 0, term, 0, term.length()) ? 1 : 2;
     }
 
     private static String emptyToNull(String s) {

@@ -1,4 +1,6 @@
-export const constantRoute = [
+import type { RouteRecordRaw } from 'vue-router'
+
+export const constantRoute: RouteRecordRaw[] = [
   {
     path: '/shengdi/uji',
     name: 'UjiPilgrimage',
@@ -248,5 +250,13 @@ export const constantRoute = [
       title: 'Galgame 简介',
       name: 'GalgameIntroduce',
     },
+  },
+  { path: '/home', redirect: { name: 'home' } },
+  { path: '/Galgame', redirect: '/Galagame' },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/view/NotFound.vue'),
+    meta: { title: '页面不存在' },
   },
 ]

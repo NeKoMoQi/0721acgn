@@ -7,6 +7,7 @@
   
       <!-- 内容容器 -->
       <div class="acgn_container" ref="maintain" @scroll="handscroll">
+        <WorkLoadError v-if="detailFailed" catalog="/Novel" @retry="loadDetail" />
         <div class="introduce" v-if="noveldata">
   <div class="intro-image">
     <img :src=noveldata.picurl alt="小说封面">
@@ -67,6 +68,7 @@ import MediaResource from '@/components/MediaResource.vue'
   import {getnovelbyid,getnovelchapter} from '@/api/novel/index'
   import { useRoute,useRouter } from 'vue-router';
   import useUserStore from '@/stores/modules/users';
+  import WorkLoadError from '@/components/WorkLoadError.vue'
   import WorkCharacters from '@/components/WorkCharacters.vue'
 import RelatedWorks from '@/components/RelatedWorks.vue';
   import AcgnCommunityPanel from '@/components/AcgnCommunityPanel.vue';
@@ -74,6 +76,7 @@ import RelatedWorks from '@/components/RelatedWorks.vue';
 
   const noveldata = ref()
   const chapter = ref([])
+  const detailFailed = ref(false)
   const catalogFailed = ref(false)
   const $router = useRouter()
   const route = useRoute()
@@ -82,12 +85,15 @@ import RelatedWorks from '@/components/RelatedWorks.vue';
   const shelfActive = ref(false)
   const hasProgress = ref(false)
 
-  onMounted(async() => {
+  async function loadDetail() {
+    detailFailed.value = false
     const id = route.query.novelid;
     const [info, chapters] = await Promise.allSettled([getnovelbyid(id), getnovelchapter(id)])
     if (info.status === 'fulfilled' && info.value?.code === 200) noveldata.value = info.value.data
+    detailFailed.value = !noveldata.value
     if (chapters.status === 'fulfilled' && chapters.value?.code === 200 && Array.isArray(chapters.value.data)) {
       chapter.value = chapters.value.data
+      catalogFailed.value = false
     } else {
       catalogFailed.value = true
     }
@@ -99,7 +105,8 @@ import RelatedWorks from '@/components/RelatedWorks.vue';
       shelfActive.value = isInBookshelf('novel', nid)
     }
     hasProgress.value = !!(novelIdNum.value && getNovelProgress(novelIdNum.value))
-  });
+  }
+  onMounted(loadDetail)
 
   function toggleShelf() {
     const id = novelIdNum.value

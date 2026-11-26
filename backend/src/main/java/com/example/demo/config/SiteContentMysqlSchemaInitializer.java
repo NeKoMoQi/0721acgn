@@ -40,9 +40,23 @@ public class SiteContentMysqlSchemaInitializer implements ApplicationRunner {
                     position_label VARCHAR(80) NOT NULL,
                     reason VARCHAR(24) NOT NULL,
                     detail VARCHAR(500) NOT NULL,
-                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    resolved_at TIMESTAMP NULL DEFAULT NULL
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 """);
+            boolean reportHasResolution;
+            try (var columns = connection.getMetaData().getColumns(connection.getCatalog(), null, "tb_media_report", "%")) {
+                reportHasResolution = false;
+                while (columns.next()) {
+                    if ("resolved_at".equalsIgnoreCase(columns.getString("COLUMN_NAME"))) {
+                        reportHasResolution = true;
+                        break;
+                    }
+                }
+            }
+            if (!reportHasResolution) {
+                statement.execute("ALTER TABLE tb_media_report ADD COLUMN resolved_at TIMESTAMP NULL DEFAULT NULL");
+            }
             ensureLookupIndex(connection, statement, "tb_cartoonchapters", "comicid");
             ensureLookupIndex(connection, statement, "tb_cartoonpage", "chapterid");
             ensureLookupIndex(connection, statement, "tb_novelchapter", "novelid");

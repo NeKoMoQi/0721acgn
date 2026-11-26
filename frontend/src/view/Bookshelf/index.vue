@@ -26,6 +26,10 @@
             <span v-if="it.starred" class="star">★ 已收藏</span>
             <div class="tit">{{ it.name }}</div>
             <div class="tip">上次访问 {{ fmt(it.at) }}</div>
+            <router-link v-if="comicResume[it.id] && it.type === 'comic'" class="tip resume-link"
+              :to="resumeLocation(comicResume[it.id])" @click.stop>
+              继续阅读 · {{ resumeLabel(comicResume[it.id]) }}
+            </router-link>
             <div v-if="it.starred && it.starredAt" class="tip muted">收藏于 {{ fmt(it.starredAt) }}</div>
           </div>
           <div class="acts">
@@ -45,8 +49,10 @@
 import { optimizeCoverUrl } from '@/utils/imageOptimizer'
 import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { resumeLocation, resumeLabel } from '@/utils/continueReading'
 import {
   listHistory,
+  listContinueItems,
   ensureAcgnUserHydrated,
   toggleBookshelf,
 } from '@/utils/acgnLocal'
@@ -54,6 +60,7 @@ import {
 const $router = useRouter()
 const tab = ref('all')
 const items = ref([])
+const comicResume = ref({})
 
 const sorted = computed(() =>
   [...items.value].sort((a, b) => (b.at || 0) - (a.at || 0)),
@@ -84,6 +91,7 @@ const emptyHint = computed(() =>
 async function refresh() {
   await ensureAcgnUserHydrated()
   items.value = listHistory()
+  comicResume.value = Object.fromEntries(listContinueItems().filter(item => item.type === 'comic').map(item => [item.id, item]))
 }
 
 onMounted(() => void refresh())
@@ -125,6 +133,7 @@ function fmt(at) {
 </script>
 
 <style scoped>
+.resume-link { display: inline-block; color: #225b47; text-decoration: underline; }
 .root-container {
   position: relative;
   min-height: 100vh;

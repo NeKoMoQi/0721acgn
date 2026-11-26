@@ -13,5 +13,6 @@ export function resumeLocation(item: ContinueItem) {
 export function resumeLabel(item: ContinueItem) {
   if (item.type === 'animation') return `第 ${item.position} 集`
   const chapter = `第 ${item.position} ${item.type === 'novel' ? '卷' : '章'}`
-  return item.pageNumber ? `${chapter} · 第 ${item.pageNumber} 页` : chapter
+  if (item.pageNumber) return `${chapter} · 第 ${item.pageNumber} 页`
+  return item.type === 'comic' ? `${chapter} · 页码未记录` : chapter
 }

@@ -46,3 +46,13 @@ describe('角色搜索与作品关联', () => {
     expect(request.get).toHaveBeenCalledTimes(1)
   })
 })
+
+it('keeps a prefix-ranked Galgame title above an unrelated substring and links to its detail', async () => {
+  vi.mocked(request.get).mockResolvedValueOnce({ code: 200, data: [
+    { id: 42, name: '神枪少女 -IL TEATRINO-', sourcetype: '动漫' },
+    { id: 8, name: 'ATRI -My Dear Moments-', sourcetype: 'Galgame', matchRank: 1 },
+  ] })
+  const result = await getAllSearch('ATRI')
+  expect(result.data[0].name).toBe('ATRI -My Dear Moments-')
+  expect(searchResultLocation(result.data[0])).toEqual({ name: 'GalgameIntroduce', query: { galgameid: 8 } })
+})

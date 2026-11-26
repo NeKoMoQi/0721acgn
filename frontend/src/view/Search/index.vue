@@ -4,7 +4,7 @@
     <div class="bg" />
     <div class="wrap">
       <h1 class="h1">全站搜索</h1>
-      <p class="muted">可搜索番剧、漫画、轻小说和角色。作品可按题材、状态和年代筛选。</p>
+      <p class="muted">可搜索番剧、漫画、轻小说、Galgame 和角色。作品可按题材、状态和年代筛选。</p>
 
       <div class="bar">
         <el-input
@@ -24,13 +24,14 @@
           <el-option label="动漫" value="animation" />
           <el-option label="漫画" value="comic" />
           <el-option label="轻小说" value="novel" />
+          <el-option label="Galgame" value="galgame" />
           <el-option label="角色" value="character" />
         </el-select>
         <el-select v-model="genre" :disabled="characterOnly" placeholder="题材" clearable class="sel">
           <el-option label="不限题材" value="" />
           <el-option v-for="g in ACGN_GENRES" :key="g" :label="g" :value="g" />
         </el-select>
-        <el-select v-model="status" :disabled="characterOnly" placeholder="状态" clearable class="sel">
+        <el-select v-model="status" :disabled="characterOnly || galgameOnly" placeholder="状态" clearable class="sel">
           <el-option label="不限状态" value="" />
           <el-option label="连载" value="连载" />
           <el-option label="完结" value="完结" />
@@ -78,7 +79,7 @@
           <img v-if="item.picurl" class="thumb" :src="optimizeCoverUrl(item.picurl)" loading="lazy" decoding="async" alt="" />
           <div class="mid">
             <span class="tag">{{ item.sourcetype }}</span>
-            <span v-if="item.sourcetype !== '角色'" class="tag">{{ resourceLabel(item.sourcetype === '漫画' ? 'comic' : item.sourcetype === '轻小说' ? 'novel' : 'animation', item.resourceEnd) }}</span>
+            <span v-if="item.sourcetype !== '角色' && item.sourcetype !== 'Galgame'" class="tag">{{ resourceLabel(item.sourcetype === '漫画' ? 'comic' : item.sourcetype === '轻小说' ? 'novel' : 'animation', item.resourceEnd) }}</span>
             <div class="title">
               <template v-for="(seg, j) in keywordSegments(item.name, keyword)" :key="j">
                 <mark v-if="seg.hl" class="hl">{{ seg.text }}</mark>
@@ -123,6 +124,7 @@ const searchFailed = ref(false)
 let searchGeneration = 0
 const rows = ref<SearchRow[]>([])
 const characterOnly = computed(() => mediaType.value === 'character')
+const galgameOnly = computed(() => mediaType.value === 'galgame')
 
 const recs = ref<Array<{ id: number; name: string; pic?: string; type: string; path: string; query: Record<string, string> }>>([])
 
@@ -196,7 +198,7 @@ async function fetchList() {
     const payload: GlobalSearchParams = {
       search: keyword.value || undefined,
       genre: characterOnly.value ? undefined : genre.value || undefined,
-      status: characterOnly.value ? undefined : status.value || undefined,
+      status: characterOnly.value || galgameOnly.value ? undefined : status.value || undefined,
       yearMin: characterOnly.value ? undefined : yrs.yearMin,
       yearMax: characterOnly.value ? undefined : yrs.yearMax,
       sortBy: characterOnly.value ? undefined : sortBy.value,
@@ -225,7 +227,7 @@ function runSearch() {
   const q: Record<string, string> = {}
   if (keyword.value.trim()) q.q = keyword.value.trim()
   if (!characterOnly.value && genre.value) q.genre = genre.value
-  if (!characterOnly.value && status.value) q.status = status.value
+  if (!characterOnly.value && !galgameOnly.value && status.value) q.status = status.value
   if (!characterOnly.value && decade.value) q.decade = decade.value
   if (!characterOnly.value && sortBy.value && sortBy.value !== 'default') q.sortBy = sortBy.value
   if (mediaType.value) q.mediaType = mediaType.value

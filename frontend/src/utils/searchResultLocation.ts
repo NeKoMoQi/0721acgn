@@ -10,6 +10,7 @@ export function searchResultLocation(item: SearchRow) {
       ? galgameCharacterLocation(item.galgameSlug, item.name)
       : { name: 'Character', params: { id: item.id } }
   }
+  if (item.sourcetype === 'Galgame') return { name: 'GalgameIntroduce', query: { galgameid: item.id } }
   if (item.sourcetype === '轻小说') return { name: 'NovelIntroduce', query: { novelid: item.id } }
   if (item.sourcetype === '漫画') return { name: 'ComicIntroduce', query: { comicid: item.id } }
   return { name: 'Animationintroduce', query: { animationid: item.id } }

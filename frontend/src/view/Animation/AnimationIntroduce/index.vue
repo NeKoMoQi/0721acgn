@@ -4,6 +4,7 @@
 
     <div class="background-layer"></div>
 
+    <WorkLoadError v-if="detailFailed" catalog="/Animation" @retry="loadDetail" />
     <div class="content-wrapper" v-if="noveldata">
       <div class="info-container">
         <div class="cover-wrapper">
@@ -105,6 +106,7 @@ import MediaResource from '@/components/MediaResource.vue'
 import { ref, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useRoute } from 'vue-router';
+import WorkLoadError from '@/components/WorkLoadError.vue'
 import WorkCharacters from '@/components/WorkCharacters.vue'
 import RelatedWorks from '@/components/RelatedWorks.vue';
 import AcgnCommunityPanel from '@/components/AcgnCommunityPanel.vue';
@@ -119,6 +121,7 @@ import {
 } from '@/utils/acgnLocal';
 
 const noveldata = ref<any>();
+const detailFailed = ref(false);
 const voicer = ref<string[]>([]);
 const route = useRoute();
 const episode = ref(1);
@@ -129,10 +132,17 @@ const catalogFailed = ref(false);
 
 const animationIdNum = computed(() => Number(route.query.animationid));
 
-onMounted(async () => {
+async function loadDetail() {
+  detailFailed.value = false;
   const id = route.query.animationid;
-  const result = await getAnimationById(id);
-  noveldata.value = result.data;
+  try {
+    const result = await getAnimationById(id);
+    if (result?.code !== 200 || !result.data) throw new Error('作品不存在');
+    noveldata.value = result.data;
+  } catch {
+    detailFailed.value = true;
+    return;
+  }
   if (noveldata.value?.voicer) {
     voicer.value = noveldata.value.voicer.split(/\s+/).filter(Boolean);
   } else {
@@ -159,8 +169,8 @@ onMounted(async () => {
     });
     shelfActive.value = isInBookshelf('animation', nid);
   }
-});
-
+}
+onMounted(loadDetail);
 
 function persistEpisode() {
   saveAnimationEpisode(animationIdNum.value, episode.value);

@@ -61,7 +61,7 @@
         <i class="iconfont icon-catalog"></i> 目录
       </button>
       <div class="chapter-control" v-if="chapterId">
-        <span v-if="lastSavedPage" class="current-page">第 {{ lastSavedPage }} 页</span>
+        <span v-if="lastSavedPage" class="current-page" :aria-label="`第 ${chapterNo} 章，第 ${lastSavedPage} 页`">第 {{ lastSavedPage }} 页</span>
         <button class="nav-btn prev" @click="goToChapter(previousChapter)" :disabled="!previousChapter">
           上一章
         </button>
@@ -129,9 +129,9 @@ import MediaResource from '@/components/MediaResource.vue'
   let scrollFrame = 0;
 
   function recordPage(pageNumber) {
-    if (!comicId || pageNumber === lastSavedPage.value) return;
+    if (pageNumber === lastSavedPage.value) return;
     lastSavedPage.value = pageNumber;
-    saveComicProgress(comicId, { chapterId, chapterno: chapterNo, pageNumber });
+    if (comicId) saveComicProgress(comicId, { chapterId, chapterno: chapterNo, pageNumber });
   }
 
   function pageElements() {
@@ -153,26 +153,30 @@ import MediaResource from '@/components/MediaResource.vue'
     if (restoring || scrollRestoreIndex !== null || immersivePage.value !== null || scrollFrame) return;
     scrollFrame = window.requestAnimationFrame(() => {
       scrollFrame = 0;
-      if (restoring || scrollRestoreIndex !== null || immersivePage.value !== null) return;
-      const container = readingContainer.value?.getBoundingClientRect();
-      const top = Math.max(0, container?.top ?? 0);
-      const bottom = Math.min(window.innerHeight, container?.bottom ?? window.innerHeight);
-      if (bottom <= top) return;
-      const readingLine = top + (bottom - top) * 0.38;
-      const pages = pageElements();
-      let low = 0;
-      let high = pages.length - 1;
-      while (low <= high) {
-        const middle = Math.floor((low + high) / 2);
-        const { top, bottom } = pages[middle].getBoundingClientRect();
-        if (bottom <= readingLine) low = middle + 1;
-        else if (top > readingLine) high = middle - 1;
-        else {
-          recordPage(middle + 1);
-          return;
-        }
-      }
+      recordVisiblePage();
     });
+  }
+
+  function recordVisiblePage() {
+    if (restoring || scrollRestoreIndex !== null || immersivePage.value !== null) return;
+    const container = readingContainer.value?.getBoundingClientRect();
+    const top = Math.max(0, container?.top ?? 0);
+    const bottom = Math.min(window.innerHeight, container?.bottom ?? window.innerHeight);
+    if (bottom <= top) return;
+    const readingLine = top + (bottom - top) * 0.38;
+    const pages = pageElements();
+    let low = 0;
+    let high = pages.length - 1;
+    while (low <= high) {
+      const middle = Math.floor((low + high) / 2);
+      const { top, bottom } = pages[middle].getBoundingClientRect();
+      if (bottom <= readingLine) low = middle + 1;
+      else if (top > readingLine) high = middle - 1;
+      else {
+        recordPage(middle + 1);
+        return;
+      }
+    }
   }
 
   async function finishLoadingPage() {
@@ -249,6 +253,7 @@ import MediaResource from '@/components/MediaResource.vue'
       return;
     }
     window.scrollTo({ top: 0 });
+    window.addEventListener('pagehide', recordVisiblePage);
     window.addEventListener('scroll', recordScrollPosition, { capture: true, passive: true });
     window.addEventListener('wheel', releaseScrollRestore, { passive: true });
     window.addEventListener('touchstart', releaseScrollRestore, { passive: true });
@@ -267,7 +272,9 @@ import MediaResource from '@/components/MediaResource.vue'
   });
 
   onBeforeUnmount(() => {
+    if (scrollFrame) recordVisiblePage();
     disposed = true;
+    window.removeEventListener('pagehide', recordVisiblePage);
     observer?.disconnect();
     window.cancelAnimationFrame(scrollFrame);
     window.removeEventListener('scroll', recordScrollPosition, true);
