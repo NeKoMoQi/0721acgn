@@ -9,7 +9,11 @@ import useUserStore from '@/stores/modules/users'
 function makeRouter() {
   const router = createRouter({
     history: createMemoryHistory(),
-    routes: constantRoute.map(route => ({ ...route, component: { template: '<div />' } })),
+    routes: constantRoute.map(route => route.redirect ? route : {
+      path: route.path, name: route.name, meta: route.meta,
+      ...(route.alias ? { alias: route.alias } : {}),
+      component: { template: '<div />' },
+    }),
   })
   router.beforeEach(requireAccount)
   return router
@@ -52,4 +56,16 @@ describe('游客路由与登录返回', () => {
     await router.push(store.loginRedirect)
     expect(router.currentRoute.value.fullPath).toBe(target)
   })
+})
+
+
+it.each([
+  ['/home', 'home'],
+  ['/Galgame', 'Galagame'],
+  ['/old-unknown-address', 'NotFound'],
+])('routes %s to %s without a login prompt', async (path, name) => {
+  const router = makeRouter()
+  await router.push(path)
+  expect(router.currentRoute.value.name).toBe(name)
+  expect(useUserStore().loginVisible).toBe(false)
 })
