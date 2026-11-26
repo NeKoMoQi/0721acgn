@@ -15,4 +15,5 @@ public class Cartoonchapters {
     private int comicid;
     private int chapterno;
     private String title;
+    private boolean available;
 }

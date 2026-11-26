@@ -38,7 +38,8 @@
         LIMIT #{offset}, 40
     </select>
     <select id="getNovelById" resultType="com.example.demo.com.Novel">
-        select * from 0721acgn.tb_novel where novelid = #{id}
+        SELECT work.*, <include refid="com.example.demo.mapper.mysql.SearchResultMapper.novelResourceEnd"/> AS resourceEnd
+        FROM 0721acgn.tb_novel work WHERE novelid = #{id}
     </select>
     <select id="NovelCount" resultType="java.lang.Integer">
         select count(*) from tb_novelchapter where novelid = #{id}

@@ -55,8 +55,9 @@
             voicer,
             hengpic,
             genre,
-            updated_at AS updatedAt
-        FROM 0721acgn.tb_animation
+            updated_at AS updatedAt,
+            <include refid="com.example.demo.mapper.mysql.SearchResultMapper.animationResourceEnd"/> AS resourceEnd
+        FROM 0721acgn.tb_animation work
         WHERE id = #{id}
     </select>
 

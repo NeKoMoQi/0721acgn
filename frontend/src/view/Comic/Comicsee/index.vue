@@ -5,11 +5,15 @@
       <!-- 单独的背景层 -->
       <div class="background-layer"></div>
   
+      <nav v-if="pagelist.length" class="reader-report comic-jump" aria-label="漫画页码">
+        <PageJump :page="lastSavedPage || 1" :max="hasmore ? undefined : pagelist.length" :busy="isloading" @jump="jumpToImagePage" />
+        <p v-if="jumpError" role="status">{{ jumpError }}</p>
+      </nav>
       <!-- 内容容器 -->
-      <div class="acgn_container">
+      <div ref="readingContainer" class="acgn_container">
         <button v-for="(item, index) in pagelist" :key="index" type="button" class="comic-page"
           :aria-label="`从第 ${index + 1} 页进入沉浸阅读`" @click="openImmersive(index)">
-          <img :src="optimizeImageUrl(item.fileurl)" alt="" decoding="async"
+          <img :src="optimizeImageUrl(item.fileurl)" alt="" decoding="async" @load="restoreScroll"
             :loading="index % PAGES_PER_BATCH === 0 ? 'eager' : 'lazy'"
             :fetchpriority="index === 0 ? 'high' : 'auto'">
         </button>
@@ -25,7 +29,7 @@
         <div v-else-if="!hasmore" class="tishi">{{ pagelist.length ? '已经读完本章' : '本章暂无正文' }}</div>
       </div>
       <dialog ref="immersiveDialog" class="immersive-reader" aria-label="沉浸阅读"
-        @close="finishImmersive" @keydown.left.prevent="turnPage(-1)" @keydown.right.prevent="turnPage(1)">
+        @close="finishImmersive" @keydown="handleImmersiveKeys">
         <template v-if="immersivePage !== null">
           <header class="immersive-bar">
             <span aria-live="polite">第 {{ immersivePage + 1 }} 页</span>
@@ -48,6 +52,8 @@
               <button type="button" :disabled="immersiveLoading || (!hasmore && immersivePage >= pagelist.length - 1)"
                 @click="turnPage(1)">{{ loadError && immersivePage >= pagelist.length - 1 ? '重试下一页' : '下一页' }}</button>
             </div>
+            <PageJump :page="immersivePage + 1" :max="hasmore ? undefined : pagelist.length" :busy="isloading" @jump="jumpToImagePage" />
+            <p v-if="jumpError" role="status">{{ jumpError }}</p>
             <nav class="immersive-bar immersive-chapters" aria-label="章节导航">
               <button type="button" :disabled="!previousChapter" @click="goToChapter(previousChapter, true)">上一章</button>
               <span>第 {{ chapterNo }} 章</span>
@@ -61,6 +67,7 @@
         <i class="iconfont icon-catalog"></i> 目录
       </button>
       <div class="chapter-control" v-if="chapterId">
+        <span v-if="lastSavedPage" class="current-page" :aria-label="`第 ${chapterNo} 章，第 ${lastSavedPage} 页`">第 {{ lastSavedPage }} 页</span>
         <button class="nav-btn prev" @click="goToChapter(previousChapter)" :disabled="!previousChapter">
           上一章
         </button>
@@ -69,16 +76,21 @@
         </button>
       </div>
     </div>
+      <MediaResource v-if="comicId && chapterId" class="reader-report" type="comic" :id="comicId" :position="reportPosition" :report-only="!loadError" :unavailable="!!loadError" />
+      <section v-if="chapterId && pagelist.length" class="reader-report" aria-label="漫画分页">
+      </section>
       <Behind class="bottom"></Behind>
     </div>
   </template>
   
   <script setup>
+import MediaResource from '@/components/MediaResource.vue'
+import PageJump from '@/components/PageJump.vue'
   import { computed, nextTick, ref, watch, onMounted, onBeforeUnmount } from 'vue';
   import { getcartoonpage, getcartoonchapter, getcartoonbyid } from '@/api/cartoon';
   import { useRoute, useRouter } from 'vue-router';
   import useUserStore from '@/stores/modules/users';
-  import { saveComicProgress, pushHistory } from '@/utils/acgnLocal';
+  import { ensureAcgnUserHydrated, getComicProgress, saveComicProgress, pushHistory } from '@/utils/acgnLocal';
   import { optimizeImageUrl } from '@/utils/imageOptimizer';
 
   const PAGES_PER_BATCH = 4;
@@ -94,6 +106,7 @@
   const chapterIndex = computed(() => chapters.value.findIndex(row => String(row.chapterid) === chapterId));
   const previousChapter = computed(() => chapterIndex.value > 0 ? chapters.value[chapterIndex.value - 1] : null);
   const nextChapter = computed(() => chapterIndex.value >= 0 ? chapters.value[chapterIndex.value + 1] : null);
+  const readingContainer = ref(null);
   const pagelist = ref([]);
   const isloading = ref(false);
   const hasmore = ref(true);
@@ -115,11 +128,126 @@
   let nextPage = 1;
   let pageRequest = null;
   let disposed = false;
+  const requestedPage = Number(route.query.pageNumber);
+  let restoreTarget = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   let resumeImmersive = route.query.immersive === '1';
+  let restoring = restoreTarget > 1 || resumeImmersive;
+  let scrollRestoreIndex = null;
+  const lastSavedPage = ref(0);
+  const reportPosition = computed(() => `第 ${chapterNo} 章${lastSavedPage.value ? `第 ${lastSavedPage.value} 页` : ''}`);
+  let scrollFrame = 0;
+
+  function handleImmersiveKeys(event) {
+    if (event.target?.closest('input') || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+    event.preventDefault();
+    turnPage(event.key === 'ArrowLeft' ? -1 : 1);
+  }
+
+  const jumpError = ref('');
+  let explicitJump = false;
+
+  function jumpToImagePage(page) {
+    explicitJump = true;
+    jumpError.value = '';
+    if (page <= pagelist.value.length) loadError.value = '';
+    restoreTarget = page;
+    restoring = true;
+    if (!pageRequest) {
+      if (loadError.value && page > pagelist.value.length) void loadpage();
+      else void finishLoadingPage();
+    }
+  }
+
+  function recordPage(pageNumber) {
+    if (pageNumber === lastSavedPage.value) return;
+    lastSavedPage.value = pageNumber;
+    if (comicId) saveComicProgress(comicId, { chapterId, chapterno: chapterNo, pageNumber });
+  }
+
+  function pageElements() {
+    return readingContainer.value?.querySelectorAll('.comic-page') ?? [];
+  }
+
+  function restoreScroll(event) {
+    if (scrollRestoreIndex === null) return;
+    const pages = pageElements();
+    if (event && !Array.from(pages).slice(0, scrollRestoreIndex + 1).some(page => page.contains(event.target))) return;
+    pages[scrollRestoreIndex]?.scrollIntoView?.({ block: 'start' });
+  }
+
+  function releaseScrollRestore() {
+    scrollRestoreIndex = null;
+  }
+
+  function recordScrollPosition() {
+    if (restoring || scrollRestoreIndex !== null || immersivePage.value !== null || scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(() => {
+      scrollFrame = 0;
+      recordVisiblePage();
+    });
+  }
+
+  function recordVisiblePage() {
+    if (restoring || scrollRestoreIndex !== null || immersivePage.value !== null) return;
+    const container = readingContainer.value?.getBoundingClientRect();
+    const top = Math.max(0, container?.top ?? 0);
+    const bottom = Math.min(window.innerHeight, container?.bottom ?? window.innerHeight);
+    if (bottom <= top) return;
+    const readingLine = top + (bottom - top) * 0.38;
+    const pages = pageElements();
+    let low = 0;
+    let high = pages.length - 1;
+    while (low <= high) {
+      const middle = Math.floor((low + high) / 2);
+      const { top, bottom } = pages[middle].getBoundingClientRect();
+      if (bottom <= readingLine) low = middle + 1;
+      else if (top > readingLine) high = middle - 1;
+      else {
+        recordPage(middle + 1);
+        return;
+      }
+    }
+  }
+
+  async function finishLoadingPage() {
+    if (disposed || loadError.value || !pagelist.value.length) return;
+    if (!restoring) {
+      if (!lastSavedPage.value) recordPage(1);
+      return;
+    }
+    if (pagelist.value.length < restoreTarget && hasmore.value) {
+      void loadpage();
+      return;
+    }
+    restoring = false;
+    if (explicitJump) {
+      explicitJump = false;
+      if (restoreTarget > pagelist.value.length) {
+        jumpError.value = `本章共 ${pagelist.value.length} 页。`;
+        return;
+      }
+    }
+    const index = Math.min(restoreTarget, pagelist.value.length) - 1;
+    if (immersivePage.value !== null) {
+      immersivePage.value = index;
+      recordPage(index + 1);
+      return;
+    }
+    if (resumeImmersive) {
+      resumeImmersive = false;
+      void openImmersive(index);
+      return;
+    }
+    scrollRestoreIndex = index;
+    await nextTick();
+    if (disposed) return;
+    restoreScroll();
+    recordPage(index + 1);
+  }
 
   watch(loadMarker, (marker) => {
     observer?.disconnect();
-    if (!marker) return;
+    if (!marker || restoring) return;
     observer = new IntersectionObserver((entries) => {
       if (loadMarker.value === marker && immersivePage.value === null && entries.some(entry => entry.isIntersecting)) {
         void loadpage();
@@ -153,27 +281,36 @@
       pagelist.value.push(...images);
       hasmore.value = images.length >= PAGES_PER_BATCH;
       nextPage = page + 1;
-      if (comicId && images.length) {
-        saveComicProgress(comicId, { chapterId, chapterno: chapterNo, imagePage: page });
-      }
-      if (resumeImmersive && pagelist.value.length) {
-        resumeImmersive = false;
-        void openImmersive(0);
-      }
     } catch {
       if (!disposed) loadError.value = '漫画正文加载失败，请重试。';
     } finally {
       pageRequest = null;
       isloading.value = false;
     }
+    void finishLoadingPage();
   }
 
-  onMounted(() => {
+  onMounted(async () => {
     if (!chapterId) {
       loadError.value = '缺少章节信息，请从作品目录重新打开。';
       return;
     }
     window.scrollTo({ top: 0 });
+    window.addEventListener('pagehide', recordVisiblePage);
+    window.addEventListener('scroll', recordScrollPosition, { capture: true, passive: true });
+    window.addEventListener('wheel', releaseScrollRestore, { passive: true });
+    window.addEventListener('touchstart', releaseScrollRestore, { passive: true });
+    window.addEventListener('keydown', releaseScrollRestore);
+    window.addEventListener('pointerdown', releaseScrollRestore, { passive: true });
+    if (comicId && performance.getEntriesByType('navigation')[0]?.type === 'reload') {
+      await ensureAcgnUserHydrated();
+      if (disposed) return;
+      const saved = getComicProgress(comicId);
+      if (saved?.chapterId === chapterId && saved.pageNumber) {
+        restoreTarget = saved.pageNumber;
+        restoring = restoreTarget > 1 || resumeImmersive;
+      }
+    }
     void loadpage();
     if (!comicId) return;
     getcartoonchapter(comicId).then((result) => {
@@ -187,8 +324,16 @@
   });
 
   onBeforeUnmount(() => {
+    if (scrollFrame) recordVisiblePage();
     disposed = true;
+    window.removeEventListener('pagehide', recordVisiblePage);
     observer?.disconnect();
+    window.cancelAnimationFrame(scrollFrame);
+    window.removeEventListener('scroll', recordScrollPosition, true);
+    window.removeEventListener('wheel', releaseScrollRestore);
+    window.removeEventListener('touchstart', releaseScrollRestore);
+    window.removeEventListener('keydown', releaseScrollRestore);
+    window.removeEventListener('pointerdown', releaseScrollRestore);
   });
 
   async function openImmersive(index) {
@@ -196,6 +341,7 @@
     immersiveSession++;
     openedPage = index;
     immersivePage.value = index;
+    recordPage(index + 1);
     await nextTick();
     immersiveDialog.value?.showModal();
   }
@@ -206,7 +352,7 @@
     immersivePage.value = null;
     swipeStart = null;
     if (current === null || current === openedPage) return;
-    const page = immersiveDialog.value?.parentElement?.querySelectorAll('.comic-page')[current];
+    const page = pageElements()[current];
     page?.scrollIntoView({ block: 'start' });
     page?.focus({ preventScroll: true });
   }
@@ -225,7 +371,10 @@
         immersiveLoading.value = false;
       }
     }
-    if (!disposed && session === immersiveSession && target < pagelist.value.length) immersivePage.value = target;
+    if (!disposed && session === immersiveSession && target < pagelist.value.length) {
+      immersivePage.value = target;
+      recordPage(target + 1);
+    }
   }
 
   function startSwipe(event) {
@@ -257,6 +406,9 @@
   }
   </script>
   <style scoped>
+.comic-jump { margin-block: 20px !important; position: relative; }
+.reader-report { max-width: 900px; margin: 20px auto 72px; padding-inline: 16px; }
+  .current-page { align-self: center; color: white; font-size: 14px; white-space: nowrap; }
   .tishi{
   text-align: center;    /* 文字居中 */
   padding: 1rem;         /* 内边距 */

@@ -33,7 +33,7 @@ public final class PublicAccessPolicy {
             "/api/admin/acl/index/login", "/acgn/live2d/agent/chat", "/acgn/live2d/agent/stream",
             "/api/acgn/user/library/visit", "/api/acgn/user/library/favorite-toggle",
             "/api/acgn/user/subscribe/toggle", "/api/acgn/user/progress", "/api/acgn/user/import-legacy",
-            "/api/acgn/social/vote", "/api/acgn/social/comments");
+            "/api/acgn/social/vote", "/api/acgn/social/comments", "/api/activity/view", "/api/media/report");
 
     public static boolean isPublic(String method, String path) {
         if ("OPTIONS".equals(method)) return true;

@@ -1,16 +1,18 @@
 import { flushPromises, mount } from '@vue/test-utils'
 import { beforeEach, expect, it, vi } from 'vitest'
 import Watch from './index.vue'
+import { ensureAcgnUserHydrated, getAnimationPosition, saveAnimationEpisode } from '@/utils/acgnLocal'
 import { getAnimationById, getAnimationEpisodeById, getAnimationEpisodes } from '@/api/animation'
 
 const query = vi.hoisted(() => ({ animationid: '3', episodeid: undefined as string | undefined }))
+vi.mock('@/utils/request', () => ({ default: { post: vi.fn() } }))
 vi.mock('vue-router', () => ({ useRoute: () => ({ query }), useRouter: () => ({ push: vi.fn() }) }))
 vi.mock('@/api/animation', () => ({
   getAnimationById: vi.fn(), getAnimationEpisodeById: vi.fn(), getAnimationEpisodes: vi.fn(),
 }))
 vi.mock('@/utils/acgnLocal', () => ({
   ensureAcgnUserHydrated: vi.fn(), isInBookshelf: vi.fn(), pushHistory: vi.fn(),
-  saveAnimationEpisode: vi.fn(), toggleBookshelfAsync: vi.fn(),
+  getAnimationPosition: vi.fn(), saveAnimationEpisode: vi.fn(), toggleBookshelfAsync: vi.fn(),
 }))
 vi.mock('@/components/AcgnCommunityPanel.vue', () => ({ default: { template: '<div />' } }))
 
@@ -21,6 +23,7 @@ function mountWatch() {
 beforeEach(() => {
   vi.resetAllMocks()
   query.episodeid = undefined
+  vi.mocked(ensureAcgnUserHydrated).mockResolvedValue(undefined)
   vi.mocked(getAnimationById).mockResolvedValue({ code: 200, data: { name: '测试番剧' } })
   vi.mocked(getAnimationEpisodes).mockResolvedValue({ code: 200, data: [episode] })
 })
@@ -52,4 +55,26 @@ it('成功返回空分集列表时显示缺资源，隐藏重试', async () => {
   expect(view.get('.empty-state h1').text()).toBe('暂无视频资源')
   expect(view.find('.empty-state button').exists()).toBe(false)
   view.unmount()
+})
+
+it('先恢复到保存的秒数，再可从 0 秒重新播放并保存', async () => {
+  vi.mocked(getAnimationPosition).mockReturnValue(73)
+  const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue()
+  const view = mountWatch()
+  try {
+    await flushPromises()
+    const video = view.get('video')
+    Object.defineProperty(video.element, 'duration', { value: 120 })
+    await video.trigger('loadedmetadata')
+    await flushPromises()
+    expect(video.element.currentTime).toBe(73)
+    const restart = view.findAll('button').find(button => button.text() === '从头播放')!
+    await restart.trigger('click')
+    expect(video.element.currentTime).toBe(0)
+    expect(saveAnimationEpisode).toHaveBeenLastCalledWith(3, 1, 0)
+    expect(play).toHaveBeenCalledOnce()
+  } finally {
+    view.unmount()
+    play.mockRestore()
+  }
 })

@@ -67,6 +67,7 @@
       </header>
       <GalgameExtras :media="media" :title="game.nameZh" :official-url="officialLink" />
 
+      <WorkCharacters type="galgame" :id="game.slug" />
       <GalgameExplore :slug="game.slug" />
 
       <article v-if="guide" class="reading-panel">
@@ -146,6 +147,7 @@
 </template>
 
 <script setup lang="ts">
+import WorkCharacters from '@/components/WorkCharacters.vue'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Headpage from '@/components/Headpage/index.vue'

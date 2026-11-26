@@ -323,3 +323,21 @@ Get-ScheduledTaskInfo -TaskName '0721ACGN LightNovel Ranking'
 # 停用 / 长期停用
 Disable-ScheduledTask -TaskName '0721ACGN LightNovel Ranking'
 ```
+
+## 资源报错队列
+
+后端启动时为报错记录添加处理时间。队列按作品、集章位置和报错类型归并，同组的新报错仍会出现在待处理列表。使用有对应权限的 MySQL 维护账号，MySQL 客户端会交互式询问密码。
+
+```powershell
+mysql_config_editor set --login-path=0721-reports --host=127.0.0.1 --user=report_operator --password
+.\backend\scripts\media-reports.ps1
+.\backend\scripts\media-reports.ps1 -Action Details -Id 123
+.\backend\scripts\media-reports.ps1 -Action Resolve -Id 123
+```
+
+后两条命令的编号取自列表的 `queue_id`。处理命令只关闭该编号及以前的同组报错。
+
+
+## 网站功能分支发布
+
+先构建并启动新版 API，确认角色及 Galgame 搜索返回预期类型，再发前端。首页榜单、分类和资源报错依赖这次后端更新。前端自动发布任务仅更新静态文件。两端均由同一次审核后的提交构建，保留上一版 JAR 与前端目录用于恢复。

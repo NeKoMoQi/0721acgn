@@ -1,6 +1,7 @@
 package com.example.demo.mapper.mysql;
 
 import com.example.demo.com.SearchResult;
+import com.example.demo.dto.SearchCriteria;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -8,7 +9,15 @@ import java.util.List;
 
 @Mapper
 public interface SearchResultMapper {
+    List<SearchResult> searchPage(SearchCriteria criteria);
+    long countPage(SearchCriteria criteria);
+
     List<SearchResult> getSearchResult(@Param("search") String search);
+
+    List<SearchResult> searchGalgame(@Param("search") String search, @Param("genre") String genre,
+                                     @Param("yearMin") Integer yearMin, @Param("yearMax") Integer yearMax);
+
+    List<SearchResult> searchCharacters(@Param("search") String search, @Param("limit") int limit);
 
     List<SearchResult> searchComicsGlobal(@Param("search") String search,
                                           @Param("genre") String genre,

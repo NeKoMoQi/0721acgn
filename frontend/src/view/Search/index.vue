@@ -3,14 +3,14 @@
     <Headpage style="position: sticky !important; top: 0px; z-index: 10" />
     <div class="bg" />
     <div class="wrap">
-      <h1 class="h1">作品搜索</h1>
-      <p class="muted">支持番剧 / 漫画 / 轻小说统一检索，并可按题材、状态、年代与排序组合筛选。</p>
+      <h1 class="h1">全站搜索</h1>
+      <p class="muted">可搜索番剧、漫画、轻小说、Galgame 和角色。作品可按题材、状态和年代筛选。</p>
 
       <div class="bar">
         <el-input
           v-model="keyword"
           clearable
-          placeholder="输入作品名关键词"
+          placeholder="输入作品名或角色名"
           class="kw"
           @keydown.enter.prevent="runSearch"
         />
@@ -24,17 +24,19 @@
           <el-option label="动漫" value="animation" />
           <el-option label="漫画" value="comic" />
           <el-option label="轻小说" value="novel" />
+          <el-option label="Galgame" value="galgame" />
+          <el-option label="角色" value="character" />
         </el-select>
-        <el-select v-model="genre" placeholder="题材" clearable class="sel">
+        <el-select v-model="genre" :disabled="characterOnly" placeholder="题材" clearable class="sel">
           <el-option label="不限题材" value="" />
           <el-option v-for="g in ACGN_GENRES" :key="g" :label="g" :value="g" />
         </el-select>
-        <el-select v-model="status" placeholder="状态" clearable class="sel">
+        <el-select v-model="status" :disabled="characterOnly || galgameOnly" placeholder="状态" clearable class="sel">
           <el-option label="不限状态" value="" />
           <el-option label="连载" value="连载" />
           <el-option label="完结" value="完结" />
         </el-select>
-        <el-select v-model="decade" placeholder="年代" clearable class="sel">
+        <el-select v-model="decade" :disabled="characterOnly" placeholder="年代" clearable class="sel">
           <el-option label="不限年代" value="" />
           <el-option label="2020年代" value="2020s" />
           <el-option label="2010年代" value="2010s" />
@@ -42,7 +44,7 @@
           <el-option label="1990年代" value="1990s" />
           <el-option label="更早" value="earlier" />
         </el-select>
-        <el-select v-model="sortBy" placeholder="排序" class="sel">
+        <el-select v-model="sortBy" :disabled="characterOnly" placeholder="排序" class="sel">
           <el-option label="默认" value="default" />
           <el-option label="热度（评分）" value="hot" />
           <el-option label="更新时间" value="update" />
@@ -72,30 +74,43 @@
       </div>
 
       <ul v-else class="list">
-        <li v-for="(item, index) in rows" :key="index" class="row" @click="open(item)">
+        <li v-for="item in rows" :key="`${item.sourcetype}:${item.id}`">
+          <RouterLink class="row" :to="searchResultLocation(item)">
           <img v-if="item.picurl" class="thumb" :src="optimizeCoverUrl(item.picurl)" loading="lazy" decoding="async" alt="" />
           <div class="mid">
             <span class="tag">{{ item.sourcetype }}</span>
+            <span v-if="item.sourcetype !== '角色' && item.sourcetype !== 'Galgame'" class="tag">{{ resourceLabel(item.sourcetype === '漫画' ? 'comic' : item.sourcetype === '轻小说' ? 'novel' : 'animation', item.resourceEnd) }}</span>
             <div class="title">
               <template v-for="(seg, j) in keywordSegments(item.name, keyword)" :key="j">
                 <mark v-if="seg.hl" class="hl">{{ seg.text }}</mark>
                 <template v-else>{{ seg.text }}</template>
               </template>
             </div>
+            <small v-if="item.workTitle" class="muted">{{ item.workTitle }}</small>
           </div>
+          </RouterLink>
         </li>
       </ul>
+      <nav v-if="!loading && !searchFailed && maxPage > 1" class="search-pagination" aria-label="搜索分页">
+        <button type="button" :disabled="page <= 1" @click="jumpPage(page - 1)">上一页</button>
+        <span>{{ page }} / {{ maxPage }}</span>
+        <button type="button" :disabled="page >= maxPage" @click="jumpPage(page + 1)">下一页</button>
+        <PageJump :page="page" :max="maxPage" @jump="jumpPage" />
+      </nav>
     </div>
     <Behind class="foot" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { resourceLabel } from '@/utils/mediaAvailability'
 import { optimizeCoverUrl } from '@/utils/imageOptimizer'
 import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
+import PageJump from '@/components/PageJump.vue'
 import Headpage from '@/components/Headpage/index.vue'
-import { getAllSearch, type GlobalSearchParams } from '@/api/AllSearch'
+import { getAllSearch, type GlobalSearchParams, type SearchRow } from '@/api/AllSearch'
+import { searchResultLocation } from '@/utils/searchResultLocation'
 import { ACGN_GENRES, decadeRange } from '@/utils/acgnConstants'
 import { keywordSegments } from '@/utils/highlightKeyword'
 import { getAnimationhot } from '@/api/animation'
@@ -114,14 +129,18 @@ const mediaType = ref('')
 const loading = ref(false)
 const searchFailed = ref(false)
 let searchGeneration = 0
-const rows = ref<
-  Array<{
-    id: number
-    name: string
-    picurl?: string
-    sourcetype: string
-  }>
->([])
+const maxPage = ref(1)
+const page = computed(() => {
+  const value = Number(route.query.page)
+  return Number.isSafeInteger(value) && value > 0 && value <= 2147483647 ? value : 1
+})
+function jumpPage(value: number, replace = false) {
+  const target = { path: '/search', query: { ...route.query, page: value > 1 ? String(value) : undefined } }
+  return replace ? router.replace(target) : router.push(target)
+}
+const rows = ref<SearchRow[]>([])
+const characterOnly = computed(() => mediaType.value === 'character')
+const galgameOnly = computed(() => mediaType.value === 'galgame')
 
 const recs = ref<Array<{ id: number; name: string; pic?: string; type: string; path: string; query: Record<string, string> }>>([])
 
@@ -194,19 +213,25 @@ async function fetchList() {
     const yrs = yearSpan.value
     const payload: GlobalSearchParams = {
       search: keyword.value || undefined,
-      genre: genre.value || undefined,
-      status: status.value || undefined,
-      yearMin: yrs.yearMin,
-      yearMax: yrs.yearMax,
-      sortBy: sortBy.value,
+      genre: characterOnly.value ? undefined : genre.value || undefined,
+      status: characterOnly.value || galgameOnly.value ? undefined : status.value || undefined,
+      yearMin: characterOnly.value ? undefined : yrs.yearMin,
+      yearMax: characterOnly.value ? undefined : yrs.yearMax,
+      sortBy: characterOnly.value ? undefined : sortBy.value,
       mediaType: mediaType.value || undefined,
-      limit: 200,
+      page: page.value,
+      limit: 24,
     }
     const res = await getAllSearch(payload)
     if (current !== searchGeneration) return
     if (res?.code !== 200 || !Array.isArray(res.data)) throw new Error('搜索失败')
+    if (res.page && res.page !== page.value) {
+      await jumpPage(res.page, true)
+      return
+    }
+    maxPage.value = Math.max(1, Math.ceil((res.total ?? res.data.length) / (res.pageSize ?? 24)))
     rows.value = res.data
-    if (!rows.value.length) {
+    if (!rows.value.length && !characterOnly.value) {
       const recommendations = await fetchRecs()
       if (current === searchGeneration) recs.value = recommendations
     }
@@ -223,10 +248,10 @@ async function fetchList() {
 function runSearch() {
   const q: Record<string, string> = {}
   if (keyword.value.trim()) q.q = keyword.value.trim()
-  if (genre.value) q.genre = genre.value
-  if (status.value) q.status = status.value
-  if (decade.value) q.decade = decade.value
-  if (sortBy.value && sortBy.value !== 'default') q.sortBy = sortBy.value
+  if (!characterOnly.value && genre.value) q.genre = genre.value
+  if (!characterOnly.value && !galgameOnly.value && status.value) q.status = status.value
+  if (!characterOnly.value && decade.value) q.decade = decade.value
+  if (!characterOnly.value && sortBy.value && sortBy.value !== 'default') q.sortBy = sortBy.value
   if (mediaType.value) q.mediaType = mediaType.value
   router.replace({ path: '/search', query: q })
 }
@@ -234,16 +259,6 @@ function runSearch() {
 function syncFromRoute() {
   applyRouteQuery()
   void fetchList()
-}
-
-function open(item: { sourcetype: string; id: number }) {
-  if (item.sourcetype === '轻小说') {
-    router.push({ name: 'NovelIntroduce', query: { novelid: String(item.id) } })
-  } else if (item.sourcetype === '漫画') {
-    router.push({ name: 'ComicIntroduce', query: { comicid: String(item.id) } })
-  } else {
-    router.push({ name: 'Animationintroduce', query: { animationid: String(item.id) } })
-  }
 }
 
 function goRec(it: (typeof recs.value)[0]) {
@@ -265,6 +280,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.search-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; margin: 24px 0; }
+.search-pagination button { border: 1px solid #acbfb6; border-radius: 6px; background: white; padding: 6px 10px; }
+a.row { color: inherit; text-decoration: none; }
 .root-container {
   min-height: 100vh;
   display: flex;

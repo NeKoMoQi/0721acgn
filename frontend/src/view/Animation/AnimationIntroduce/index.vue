@@ -4,6 +4,7 @@
 
     <div class="background-layer"></div>
 
+    <WorkLoadError v-if="detailFailed" catalog="/Animation" @retry="loadDetail" />
     <div class="content-wrapper" v-if="noveldata">
       <div class="info-container">
         <div class="cover-wrapper">
@@ -30,6 +31,8 @@
 
           <p class="description-text">{{ noveldata.longcomment }}</p>
 
+          <MediaResource v-if="animationIdNum" type="animation" :id="animationIdNum" :end="noveldata.resourceEnd" :unavailable="catalogFailed" />
+      <RouterLink v-if="animationIdNum === UJI_ANIMATION_ID" class="uji-detail-link" :to="UJI_WALK">去看取景地 · 宇治半日巡礼</RouterLink>
           <div class="button-group">
             <button type="button" class="main-button" @click="toTop">
               <span>▶</span> 观看进度
@@ -54,7 +57,7 @@
               <span class="episode-name">{{ item.title || ('第 ' + item.episodeNo + ' 集') }}</span>
             </router-link>
           </div>
-          <div v-else class="chapter-content">暂无视频资源</div>
+          <div v-else class="chapter-content">{{ catalogFailed ? '分集列表暂时无法读取' : '暂无视频资源' }}</div>
         </div>
 
         <div class="voice-section">
@@ -78,6 +81,7 @@
         @toggle-shelf="toggleShelf"
       />
 
+      <WorkCharacters v-if="animationIdNum" type="animation" :id="animationIdNum" />
       <RelatedWorks v-if="animationIdNum" src-type="animation" :src-id="animationIdNum" />
 
       <div ref="episodeSection" class="episode-local">
@@ -97,9 +101,13 @@
 </template>
 
 <script setup lang="ts">
+import { UJI_ANIMATION_ID, UJI_WALK } from '@/data/ujiPilgrimage'
+import MediaResource from '@/components/MediaResource.vue'
 import { ref, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useRoute } from 'vue-router';
+import WorkLoadError from '@/components/WorkLoadError.vue'
+import WorkCharacters from '@/components/WorkCharacters.vue'
 import RelatedWorks from '@/components/RelatedWorks.vue';
 import AcgnCommunityPanel from '@/components/AcgnCommunityPanel.vue';
 import { getAnimationById, getAnimationEpisodes } from '@/api/animation';
@@ -113,19 +121,28 @@ import {
 } from '@/utils/acgnLocal';
 
 const noveldata = ref<any>();
+const detailFailed = ref(false);
 const voicer = ref<string[]>([]);
 const route = useRoute();
 const episode = ref(1);
 const shelfActive = ref(false);
 const episodeSection = ref<HTMLElement | null>(null);
 const episodes = ref<any[]>([]);
+const catalogFailed = ref(false);
 
 const animationIdNum = computed(() => Number(route.query.animationid));
 
-onMounted(async () => {
+async function loadDetail() {
+  detailFailed.value = false;
   const id = route.query.animationid;
-  const result = await getAnimationById(id);
-  noveldata.value = result.data;
+  try {
+    const result = await getAnimationById(id);
+    if (result?.code !== 200 || !result.data) throw new Error('作品不存在');
+    noveldata.value = result.data;
+  } catch {
+    detailFailed.value = true;
+    return;
+  }
   if (noveldata.value?.voicer) {
     voicer.value = noveldata.value.voicer.split(/\s+/).filter(Boolean);
   } else {
@@ -133,8 +150,13 @@ onMounted(async () => {
   }
   const nid = Number(id);
   if (nid) {
-    const episodeRes = await getAnimationEpisodes(nid);
-    episodes.value = Array.isArray(episodeRes?.data) ? episodeRes.data : [];
+    try {
+      const episodeRes = await getAnimationEpisodes(nid);
+      if (episodeRes?.code !== 200 || !Array.isArray(episodeRes.data)) throw new Error('分集读取失败');
+      episodes.value = episodeRes.data.filter(item => typeof item.videoUrl === 'string' && item.videoUrl.trim());
+    } catch {
+      catalogFailed.value = true;
+    }
   }
   await ensureAcgnUserHydrated();
   episode.value = getAnimationEpisode(nid) || 1;
@@ -147,8 +169,8 @@ onMounted(async () => {
     });
     shelfActive.value = isInBookshelf('animation', nid);
   }
-});
-
+}
+onMounted(loadDetail);
 
 function persistEpisode() {
   saveAnimationEpisode(animationIdNum.value, episode.value);
@@ -175,6 +197,7 @@ function toggleShelf() {
 </script>
 
 <style scoped>
+.uji-detail-link { color: #215b44; display: inline-block; margin: 0 0 12px; text-decoration: underline; }
 .root-container {
   min-height: 100vh;
   display: flex;

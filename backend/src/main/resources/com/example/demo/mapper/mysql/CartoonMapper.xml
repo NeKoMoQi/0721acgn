@@ -38,10 +38,15 @@
         LIMIT #{offset}, 20
     </select>
     <select id="getCartoonsbyid" resultType="com.example.demo.com.Cartoons">
-        select * from 0721acgn.tb_cartoons where comicid = #{id}
+        SELECT work.*, <include refid="com.example.demo.mapper.mysql.SearchResultMapper.comicResourceEnd"/> AS resourceEnd
+        FROM 0721acgn.tb_cartoons work WHERE comicid = #{id}
     </select>
     <select id="getCartoonpages" resultType="com.example.demo.com.CartoonPage">
-        select fileurl from  0721acgn.tb_cartoonpage where chapterid = #{chapter} order by pageorder asc LIMIT #{page},4
+        SELECT fileurl FROM 0721acgn.tb_cartoonpage
+        WHERE chapterid = #{chapter} AND fileurl IS NOT NULL AND TRIM(fileurl) != ''
+        ORDER BY CASE WHEN pageorder REGEXP '^[0-9]+$' THEN CAST(pageorder AS UNSIGNED) ELSE pageid END,
+                 pageid, id
+        LIMIT #{page}, 4
     </select>
     <select id="getCartoonsHot" resultType="com.example.demo.com.Cartoons">
         select * from 0721acgn.tb_cartoons where hengpic is not null order by RAND() LIMIT 4

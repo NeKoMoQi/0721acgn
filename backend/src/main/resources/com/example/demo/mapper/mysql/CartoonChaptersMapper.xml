@@ -4,6 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.mapper.mysql.CartoonChaptersMapper">
     <select id="getAllCartoonChapters" resultType="com.example.demo.com.Cartoonchapters">
-        select title,chapterid,chapterno from 0721acgn.tb_cartoonchapters where comicid = #{id} order by chapterno ASC
+        SELECT chapter.title, chapter.chapterid, chapter.chapterno,
+            EXISTS (
+                SELECT 1 FROM 0721acgn.tb_cartoonpage page
+                WHERE page.chapterid = chapter.chapterid AND page.fileurl IS NOT NULL AND TRIM(page.fileurl) != ''
+            ) AS available
+        FROM 0721acgn.tb_cartoonchapters chapter
+        WHERE chapter.comicid = #{id}
+        ORDER BY chapter.chapterno ASC
     </select>
 </mapper>

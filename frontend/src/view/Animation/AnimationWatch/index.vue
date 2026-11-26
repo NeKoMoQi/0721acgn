@@ -24,6 +24,7 @@
             <div class="watch-actions">
               <button type="button" class="tool-button" @click="goPrev" :disabled="!prevEpisode">上一集</button>
               <button type="button" class="tool-button primary" @click="goNext" :disabled="!nextEpisode">下一集</button>
+              <button type="button" class="tool-button" :disabled="!playbackReady || playbackFailed" @click="restartPlayback">从头播放</button>
               <button type="button" class="icon-toggle" :class="{ active: autoNext }" @click="autoNext = !autoNext">自动连播</button>
               <button type="button" class="icon-toggle" :class="{ active: lightsOff }" @click="lightsOff = !lightsOff">熄灯</button>
             </div>
@@ -36,15 +37,19 @@
             </div>
             <video
               v-else
+              ref="player"
               class="watch-video"
               controls
               autoplay
               playsinline
               preload="metadata"
               :src="currentEpisode.videoUrl"
-              @error="playbackFailed = true"
+              @error="playbackReady = false; playbackFailed = true"
               @ended="onEnded"
+              @loadedmetadata="restorePlayback"
               @play="persistCurrentEpisode"
+              @timeupdate="savePlaybackPeriodically"
+              @pause="persistCurrentEpisode"
             />
           </div>
         </section>
@@ -113,15 +118,17 @@
       </section>
     </main>
 
-    <Behind class="footer" />
+    <MediaResource v-if="animationIdNum" class="reader-report" type="animation" :id="animationIdNum" :position="reportPosition" :report-only="!playbackFailed && watchState !== 'error'" :unavailable="playbackFailed || watchState === 'error'" />
+      <Behind class="footer" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import MediaResource from '@/components/MediaResource.vue'
+import { computed, onBeforeUnmount, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getAnimationById, getAnimationEpisodeById, getAnimationEpisodes } from '@/api/animation';
-import { ensureAcgnUserHydrated, isInBookshelf, pushHistory, saveAnimationEpisode, toggleBookshelfAsync } from '@/utils/acgnLocal';
+import { ensureAcgnUserHydrated, isInBookshelf, pushHistory, getAnimationPosition, saveAnimationEpisode, toggleBookshelfAsync } from '@/utils/acgnLocal';
 import AcgnCommunityPanel from '@/components/AcgnCommunityPanel.vue';
 
 const route = useRoute();
@@ -133,6 +140,9 @@ const watchState = ref<'loading' | 'error' | 'empty' | 'ready'>('loading');
 const emptyMessage = ref('暂无视频资源');
 const playbackFailed = ref(false);
 let disposed = false;
+let lastPlaybackSave = 0;
+const playbackReady = ref(false);
+const player = ref<HTMLVideoElement | null>(null);
 const lightsOff = ref(false);
 const autoNext = ref(true);
 const favoriteActive = ref(false);
@@ -143,6 +153,10 @@ const requestedAnimation = Number(route.query.animationid);
 const animationIdNum = Number.isInteger(requestedAnimation) && requestedAnimation > 0 ? requestedAnimation : 0;
 const episodeId = Number(route.query.episodeid);
 const resumeEpisode = Number(route.query.episode);
+const reportPosition = computed(() => {
+  const number = Number(currentEpisode.value?.episodeNo || route.query.episode);
+  return number > 0 ? `第 ${number} 集` : episodeId > 0 ? `分集编号 ${episodeId}` : '';
+});
 const currentIndex = computed(() =>
   episodes.value.findIndex((item) => Number(item.id) === Number(currentEpisode.value?.id)),
 );
@@ -156,8 +170,11 @@ const nextEpisode = computed(() =>
 onMounted(() => {
   void loadPage();
   window.addEventListener('keydown', handleKeydown);
+  window.addEventListener('pagehide', saveOnExit);
 });
+onBeforeUnmount(saveOnExit);
 onUnmounted(() => {
+  window.removeEventListener('pagehide', saveOnExit);
   disposed = true;
   window.removeEventListener('keydown', handleKeydown);
 });
@@ -261,11 +278,40 @@ function onEnded() {
   }
 }
 
+async function restorePlayback(event: Event) {
+  const video = event.currentTarget as HTMLVideoElement;
+  await ensureAcgnUserHydrated().catch(() => {});
+  if (disposed || player.value !== video) return;
+  playbackReady.value = true;
+  if (route.query.restart === '1' && (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined)?.type !== 'reload') return;
+  const seconds = getAnimationPosition(animationIdNum, Number(currentEpisode.value?.episodeNo));
+  if (seconds > 0 && Number.isFinite(video.duration) && seconds < video.duration) video.currentTime = seconds;
+}
+
+function restartPlayback() {
+  const video = player.value;
+  if (!video || !playbackReady.value) return;
+  video.currentTime = 0;
+  persistCurrentEpisode();
+  void video.play().catch(() => {});
+}
+
+function saveOnExit() {
+  if (player.value && player.value.currentTime > 0) persistCurrentEpisode();
+}
+
+function savePlaybackPeriodically() {
+  if (Date.now() - lastPlaybackSave >= 10000) persistCurrentEpisode();
+}
+
 function persistCurrentEpisode() {
+  if (!playbackReady.value) return;
   const animationId = animationIdNum;
   const episodeNo = Number(currentEpisode.value?.episodeNo);
   if (animationId && episodeNo) {
-    saveAnimationEpisode(animationId, episodeNo);
+    lastPlaybackSave = Date.now();
+    const time = player.value?.currentTime;
+    saveAnimationEpisode(animationId, episodeNo, time != null && Number.isFinite(time) ? Math.floor(time) : undefined);
   }
 }
 
@@ -279,6 +325,7 @@ function handleKeydown(event: KeyboardEvent) {
 </script>
 
 <style scoped>
+.reader-report { max-width: 900px; margin: 20px auto 72px; padding-inline: 16px; }
 .watch-root {
   min-height: 100vh;
   display: flex;

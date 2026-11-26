@@ -29,4 +29,5 @@ public class Animation {
     /** 题材（迁移脚本 acgn_extend_filters_related.sql） */
     private String genre;
     private LocalDateTime updatedAt;
+    private Integer resourceEnd;
 }

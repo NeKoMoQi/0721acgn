@@ -47,6 +47,17 @@ describe('继续观看 / 阅读数据', () => {
     expect(data.listContinueItems()).toEqual([])
   })
 
+  it('刷新后优先续读最新的确切页码，且不把旧版接口批次当页码', async () => {
+    const data = await import('../acgnLocal')
+    await data.ensureAcgnUserHydrated()
+    expect(data.listContinueItems()[0].pageNumber).toBeUndefined()
+    data.saveComicProgress(2, { chapterId: '0000204', chapterno: 4, pageNumber: 13 })
+    vi.resetModules()
+    const reloaded = await import('../acgnLocal')
+    await reloaded.ensureAcgnUserHydrated()
+    expect(reloaded.listContinueItems()[0]).toMatchObject({ chapterId: '0000204', position: 4, pageNumber: 13 })
+  })
+
   it.each(['animation', 'comic', 'novel'] as const)('保存 %s 进度后，该作品成为最近观看 / 阅读', async (type) => {
     const data = await import('../acgnLocal')
     await data.ensureAcgnUserHydrated()
@@ -57,4 +68,13 @@ describe('继续观看 / 阅读数据', () => {
     await vi.waitFor(() => expect(postAcgnLibraryVisit).toHaveBeenCalled())
     expect(data.listContinueItems()[0].id).toBe(id)
   })
+})
+
+
+it('routes precise bookmarks to the saved page and labels old chapter-only records explicitly', async () => {
+  const { resumeLocation, resumeLabel } = await import('../continueReading')
+  const bookmark = { id: 25, name: '漫画', at: 10, type: 'comic' as const, position: 7, chapterId: '917' }
+  expect(resumeLabel(bookmark)).toBe('第 7 章 · 页码未记录')
+  expect(resumeLabel({ ...bookmark, pageNumber: 13 })).toBe('第 7 章 · 第 13 页')
+  expect(resumeLocation({ ...bookmark, pageNumber: 13 }).query).toMatchObject({ chapterno: 7, pageNumber: 13 })
 })

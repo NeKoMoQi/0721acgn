@@ -7,6 +7,7 @@
   
       <!-- 内容容器 -->
       <div class="acgn_container" ref="maintain" @scroll="handscroll">
+        <WorkLoadError v-if="detailFailed" catalog="/Comic" @retry="loadDetail" />
         <div class="introduce" v-if="cartoondata">
   <div class="intro-image">
     <img :src=cartoondata.picurl alt="漫画封面">
@@ -23,18 +24,27 @@
 cartoondata.longcomment
  }}
     </p>
-    <div class="intro-actions">
-      <button v-if="hasProgress" class="action-button" @click="continueRead">继续阅读</button>
-      <button class="action-button" @click="toTop">从头开始</button>
+    <MediaResource v-if="comicIdNum" type="comic" :id="comicIdNum" :end="cartoondata.resourceEnd" :unavailable="catalogFailed" />
+      <div class="intro-actions">
+      <button v-if="hasProgress" class="action-button" @click="continueRead">继续阅读{{ progressLabel }}</button>
+      <button class="action-button" :disabled="!chapter.length || cartoondata.resourceEnd === 0" @click="toTop">从头开始</button>
       <button class="action-button" :class="{ 'is-shelf': shelfActive }" type="button" @click="toggleShelf">{{ shelfActive ? '已在书架' : '追漫' }}</button>
     </div>
   </div>
 </div>
 <div class="chapter">
-  <div class="chapter-list-scroll">
+  <p v-if="catalogFailed" role="status">漫画目录暂时无法读取。</p>
+  <form v-if="chapter.length" class="chapter-tools" @submit.prevent="jumpChapter">
+    <label>章号 <input v-model="chapterQuery" inputmode="decimal" aria-label="目标漫画章号" required></label>
+    <button type="submit">跳到本章</button>
+    <button type="button" :aria-pressed="newestFirst" @click="newestFirst = !newestFirst">{{ newestFirst ? '最早章在前' : '最新章在前' }}</button>
+    <button v-if="hasProgress" type="button" @click="locateBookmark">定位上次阅读</button>
+    <span v-if="chapterError" role="status">{{ chapterError }}</span>
+  </form>
+  <div class="chapter-list-scroll" ref="chapterList">
     <div class="chapter-list">
-      <div v-for="(item, index) in chapter" :key="index">
-        <button @click="tomain(item.chapterid,item.chapterno)">{{ item.title }}</button>
+      <div v-for="item in orderedChapters" :key="item.chapterid">
+        <button :data-chapter="item.chapterid" @click="tomain(item.chapterid,item.chapterno)">{{ item.title }}</button>
       </div>
     </div>
   </div>
@@ -49,6 +59,7 @@ cartoondata.longcomment
   :shelf-active="shelfActive"
   @toggle-shelf="toggleShelf"
 />
+<WorkCharacters v-if="comicIdNum" type="comic" :id="comicIdNum" />
 <RelatedWorks v-if="comicIdNum" src-type="comic" :src-id="comicIdNum" />
       </div>
 
@@ -58,12 +69,15 @@ cartoondata.longcomment
   </template>
   
   <script setup>
+import MediaResource from '@/components/MediaResource.vue'
   import { ref, onMounted, computed } from 'vue';
   import { ElMessage } from 'element-plus';
   import { getcartoonchapter,getcartoonbyid } from '@/api/cartoon';
   import { useRoute,useRouter } from 'vue-router';
   import useUserStore from '@/stores/modules/users';
-  import RelatedWorks from '@/components/RelatedWorks.vue';
+  import WorkLoadError from '@/components/WorkLoadError.vue'
+  import WorkCharacters from '@/components/WorkCharacters.vue'
+import RelatedWorks from '@/components/RelatedWorks.vue';
   import AcgnCommunityPanel from '@/components/AcgnCommunityPanel.vue';
   import {
     pushHistory,
@@ -75,19 +89,55 @@ cartoondata.longcomment
 
   const cartoondata = ref()
   const chapter = ref([])
+  const chapterList = ref(null)
+  const newestFirst = ref(false)
+  const chapterQuery = ref('')
+  const chapterError = ref('')
+  const orderedChapters = computed(() => newestFirst.value ? [...chapter.value].reverse() : chapter.value)
+
+  function jumpChapter() {
+    const number = Number(chapterQuery.value.trim())
+    const target = chapter.value.find(item => Number(item.chapterno) === number)
+    chapterError.value = target ? '' : '目录中没有这一章。'
+    if (target) tomain(target.chapterid, target.chapterno)
+  }
+
+  function locateBookmark() {
+    const id = getComicProgress(comicIdNum.value)?.chapterId
+    const button = Array.from(chapterList.value?.querySelectorAll('[data-chapter]') || [])
+      .find(button => button.dataset.chapter === id)
+    chapterError.value = button ? '' : '目录中没有找到上次读到的章节。'
+    button?.scrollIntoView({ block: 'nearest' })
+    button?.focus({ preventScroll: true })
+  }
+  const detailFailed = ref(false)
+  const catalogFailed = ref(false)
   const $router = useRouter()
   const route = useRoute()
   const useStore = useUserStore();
   const comicIdNum = computed(() => Number(route.query.comicid))
   const shelfActive = ref(false)
   const hasProgress = ref(false)
+  const progressLabel = computed(() => {
+    if (!hasProgress.value) return ''
+    const progress = getComicProgress(comicIdNum.value)
+    if (!progress?.chapterId) return ''
+    const page = progress.pageNumber ? `第 ${progress.pageNumber} 页` : '页码未记录'
+    return ` · 第 ${progress.chapterno} 章，${page}`
+  })
 
-  onMounted(async() => {
+  async function loadDetail() {
+    detailFailed.value = false
     const id = route.query.comicid;
-    const result =await getcartoonchapter(id);
-    const result1 = await getcartoonbyid(id)
-    cartoondata.value = await result1.data;
-    chapter.value = await result.data;
+    const [info, chapters] = await Promise.allSettled([getcartoonbyid(id), getcartoonchapter(id)])
+    if (info.status === 'fulfilled' && info.value?.code === 200) cartoondata.value = info.value.data
+    detailFailed.value = !cartoondata.value
+    if (chapters.status === 'fulfilled' && chapters.value?.code === 200 && Array.isArray(chapters.value.data)) {
+      chapter.value = chapters.value.data
+      catalogFailed.value = false
+    } else {
+      catalogFailed.value = true
+    }
     useStore.cartooncomicid = id
     useStore.cartoonchapterlength = chapter.value.length
     const nid = Number(id)
@@ -97,7 +147,8 @@ cartoondata.longcomment
       shelfActive.value = isInBookshelf('comic', nid)
     }
     hasProgress.value = !!(comicIdNum.value && getComicProgress(comicIdNum.value))
-  });
+  }
+  onMounted(loadDetail)
 
   function toggleShelf() {
     const id = comicIdNum.value
@@ -111,7 +162,7 @@ cartoondata.longcomment
     const id = comicIdNum.value
     const p = getComicProgress(id)
     if (p?.chapterId) {
-      $router.push({ name: 'Comicsee', query: { comicid: id, chapterid: p.chapterId, chapterno: p.chapterno } })
+      $router.push({ name: 'Comicsee', query: { comicid: id, chapterid: p.chapterId, chapterno: p.chapterno, pageNumber: p.pageNumber } })
       return
     }
     toTop()
@@ -143,6 +194,9 @@ cartoondata.longcomment
   function handscroll() {}
   </script>
   <style scoped>
+.chapter-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 0 20px 16px; }
+.chapter-tools input { width: 5rem; }
+.chapter-tools button { cursor: pointer; }
   .chapter {
   width: 100%;
   padding: 40px 0;

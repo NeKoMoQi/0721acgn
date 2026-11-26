@@ -27,4 +27,5 @@ public class Novel {
     private String releasedate;
     private BigDecimal rating;
     private LocalDateTime updatedAt;
+    private Integer resourceEnd;
 }
