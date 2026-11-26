@@ -34,10 +34,17 @@ cartoondata.longcomment
 </div>
 <div class="chapter">
   <p v-if="catalogFailed" role="status">漫画目录暂时无法读取。</p>
-  <div class="chapter-list-scroll">
+  <form v-if="chapter.length" class="chapter-tools" @submit.prevent="jumpChapter">
+    <label>章号 <input v-model="chapterQuery" inputmode="decimal" aria-label="目标漫画章号" required></label>
+    <button type="submit">跳到本章</button>
+    <button type="button" :aria-pressed="newestFirst" @click="newestFirst = !newestFirst">{{ newestFirst ? '最早章在前' : '最新章在前' }}</button>
+    <button v-if="hasProgress" type="button" @click="locateBookmark">定位上次阅读</button>
+    <span v-if="chapterError" role="status">{{ chapterError }}</span>
+  </form>
+  <div class="chapter-list-scroll" ref="chapterList">
     <div class="chapter-list">
-      <div v-for="(item, index) in chapter" :key="index">
-        <button @click="tomain(item.chapterid,item.chapterno)">{{ item.title }}</button>
+      <div v-for="item in orderedChapters" :key="item.chapterid">
+        <button :data-chapter="item.chapterid" @click="tomain(item.chapterid,item.chapterno)">{{ item.title }}</button>
       </div>
     </div>
   </div>
@@ -82,6 +89,27 @@ import RelatedWorks from '@/components/RelatedWorks.vue';
 
   const cartoondata = ref()
   const chapter = ref([])
+  const chapterList = ref(null)
+  const newestFirst = ref(false)
+  const chapterQuery = ref('')
+  const chapterError = ref('')
+  const orderedChapters = computed(() => newestFirst.value ? [...chapter.value].reverse() : chapter.value)
+
+  function jumpChapter() {
+    const number = Number(chapterQuery.value.trim())
+    const target = chapter.value.find(item => Number(item.chapterno) === number)
+    chapterError.value = target ? '' : '目录中没有这一章。'
+    if (target) tomain(target.chapterid, target.chapterno)
+  }
+
+  function locateBookmark() {
+    const id = getComicProgress(comicIdNum.value)?.chapterId
+    const button = Array.from(chapterList.value?.querySelectorAll('[data-chapter]') || [])
+      .find(button => button.dataset.chapter === id)
+    chapterError.value = button ? '' : '目录中没有找到上次读到的章节。'
+    button?.scrollIntoView({ block: 'nearest' })
+    button?.focus({ preventScroll: true })
+  }
   const detailFailed = ref(false)
   const catalogFailed = ref(false)
   const $router = useRouter()
@@ -166,6 +194,9 @@ import RelatedWorks from '@/components/RelatedWorks.vue';
   function handscroll() {}
   </script>
   <style scoped>
+.chapter-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 0 20px 16px; }
+.chapter-tools input { width: 5rem; }
+.chapter-tools button { cursor: pointer; }
   .chapter {
   width: 100%;
   padding: 40px 0;

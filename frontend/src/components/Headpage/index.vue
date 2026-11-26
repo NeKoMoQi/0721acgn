@@ -253,6 +253,15 @@ const msgUnread = ref(0)
 function refreshMsgUnread() {
   msgUnread.value = useStore.token ? unreadNotificationCount() : 0
 }
+function checkSubscriptionUpdates() {
+  if (useStore.token) {
+    void import('@/utils/subscriptionUpdates')
+      .then(({ refreshSubscriptionUpdates }) => refreshSubscriptionUpdates())
+      .then(refreshMsgUnread)
+      .catch(() => {})
+  }
+}
+let updatesPoll: ReturnType<typeof setInterval> | null = null
 let unreadPoll: ReturnType<typeof setInterval> | null = null
 
 watch(() => useStore.token, () => refreshMsgUnread())
@@ -362,12 +371,15 @@ onMounted(() => {
   document.addEventListener('click', handleClickOutside)
   refreshMsgUnread()
   unreadPoll = setInterval(refreshMsgUnread, 9000)
+  checkSubscriptionUpdates()
+  updatesPoll = setInterval(checkSubscriptionUpdates, 5 * 60 * 1000)
 })
 
 onUnmounted(() => {
   closeSearch()
   document.removeEventListener('click', handleClickOutside)
   if (unreadPoll) clearInterval(unreadPoll)
+  if (updatesPoll) clearInterval(updatesPoll)
 })
 </script>
 

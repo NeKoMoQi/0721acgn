@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.com.SearchResult;
+import com.example.demo.dto.SearchCriteria;
 import com.example.demo.mapper.mysql.SearchResultMapper;
 import com.example.demo.service.SearchResultService;
 import com.example.demo.util.ImageCdnRewriter;
@@ -30,6 +31,29 @@ public class SearchResultServiceImpl implements SearchResultService {
             rows.sort(Comparator.comparingInt(row -> matchRank(row, term)));
         }
         return ImageCdnRewriter.applyCdnToSearchResults(rows);
+    }
+
+    @Override
+    public Page searchPage(String search, String genre, String status, Integer yearMin, Integer yearMax,
+                           String sortBy, String mediaType, int page, Integer limit) {
+        int size = limit == null ? 24 : Math.min(60, Math.max(1, limit));
+        int requested = Math.max(1, page);
+        String term = search == null ? "" : search.trim();
+        String type = mediaType == null ? "" : mediaType.trim().toLowerCase(java.util.Locale.ROOT);
+        type = switch (type) {
+            case "cartoon", "manga" -> "comic";
+            case "donghua" -> "animation";
+            case "comic", "animation", "novel", "galgame", "character" -> type;
+            default -> "";
+        };
+        SearchCriteria criteria = new SearchCriteria(term, emptyToNull(genre), emptyToNull(status),
+                yearMin, yearMax, normalizeSort(sortBy), type, size, 0);
+        long total = searchResultMapper.countPage(criteria);
+        int actual = (int) Math.min(requested, Math.max(1L, (total + size - 1) / size));
+        SearchCriteria window = new SearchCriteria(term, criteria.genre(), criteria.status(), yearMin,
+                yearMax, criteria.sortBy(), type, size, (long) (actual - 1) * size);
+        return new Page(total == 0 ? List.of() : ImageCdnRewriter.applyCdnToSearchResults(searchResultMapper.searchPage(window)),
+                total, actual, size);
     }
 
     @Override

@@ -5,6 +5,10 @@
       <!-- 单独的背景层 -->
       <div class="background-layer"></div>
   
+      <nav v-if="pagelist.length" class="reader-report comic-jump" aria-label="漫画页码">
+        <PageJump :page="lastSavedPage || 1" :max="hasmore ? undefined : pagelist.length" :busy="isloading" @jump="jumpToImagePage" />
+        <p v-if="jumpError" role="status">{{ jumpError }}</p>
+      </nav>
       <!-- 内容容器 -->
       <div ref="readingContainer" class="acgn_container">
         <button v-for="(item, index) in pagelist" :key="index" type="button" class="comic-page"
@@ -25,7 +29,7 @@
         <div v-else-if="!hasmore" class="tishi">{{ pagelist.length ? '已经读完本章' : '本章暂无正文' }}</div>
       </div>
       <dialog ref="immersiveDialog" class="immersive-reader" aria-label="沉浸阅读"
-        @close="finishImmersive" @keydown.left.prevent="turnPage(-1)" @keydown.right.prevent="turnPage(1)">
+        @close="finishImmersive" @keydown="handleImmersiveKeys">
         <template v-if="immersivePage !== null">
           <header class="immersive-bar">
             <span aria-live="polite">第 {{ immersivePage + 1 }} 页</span>
@@ -48,6 +52,8 @@
               <button type="button" :disabled="immersiveLoading || (!hasmore && immersivePage >= pagelist.length - 1)"
                 @click="turnPage(1)">{{ loadError && immersivePage >= pagelist.length - 1 ? '重试下一页' : '下一页' }}</button>
             </div>
+            <PageJump :page="immersivePage + 1" :max="hasmore ? undefined : pagelist.length" :busy="isloading" @jump="jumpToImagePage" />
+            <p v-if="jumpError" role="status">{{ jumpError }}</p>
             <nav class="immersive-bar immersive-chapters" aria-label="章节导航">
               <button type="button" :disabled="!previousChapter" @click="goToChapter(previousChapter, true)">上一章</button>
               <span>第 {{ chapterNo }} 章</span>
@@ -71,17 +77,20 @@
       </div>
     </div>
       <MediaResource v-if="comicId && chapterId" class="reader-report" type="comic" :id="comicId" :position="reportPosition" :report-only="!loadError" :unavailable="!!loadError" />
+      <section v-if="chapterId && pagelist.length" class="reader-report" aria-label="漫画分页">
+      </section>
       <Behind class="bottom"></Behind>
     </div>
   </template>
   
   <script setup>
 import MediaResource from '@/components/MediaResource.vue'
+import PageJump from '@/components/PageJump.vue'
   import { computed, nextTick, ref, watch, onMounted, onBeforeUnmount } from 'vue';
   import { getcartoonpage, getcartoonchapter, getcartoonbyid } from '@/api/cartoon';
   import { useRoute, useRouter } from 'vue-router';
   import useUserStore from '@/stores/modules/users';
-  import { saveComicProgress, pushHistory } from '@/utils/acgnLocal';
+  import { ensureAcgnUserHydrated, getComicProgress, saveComicProgress, pushHistory } from '@/utils/acgnLocal';
   import { optimizeImageUrl } from '@/utils/imageOptimizer';
 
   const PAGES_PER_BATCH = 4;
@@ -120,13 +129,34 @@ import MediaResource from '@/components/MediaResource.vue'
   let pageRequest = null;
   let disposed = false;
   const requestedPage = Number(route.query.pageNumber);
-  const restoreTarget = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
-  const resumeImmersive = route.query.immersive === '1';
+  let restoreTarget = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+  let resumeImmersive = route.query.immersive === '1';
   let restoring = restoreTarget > 1 || resumeImmersive;
   let scrollRestoreIndex = null;
   const lastSavedPage = ref(0);
   const reportPosition = computed(() => `第 ${chapterNo} 章${lastSavedPage.value ? `第 ${lastSavedPage.value} 页` : ''}`);
   let scrollFrame = 0;
+
+  function handleImmersiveKeys(event) {
+    if (event.target?.closest('input') || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+    event.preventDefault();
+    turnPage(event.key === 'ArrowLeft' ? -1 : 1);
+  }
+
+  const jumpError = ref('');
+  let explicitJump = false;
+
+  function jumpToImagePage(page) {
+    explicitJump = true;
+    jumpError.value = '';
+    if (page <= pagelist.value.length) loadError.value = '';
+    restoreTarget = page;
+    restoring = true;
+    if (!pageRequest) {
+      if (loadError.value && page > pagelist.value.length) void loadpage();
+      else void finishLoadingPage();
+    }
+  }
 
   function recordPage(pageNumber) {
     if (pageNumber === lastSavedPage.value) return;
@@ -189,9 +219,22 @@ import MediaResource from '@/components/MediaResource.vue'
       void loadpage();
       return;
     }
-    const index = Math.min(restoreTarget, pagelist.value.length) - 1;
     restoring = false;
+    if (explicitJump) {
+      explicitJump = false;
+      if (restoreTarget > pagelist.value.length) {
+        jumpError.value = `本章共 ${pagelist.value.length} 页。`;
+        return;
+      }
+    }
+    const index = Math.min(restoreTarget, pagelist.value.length) - 1;
+    if (immersivePage.value !== null) {
+      immersivePage.value = index;
+      recordPage(index + 1);
+      return;
+    }
     if (resumeImmersive) {
+      resumeImmersive = false;
       void openImmersive(index);
       return;
     }
@@ -247,7 +290,7 @@ import MediaResource from '@/components/MediaResource.vue'
     void finishLoadingPage();
   }
 
-  onMounted(() => {
+  onMounted(async () => {
     if (!chapterId) {
       loadError.value = '缺少章节信息，请从作品目录重新打开。';
       return;
@@ -259,6 +302,15 @@ import MediaResource from '@/components/MediaResource.vue'
     window.addEventListener('touchstart', releaseScrollRestore, { passive: true });
     window.addEventListener('keydown', releaseScrollRestore);
     window.addEventListener('pointerdown', releaseScrollRestore, { passive: true });
+    if (comicId && performance.getEntriesByType('navigation')[0]?.type === 'reload') {
+      await ensureAcgnUserHydrated();
+      if (disposed) return;
+      const saved = getComicProgress(comicId);
+      if (saved?.chapterId === chapterId && saved.pageNumber) {
+        restoreTarget = saved.pageNumber;
+        restoring = restoreTarget > 1 || resumeImmersive;
+      }
+    }
     void loadpage();
     if (!comicId) return;
     getcartoonchapter(comicId).then((result) => {
@@ -354,6 +406,7 @@ import MediaResource from '@/components/MediaResource.vue'
   }
   </script>
   <style scoped>
+.comic-jump { margin-block: 20px !important; position: relative; }
 .reader-report { max-width: 900px; margin: 20px auto 72px; padding-inline: 16px; }
   .current-page { align-self: center; color: white; font-size: 14px; white-space: nowrap; }
   .tishi{

@@ -91,6 +91,12 @@
           </RouterLink>
         </li>
       </ul>
+      <nav v-if="!loading && !searchFailed && maxPage > 1" class="search-pagination" aria-label="搜索分页">
+        <button type="button" :disabled="page <= 1" @click="jumpPage(page - 1)">上一页</button>
+        <span>{{ page }} / {{ maxPage }}</span>
+        <button type="button" :disabled="page >= maxPage" @click="jumpPage(page + 1)">下一页</button>
+        <PageJump :page="page" :max="maxPage" @jump="jumpPage" />
+      </nav>
     </div>
     <Behind class="foot" />
   </div>
@@ -101,6 +107,7 @@ import { resourceLabel } from '@/utils/mediaAvailability'
 import { optimizeCoverUrl } from '@/utils/imageOptimizer'
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
+import PageJump from '@/components/PageJump.vue'
 import Headpage from '@/components/Headpage/index.vue'
 import { getAllSearch, type GlobalSearchParams, type SearchRow } from '@/api/AllSearch'
 import { searchResultLocation } from '@/utils/searchResultLocation'
@@ -122,6 +129,15 @@ const mediaType = ref('')
 const loading = ref(false)
 const searchFailed = ref(false)
 let searchGeneration = 0
+const maxPage = ref(1)
+const page = computed(() => {
+  const value = Number(route.query.page)
+  return Number.isSafeInteger(value) && value > 0 && value <= 2147483647 ? value : 1
+})
+function jumpPage(value: number, replace = false) {
+  const target = { path: '/search', query: { ...route.query, page: value > 1 ? String(value) : undefined } }
+  return replace ? router.replace(target) : router.push(target)
+}
 const rows = ref<SearchRow[]>([])
 const characterOnly = computed(() => mediaType.value === 'character')
 const galgameOnly = computed(() => mediaType.value === 'galgame')
@@ -203,11 +219,17 @@ async function fetchList() {
       yearMax: characterOnly.value ? undefined : yrs.yearMax,
       sortBy: characterOnly.value ? undefined : sortBy.value,
       mediaType: mediaType.value || undefined,
-      limit: 200,
+      page: page.value,
+      limit: 24,
     }
     const res = await getAllSearch(payload)
     if (current !== searchGeneration) return
     if (res?.code !== 200 || !Array.isArray(res.data)) throw new Error('搜索失败')
+    if (res.page && res.page !== page.value) {
+      await jumpPage(res.page, true)
+      return
+    }
+    maxPage.value = Math.max(1, Math.ceil((res.total ?? res.data.length) / (res.pageSize ?? 24)))
     rows.value = res.data
     if (!rows.value.length && !characterOnly.value) {
       const recommendations = await fetchRecs()
@@ -258,6 +280,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.search-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; margin: 24px 0; }
+.search-pagination button { border: 1px solid #acbfb6; border-radius: 6px; background: white; padding: 6px 10px; }
 a.row { color: inherit; text-decoration: none; }
 .root-container {
   min-height: 100vh;

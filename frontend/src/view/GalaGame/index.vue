@@ -99,7 +99,7 @@
       </div>
 
       <!-- 作品网格 -->
-      <div v-else class="acgn_show">
+      <div v-else ref="catalogResults" class="acgn_show">
         <div
           v-for="item in list"
           :key="'galgame-' + item.id"
@@ -144,7 +144,9 @@
       </div>
 
       <div v-if="list.length" class="tishi">
-        <el-button v-if="hasMore" :loading="isloading" @click="loadMore">{{ moreError ? '重试加载更多' : '加载更多作品' }}</el-button>
+        <PageJump v-if="list.length" :page="catalogPage" :busy="isloading || jumpingPage" @jump="jumpCatalogPage" />
+      <p v-if="pageError" class="tishi" role="alert">{{ pageError }}</p>
+      <el-button v-if="hasMore" :disabled="jumpingPage" :loading="isloading" @click="loadMore">{{ moreError ? '重试加载更多' : '加载更多作品' }}</el-button>
         <span v-else>已显示全部作品</span>
         <p v-if="moreError" role="alert">{{ moreError }}</p>
       </div>
@@ -156,10 +158,11 @@
 
 <script setup lang="ts">
 import { galgameThumbnail } from './coverThumbnails'
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Headpage from '@/components/Headpage/index.vue'
 import Behind from '@/components/behind/index.vue'
+import PageJump from '@/components/PageJump.vue'
 import AcgnFilterBar from '@/components/AcgnFilterBar.vue'
 import { getGalgame, getGalgameHot, type GalgameListParams } from '@/api/galgame'
 import { GALGAME_GENRES, GALGAME_SORT_OPTIONS, decadeRange } from '@/utils/acgnConstants'
@@ -261,7 +264,41 @@ async function loadHot() {
   }
 }
 
+const catalogResults = ref<HTMLElement | null>(null)
+const catalogPage = ref(1)
+const jumpingPage = ref(false)
+const pageError = ref('')
+
+async function jumpCatalogPage(target: number) {
+  if (isloading.value || jumpingPage.value) return
+  const filters = params.value
+  jumpingPage.value = true
+  pageError.value = ''
+  try {
+    const result = await getGalgame(target, filters)
+    if (filters !== params.value) return
+    if (result?.code !== 200 || !Array.isArray(result.data)) throw new Error('分页请求失败')
+    if (!result.data.length) {
+      pageError.value = '这一页没有作品。'
+      return
+    }
+    list.value = result.data
+    catalogPage.value = target
+    page.value = target + 1
+    hasMore.value = result.data.length >= 20
+    await nextTick()
+    catalogResults.value?.scrollIntoView?.({ block: 'start' })
+  } catch {
+    if (filters === params.value) pageError.value = '暂时无法跳转，请重试。'
+  } finally {
+    jumpingPage.value = false
+  }
+}
+
 async function reloadList() {
+  catalogPage.value = 1
+  pageError.value = ''
+
   const requestId = ++listRequest
   moreError.value = ''
   initialLoading.value = true

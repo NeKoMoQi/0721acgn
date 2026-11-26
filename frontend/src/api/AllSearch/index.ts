@@ -11,6 +11,7 @@ export interface GlobalSearchParams {
   /** comic | animation | novel | character | 不传为全站合并 */
   mediaType?: string
   limit?: number
+  page?: number
 }
 
 enum API {
@@ -28,7 +29,15 @@ export interface SearchRow {
   matchRank?: number | null
 }
 
-export async function getAllSearch(input: GlobalSearchParams | string) {
+interface SearchResponse {
+  code: number
+  data: SearchRow[] | null | undefined
+  total?: number
+  page?: number
+  pageSize?: number
+}
+
+export async function getAllSearch(input: GlobalSearchParams | string): Promise<SearchResponse> {
   const params: GlobalSearchParams = typeof input === 'string' ? { search: input } : input
   const search = params.search?.trim() || ''
   const q = new URLSearchParams()
@@ -39,19 +48,26 @@ export async function getAllSearch(input: GlobalSearchParams | string) {
   if (params.yearMax != null) q.set('yearMax', String(params.yearMax))
   if (params.sortBy) q.set('sortBy', params.sortBy)
   if (params.mediaType) q.set('mediaType', params.mediaType)
+  if (params.page != null) q.set('page', String(params.page))
   if (params.limit != null) q.set('limit', String(params.limit))
   const qs = q.toString()
-  const fromServer = request.get<unknown, { code: number; data: SearchRow[] }>(qs ? `${API.ALL_SEARCH_API}?${qs}` : API.ALL_SEARCH_API)
+  const fromServer = request.get<unknown, { code: number; data: SearchRow[] | {
+    items: SearchRow[]; total: number; page: number; pageSize: number
+  } }>(qs ? `${API.ALL_SEARCH_API}?${qs}` : API.ALL_SEARCH_API).then(response => {
+    if (Array.isArray(response.data)) return { ...response, data: response.data }
+    const payload = response.data
+    return { ...response, data: payload?.items, total: payload?.total, page: payload?.page, pageSize: payload?.pageSize }
+  })
   const includeLocal = params.mediaType === 'character'
     || (search && !params.mediaType && !params.genre && !params.status && params.yearMin == null && params.yearMax == null)
-  if (!includeLocal) return fromServer
+  if (!includeLocal || (params.page ?? 1) > 1) return fromServer
   const [response, { matchingCast }, { searchGalgameCharacters }] = await Promise.all([
     fromServer,
     import('@/data/characterAssociations'),
     import('@/data/galgameMedia'),
   ])
   if (response?.code !== 200 || !Array.isArray(response.data)) return response
-  const editorial: SearchRow[] = matchingCast(search).map(person => ({
+  const editorial: SearchRow[] = matchingCast(search).filter(person => !params.page || typeof person.id === 'string').map(person => ({
     id: person.id, name: person.name, sourcetype: '角色', workTitle: person.title,
   }))
   const galgame: SearchRow[] = searchGalgameCharacters(search).map(({ slug, person, title }) => ({
@@ -65,7 +81,7 @@ export async function getAllSearch(input: GlobalSearchParams | string) {
     ? { ...byId.get(String(row.id)), ...row } : row)
   const local = added.filter(row => !serverCharacters.has(String(row.id)))
   const data = params.mediaType === 'character' && !search ? [...local, ...server] : [...server, ...local]
-  if (search && (!params.sortBy || params.sortBy === 'default' || params.mediaType === 'character')) {
+  if (!params.page && search && (!params.sortBy || params.sortBy === 'default' || params.mediaType === 'character')) {
     const normalized = search.normalize('NFKC').toLowerCase()
     const rank = (name: string) => {
       const value = name.normalize('NFKC').toLowerCase()
@@ -73,5 +89,5 @@ export async function getAllSearch(input: GlobalSearchParams | string) {
     }
     data.sort((a, b) => (a.matchRank ?? rank(a.name)) - (b.matchRank ?? rank(b.name)))
   }
-  return { ...response, data: params.limit ? data.slice(0, params.limit) : data }
+  return { ...response, data: params.page ? data : params.limit ? data.slice(0, params.limit) : data }
 }

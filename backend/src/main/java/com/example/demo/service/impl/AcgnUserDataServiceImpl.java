@@ -101,7 +101,8 @@ public class AcgnUserDataServiceImpl implements AcgnUserDataService {
         Map<String, Object> outer = new HashMap<>();
         Map<String, Integer> anim = new HashMap<>();
         Map<String, Map<String, Object>> comic = new HashMap<>();
-        Map<String, Map<String, Integer>> nov = new HashMap<>();
+        Map<String, Map<String, Object>> nov = new HashMap<>();
+        Map<String, Map<String, Object>> animationPositions = new HashMap<>();
 
         List<AcgnProgressRow> rows = mapper.listProgress(clientId);
         for (AcgnProgressRow pr : rows) {
@@ -132,18 +133,33 @@ public class AcgnUserDataServiceImpl implements AcgnUserDataService {
                     continue;
                 }
                 anim.put(key, n);
+                Map<String, Object> position = new HashMap<>();
+                position.put("episode", n);
+                if (pay.get("seconds") instanceof Number seconds && Double.isFinite(seconds.doubleValue())
+                        && seconds.doubleValue() >= 0) position.put("seconds", seconds);
+                if (pay.get("updatedAt") instanceof Number updatedAt) position.put("updatedAt", updatedAt);
+                animationPositions.put(key, position);
             } else if (mt.equals("comic")) {
                 comic.put(key, pay);
             } else if (mt.equals("novel")) {
                 Object ch = pay.get("chapterno");
-                int cn =
-                        ch instanceof Number
-                                ? ((Number) ch).intValue()
-                                : Integer.parseInt(String.valueOf(ch));
-                nov.put(key, Map.of("chapterno", cn));
+                int chapter;
+                try {
+                    chapter = ch instanceof Number number ? number.intValue() : Integer.parseInt(String.valueOf(ch));
+                } catch (NumberFormatException ignored) {
+                    continue;
+                }
+                Map<String, Object> entry = new HashMap<>();
+                entry.put("chapterno", chapter);
+                if (pay.get("updatedAt") instanceof Number updatedAt) entry.put("updatedAt", updatedAt);
+                if (pay.get("cfi") instanceof String cfi && cfi.length() <= 1024 && cfi.startsWith("epubcfi(")) {
+                    entry.put("cfi", cfi);
+                }
+                nov.put(key, entry);
             }
         }
         outer.put("animation", anim);
+        outer.put("animationPositions", animationPositions);
         outer.put("comic", comic);
         outer.put("novel", nov);
         return outer;

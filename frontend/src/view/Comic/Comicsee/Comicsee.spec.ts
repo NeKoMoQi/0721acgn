@@ -3,9 +3,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ComicReader from './index.vue'
 import { getcartoonbyid, getcartoonchapter, getcartoonpage } from '@/api/cartoon'
 
-const { push, saveComicProgress, routeQuery } = vi.hoisted(() => ({
+const { push, saveComicProgress, getComicProgress, routeQuery } = vi.hoisted(() => ({
   push: vi.fn(),
   saveComicProgress: vi.fn(),
+  getComicProgress: vi.fn(),
   routeQuery: {} as Record<string, string>,
 }))
 
@@ -15,7 +16,7 @@ vi.mock('vue-router', () => ({
   useRouter: () => ({ push }),
 }))
 vi.mock('@/stores/modules/users', () => ({ default: () => ({}) }))
-vi.mock('@/utils/acgnLocal', () => ({ saveComicProgress, pushHistory: vi.fn() }))
+vi.mock('@/utils/acgnLocal', () => ({ saveComicProgress, getComicProgress, ensureAcgnUserHydrated: vi.fn(), pushHistory: vi.fn() }))
 vi.mock('@/api/cartoon', () => ({
   getcartoonbyid: vi.fn(),
   getcartoonchapter: vi.fn(),
@@ -53,6 +54,35 @@ beforeEach(() => {
 })
 
 describe('漫画阅读器', () => {
+  it('输入第 5 页，加载第二批并保存实际页码', async () => {
+    vi.mocked(getcartoonpage)
+      .mockResolvedValueOnce({ code: 200, data: pages })
+      .mockResolvedValueOnce({ code: 200, data: [{ fileurl: '/page-5.jpg' }] })
+    const wrapper = mountReader()
+    await flushPromises()
+    await wrapper.get('input[aria-label="目标页码"]').setValue('5')
+    await wrapper.get('form.page-jump').trigger('submit')
+    await flushPromises()
+    expect(getcartoonpage).toHaveBeenLastCalledWith('0018042', 2)
+    expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, pageNumber: 5 })
+    wrapper.unmount()
+  })
+
+  it('刷新时同一章节用新保存的页码覆盖续读链接里的旧页码', async () => {
+    routeQuery.pageNumber = '2'
+    const navigation = vi.spyOn(performance, 'getEntriesByType').mockReturnValue([{ type: 'reload' }] as any)
+    getComicProgress.mockReturnValue({ chapterId: '0018042', chapterno: 4, pageNumber: 3 })
+    vi.mocked(getcartoonpage).mockResolvedValueOnce({ code: 200, data: pages })
+    const wrapper = mountReader()
+    try {
+      await flushPromises()
+      expect(saveComicProgress).toHaveBeenLastCalledWith(8, { chapterId: '0018042', chapterno: 4, pageNumber: 3 })
+    } finally {
+      wrapper.unmount()
+      navigation.mockRestore()
+    }
+  })
+
   it('正文独立于目录与作品资料，首批失败后可重试', async () => {
     vi.mocked(getcartoonbyid).mockRejectedValueOnce(new Error('作品资料离线'))
     vi.mocked(getcartoonchapter).mockRejectedValueOnce(new Error('目录离线'))

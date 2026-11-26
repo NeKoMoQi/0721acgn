@@ -3,7 +3,7 @@
     <Headpage style="position: sticky !important; top: 0px; z-index: 10" />
     <div class="shell">
       <h1 class="h1">消息中心</h1>
-      <p class="muted">订阅更新、评论回复、投稿审核结果与系统公告会以时间线聚合在此（演示站内本地存储）。</p>
+      <p class="muted">打开网站时会检查订阅内容的更新。消息和已读状态保存在当前浏览器。</p>
 
       <div class="toolbar">
         <div class="seg-wrap">
@@ -24,12 +24,13 @@
 
       <div v-if="!shown.length" class="empty">暂无此类消息。</div>
       <ul v-else class="list">
-        <li v-for="n in shown" :key="n.id" class="row" @click="openOne(n)">
+        <li v-for="n in shown" :key="n.id" class="row">
           <div class="badge" :class="n.kind">{{ kindLabel(n.kind) }}</div>
           <div class="mid">
             <div class="tit">{{ n.title }} <span v-if="!n.read" class="dot">未读</span></div>
             <div class="body">{{ n.body }}</div>
             <div class="time">{{ fmt(n.at) }}</div>
+            <button v-if="n.to || !n.read" type="button" class="seg" @click="openOne(n)">{{ n.to ? '查看更新' : '标为已读' }}</button>
           </div>
         </li>
       </ul>
@@ -40,6 +41,8 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { refreshSubscriptionUpdates } from '@/utils/subscriptionUpdates'
 import Headpage from '@/components/Headpage/index.vue'
 import {
   listNotifications,
@@ -48,6 +51,7 @@ import {
   type AcgnNotice,
 } from '@/utils/acgnNotifications'
 
+const router = useRouter()
 const filter = ref('')
 const notices = ref<AcgnNotice[]>([])
 const shown = computed(() => {
@@ -83,6 +87,7 @@ function fmt(ms: number) {
 function openOne(n: AcgnNotice) {
   markNotificationRead(n.id)
   refresh()
+  if (n.to) void router.push(n.to)
 }
 
 function markAllRead() {
@@ -92,6 +97,7 @@ function markAllRead() {
 
 onMounted(() => {
   refresh()
+  void refreshSubscriptionUpdates().then(refresh).catch(() => {})
 })
 </script>
 

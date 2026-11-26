@@ -126,13 +126,13 @@ import RelatedWorks from '@/components/RelatedWorks.vue';
 
    const toTop =() =>{
     const first = chapter.value.find(item => item.novelurl)
-    if (first) tomain(first.chapterno)
+    if (first) tomain(first.chapterno, true)
    }
-    const tomain = (no) => {
+    const tomain = (no, restart = false) => {
       useStore.novelid = String(novelIdNum.value)
     $router.push({
       name:'Novelsee',
-      query: { novelid: novelIdNum.value, chapterno: no },
+      query: { novelid: novelIdNum.value, chapterno: no, restart: restart ? '1' : undefined },
   })
   useStore.novelchapter = no
   }

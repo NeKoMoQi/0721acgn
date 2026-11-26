@@ -48,7 +48,8 @@ let historyMem: HistoryItem[] = []
 let subsMem: SubscribeEntry[] = []
 const comicProgressWrites = new Map<number, Promise<void>>()
 const comicProgMem: Record<string, ComicProgress> = {}
-const novelProgMem: Record<string, { chapterno: number }> = {}
+const novelProgMem: Record<string, NovelPosition> = {}
+let animationPositions: Record<string, AnimationPosition> = {}
 const animEpMem: Record<string, number> = {}
 
 let hydrated = false
@@ -87,6 +88,7 @@ function applyServerState(raw: AcgnUserStateDto) {
   Object.keys(comicProgMem).forEach((k) => delete comicProgMem[k])
   Object.keys(novelProgMem).forEach((k) => delete novelProgMem[k])
   Object.keys(animEpMem).forEach((k) => delete animEpMem[k])
+  animationPositions = p.animationPositions || {}
   const an = p.animation || {}
   for (const k of Object.keys(an)) {
     const v = (an as Record<string, number>)[k]
@@ -98,8 +100,8 @@ function applyServerState(raw: AcgnUserStateDto) {
   }
   const nv = p.novel || {}
   for (const k of Object.keys(nv)) {
-    const row = (nv as Record<string, { chapterno: number }>)[k]
-    if (row && typeof row.chapterno === 'number') novelProgMem[k] = { chapterno: row.chapterno }
+    const row = nv[k]
+    if (row && typeof row.chapterno === 'number') novelProgMem[k] = row
   }
 }
 
@@ -540,62 +542,62 @@ export function getComicProgress(comicId: number): ComicProgress | null {
   return server ?? null
 }
 
-export function saveNovelProgress(novelId: number, chapterno: number) {
-  void innerSaveNovelProg(novelId, chapterno)
+interface NovelPosition { chapterno: number; cfi?: string; updatedAt?: number }
+interface AnimationPosition { episode: number; seconds?: number; updatedAt?: number }
+
+const exactProgressWrites = new Map<string, Promise<void>>()
+
+function saveExactProgress<T extends NovelPosition | AnimationPosition>(type: 'novel' | 'animation', id: number, position: T): T & { updatedAt: number } {
+  const key = `acgn_${type}_checkpoint_${id}`
+  const next = { ...position, updatedAt: Date.now() }
+  try { localStorage.setItem(key, JSON.stringify(next)) } catch { /* server remains available */ }
+
+  const previous = exactProgressWrites.get(key) || Promise.resolve()
+  const write = previous.then(async () => {
+    await ensureAcgnUserHydrated()
+    if ((readLsJson<typeof next | null>(key, null)?.updatedAt ?? 0) > next.updatedAt) return
+    const result = await postAcgnProgressSave(type, id, { ...next })
+    if (result?.code === 200) await touchProgressHistory(type, id)
+  }).catch(() => {}).finally(() => {
+    if (exactProgressWrites.get(key) === write) exactProgressWrites.delete(key)
+  })
+  exactProgressWrites.set(key, write)
+  return next
 }
 
-async function innerSaveNovelProg(novelId: number, chapterno: number) {
-  await ensureAcgnUserHydrated()
-  const k = String(novelId)
-  const before = novelProgMem[k]
-  novelProgMem[k] = { chapterno }
-  try {
-    const res = await postAcgnProgressSave('novel', novelId, { chapterno })
-    if (res?.code !== 200) {
-      if (before) novelProgMem[k] = before
-      else delete novelProgMem[k]
-    } else {
-      await touchProgressHistory('novel', novelId)
-    }
-  } catch {
-    if (before) novelProgMem[k] = before
-    else delete novelProgMem[k]
-  }
+export function saveNovelProgress(novelId: number, chapterno: number, cfi?: string) {
+  const before = getNovelProgress(novelId)
+  const next = { chapterno, cfi: cfi ?? (before?.chapterno === chapterno ? before.cfi : undefined) }
+  novelProgMem[String(novelId)] = saveExactProgress('novel', novelId, next)
 }
 
-export function getNovelProgress(novelId: number): { chapterno: number } | null {
-  return novelProgMem[String(novelId)] ?? null
+export function getNovelProgress(novelId: number): NovelPosition | null {
+  const server = novelProgMem[String(novelId)]
+  const local = readLsJson<NovelPosition | null>(`acgn_novel_checkpoint_${novelId}`, null)
+  return local && (local.updatedAt ?? 0) >= (server?.updatedAt ?? 0) ? local : server ?? null
 }
 
-export function saveAnimationEpisode(animationId: number, episode: number) {
-  void innerSaveAnimEp(animationId, episode)
+export function saveAnimationEpisode(animationId: number, episode: number, seconds?: number) {
+  const time = seconds ?? (getAnimationEpisode(animationId) === episode ? getAnimationPosition(animationId, episode) : undefined)
+  animEpMem[String(animationId)] = episode
+  animationPositions[String(animationId)] = saveExactProgress('animation', animationId, { episode, seconds: time })
 }
 
-async function innerSaveAnimEp(animationId: number, episode: number) {
-  await ensureAcgnUserHydrated()
-  const k = String(animationId)
-  const prev = animEpMem[k]
-  animEpMem[k] = episode
-  try {
-    const res = await postAcgnProgressSave('animation', animationId, { episode })
-    if (res?.code !== 200) {
-      if (typeof prev === 'number') animEpMem[k] = prev
-      else delete animEpMem[k]
-    } else {
-      await touchProgressHistory('animation', animationId)
-    }
-  } catch {
-    if (typeof prev === 'number') animEpMem[k] = prev
-    else delete animEpMem[k]
-  }
+function getAnimationCheckpoint(animationId: number): AnimationPosition | undefined {
+  const server = animationPositions[String(animationId)]
+  const local = readLsJson<AnimationPosition | null>(`acgn_animation_checkpoint_${animationId}`, null)
+  return local && (local.updatedAt ?? 0) >= (server?.updatedAt ?? 0) ? local : server
+}
+
+export function getAnimationPosition(animationId: number, episode: number): number {
+  const position = getAnimationCheckpoint(animationId)
+  return position?.episode === episode && Number.isFinite(position.seconds) ? Math.max(0, position.seconds!) : 0
 }
 
 export function getAnimationEpisode(animationId: number): number | null {
-  const v = animEpMem[String(animationId)]
-  return typeof v === 'number' ? v : null
+  return getAnimationCheckpoint(animationId)?.episode ?? animEpMem[String(animationId)] ?? null
 }
 
-// --- 订阅 ---
 export interface SubscribeEntry {
   type: AcgnMediaType
   id: number
@@ -636,6 +638,9 @@ export async function toggleSubscribeAsync(
         0,
         320,
       )
+      try { localStorage.removeItem(`acgn_subscription_releases_v1:${item.type}:${item.id}`) } catch { /* storage unavailable */ }
+      const entry = subsMem[0]
+      void import('./subscriptionUpdates').then(({ checkSubscription }) => checkSubscription(entry)).catch(() => {})
     } else {
       subsMem = subsMem.filter((s) => !(s.type === item.type && s.id === item.id))
     }
