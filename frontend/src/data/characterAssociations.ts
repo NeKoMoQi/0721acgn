@@ -278,6 +278,180 @@ const casts: { works: CharacterWork[]; people: CastMember[] }[] = [
       { id: 'anju', name: '安琪·艾玛', aliases: ['アンジュ・エマ', '安洁'] },
     ],
   },
+  {
+    works: [{ type: 'novel', id: 11, title: '每晚啾啾吸血后娇羞撒娇的吸血鬼公主' }],
+    people: [
+      { id: 'akatsuki-shiro', name: '红月史郎', aliases: ['紅月史郎', '紅月史朗'] },
+      { id: 'tetra', name: '泰特拉', aliases: ['テトラ'] },
+    ],
+  },
+  {
+    works: [{ type: 'novel', id: 23, title: '不迷途的羔羊' }],
+    people: [
+      { id: 'narita-shinichiro', name: '成田真一郎' },
+      { id: 'senba-aki', name: '仙波明希' },
+    ],
+  },
+  {
+    works: [{ type: 'novel', id: 24, title: '请别来管我 不知为何她想改变孤狼这没救的高中生活' }],
+    people: [
+      { id: 'nanamura-hotaka', name: '七村穗高', aliases: ['七村穂高'] },
+      { id: 'hanamitsuji-sora', name: '花见辻空', aliases: ['花見辻空'] },
+    ],
+  },
+  {
+    works: [{ type: 'novel', id: 28, title: '绝对不愿工作的地下城主想要睡懒觉' }],
+    people: [
+      { id: 'masuda-keima', name: '桂马', aliases: ['ケーマ', '增田桂马'] },
+      { id: 'rokuko', name: '洛库可', aliases: ['罗库可', 'ロクコ'] },
+    ],
+  },
+  {
+    works: [{ type: 'novel', id: 29, title: '黑鳶的聖者' }],
+    people: [
+      { id: 'russell-blackkite', name: '罗素', aliases: ['羅素', 'ラセル'] },
+      { id: 'sibylla-blackkite', name: '希碧拉', aliases: ['シビラ', '西比拉'] },
+    ],
+  },
+  {
+    works: [{ type: 'novel', id: 30, title: '我要成为魔法少女！' }],
+    people: [
+      { id: 'nanashino-hiiro', name: '七篠阳彩', aliases: ['七篠陽彩', 'ななしのひいろ'] },
+      { id: 'haku-magical', name: '白', aliases: ['ハク'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 14, title: '谭雅战记' }],
+    people: [
+      { id: 'tanya-degurechaff', name: '谭雅·冯·提古雷查夫', aliases: ['ターニャ', 'ターニャ・フォン・デグレチャフ'] },
+      { id: 'mary-sioux', name: '玛丽·苏', aliases: ['メアリー・スー'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 19, title: '天才王子的赤字国家振兴术' }],
+    people: [
+      { id: 'wein-natra', name: '维恩', aliases: ['ウェイン', '维恩·萨雷玛·阿尔巴斯特'] },
+      { id: 'ninym-ralei', name: '妮妮姆', aliases: ['ニニム', '妮妮姆·拉雷'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 56, title: '三流反派的學院生存記' }],
+    people: [
+      { id: 'ed-rothstaylor', name: '艾德·罗斯泰勒', aliases: ['Ed Rothstaylor', 'Ed Rothtaylor'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 58, title: '渴望復仇的最強勇者、以黑暗之力所向披靡' }],
+    people: [
+      { id: 'raoul-evans', name: '劳尔·埃文斯', aliases: ['ラウル・エヴァンス', 'Raoul Evans'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 71, title: '反派絕殺' }],
+    people: [
+      { id: 'villain-cassian', name: '卡西安', aliases: ['Cassian'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 78, title: '裝備我最強' }],
+    people: [
+      { id: 'shin-youngwoo', name: '申英宇', aliases: ['Shin Youngwoo', 'Grid', '格里德'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 7, title: '想尽情享受的常客小姐' }],
+    people: [
+      { id: 'mankitsu-izumi', name: '泉' },
+      { id: 'mankitsu-honami', name: '穗波', aliases: ['ほなみ'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 8, title: '陷入爱河的蜂谷君是女仆' }],
+    people: [
+      { id: 'hachiyaa-maid', name: '蜂谷', aliases: ['蜂谷くん'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 13, title: '帮助了迷路的幼女后，美少女留学生邻居变得常来我家玩了' }],
+    people: [
+      { id: 'aoyagi-akito', name: '青柳明人' },
+      { id: 'charlotte-bennett', name: '夏洛特·贝内特', aliases: ['シャーロット・ベネット', 'Charlotte Bennett'] },
+      { id: 'emma-bennett', name: '艾玛·贝内特', aliases: ['エマ・ベネット', 'Emma Bennett'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 42, title: '一覺醒來坐擁神裝和飛船，我決定以買一套獨門獨戶的房子為目標作為傭兵自由地活下去' }],
+    people: [
+      { id: 'space-hiro', name: '希罗', aliases: ['ヒロ', '佐藤孝弘'] },
+      { id: 'space-mimi', name: '咪咪', aliases: ['ミミ', 'Mimi'] },
+      { id: 'space-elma', name: '艾尔玛', aliases: ['エルマ', 'Elma'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 52, title: '妹妹是知道的' }],
+    people: [
+      { id: 'miki-kiichiro', name: '三木贵一郎', aliases: ['三木貴一郎'] },
+      { id: 'miki-miki', name: '三木美贵', aliases: ['三木美貴'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 66, title: '秋江入夜時' }],
+    people: [
+      { id: 'autumn-river-rok', name: '李禄', aliases: ['李祿'] },
+      { id: 'autumn-river-sosa', name: '素纱', aliases: ['素紗'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 77, title: '玩物' }],
+    people: [
+      { id: 'yoon-garam-her-toys', name: '尹佳蓝', aliases: ['尹佳藍'] },
+      { id: 'lee-myeongjun-her-toys', name: '李明俊' },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 28, title: '妹妹一天只和我对上一次眼' }],
+    people: [
+      { id: 'eye-contact-sister', name: '妹妹', aliases: ['妹'] },
+      { id: 'eye-contact-brother', name: '哥哥', aliases: ['兄'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 40, title: '海邊之夜' }],
+    people: [
+      { id: 'low-tide-euihyun', name: '金宜贤', aliases: ['김의현', 'Kim Euihyun'] },
+      { id: 'low-tide-taeju', name: '吕泰洲', aliases: ['여태주', 'Yeo Taeju'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 44, title: '後宮開在離婚時' }],
+    people: [
+      { id: 'wako-ichiro', name: '和光市路', aliases: ['市路'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 73, title: '身為路人司祭的我發現這是乙女遊戲的世界於是決定養成女主' }],
+    people: [
+      { id: 'mob-priest-krael', name: '克拉艾尔·巴恩', aliases: ['クラエル・バーン', '克拉艾尔'] },
+      { id: 'mob-priest-reina', name: '蕾娜', aliases: ['レイナ'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 75, title: '隱語島' }],
+    people: [
+      { id: 'ingoshima-keita', name: '东堂启太', aliases: ['東堂啓太', '啓太'] },
+      { id: 'ingoshima-aoi', name: '宫原葵', aliases: ['宮原葵', '葵'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 79, title: '劍與魔法與NTR' }],
+    people: [
+      { id: 'otodori-ayumu', name: '乙鸟步', aliases: ['乙鳥歩'] },
+    ],
+  },
+  {
+    works: [{ type: 'comic', id: 74, title: '戰姬求生記-背負異世界命運的不正經異性交流' }],
+    people: [{ id: 'survival-saga-anastasia', name: '阿纳斯塔西娅', aliases: ['アナスタシア', 'Anastasia'] }],
+  },
 ]
 
 const linkedCasts = [...casts, ...(catalogAssociations as typeof casts)]

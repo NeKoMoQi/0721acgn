@@ -43,12 +43,29 @@
               ，依 CC BY-NC-SA 3.0 CN 使用。
             </small>
           </section>
+          <section v-else-if="imported" class="intro">
+            <h2>简介</h2>
+            <p>已收录 {{ imported.works.length }} 个登场作品。各版本的戏份和配音资料见下方。</p>
+            <dl v-if="imported.person.originalName || imported.person.birthday || imported.person.aliases?.length || imported.person.facts?.length" class="archive-facts">
+              <div v-if="imported.person.originalName"><dt>原名</dt><dd>{{ imported.person.originalName }}</dd></div>
+              <div v-if="imported.person.birthday"><dt>生日</dt><dd>{{ imported.person.birthday }}</dd></div>
+              <div v-if="imported.person.aliases?.length"><dt>别名</dt><dd>{{ imported.person.aliases.join('、') }}</dd></div>
+              <div v-for="[label, value] in imported.person.facts" :key="label"><dt>{{ label }}</dt><dd>{{ value }}</dd></div>
+            </dl>
+            <ul class="profile-sources" aria-label="角色资料来源">
+              <li><a :href="`https://bgm.tv/character/${imported.person.id}`" target="_blank" rel="noopener noreferrer">Bangumi 番组计划 · 角色资料</a></li>
+            </ul>
+          </section>
           <p v-else class="empty">这个角色还没有录入简介。</p>
-          <section v-if="associatedWorks.length || selectedGame" class="character-works">
+          <section v-if="associatedWorks.length || extraWorks.length || selectedGame" class="character-works">
             <h2>登场作品</h2>
             <ul>
               <li v-for="work in associatedWorks" :key="`${work.type}:${work.id}`">
                 <RouterLink :to="workLocation(work)">{{ work.title }} · {{ workTypeLabel(work.type) }}</RouterLink>
+              </li>
+              <li v-for="work in extraWorks" :key="`archive:${work.type}:${work.id}`">
+                <RouterLink :to="archiveWorkLocation(work)">{{ work.title }} · {{ archiveKindLabels[work.type] }}</RouterLink>
+                <small v-if="creditFor(work)" class="archive-credit">{{ creditFor(work) }}</small>
               </li>
               <li v-if="selectedGame">
                 <RouterLink :to="{ name: 'GalgameIntroduce', query: { slug: gameSlug } }">{{ selectedGame.title || '返回 Galgame 详情' }}</RouterLink>
@@ -70,13 +87,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, shallowRef, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import Headpage from '@/components/Headpage/index.vue'
 import request from '@/utils/request'
 import { getCharacterProfile } from '@/data/characterProfiles'
 import { editorialCharacter, workLocation, workTypeLabel, worksForCharacter } from '@/data/characterAssociations'
 import { animationWorksForGalgame, galgameCharacter } from '@/data/galgameMedia'
+import { archiveProfile, archiveRoleLabel, archiveWorkLocation, archiveWorksForSiteCharacter, type ArchiveWork } from '@/data/characterArchive'
 
 interface Character {
   id: number | string
@@ -96,6 +114,9 @@ const loading = ref(false)
 const error = ref('')
 const avatarOk = ref(true)
 let loadGeneration = 0
+const imported = shallowRef<Awaited<ReturnType<typeof archiveProfile>>>()
+const linkedArchiveWorks = shallowRef<ArchiveWork[]>([])
+const archiveKindLabels = { animation: '动漫', comic: '漫画', novel: '轻小说', galgame: 'Galgame' }
 
 const tags = computed(() =>
   (character.value?.talent || '').split(/[、,，]/).map((tag) => tag.trim()).filter(Boolean),
@@ -103,9 +124,26 @@ const tags = computed(() =>
 const gameSlug = computed(() => String(route.params.slug || ''))
 const selectedGame = computed(() => galgameCharacter(gameSlug.value, String(route.params.person || '')))
 const associatedWorks = computed(() => selectedGame.value ? animationWorksForGalgame(gameSlug.value) : worksForCharacter(character.value?.id))
-const profile = computed(() => selectedGame.value ? undefined : getCharacterProfile(character.value?.name, character.value?.id))
+const profile = computed(() => selectedGame.value || imported.value ? undefined : getCharacterProfile(character.value?.name, character.value?.id))
 const displayName = computed(() => profile.value?.displayName || character.value?.name || '')
-const workTitle = computed(() => selectedGame.value?.title || profile.value?.work || associatedWorks.value[0]?.title)
+const extraWorks = computed(() => {
+  const seen = new Set(associatedWorks.value.map(work => `${work.type}:${work.id}`))
+  const works = (imported.value?.works ?? linkedArchiveWorks.value).filter(work => {
+    const key = `${work.type}:${work.id}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+  return works
+})
+const workTitle = computed(() => selectedGame.value?.title || profile.value?.work || associatedWorks.value[0]?.title || extraWorks.value[0]?.title)
+function creditFor(work: ArchiveWork) {
+  const entry = work.cast.find(([id]) => id === imported.value?.person.id)
+  if (!entry) return ''
+  const role = archiveRoleLabel(entry[1])
+  const voices = entry[2]?.join('、')
+  return [role, voices ? `配音 ${voices}` : ''].filter(Boolean).join(' · ')
+}
 const introParagraphs = computed(() => profile.value?.paragraphs ??
   (character.value?.intro || '').split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean),
 )
@@ -122,10 +160,36 @@ async function load() {
   error.value = ''
   character.value = null
   avatarOk.value = true
+  imported.value = undefined
+  linkedArchiveWorks.value = []
   const game = selectedGame.value?.person
   if (game) {
     character.value = { id: game.name, name: game.name, intro: game.summary, avatarurl: game.image }
     return
+  }
+  const sourceId = /^bgm-(\d+)$/.exec(id)
+  if (sourceId) {
+    loading.value = true
+    try {
+      const result = await archiveProfile(Number(sourceId[1]))
+      if (current !== loadGeneration) return
+      if (!result) {
+        error.value = '没有找到这个角色。'
+        return
+      }
+      imported.value = result
+      character.value = { id, name: result.person.name }
+    } catch {
+      if (current === loadGeneration) error.value = '角色资料暂时无法加载，请稍后重试。'
+    } finally {
+      if (current === loadGeneration) loading.value = false
+    }
+    return
+  }
+  if (id) {
+    void archiveWorksForSiteCharacter(id).then(works => {
+      if (current === loadGeneration) linkedArchiveWorks.value = works
+    }).catch(() => {})
   }
   const editorial = editorialCharacter(id)
   if (editorial) {
@@ -167,6 +231,10 @@ watch(() => [route.params.id, route.params.slug, route.params.person], () => { v
 .character-works ul { padding-left: 18px; }
 .character-works a { color: #246048; text-decoration: underline; }
 .work-title { margin: -12px 0 20px; color: #506e62; }
+.archive-facts div { display: flex; gap: 10px; margin: 6px 0; }
+.archive-facts dt { font-weight: 600; flex-shrink: 0; }
+.archive-facts dd { margin: 0; }
+.archive-credit { margin-left: 8px; color: #506e62; }
 .profile-sources { padding-left: 18px; font-size: 14px; }
 .profile-sources a { color: #246048; }
 .character-root {

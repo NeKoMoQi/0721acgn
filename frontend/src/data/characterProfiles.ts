@@ -766,9 +766,303 @@ const profiles: Record<string, CharacterProfile> = {
   },
 }
 
+const workProfiles: Record<string, CharacterProfile> = {
+  'akatsuki-shiro': {
+    work: '每晚啾啾吸血后娇羞撒娇的吸血鬼公主',
+    paragraphs: [
+      '史郎为了开始普通的高中生活，从家乡搬到城市。放学途中遇到泰特拉后，他发现这位陌生人虽然是吸血鬼，却因为怕血而难以进食。',
+      '他决定帮泰特拉解决生活上的难题。想守住原来期待的日常与不得不照顾新朋友，构成了他在开篇面对的选择。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://ga.sbcr.jp/product/9784815623029/' }],
+  },
+  'tetra': {
+    work: '每晚啾啾吸血后娇羞撒娇的吸血鬼公主',
+    paragraphs: [
+      '泰特拉是故事中的吸血鬼公主。她需要新鲜血液，又对血感到害怕，因此遇见史郎时正被一个和身份本身有关的难题困住。',
+      '和史郎重新安排两人的生活后，她在学校里表现出的性格，与私下愿意向熟人开口求助的一面逐渐形成对照。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://ga.sbcr.jp/product/9784815623029/' }],
+  },
+  'narita-shinichiro': {
+    work: '不迷途的羔羊',
+    paragraphs: [
+      '真一郎是学校咨询会的成员，经常代替前来咨询的学生四处询问，试图弄清他们省略了哪些事情。因为这个工作，他认识了躲在学生会隔壁的仙波明希。',
+      '他善于把问题接过来，人际判断却并不总比别人敏锐。与明希合作后，许多看似随手接下的校园咨询都有了新的切入点。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://www.eslite.com/product/1001125121995252' }],
+  },
+  'senba-aki': {
+    work: '不迷途的羔羊',
+    paragraphs: [
+      '明希平常躲在学生会会议室旁，谈到学校出现的疑问时反应很快。她说话直接，会先指出前来咨询的人想当然的地方。',
+      '和成田真一郎认识后，她在不少校园谜题中提供另一种解释。两人一个四处问详情，一个善于整理说辞里的矛盾，形成了咨询会里互相补充的分工。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://www.eslite.com/product/1001125121995252' }],
+  },
+  'nanamura-hotaka': {
+    work: '请别来管我 不知为何她想改变孤狼这没救的高中生活',
+    paragraphs: [
+      '穗高原本习惯独自过高中生活，一次事故却让他与同学花见辻空回到了高中入学时。重新来过并没有改变他对安静日常的偏好。',
+      '空总能想出让他不得不参与同学活动的办法。正是两人对第二次高中生活的不同期待，让穗高渐渐遇见上一周目没怎么打过交道的人。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://ga.sbcr.jp/sp/bocchi/' }],
+  },
+  'hanamitsuji-sora': {
+    work: '请别来管我 不知为何她想改变孤狼这没救的高中生活',
+    paragraphs: [
+      '花见辻空是和穗高一起回到高中入学时的同班同学。她希望穗高重新尝试与人交际，对于他想维持独处的态度也常直接提出异议。',
+      '两人共享只有彼此知道的前一次高中生活。她的主动和穗高的退让，使很多看似普通的同学来往有了不同于第一次的结果。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://ga.sbcr.jp/sp/bocchi/' }],
+  },
+  'masuda-keima': {
+    work: '绝对不愿工作的地下城主想要睡懒觉',
+    paragraphs: [
+      '桂马被召唤到异世界时，发现自己成了地下城的管理者。地下城正遇到麻烦，他得先弄清能用的规则和资源，才有机会按原先的愿望过清闲日子。',
+      '他处理入侵者时经常想办法减少必须自己完成的工作。地下城每进入一个新阶段，如何安排设施和伙伴都是他要面对的实际问题。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://www.over-lap.co.jp/Form/Product/ProductDetail.aspx?cat=BNK&pid=9784865541182&shop=0&swrd=&vid=' }],
+  },
+  'rokuko': {
+    work: '绝对不愿工作的地下城主想要睡懒觉',
+    paragraphs: [
+      '洛库可是把桂马叫来帮忙的地下城核心。她对地下城的情况比桂马熟悉，遇到外来者时却没有足够的方法独自维持现状。',
+      '两人在摸索经营方式时各自掌握不同线索。她与桂马之间的伙伴关系，贯穿了从解除最初危机到后来扩大地下城的过程。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://www.over-lap.co.jp/Form/Product/ProductDetail.aspx?cat=BNK&pid=9784865541182&shop=0&swrd=&vid=' }],
+  },
+  'russell-blackkite': {
+    work: '黑鳶的聖者',
+    paragraphs: [
+      '罗素最初是冒险队伍里的治疗者，获得了圣者职业。同伴后来也能施展治疗魔法，他原本在队伍里的分工逐渐被取代。',
+      '离开旧队伍后，他与希碧拉相遇，有机会重新认识自己远超常人的魔力。治疗之外还能学到什么，成了他新旅程中的目标。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://over-lap.co.jp/narou/865547771/' }],
+  },
+  'sibylla-blackkite': {
+    work: '黑鳶的聖者',
+    paragraphs: [
+      '希碧拉是在罗素离开原队伍后遇到的女神。她对罗素的魔力有不同于旧同伴的看法，并让他看到学习暗魔法的可能性。',
+      '她的出现让罗素重新判断冒险者职业能做到什么。作品透过二人同行的经历，把职业被贴上的标签与实际能力区分开来。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://over-lap.co.jp/narou/865547771/' }],
+  },
+  'nanashino-hiiro': {
+    work: '我要成为魔法少女！',
+    paragraphs: [
+      '阳彩生活在魔法已经成为社会现实的世界。某次遭遇怪物后，他发现手机里出现了一位自称白的神秘人物，从而被拉进与魔法少女有关的事件。',
+      '他原本熟悉的现代城市和突然出现的超常现象同时存在。白提出的契约，是他开始在两种生活之间行动的转折点。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://kakuyomu.jp/works/16817139555767897255' }],
+  },
+  'haku-magical': {
+    work: '我要成为魔法少女！',
+    paragraphs: [
+      '白住在电脑世界，能透过设备与阳彩交流。出现在他手机上之后，白很快对阳彩提出了关于魔法的契约。',
+      '她知道阳彩尚未掌握的事，也会用自己的方式催他作决定。两人的合作贯穿了作品从怪物事件开始的故事。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://kakuyomu.jp/works/16817139555767897255' }],
+  },
+  'tanya-degurechaff': {
+    work: '谭雅战记',
+    paragraphs: [
+      '谭雅曾是现代社会的上班族，转生后成为帝国军的魔导师。她在军中习惯以效率和风险来衡量决定，也常试图让自己摆脱最危险的差事。',
+      '原本想远离前线的目标，经常因她交出的成果而落空。漫画给了她在军中与同僚交涉、下属理解命令的过程很大篇幅。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://www.kadokawa.co.jp/product/322604000380/' }],
+  },
+  'mary-sioux': {
+    work: '谭雅战记',
+    paragraphs: [
+      '玛丽在作品中与谭雅所属的一方对立，拥有很强的魔力。她对这场战争的看法与谭雅差异鲜明，后来在交战中被迫正面面对这段分歧。',
+      '两人同样能够使用魔法，但使用它的动机与作出判断的方式很不相同。这也是她们对手关系的核心。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://www.kadokawa.co.jp/product/322604000380/' }],
+  },
+  'wein-natra': {
+    work: '天才王子的赤字国家振兴术',
+    paragraphs: [
+      '维恩负责纳特拉王国的政务，面对资源、人手和军力都有限的局面，经常想用谈判和临场安排换取主动。',
+      '他与辅佐官妮妮姆共同处理外交和内政。表面上总能找出对策的王子，私下最想要的生活却和继续负责国家相去甚远。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://www.ganganonline.com/title/688' }],
+  },
+  'ninym-ralei': {
+    work: '天才王子的赤字国家振兴术',
+    paragraphs: [
+      '妮妮姆是维恩的辅佐官，和他一起处理纳特拉王国的日常政务。她常比旁人更早听懂他话里真正想解决的问题。',
+      '她会直接指出计划可能给王国带来的麻烦。两人在工作里对彼此足够熟悉，因此常由维恩拿定对外的策略，妮妮姆在旁协助把事情落到实际。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://www.ganganonline.com/title/688' }],
+  },
+  'ed-rothstaylor': {
+    work: '三流反派的學院生存記',
+    paragraphs: [
+      '艾德在游戏里原本只是个处境糟糕的小反派。主人公成为艾德时，这个身份已经失去家族支持，还被赶出宿舍。',
+      '他的首要任务是找得到住处并继续留在学院。原游戏的其他人物照各自的目标活动，他得尽量让自己的求生计划别被卷进去。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://us.webtoons.com/en/fantasy/the-extras-academy-survival-guide/list?title_no=6465' }],
+  },
+  'raoul-evans': {
+    work: '渴望復仇的最強勇者、以黑暗之力所向披靡',
+    paragraphs: [
+      '劳尔曾被称为勇者，后来因贵族安排的罪名被处死。故事把他重返世间后的行动与原先受拥戴的身份并置。',
+      '他重新面对过去掌权的人时，已把复仇视为自己的首要目标。漫画以他的回归逐步揭开原先那场审判背后的关系。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://www.shueisha.co.jp/books/items/contents.html?isbn=978-4-08-894191-2' }],
+  },
+  'villain-cassian': {
+    work: '反派絕殺',
+    paragraphs: [
+      '卡西安原本属于能够使用异能的一方，遭遇意外后醒来时却已在一名韩国高中生的身体里。更麻烦的是，这个新身份还被社会归为反派。',
+      '他熟悉“好人”阵营如何判定敌友，自己却需要以相反的身份重新适应力量与处境。故事从他如何在两套规则中做选择展开。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://m.webtoons.com/en/action/villain-to-kill/list?title_no=2857' }],
+  },
+  'shin-youngwoo': {
+    work: '裝備我最強',
+    paragraphs: [
+      '申英宇在现实中为生活费发愁，在虚拟游戏里也只是普通玩家。一次任务让他得到传奇铁匠留下的能力，装备制作从此成了他的长处。',
+      '在游戏中，他使用格里德这个名字。别人主要靠提升战斗能力时，他能够改变装备本身，也因此结识了会影响自己做事方式的人。',
+    ],
+    sources: [{ title: '出版方或原作 · 角色资料', url: 'https://www.tappytoon.com/en/book/overgeared' }],
+  },
+  'mankitsu-izumi': {
+    work: '想尽情享受的常客小姐',
+    paragraphs: ['泉是在漫画咖啡厅打工的大学生。店里的常客穗波引起了他的注意，两人得以从短短的店员与顾客对话开始，慢慢认识彼此。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://www.kadokawa.co.jp/product/322510001550/' }],
+  },
+  'mankitsu-honami': {
+    work: '想尽情享受的常客小姐',
+    paragraphs: ['穗波常来泉打工的漫画咖啡厅。她的身份从店里偶尔会碰到的熟客，逐渐变成泉愿意在工作之外多了解的人。两人的日常由店内延伸到店外。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://www.kadokawa.co.jp/product/322510001550/' }],
+  },
+  'hachiyaa-maid': {
+    work: '陷入爱河的蜂谷君是女仆',
+    paragraphs: ['蜂谷告白时得知自己喜欢的人已有婚约。为了弄清情敌是怎样的人，他以女仆身份进入对方家里，结果得一边工作，一边掩饰自己真正在意的事。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://e-comi.shogakukan.co.jp/books/09D120500001d0000000' }],
+  },
+  'aoyagi-akito': {
+    work: '帮助了迷路的幼女后，美少女留学生邻居变得常来我家玩了',
+    paragraphs: ['明人本以为和同班留学生夏洛特不会有太多交集。一次回家路上，他帮助了迷路的艾玛，由此认识贝内特姐妹，学校和街坊间的日常也逐渐交汇。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://www.shueisha.co.jp/books/items/contents.html?jdcn=08X10000000055597700' }],
+  },
+  'charlotte-bennett': {
+    work: '帮助了迷路的幼女后，美少女留学生邻居变得常来我家玩了',
+    paragraphs: ['夏洛特从英国来到明人班上留学，也住在附近。得知妹妹艾玛受到明人帮助后，她有了进一步认识他的机会，邻里关系也让他看见她在学校之外的样子。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://www.shueisha.co.jp/books/items/contents.html?jdcn=08X10000000055597700' }],
+  },
+  'emma-bennett': {
+    work: '帮助了迷路的幼女后，美少女留学生邻居变得常来我家玩了',
+    paragraphs: ['艾玛是夏洛特的妹妹。她在外面迷路时遇到青柳明人，这次相识让原本不怎么往来的邻居熟悉起来。贝内特姐妹的关系也从此成为明人生活的一部分。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://www.shueisha.co.jp/books/items/contents.html?jdcn=08X10000000055597700' }],
+  },
+  'space-hiro': {
+    work: '一覺醒來坐擁神裝和飛船，我決定以買一套獨門獨戶的房子為目標作為傭兵自由地活下去',
+    paragraphs: ['希罗原本是上班族佐藤孝弘，醒来时却发现自己坐在飞船里。他用船长希罗的名字接受佣兵委托，想攒钱在宜居星球安家。认识新的同伴后，他的安排也跟着改变。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://promo.kadokawa.co.jp/kadokawabooks/special/mezametarasaikyosoubitoutyuusen/' }],
+  },
+  'space-mimi': {
+    work: '一覺醒來坐擁神裝和飛船，我決定以買一套獨門獨戶的房子為目標作為傭兵自由地活下去',
+    paragraphs: ['咪咪在希罗开始为不同空间站接委托后登上飞船，成为与他共同生活的伙伴。对于刚开始看懂这片宇宙规则的希罗，她也带来了当地居民的视角。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://promo.kadokawa.co.jp/kadokawabooks/special/mezametarasaikyosoubitoutyuusen/' }],
+  },
+  'space-elma': {
+    work: '一覺醒來坐擁神裝和飛船，我決定以買一套獨門獨戶的房子為目標作為傭兵自由地活下去',
+    paragraphs: ['艾尔玛是有资历的宇宙佣兵，也是一名精灵。初遇希罗时，她比新手更懂这一行的规矩。后来的同船生活让她发现，希罗偏偏在驾驶与作战上有不少出乎她预料的办法。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://promo.kadokawa.co.jp/kadokawabooks/special/mezametarasaikyosoubitoutyuusen/' }],
+  },
+  'miki-kiichiro': {
+    work: '妹妹是知道的',
+    paragraphs: ['贵一郎在公司里习惯少说话，同事待久了也有人觉得他乏味。他却很擅长给广播节目投稿，还用「水果芭菲」这个笔名被听众记住。妹妹知道这两种形象背后是同一个人。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://news.kodansha.co.jp/comics/20151297' }],
+  },
+  'miki-miki': {
+    work: '妹妹是知道的',
+    paragraphs: ['美贵是三木贵一郎的妹妹。她很清楚外人通常怎么看哥哥，也对哥哥在家和广播投稿时表现出的幽默很熟悉。作品常从她所知道的家人日常进入故事。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://news.kodansha.co.jp/comics/20151297' }],
+  },
+  'autumn-river-rok': {
+    work: '秋江入夜時',
+    paragraphs: ['李禄是作品中的君主，因衣带症而难以正常穿脱衣物。宫里大多数人不知道怎样帮他，素纱却能够在他发作时安抚他。两人的关系最初就围绕着这份难得的信任展开。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://www.webtoons.com/zh-hant/romance-m/as-night-falls-upon-the-autumn-river/list?title_no=9753' }],
+  },
+  'autumn-river-sosa': {
+    work: '秋江入夜時',
+    paragraphs: ['素纱以宫女的身份出现，旁人并不清楚她的来历。她能在李禄情绪失控时帮助他更衣，因此很快成为宫里引人注目的人。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://www.webtoons.com/zh-hant/romance-m/as-night-falls-upon-the-autumn-river/list?title_no=9753' }],
+  },
+  'yoon-garam-her-toys': {
+    work: '玩物',
+    paragraphs: ['尹佳蓝来到韩国后被贤道集团副会长李明俊收养，后来以学生身份进入校园。她对周围的霸凌有自己的反应，而这与她在认识李明俊之前的经历有关。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://usw.webtoons.com/zh-hant/school/her-toys/list?title_no=6583' }],
+  },
+  'lee-myeongjun-her-toys': {
+    work: '玩物',
+    paragraphs: ['李明俊是贤道集团副会长。失去女儿后，他收养了尹佳蓝，让她成了自己的家人。他的选择将尚未解决的家庭往事与学校里发生的事联系起来。'],
+    sources: [{ title: '出版方 · 角色资料', url: 'https://usw.webtoons.com/zh-hant/school/her-toys/list?title_no=6583' }],
+  },
+  'eye-contact-sister': {
+    work: '妹妹一天只和我对上一次眼',
+    paragraphs: ['妹妹是这部短篇漫画的中心人物。她和哥哥相处时很少直接对上视线，有时会用换装和自己的小动作引起对方注意。作品主要通过这样的生活片段描写两人的相处。'],
+    sources: [{ title: '作品与角色资料', url: 'https://bangumi.tv/subject/454655' }],
+  },
+  'eye-contact-brother': {
+    work: '妹妹一天只和我对上一次眼',
+    paragraphs: ['作为故事中的哥哥，他从妹妹不常与他对视这件事上注意到她的变化。原作以两人的家庭日常为主，许多意思通过衣着、视线与反应传达。'],
+    sources: [{ title: '作品与角色资料', url: 'https://bangumi.tv/subject/454655' }],
+  },
+  'low-tide-euihyun': {
+    work: '海邊之夜',
+    paragraphs: ['宜贤背着家里留下的债务，还需要照顾年幼的弟弟。为寻找住处和工作，他不得不与上门收债的吕泰洲打交道。两人最初的关系由这笔债务而来。'],
+    sources: [{ title: '作品与角色资料', url: 'https://sevenseasentertainment.com/series/low-tide-in-twilight/' }],
+  },
+  'low-tide-taeju': {
+    work: '海邊之夜',
+    paragraphs: ['泰洲在追讨宜贤家的债务时认识了这对兄弟，后来为他们提供住处和工作。对宜贤来说，他既是眼下困境的重要帮手，也是手中仍握着债权的人。'],
+    sources: [{ title: '作品与角色资料', url: 'https://sevenseasentertainment.com/series/low-tide-in-twilight/' }],
+  },
+  'wako-ichiro': {
+    work: '後宮開在離婚時',
+    paragraphs: ['市路在结婚纪念日比平时更早回家，发现妻子有了另一段关系。婚姻结束以后，他需要重新安排自己的生活，也开始接触此前没想到会认识的人。'],
+    sources: [{ title: '作品与角色资料', url: 'https://www.shueisha.co.jp/books/items/contents.html?jdcn=08X10000000022198700' }],
+  },
+  'mob-priest-krael': {
+    work: '身為路人司祭的我發現這是乙女遊戲的世界於是決定養成女主',
+    paragraphs: ['克拉艾尔转生为游戏世界里原本无关紧要的司祭，在乡镇神殿工作。认出前来求助的蕾娜后，他无法把她遭遇的事视为自己无须干涉的原作情节，便决定照顾她。'],
+    sources: [{ title: '作品与角色资料', url: 'https://comic-walker.com/detail/KC_007033_S' }],
+  },
+  'mob-priest-reina': {
+    work: '身為路人司祭的我發現這是乙女遊戲的世界於是決定養成女主',
+    paragraphs: ['蕾娜是克拉艾尔在乡镇里遇见的少女，也是他记忆中那个游戏的女主角。她来到神殿时需要帮助，之后有了可以安心学习和生活的地方。漫画由两人如何相处开始展开。'],
+    sources: [{ title: '作品与角色资料', url: 'https://comic-walker.com/detail/KC_007033_S' }],
+  },
+  'ingoshima-keita': {
+    work: '隱語島',
+    paragraphs: ['启太跟随同学乘船出行，事故后与其他幸存者流落到地图上找不到的岛。面对陌生地形和与外界失去联络的问题，他经常需要寻找新办法与同伴继续行动。'],
+    sources: [{ title: '作品与角色资料', url: 'https://bangumi.tv/subject/240698' }],
+  },
+  'ingoshima-aoi': {
+    work: '隱語島',
+    paragraphs: ['葵也是事故后被困在岛上的学生，与启太等人一道寻找离开岛的机会。她和其他人在岛上的遭遇，使单纯的求生逐渐变成必须读懂当地规则的故事。'],
+    sources: [{ title: '作品与角色资料', url: 'https://bangumi.tv/subject/240698' }],
+  },
+  'otodori-ayumu': {
+    work: '劍與魔法與NTR',
+    paragraphs: ['乙鸟步原本生活在现代，在一次地震后发现自己到了有魔法的异世界。漫画通过他的视角介绍了新环境中的人物与规则，原先的生活习惯也让他产生了不同于当地人的判断。'],
+    sources: [{ title: '作品与角色资料', url: 'https://www.shueisha.co.jp/books/items/contents.html?isbn=978-4-08-894188-2' }],
+  },
+  'survival-saga-anastasia': {
+    work: '戰姬求生記-背負異世界命運的不正經異性交流',
+    paragraphs: ['阿纳斯塔西娅是精灵帝国的魔法使。与龙族的冲突过后，她醒来时已身处一座荒岛，惯用的魔力也暂时耗尽。她得一边寻找同行的人，一边适应在没有原有能力的情况下求生。'],
+    sources: [{ title: 'KADOKAWA · 作品与角色资料', url: 'https://group.kadokawa.co.jp/information/promotional_topics/article-14381.html' }],
+  },
+}
+
 const catalog: Record<string, CharacterProfile & { catalogName: string }> = catalogProfiles
 
 export function getCharacterProfile(name?: string, id?: number | string) {
+  if (typeof id === 'string' && Object.hasOwn(workProfiles, id)) return workProfiles[id]
   const record = catalog[String(id)]
   if (record && name && (record.catalogName === name || record.displayName === name)) return record
   const key = (name || '').replace(/\s+/g, '').split(/[（(]/)[0]

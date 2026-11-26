@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { searchArchiveCharacters } from '@/data/characterArchive'
 
 export interface GlobalSearchParams {
   search?: string
@@ -37,6 +38,34 @@ interface SearchResponse {
   pageSize?: number
 }
 
+function fromDatabase(q: URLSearchParams, page?: number): Promise<SearchResponse> {
+  const params = new URLSearchParams(q)
+  if (page != null) params.set('page', String(page))
+  const qs = params.toString()
+  return request.get<unknown, { code: number; data: SearchRow[] | {
+    items: SearchRow[]; total: number; page: number; pageSize: number
+  } }>(qs ? `${API.ALL_SEARCH_API}?${qs}` : API.ALL_SEARCH_API).then(response => {
+    if (Array.isArray(response.data)) return { ...response, data: response.data }
+    const payload = response.data
+    return { ...response, data: payload?.items, total: payload?.total, page: payload?.page, pageSize: payload?.pageSize }
+  })
+}
+
+async function characterPage(q: URLSearchParams, requested: number, local: SearchRow[]): Promise<SearchResponse> {
+  const base = await fromDatabase(q, 1)
+  if (base.code !== 200 || !Array.isArray(base.data)) return base
+  const pageSize = base.pageSize ?? Math.max(1, Number(q.get('limit')) || 24)
+  const serverTotal = base.total ?? base.data.length
+  const total = serverTotal + local.length
+  const page = Math.max(1, Math.min(requested, Math.ceil(total / pageSize)))
+  const start = (page - 1) * pageSize
+  const end = start + pageSize
+  const localRows = end > serverTotal ? local.slice(Math.max(0, start - serverTotal), end - serverTotal) : []
+  const window = start >= serverTotal ? undefined : page === 1 ? base : await fromDatabase(q, page)
+  if (window && (window.code !== 200 || !Array.isArray(window.data))) return window
+  return { code: 200, data: [...(window?.data ?? []), ...localRows].slice(0, pageSize), total, page, pageSize }
+}
+
 export async function getAllSearch(input: GlobalSearchParams | string): Promise<SearchResponse> {
   const params: GlobalSearchParams = typeof input === 'string' ? { search: input } : input
   const search = params.search?.trim() || ''
@@ -49,25 +78,18 @@ export async function getAllSearch(input: GlobalSearchParams | string): Promise<
   if (params.yearMax != null) q.set('yearMax', String(params.yearMax))
   if (params.sortBy) q.set('sortBy', params.sortBy)
   if (params.mediaType) q.set('mediaType', params.mediaType)
-  if (params.page != null) q.set('page', String(params.page))
   if (params.limit != null) q.set('limit', String(params.limit))
-  const qs = q.toString()
-  const fromServer = request.get<unknown, { code: number; data: SearchRow[] | {
-    items: SearchRow[]; total: number; page: number; pageSize: number
-  } }>(qs ? `${API.ALL_SEARCH_API}?${qs}` : API.ALL_SEARCH_API).then(response => {
-    if (Array.isArray(response.data)) return { ...response, data: response.data }
-    const payload = response.data
-    return { ...response, data: payload?.items, total: payload?.total, page: payload?.page, pageSize: payload?.pageSize }
-  })
   const includeLocal = params.mediaType === 'character'
     || (search && !params.mediaType && !params.genre && !params.status && params.yearMin == null && params.yearMax == null)
-  if (!includeLocal || (params.page ?? 1) > 1) return fromServer
-  const [response, { matchingCast }, { searchGalgameCharacters }] = await Promise.all([
-    fromServer,
+  const pagedCharacters = params.mediaType === 'character' && params.page != null
+  if (!includeLocal || (!pagedCharacters && (params.page ?? 1) > 1)) return fromDatabase(q, params.page)
+  const loadingServer = pagedCharacters ? null : fromDatabase(q, params.page)
+  const [response, { matchingCast }, { searchGalgameCharacters }, archive] = await Promise.all([
+    loadingServer,
     import('@/data/characterAssociations'),
     import('@/data/galgameMedia'),
+    searchArchiveCharacters(search, pagedCharacters ? undefined : 8).catch(() => []),
   ])
-  if (response?.code !== 200 || !Array.isArray(response.data)) return response
   const editorial: SearchRow[] = matchingCast(search).filter(person => !params.page || typeof person.id === 'string'
     || (normalized && (person.id === 1 || !person.name.normalize('NFKC').toLowerCase().includes(normalized)))).map(person => ({
     id: person.id, name: person.name, sourcetype: '角色', workTitle: person.title,
@@ -76,7 +98,11 @@ export async function getAllSearch(input: GlobalSearchParams | string): Promise<
     id: `${slug}:${person.name}`, name: person.name, picurl: person.image,
     sourcetype: '角色', workTitle: title, galgameSlug: slug,
   }))
-  const added = [...editorial, ...galgame]
+  const added = [...editorial, ...galgame, ...archive]
+  if (pagedCharacters) {
+    return characterPage(q, params.page!, added)
+  }
+  if (!response || response.code !== 200 || !Array.isArray(response.data)) return response ?? { code: 500, data: null }
   const byId = new Map(added.map(row => [String(row.id), row]))
   const serverCharacters = new Set(response.data.filter(row => row.sourcetype === '角色').map(row => String(row.id)))
   const server = response.data.map(row => row.sourcetype === '角色' && byId.has(String(row.id))
