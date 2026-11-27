@@ -17,6 +17,13 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / "frontend"
 ARCHIVE_URL = "https://github.com/bangumi/Archive"
+PROFILE_FIELDS = {
+    "性别": ("性别",), "身高": ("身高",), "年龄": ("年龄", "年齢"),
+    "身份": ("身份", "职阶"), "职业": ("职业",), "种族": ("种族", "種族"),
+    "所属": ("所属", "阵营"), "学校": ("学校", "学院"), "班级": ("班级",),
+    "声部": ("所属声部",), "乐器": ("乐器",), "社团": ("社团", "部活"),
+    "兴趣": ("兴趣", "趣味"), "特长": ("特长", "特技"),
+}
 FORMATS = {"animation": 2, "comic": 1, "novel": 1, "galgame": 4}
 LANGUAGE_EDITION = re.compile(r"[（(】\[\s]*(?:中国大陆配音版|普通话版|国语配音版|中文配音|国语版|中配版|粤语版|粤配版|日语版|日配版|原声版|中文|中配|国配|粤配)[）)】\]]*$")
 SEASON = re.compile(r"第([一二三四五六七八九十0-9]+)[季期]")
@@ -102,6 +109,25 @@ def site_casts():
 
 def compact(values, limit):
     return list(dict.fromkeys(value for value in values if 0 < len(value) <= limit and not re.search(r"[<>\r\n]", value)))
+
+
+def profile_facts(info):
+    result = []
+    for label, keys in PROFILE_FIELDS.items():
+        values = compact(fields(info, keys), 48)
+        if values and not re.search(r"[\[\]{}]|https?://|^(?:[-—?？]+|未知|不明)$", values[0]):
+            result.append([label, values[0]])
+    return result
+
+
+def canonical_ids(people):
+    routes = defaultdict(set)
+    for person in people:
+        if "siteId" in person:
+            routes[str(person["siteId"])].add(person["id"])
+        if "game" in person:
+            routes[":".join(person["game"])].add(person["id"])
+    return {route: min(ids) for route, ids in sorted(routes.items()) if len(ids) == 1}
 
 
 def generate(archive, site, translation):
@@ -190,11 +216,7 @@ def generate(archive, site, translation):
             entry["originalName"] = native
         if birth:
             entry["birthday"] = birth[0]
-        facts = []
-        for label in ("性别", "身高", "所属", "职业"):
-            values = compact(fields(info, (label,)), 48)
-            if values:
-                facts.append([label, values[0]])
+        facts = profile_facts(info)
         if facts:
             entry["facts"] = facts
         alternatives = [a for a in [*local, *aliases] if a not in {name, native}]
@@ -224,6 +246,18 @@ def generate(archive, site, translation):
         elif not editorial and len(ids) == 1:
             slug, name = str(next(iter(ids))).split(":", 1)
             characters[char_id]["game"] = [slug, name]
+
+    site_names = {str(person["id"]): person["name"] for cast in registry.values() for person in cast}
+    site_candidates = defaultdict(list)
+    for person in characters.values():
+        if "siteId" in person:
+            site_candidates[str(person["siteId"])].append(person)
+    for site_id, people in site_candidates.items():
+        if len(people) > 1:
+            exact = [person for person in people if name_keys(person["name"], translation) & name_keys(site_names[site_id], translation)]
+            for person in people:
+                if len(exact) != 1 or person is not exact[0]:
+                    del person["siteId"]
 
     valid_sources = defaultdict(set)
     for work in output_works:
@@ -288,6 +322,7 @@ def write_shards(result, target):
         write(f"profile-{i}", profiles)
     write("search", search)
     write("links", {person: list(works.values()) for person, works in links.items()})
+    write("canonical", canonical_ids(people.values()))
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)

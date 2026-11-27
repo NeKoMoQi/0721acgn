@@ -63,6 +63,11 @@ export async function archiveProfile(id: number) {
   return profiles[String(id)]
 }
 
+export async function archiveCanonicalProfile(key: string) {
+  const ids = await readShard<Record<string, number>>('canonical')
+  return Object.hasOwn(ids, key) ? archiveProfile(ids[key]) : undefined
+}
+
 export async function archiveWorksForSiteCharacter(id: number | string) {
   const links = await readShard<Record<string, ArchiveWork[]>>('links')
   return Object.hasOwn(links, id) ? links[String(id)] : []

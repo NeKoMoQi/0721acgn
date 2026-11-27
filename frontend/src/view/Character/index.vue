@@ -8,60 +8,27 @@
         <p>{{ error }}</p><RouterLink to="/">回首页换一个</RouterLink>
       </div>
       <article v-else-if="character" class="card" data-character>
-        <div class="portrait">
-          <img
-            v-if="avatarOk && safeAvatar(character.avatarurl)"
-            :src="safeAvatar(character.avatarurl)"
-            :alt="displayName"
-            @error="avatarOk = false"
-          />
-          <div v-else class="portrait-fallback">{{ displayName }}</div>
-        </div>
-        <div class="copy">
-          <span class="eyebrow">0721 ACGN · 角色介绍</span>
+        <header class="portrait">
+          <CharacterPortrait :image="artwork?.image" :alternate="portraitImage" :fallback="archivePortrait(archivePerson?.id, 'large')" :alt="displayName" eager />
           <h1>{{ displayName }}</h1>
+          <p v-if="originalName && originalName !== displayName" class="original-name">{{ originalName }}</p>
+        </header>
+        <div class="copy">
           <p v-if="workTitle" class="work-title">出自《{{ workTitle }}》</p>
-          <p v-if="selectedGame?.person.originalName && selectedGame.person.originalName !== character.name" class="original-name">{{ selectedGame.person.originalName }}</p>
-          <dl v-if="!selectedGame && (character.sex || character.birthday)" class="facts">
-            <div><dt>性别</dt><dd>{{ character.sex || '未填写' }}</dd></div>
-            <div><dt>生日</dt><dd>{{ character.birthday || '未填写' }}</dd></div>
-          </dl>
-          <section v-if="introParagraphs.length" class="intro">
-            <h2>简介</h2>
+          <section class="intro">
+            <h2>角色简介</h2>
             <p v-for="(paragraph, index) in introParagraphs" :key="index">{{ paragraph }}</p>
-            <ul v-if="profile" class="profile-sources" aria-label="角色资料来源">
-              <li v-for="source in profile.sources" :key="source.url">
-                <a :href="source.url" target="_blank" rel="noopener noreferrer">{{ source.title }}</a>
-              </li>
-            </ul>
-            <small v-else-if="selectedGame">
-              <a :href="selectedGame.person.sourceUrl" target="_blank" rel="noopener noreferrer">角色资料来源</a>
-            </small>
-            <small v-else-if="sourceUrl">
-              内容摘自
-              <a :href="sourceUrl" target="_blank" rel="noopener noreferrer">萌娘百科</a>
-              ，依 CC BY-NC-SA 3.0 CN 使用。
-            </small>
-          </section>
-          <section v-else-if="imported" class="intro">
-            <h2>简介</h2>
-            <p>已收录 {{ imported.works.length }} 个登场作品。各版本的戏份和配音资料见下方。</p>
-            <dl v-if="imported.person.originalName || imported.person.birthday || imported.person.aliases?.length || imported.person.facts?.length" class="archive-facts">
-              <div v-if="imported.person.originalName"><dt>原名</dt><dd>{{ imported.person.originalName }}</dd></div>
-              <div v-if="imported.person.birthday"><dt>生日</dt><dd>{{ imported.person.birthday }}</dd></div>
-              <div v-if="imported.person.aliases?.length"><dt>别名</dt><dd>{{ imported.person.aliases.join('、') }}</dd></div>
-              <div v-for="[label, value] in imported.person.facts" :key="label"><dt>{{ label }}</dt><dd>{{ value }}</dd></div>
+            <p v-if="!introParagraphs.length" class="empty">简介待补</p>
+            <dl v-if="facts.size" class="archive-facts" aria-label="角色资料">
+              <div v-for="[label, value] in facts" :key="label"><dt>{{ label }}</dt><dd>{{ value }}</dd></div>
             </dl>
-            <ul class="profile-sources" aria-label="角色资料来源">
-              <li><a :href="`https://bgm.tv/character/${imported.person.id}`" target="_blank" rel="noopener noreferrer">Bangumi 番组计划 · 角色资料</a></li>
-            </ul>
           </section>
-          <p v-else class="empty">这个角色还没有录入简介。</p>
           <section v-if="associatedWorks.length || extraWorks.length || selectedGame" class="character-works">
             <h2>登场作品</h2>
             <ul>
               <li v-for="work in associatedWorks" :key="`${work.type}:${work.id}`">
                 <RouterLink :to="workLocation(work)">{{ work.title }} · {{ workTypeLabel(work.type) }}</RouterLink>
+                <small v-if="creditFor(work)" class="archive-credit">{{ creditFor(work) }}</small>
               </li>
               <li v-for="work in extraWorks" :key="`archive:${work.type}:${work.id}`">
                 <RouterLink :to="archiveWorkLocation(work)">{{ work.title }} · {{ archiveKindLabels[work.type] }}</RouterLink>
@@ -69,6 +36,7 @@
               </li>
               <li v-if="selectedGame">
                 <RouterLink :to="{ name: 'GalgameIntroduce', query: { slug: gameSlug } }">{{ selectedGame.title || '返回 Galgame 详情' }}</RouterLink>
+                <small v-if="creditFor({ type: 'galgame', id: gameSlug })" class="archive-credit">{{ creditFor({ type: 'galgame', id: gameSlug }) }}</small>
               </li>
             </ul>
           </section>
@@ -76,6 +44,14 @@
             <h2>萌点</h2>
             <ul class="tags"><li v-for="tag in tags" :key="tag">{{ tag }}</li></ul>
           </template>
+          <footer v-if="sources.length" class="sources">
+            <h2>资料来源</h2>
+            <ul class="profile-sources">
+              <li v-for="source in sources" :key="source.url">
+                <a :href="source.url" target="_blank" rel="noopener noreferrer">{{ source.title }}</a>
+              </li>
+            </ul>
+          </footer>
           <div class="actions">
             <button type="button" @click="next">换一个角色</button>
             <RouterLink :to="{ name: 'SiteSearch', query: { mediaType: 'character' } }" class="ghost">搜索角色</RouterLink>
@@ -90,11 +66,13 @@
 import { computed, ref, shallowRef, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import Headpage from '@/components/Headpage/index.vue'
+import CharacterPortrait from '@/components/CharacterPortrait.vue'
 import request from '@/utils/request'
 import { getCharacterProfile } from '@/data/characterProfiles'
 import { editorialCharacter, workLocation, workTypeLabel, worksForCharacter } from '@/data/characterAssociations'
 import { animationWorksForGalgame, galgameCharacter } from '@/data/galgameMedia'
-import { archiveProfile, archiveRoleLabel, archiveWorkLocation, archiveWorksForSiteCharacter, type ArchiveWork } from '@/data/characterArchive'
+import { archiveCanonicalProfile, archiveProfile, archiveRoleLabel, archiveWorkLocation, archiveWorksForSiteCharacter, type ArchiveWork } from '@/data/characterArchive'
+import { archiveBiography, archivePortrait, officialArtwork, safePortrait } from '@/data/characterPresentation'
 
 interface Character {
   id: number | string
@@ -112,9 +90,9 @@ const router = useRouter()
 const character = ref<Character | null>(null)
 const loading = ref(false)
 const error = ref('')
-const avatarOk = ref(true)
 let loadGeneration = 0
 const imported = shallowRef<Awaited<ReturnType<typeof archiveProfile>>>()
+const canonical = shallowRef<Awaited<ReturnType<typeof archiveCanonicalProfile>>>()
 const linkedArchiveWorks = shallowRef<ArchiveWork[]>([])
 const archiveKindLabels = { animation: '动漫', comic: '漫画', novel: '轻小说', galgame: 'Galgame' }
 
@@ -126,9 +104,15 @@ const selectedGame = computed(() => galgameCharacter(gameSlug.value, String(rout
 const associatedWorks = computed(() => selectedGame.value ? animationWorksForGalgame(gameSlug.value) : worksForCharacter(character.value?.id))
 const profile = computed(() => selectedGame.value || imported.value ? undefined : getCharacterProfile(character.value?.name, character.value?.id))
 const displayName = computed(() => profile.value?.displayName || character.value?.name || '')
+const archivePerson = computed(() => (imported.value ?? canonical.value)?.person)
+const originalName = computed(() => selectedGame.value?.person.originalName || archivePerson.value?.originalName)
+const artwork = computed(() => officialArtwork(archivePerson.value?.id, character.value?.id))
+const portraitImage = computed(() => safePortrait(selectedGame.value?.person.image || character.value?.avatarurl || ''))
+const archiveWorks = computed(() => (imported.value ?? canonical.value)?.works ?? linkedArchiveWorks.value)
 const extraWorks = computed(() => {
   const seen = new Set(associatedWorks.value.map(work => `${work.type}:${work.id}`))
-  const works = (imported.value?.works ?? linkedArchiveWorks.value).filter(work => {
+  if (selectedGame.value) seen.add(`galgame:${gameSlug.value}`)
+  const works = archiveWorks.value.filter(work => {
     const key = `${work.type}:${work.id}`
     if (seen.has(key)) return false
     seen.add(key)
@@ -137,21 +121,40 @@ const extraWorks = computed(() => {
   return works
 })
 const workTitle = computed(() => selectedGame.value?.title || profile.value?.work || associatedWorks.value[0]?.title || extraWorks.value[0]?.title)
-function creditFor(work: ArchiveWork) {
-  const entry = work.cast.find(([id]) => id === imported.value?.person.id)
+function creditFor(work: Pick<ArchiveWork, 'type' | 'id'>) {
+  const version = archiveWorks.value.find(entry => entry.type === work.type && entry.id === work.id)
+  const entry = version?.cast.find(([id]) => id === archivePerson.value?.id)
   if (!entry) return ''
   const role = archiveRoleLabel(entry[1])
   const voices = entry[2]?.join('、')
   return [role, voices ? `配音 ${voices}` : ''].filter(Boolean).join(' · ')
 }
-const introParagraphs = computed(() => profile.value?.paragraphs ??
+const biography = computed(() => archiveBiography(archivePerson.value?.id))
+const introParagraphs = computed(() => profile.value?.paragraphs ?? biography.value?.paragraphs ??
   (character.value?.intro || '').split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean),
 )
-const sourceUrl = computed(() =>
-  /^https:\/\/zh\.moegirl\.org\.cn\//.test(character.value?.introsource || '') ? character.value?.introsource : '',
-)
-// 头像只接受站内路径或 https，避免把外部字段直接塞进 img。
-const safeAvatar = (url = '') => /^\/(?!\/)/.test(url || '') || /^https:\/\//i.test(url || '') ? url : ''
+const facts = computed(() => {
+  const values = new Map(archivePerson.value?.facts ?? [])
+  const aliases = archivePerson.value?.aliases
+  if (aliases?.length) values.set('别名', aliases.join('、'))
+  const birthday = character.value?.birthday || archivePerson.value?.birthday
+  if (birthday) values.set('生日', birthday)
+  if (character.value?.sex) values.set('性别', character.value.sex)
+  return values
+})
+const sources = computed(() => {
+  const links = [...(profile.value?.sources ?? [])]
+  const game = selectedGame.value?.person
+  if (game) links.push({ title: '作品官网 · 角色资料', url: game.sourceUrl })
+  const legacySource = character.value?.introsource
+  if (biography.value && !profile.value) links.push(biography.value.source)
+  else if (!profile.value && legacySource && /^https:\/\/zh\.moegirl\.org\.cn\//.test(legacySource)) {
+    links.push({ title: '萌娘百科 · CC BY-NC-SA 3.0 CN', url: legacySource })
+  }
+  if (artwork.value) links.push({ title: '作品官网 · 角色立绘', url: artwork.value.source })
+  if (archivePerson.value) links.push({ title: 'Bangumi 番组计划 · 档案资料', url: `https://bgm.tv/character/${archivePerson.value.id}` })
+  return links.filter((link, index) => links.findIndex(other => other.url === link.url) === index)
+})
 
 async function load() {
   const current = ++loadGeneration
@@ -159,10 +162,16 @@ async function load() {
   loading.value = false
   error.value = ''
   character.value = null
-  avatarOk.value = true
   imported.value = undefined
+  canonical.value = undefined
   linkedArchiveWorks.value = []
   const game = selectedGame.value?.person
+  const canonicalKey = game ? `${gameSlug.value}:${game.name}` : id
+  if (canonicalKey && !canonicalKey.startsWith('bgm-')) {
+    void archiveCanonicalProfile(canonicalKey).then(result => {
+      if (current === loadGeneration) canonical.value = result
+    }).catch(() => {})
+  }
   if (game) {
     character.value = { id: game.name, name: game.name, intro: game.summary, avatarurl: game.image }
     return
@@ -226,17 +235,19 @@ watch(() => [route.params.id, route.params.slug, route.params.person], () => { v
 </script>
 
 <style scoped>
-.original-name { color: #526f64; }
+.original-name { margin: 0; color: #526f64; }
 .character-works { margin: 20px 0; }
 .character-works ul { padding-left: 18px; }
 .character-works a { color: #246048; text-decoration: underline; }
-.work-title { margin: -12px 0 20px; color: #506e62; }
+.work-title { margin: 0 0 20px; color: #506e62; }
 .archive-facts div { display: flex; gap: 10px; margin: 6px 0; }
 .archive-facts dt { font-weight: 600; flex-shrink: 0; }
 .archive-facts dd { margin: 0; }
 .archive-credit { margin-left: 8px; color: #506e62; }
 .profile-sources { padding-left: 18px; font-size: 14px; }
 .profile-sources a { color: #246048; }
+.sources { margin: 24px 0; padding-top: 14px; border-top: 1px solid #dcebe3; }
+.profile-sources li { margin: 4px 0; overflow-wrap: anywhere; }
 .character-root {
   min-height: 100vh;
   background: #f5f7f5;
@@ -272,51 +283,11 @@ main {
   padding: 36px;
   box-shadow: 0 8px 28px #203c3214;
 }
-.portrait img,
-.portrait-fallback {
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 16px;
-  object-fit: cover;
-  display: block;
-  background: #e2efe9;
-}
-.portrait-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  box-sizing: border-box;
-  color: #35564b;
-  font-size: 18px;
-  text-align: center;
-}
-.eyebrow {
-  font-size: 12px;
-  letter-spacing: .08em;
-  color: #658078;
-}
-.copy h1 {
+.portrait { align-self: start; text-align: center; }
+.portrait h1 {
   font-size: clamp(26px, 3vw, 38px);
-  margin: 12px 0 22px;
-}
-.facts {
-  display: flex;
-  gap: 48px;
-  margin: 0 0 26px;
-}
-.facts div {
-  display: flex;
-  gap: 10px;
-  align-items: baseline;
-}
-.facts dt {
-  color: #728a80;
-  font-size: 14px;
-}
-.facts dd {
-  margin: 0;
-  font-size: 17px;
+  margin: 12px 0 4px;
+  overflow-wrap: anywhere;
 }
 .copy h2 {
   font-size: 15px;
@@ -334,15 +305,6 @@ main {
   color: #3d5349;
   text-align: justify;
 }
-.intro small {
-  display: block;
-  margin-top: 10px;
-  font-size: 12px;
-  color: #93a49d;
-}
-.intro small a {
-  color: #328566;
-}
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -359,10 +321,7 @@ main {
   font-size: 14px;
   line-height: 1.3;
 }
-.empty {
-  color: #8a9a93;
-  margin: 0 0 28px;
-}
+.intro .empty { color: #5c7268; }
 .actions {
   display: flex;
   align-items: center;
@@ -391,8 +350,6 @@ button:hover {
     padding: 24px;
     gap: 24px;
   }
-  .portrait img {
-    max-width: 220px;
-  }
+  .portrait { width: min(240px, 100%); margin-inline: auto; }
 }
 </style>

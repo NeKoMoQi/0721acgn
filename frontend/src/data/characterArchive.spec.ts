@@ -1,11 +1,17 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { afterAll, beforeAll, expect, it, vi } from 'vitest'
-import { archiveCast, archiveCharacterLocation, archiveProfile, archiveWorkLocation, searchArchiveCharacters } from '@/data/characterArchive'
+import { flushPromises, mount } from '@vue/test-utils'
+import { createMemoryHistory, createRouter } from 'vue-router'
+import { archiveCanonicalProfile, archiveCast, archiveCharacterLocation, archiveProfile, archiveWorkLocation, searchArchiveCharacters } from '@/data/characterArchive'
+import Character from '@/view/Character/index.vue'
+import WorkCharacters from '@/components/WorkCharacters.vue'
+import { constantRoute } from '@/router/routes'
 import { getAllSearch } from '@/api/AllSearch'
 import request from '@/utils/request'
 
 vi.mock('@/utils/request', () => ({ default: { get: vi.fn() } }))
+vi.mock('@/components/Headpage/index.vue', () => ({ default: { template: '<header />' } }))
 
 beforeAll(() => {
   vi.stubGlobal('fetch', async (url: string) => {
@@ -15,6 +21,51 @@ beforeAll(() => {
   })
 })
 afterAll(() => vi.unstubAllGlobals())
+
+it('opens an illustrated archive profile with inline prose and sources after the work links', async () => {
+  await archiveProfile(89181)
+  const router = createRouter({ history: createMemoryHistory(), routes: constantRoute })
+  await router.push('/character/bgm-89181')
+  const view = mount(Character, { global: { plugins: [router] } })
+  try {
+    await flushPromises()
+    expect(view.get('h1').text()).toBe('阿乌拉')
+    expect(view.get('.portrait img').attributes('src')).toContain('frieren-anime.jp')
+    expect(view.get('.intro').text()).toContain('七崩贤')
+    expect(view.get('.character-works a').attributes('href')).toMatch(/^\/(ComicIntroduce|Animationintroduce)\?/)
+    expect(view.get('.sources a').attributes('href')).toBe('https://frieren-anime.jp/news/646/')
+    expect(view.find('.intro a').exists()).toBe(false)
+  } finally {
+    view.unmount()
+  }
+})
+
+it('shows a single Galgame roster with portraits and keeps the original character routes', async () => {
+  await archiveCast('galgame', 'clannad')
+  const router = createRouter({ history: createMemoryHistory(), routes: constantRoute })
+  await router.push('/')
+  const view = mount(WorkCharacters, { props: { type: 'galgame', id: 'clannad' }, global: { plugins: [router] } })
+  try {
+    await flushPromises()
+    const cards = view.findAll('.cast-card')
+    expect(cards).toHaveLength(12)
+    const nagisa = cards.filter(card => card.text() === '古河渚')
+    expect(nagisa).toHaveLength(1)
+    expect(nagisa[0].get('img').attributes('src')).toContain('key.visualarts.gr.jp')
+    expect(nagisa[0].attributes('href')).toContain('/character/galgame/clannad/')
+    await view.get('button').trigger('click')
+    expect(view.findAll('.cast-card').length).toBeGreaterThan(12)
+  } finally {
+    view.unmount()
+  }
+})
+
+it('keeps the apothecary and the similarly named cat on separate character routes', async () => {
+  expect((await archiveCanonicalProfile('maomao'))?.person.id).toBe(61330)
+  expect(archiveCharacterLocation((await archiveProfile(143350))!.person)).toEqual({
+    name: 'Character', params: { id: 'bgm-143350' },
+  })
+})
 
 it('opens new comic characters, keeps curated links and returns to the correct 0721 work', async () => {
   const cast = await archiveCast('comic', 24)
