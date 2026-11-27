@@ -550,5 +550,473 @@
   "55540": {
     "image": "https://steinsgate.jp/psp/img/image_chara14.jpg",
     "source": "https://steinsgate.jp/psp/character/index.html"
+  },
+  "61330": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/cdc622d41e0e611d5ffad6030fcfedb2.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "site:maomao": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/cdc622d41e0e611d5ffad6030fcfedb2.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "61331": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/dbe53106929a5d0707bbd505185e428b.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "site:jinshi": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/dbe53106929a5d0707bbd505185e428b.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "61333": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/f8e5f5c8e85ff5ff47c509ae5994e0a7.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "site:gaoshun": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/f8e5f5c8e85ff5ff47c509ae5994e0a7.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "136362": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/ff74fe00d27b3160e32ca0e957433eb2.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "143344": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/a8e7a1dd2600bd9206901dc727a2a94a.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "140195": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/b7626a75432580299d6ad34d5b6cd2d8.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "140194": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/88fb6f8b7944622e89da50398b2198b7.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "138913": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/3a0c0563865eb418c086462908745912.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "142308": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/a52652426f957089f2a7edcf5c93d304.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "143502": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/d340a45304449037426a7f4a831f6861.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "143349": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/b3b4aaa050ce1258fe8237d0ffe3587f.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "143558": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/9d21827cc9fabaaa107edcea31307eab.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "143559": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/7d19a83c61f89fa99894f6d81c34a4bb.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "143668": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/597ac11d9814e7223ab152fffdd13af9.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "143646": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/2c6a7b79b03c144414bb1c295ff0d4a9.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "140205": {
+    "image": "https://herobunko.com/wp-content/uploads/2025/11/3505c571601f9f5200d2f06f3b8054f4.png",
+    "source": "https://herobunko.com/special/kusuriya/"
+  },
+  "111327": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main01.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "site:nukumizu": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main01.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "111328": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main02.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "site:335": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main02.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "111329": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main03.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "site:lemon": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main03.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "111330": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main04.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "site:chika": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main04.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "111331": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main05.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "125476": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main06.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "125477": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main07.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "125472": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main08.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "125473": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main09.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "125474": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main10.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "125475": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main11.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "125481": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main12.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "125482": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main13.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "125478": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main14.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "126222": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main15.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "125480": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main16.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "125479": {
+    "image": "https://makeine-anime.com/assets/img/character/img_main17.png",
+    "source": "https://makeine-anime.com/character/"
+  },
+  "57715": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_rena.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "site:lena": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_rena.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "100318": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_shiden.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "57716": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_shin.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "site:shin": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_shin.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "92002": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_leyden.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "site:raiden": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_leyden.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "92003": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_seo.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "92006": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_anju.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "site:anju": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_anju.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "92007": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_crenna.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "100319": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_frederica.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "100320": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_ernst.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "101414": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_theresa.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "101415": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_grete.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "101416": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_richard.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "101417": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_willem.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "101756": {
+    "image": "https://anime-86.com/assets/img/character-second/chara_eugene.png",
+    "source": "https://anime-86.com/character/"
+  },
+  "66899": {
+    "image": "https://kaguya.love/1st/assets/img/chara/01kaguya/img_main01.png",
+    "source": "https://kaguya.love/1st/character/"
+  },
+  "site:9": {
+    "image": "https://kaguya.love/1st/assets/img/chara/01kaguya/img_main01.png",
+    "source": "https://kaguya.love/1st/character/"
+  },
+  "66900": {
+    "image": "https://kaguya.love/1st/assets/img/chara/02shirogane/img_main02.png",
+    "source": "https://kaguya.love/1st/character/"
+  },
+  "67408": {
+    "image": "https://kaguya.love/1st/assets/img/chara/03fujiwara/img_main03.png",
+    "source": "https://kaguya.love/1st/character/"
+  },
+  "67409": {
+    "image": "https://kaguya.love/1st/assets/img/chara/04ishigami/img_main04.png",
+    "source": "https://kaguya.love/1st/character/"
+  },
+  "67410": {
+    "image": "https://kaguya.love/1st/assets/img/chara/05hayasaka/img_main05.png",
+    "source": "https://kaguya.love/1st/character/"
+  },
+  "site:101": {
+    "image": "https://kaguya.love/1st/assets/img/chara/05hayasaka/img_main05.png",
+    "source": "https://kaguya.love/1st/character/"
+  },
+  "99541": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/isagi_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "99542": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/bachira_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "99543": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/kunigami_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "99544": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/chigiri_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "110546": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/kuon_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "110547": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/raichi_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "110548": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/imamura_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "110549": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/gagamaru_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "110550": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/naruhaya_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "110551": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/iemon_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "110552": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/igarashi_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "110553": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/kira_suit_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "110554": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/ego_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "110555": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/teieri_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "114723": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/niko_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "114725": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/wanima-j_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "114726": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/wanima-k_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "113468": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/zantetsu_uniform_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "116248": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/itoshi-r_suit_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "116249": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/aryu_suit_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "116250": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/tokimitsu_suit_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "114727": {
+    "image": "https://tv.bluelock-pr.com/tv1st/wp-content/themes/bluelock-main/_assets/images/pages/char/detail/webp/itoshi-s_pc.webp",
+    "source": "https://tv.bluelock-pr.com/tv1st/character/"
+  },
+  "997": {
+    "image": "https://key.visualarts.gr.jp/product/kanon/character/images/ayu.gif",
+    "source": "https://key.visualarts.gr.jp/product/kanon/character/"
+  },
+  "998": {
+    "image": "https://key.visualarts.gr.jp/product/kanon/character/images/nayuki.gif",
+    "source": "https://key.visualarts.gr.jp/product/kanon/character/"
+  },
+  "999": {
+    "image": "https://key.visualarts.gr.jp/product/kanon/character/images/makoto.gif",
+    "source": "https://key.visualarts.gr.jp/product/kanon/character/"
+  },
+  "1000": {
+    "image": "https://key.visualarts.gr.jp/product/kanon/character/images/siori.gif",
+    "source": "https://key.visualarts.gr.jp/product/kanon/character/"
+  },
+  "1001": {
+    "image": "https://key.visualarts.gr.jp/product/kanon/character/images/mai.gif",
+    "source": "https://key.visualarts.gr.jp/product/kanon/character/"
+  },
+  "1004": {
+    "image": "https://key.visualarts.gr.jp/product/kanon/character/images/kaori.gif",
+    "source": "https://key.visualarts.gr.jp/product/kanon/character/"
+  },
+  "1002": {
+    "image": "https://key.visualarts.gr.jp/product/kanon/character/images/sayuri.gif",
+    "source": "https://key.visualarts.gr.jp/product/kanon/character/"
+  },
+  "1005": {
+    "image": "https://key.visualarts.gr.jp/product/kanon/character/images/misio.gif",
+    "source": "https://key.visualarts.gr.jp/product/kanon/character/"
+  },
+  "1003": {
+    "image": "https://key.visualarts.gr.jp/product/kanon/character/images/akiko.gif",
+    "source": "https://key.visualarts.gr.jp/product/kanon/character/"
+  },
+  "1006": {
+    "image": "https://key.visualarts.gr.jp/product/kanon/character/images/kitagawa.gif",
+    "source": "https://key.visualarts.gr.jp/product/kanon/character/"
+  },
+  "52": {
+    "image": "https://key.visualarts.gr.jp/product/air/character/images/01yukito.gif",
+    "source": "https://key.visualarts.gr.jp/product/air/character/"
+  },
+  "53": {
+    "image": "https://key.visualarts.gr.jp/product/air/character/images/01misuzu.gif",
+    "source": "https://key.visualarts.gr.jp/product/air/character/"
+  },
+  "57": {
+    "image": "https://key.visualarts.gr.jp/product/air/character/images/01kano.gif",
+    "source": "https://key.visualarts.gr.jp/product/air/character/"
+  },
+  "58": {
+    "image": "https://key.visualarts.gr.jp/product/air/character/images/01minagi.gif",
+    "source": "https://key.visualarts.gr.jp/product/air/character/"
+  },
+  "59": {
+    "image": "https://key.visualarts.gr.jp/product/air/character/images/01haruko.gif",
+    "source": "https://key.visualarts.gr.jp/product/air/character/"
+  },
+  "60": {
+    "image": "https://key.visualarts.gr.jp/product/air/character/images/01hijiri.gif",
+    "source": "https://key.visualarts.gr.jp/product/air/character/"
+  },
+  "63": {
+    "image": "https://key.visualarts.gr.jp/product/air/character/images/01k-suke.gif",
+    "source": "https://key.visualarts.gr.jp/product/air/character/"
+  },
+  "62": {
+    "image": "https://key.visualarts.gr.jp/product/air/character/images/01poteto.gif",
+    "source": "https://key.visualarts.gr.jp/product/air/character/"
+  },
+  "59846": {
+    "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_siroha.png",
+    "source": "https://key.visualarts.gr.jp/summer/character.html"
+  },
+  "59847": {
+    "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_ao.png",
+    "source": "https://key.visualarts.gr.jp/summer/character.html"
+  },
+  "59848": {
+    "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_kamome.png",
+    "source": "https://key.visualarts.gr.jp/summer/character.html"
+  },
+  "59849": {
+    "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_wenders.png",
+    "source": "https://key.visualarts.gr.jp/summer/character.html"
+  },
+  "61415": {
+    "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_mitani.png",
+    "source": "https://key.visualarts.gr.jp/summer/character.html"
+  },
+  "61416": {
+    "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_kano.png",
+    "source": "https://key.visualarts.gr.jp/summer/character.html"
+  },
+  "61417": {
+    "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_nomura.png",
+    "source": "https://key.visualarts.gr.jp/summer/character.html"
+  },
+  "61418": {
+    "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_shizuku.png",
+    "source": "https://key.visualarts.gr.jp/summer/character.html"
+  },
+  "61419": {
+    "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_kato.png",
+    "source": "https://key.visualarts.gr.jp/summer/character.html"
+  },
+  "61457": {
+    "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_kyoko.png",
+    "source": "https://key.visualarts.gr.jp/summer/character.html"
+  },
+  "61458": {
+    "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_kobato.png",
+    "source": "https://key.visualarts.gr.jp/summer/character.html"
+  },
+  "61459": {
+    "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_inari.png",
+    "source": "https://key.visualarts.gr.jp/summer/character.html"
   }
 }
