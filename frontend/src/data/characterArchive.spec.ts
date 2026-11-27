@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { afterAll, beforeAll, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
-import { archiveCanonicalProfile, archiveCast, archiveCharacterLocation, archiveProfile, archiveWorkLocation, searchArchiveCharacters } from '@/data/characterArchive'
+import { archiveCanonicalProfile, archiveCast, archiveCharacterLocation, archiveProfile, archiveSupplement, archiveWorkLocation, searchArchiveCharacters } from '@/data/characterArchive'
 import Character from '@/view/Character/index.vue'
 import WorkCharacters from '@/components/WorkCharacters.vue'
 import { constantRoute } from '@/router/routes'
@@ -35,6 +35,40 @@ it('opens an illustrated archive profile with inline prose and sources after the
     expect(view.get('.character-works a').attributes('href')).toMatch(/^\/(ComicIntroduce|Animationintroduce)\?/)
     expect(view.get('.sources a').attributes('href')).toBe('https://frieren-anime.jp/news/646/')
     expect(view.find('.intro a').exists()).toBe(false)
+  } finally {
+    view.unmount()
+  }
+})
+
+it('shows the archive introduction on the site with contributor and license attribution', async () => {
+  await archiveProfile(99541)
+  const paragraphs = (await archiveSupplement(99541))?.paragraphs
+  const router = createRouter({ history: createMemoryHistory(), routes: constantRoute })
+  await router.push('/character/bgm-99541')
+  const view = mount(Character, { global: { plugins: [router] } })
+  try {
+    await flushPromises()
+    expect(paragraphs?.length).toBeGreaterThan(0)
+    expect(view.get('.intro p').text()).toBe(paragraphs![0])
+    expect(view.get('.synopsis-credit a').attributes('href')).toBe('https://creativecommons.org/licenses/by-sa/3.0/')
+    expect(view.findAll('.profile-sources a').map(link => link.attributes('href'))).toContain('https://bgm.tv/character/99541')
+    expect((await archiveSupplement(86246))?.paragraphs).toBeUndefined()
+  } finally {
+    view.unmount()
+  }
+})
+
+it('links non-spoiler relationships to the canonical local character pages', async () => {
+  await archiveCanonicalProfile('clannad:古河渚')
+  const details = await archiveSupplement(4)
+  const router = createRouter({ history: createMemoryHistory(), routes: constantRoute })
+  await router.push('/character/galgame/clannad/' + encodeURIComponent('古河渚'))
+  const view = mount(Character, { global: { plugins: [router] } })
+  try {
+    await flushPromises()
+    expect(details?.relations?.some(([label, person]) => label === '亲属' && person.id === 1019)).toBe(true)
+    const link = view.findAll('.character-relations a').find(row => row.text() === '古河秋生')
+    expect(link?.attributes('href')).toContain('/character/galgame/clannad/')
   } finally {
     view.unmount()
   }

@@ -68,6 +68,17 @@ export async function archiveCanonicalProfile(key: string) {
   return Object.hasOwn(ids, key) ? archiveProfile(ids[key]) : undefined
 }
 
+interface ArchiveSupplement {
+  paragraphs?: string[]
+  relations?: [label: string, person: ArchivePerson, ended: boolean][]
+}
+
+export async function archiveSupplement(id: number) {
+  if (!Number.isSafeInteger(id) || id < 1) return undefined
+  const supplements = await readShard<Record<string, ArchiveSupplement>>(`synopsis-${id % 32}`)
+  return supplements[String(id)]
+}
+
 export async function archiveWorksForSiteCharacter(id: number | string) {
   const links = await readShard<Record<string, ArchiveWork[]>>('links')
   return Object.hasOwn(links, id) ? links[String(id)] : []

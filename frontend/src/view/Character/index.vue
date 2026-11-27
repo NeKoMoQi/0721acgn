@@ -18,7 +18,7 @@
           <section class="intro">
             <h2>角色简介</h2>
             <p v-for="(paragraph, index) in introParagraphs" :key="index">{{ paragraph }}</p>
-            <p v-if="!introParagraphs.length" class="empty">简介待补</p>
+            <p v-if="!introParagraphs.length" class="empty" role="status">{{ synopsisNotice }}</p>
             <dl v-if="facts.size" class="archive-facts" aria-label="角色资料">
               <div v-for="[label, value] in facts" :key="label"><dt>{{ label }}</dt><dd>{{ value }}</dd></div>
             </dl>
@@ -40,12 +40,26 @@
               </li>
             </ul>
           </section>
+          <section v-if="supplement?.relations?.length" class="character-works">
+            <h2>人物关系</h2>
+            <ul class="character-relations">
+              <li v-for="[label, person, ended] in supplement.relations" :key="`${person.id}:${label}`">
+                <RouterLink :to="archiveCharacterLocation(person)">{{ person.name }}</RouterLink>
+                <small class="archive-credit">{{ ended ? `曾为${label}` : label }}</small>
+              </li>
+            </ul>
+          </section>
           <template v-if="tags.length">
             <h2>萌点</h2>
             <ul class="tags"><li v-for="tag in tags" :key="tag">{{ tag }}</li></ul>
           </template>
           <footer v-if="sources.length" class="sources">
             <h2>资料来源</h2>
+            <p v-if="showsArchiveSynopsis" class="synopsis-credit">
+              简介由 Bangumi 条目贡献者编写，本站调整了排版。该简介依
+              <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a>
+              提供。
+            </p>
             <ul class="profile-sources">
               <li v-for="source in sources" :key="source.url">
                 <a :href="source.url" target="_blank" rel="noopener noreferrer">{{ source.title }}</a>
@@ -71,7 +85,7 @@ import request from '@/utils/request'
 import { getCharacterProfile } from '@/data/characterProfiles'
 import { editorialCharacter, workLocation, workTypeLabel, worksForCharacter } from '@/data/characterAssociations'
 import { animationWorksForGalgame, galgameCharacter } from '@/data/galgameMedia'
-import { archiveCanonicalProfile, archiveProfile, archiveRoleLabel, archiveWorkLocation, archiveWorksForSiteCharacter, type ArchiveWork } from '@/data/characterArchive'
+import { archiveCanonicalProfile, archiveCharacterLocation, archiveProfile, archiveRoleLabel, archiveSupplement, archiveWorkLocation, archiveWorksForSiteCharacter, type ArchiveWork } from '@/data/characterArchive'
 import { archiveBiography, archivePortrait, officialArtwork, safePortrait } from '@/data/characterPresentation'
 
 interface Character {
@@ -93,6 +107,8 @@ const error = ref('')
 let loadGeneration = 0
 const imported = shallowRef<Awaited<ReturnType<typeof archiveProfile>>>()
 const canonical = shallowRef<Awaited<ReturnType<typeof archiveCanonicalProfile>>>()
+const supplement = shallowRef<Awaited<ReturnType<typeof archiveSupplement>>>()
+const synopsisNotice = ref('简介待补')
 const linkedArchiveWorks = shallowRef<ArchiveWork[]>([])
 const archiveKindLabels = { animation: '动漫', comic: '漫画', novel: '轻小说', galgame: 'Galgame' }
 
@@ -130,9 +146,11 @@ function creditFor(work: Pick<ArchiveWork, 'type' | 'id'>) {
   return [role, voices ? `配音 ${voices}` : ''].filter(Boolean).join(' · ')
 }
 const biography = computed(() => archiveBiography(archivePerson.value?.id))
-const introParagraphs = computed(() => profile.value?.paragraphs ?? biography.value?.paragraphs ??
+const editorialParagraphs = computed(() => profile.value?.paragraphs ?? biography.value?.paragraphs ??
   (character.value?.intro || '').split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean),
 )
+const introParagraphs = computed(() => editorialParagraphs.value.length ? editorialParagraphs.value : supplement.value?.paragraphs ?? [])
+const showsArchiveSynopsis = computed(() => !editorialParagraphs.value.length && introParagraphs.value.length > 0)
 const facts = computed(() => {
   const values = new Map(archivePerson.value?.facts ?? [])
   const aliases = archivePerson.value?.aliases
@@ -152,7 +170,11 @@ const sources = computed(() => {
     links.push({ title: '萌娘百科 · CC BY-NC-SA 3.0 CN', url: legacySource })
   }
   if (artwork.value) links.push({ title: '作品官网 · 角色立绘', url: artwork.value.source })
-  if (archivePerson.value) links.push({ title: 'Bangumi 番组计划 · 档案资料', url: `https://bgm.tv/character/${archivePerson.value.id}` })
+  if (archivePerson.value) {
+    const original = `https://bgm.tv/character/${archivePerson.value.id}`
+    links.push({ title: 'Bangumi 番组计划 · 角色原条目', url: original })
+    if (showsArchiveSynopsis.value) links.push({ title: 'Bangumi · 条目编辑页和贡献记录', url: `${original}/edit` })
+  }
   return links.filter((link, index) => links.findIndex(other => other.url === link.url) === index)
 })
 
@@ -232,6 +254,22 @@ async function next() {
 }
 
 watch(() => [route.params.id, route.params.slug, route.params.person], () => { void load() }, { immediate: true })
+watch(() => [Boolean(character.value), archivePerson.value?.id] as const,
+  ([hasCharacter, id], _, onCleanup) => {
+    supplement.value = undefined
+    synopsisNotice.value = '简介待补'
+    if (!hasCharacter || !id) return
+    let current = true
+    onCleanup(() => { current = false })
+    synopsisNotice.value = '正在读取简介…'
+    void archiveSupplement(id).then(details => {
+      if (!current) return
+      supplement.value = details
+      synopsisNotice.value = '简介待补'
+    }).catch(() => {
+      if (current) synopsisNotice.value = '简介暂时无法读取'
+    })
+  }, { flush: 'sync' })
 </script>
 
 <style scoped>
@@ -239,6 +277,7 @@ watch(() => [route.params.id, route.params.slug, route.params.person], () => { v
 .character-works { margin: 20px 0; }
 .character-works ul { padding-left: 18px; }
 .character-works a { color: #246048; text-decoration: underline; }
+.character-relations li { margin: 4px 0; }
 .work-title { margin: 0 0 20px; color: #506e62; }
 .archive-facts div { display: flex; gap: 10px; margin: 6px 0; }
 .archive-facts dt { font-weight: 600; flex-shrink: 0; }
@@ -247,6 +286,8 @@ watch(() => [route.params.id, route.params.slug, route.params.person], () => { v
 .profile-sources { padding-left: 18px; font-size: 14px; }
 .profile-sources a { color: #246048; }
 .sources { margin: 24px 0; padding-top: 14px; border-top: 1px solid #dcebe3; }
+.synopsis-credit { color: #506e62; font-size: 14px; line-height: 1.7; }
+.synopsis-credit a { color: #246048; }
 .profile-sources li { margin: 4px 0; overflow-wrap: anywhere; }
 .character-root {
   min-height: 100vh;

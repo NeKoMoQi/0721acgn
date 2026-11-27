@@ -1018,5 +1018,49 @@
   "61459": {
     "image": "https://key.visualarts.gr.jp/summer/common/image/character_image_inari.png",
     "source": "https://key.visualarts.gr.jp/summer/character.html"
+  },
+  "3235": {
+    "image": "https://mahoyo-en.com/assets/img/chara/img_chara01.png",
+    "source": "https://mahoyo-en.com/character/"
+  },
+  "11425": {
+    "image": "https://mahoyo-en.com/assets/img/chara/img_chara02.png",
+    "source": "https://mahoyo-en.com/character/"
+  },
+  "11426": {
+    "image": "https://mahoyo-en.com/assets/img/chara/img_chara03.png",
+    "source": "https://mahoyo-en.com/character/"
+  },
+  "24465": {
+    "image": "https://mahoyo-en.com/assets/img/chara/img_chara04.png",
+    "source": "https://mahoyo-en.com/character/"
+  },
+  "24453": {
+    "image": "https://mahoyo-en.com/assets/img/chara/img_chara05.png",
+    "source": "https://mahoyo-en.com/character/"
+  },
+  "24466": {
+    "image": "https://mahoyo-en.com/assets/img/chara/img_chara06.png",
+    "source": "https://mahoyo-en.com/character/"
+  },
+  "3205": {
+    "image": "https://mahoyo-en.com/assets/img/chara/img_chara07.png",
+    "source": "https://mahoyo-en.com/character/"
+  },
+  "29049": {
+    "image": "https://mahoyo-en.com/assets/img/chara/img_chara08.png",
+    "source": "https://mahoyo-en.com/character/"
+  },
+  "24468": {
+    "image": "https://mahoyo-en.com/assets/img/chara/img_chara09.png",
+    "source": "https://mahoyo-en.com/character/"
+  },
+  "24469": {
+    "image": "https://mahoyo-en.com/assets/img/chara/img_chara10.png",
+    "source": "https://mahoyo-en.com/character/"
+  },
+  "24467": {
+    "image": "https://mahoyo-en.com/assets/img/chara/img_chara11.png",
+    "source": "https://mahoyo-en.com/character/"
   }
 }
