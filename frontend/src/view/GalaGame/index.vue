@@ -144,10 +144,10 @@
       </div>
 
       <div v-if="list.length" class="tishi">
-        <PageJump v-if="list.length" :page="catalogPage" :busy="isloading || jumpingPage" @jump="jumpCatalogPage" />
-      <p v-if="pageError" class="tishi" role="alert">{{ pageError }}</p>
-      <el-button v-if="hasMore" :disabled="jumpingPage" :loading="isloading" @click="loadMore">{{ moreError ? '重试加载更多' : '加载更多作品' }}</el-button>
+        <el-button v-if="hasMore" :disabled="jumpingPage" :loading="isloading" @click="loadMore">{{ moreError ? '重试加载更多' : '加载更多作品' }}</el-button>
         <span v-else>已显示全部作品</span>
+        <PageJump :page="catalogPage" :busy="isloading || jumpingPage" @jump="jumpCatalogPage" />
+        <p v-if="pageError" role="alert">{{ pageError }}</p>
         <p v-if="moreError" role="alert">{{ moreError }}</p>
       </div>
     </main>

@@ -42,7 +42,7 @@
       </div>
         
       <section v-if="loadedSuccessfully" class="reader-report" aria-label="轻小说分页">
-        <PageJump :page="currentVolume" :max="maxVolume" label="目标卷号" @jump="jumpVolume" />
+        <PageJump :page="currentVolume" :max="maxVolume" label="目标卷号" placeholder="跳卷" @jump="jumpVolume" />
         <button v-if="!locationCount" type="button" :disabled="indexing" @click="indexPages">{{ indexing ? '正在计算阅读页…' : '打开卷内页码跳转' }}</button>
         <PageJump v-else :page="readingPage" :max="locationCount" label="卷内目标页码" @jump="jumpReadingPage" />
         <p v-if="pageError" role="status">{{ pageError }}</p>

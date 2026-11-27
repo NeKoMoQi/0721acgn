@@ -92,9 +92,9 @@
   </div>
 </div>
   </div>
+  <button v-if="nomore && !isloading && !jumpingPage" type="button" class="catalog-more" @click="load">加载更多</button>
   <PageJump v-if="animationlist.length" :page="catalogPage" :busy="isloading || jumpingPage" @jump="jumpCatalogPage" />
-      <p v-if="pageError" class="tishi" role="alert">{{ pageError }}</p>
-      <button v-if="nomore && !isloading && !jumpingPage" type="button" class="catalog-more" @click="load">加载更多</button>
+  <p v-if="pageError" class="tishi" role="alert">{{ pageError }}</p>
   <div v-if="isloading" class="tishi">加载中...请稍等哦^_^</div>
   <div v-if="!nomore"  class="tishi">已经到底啦~亲(๑•̀ㅂ•́)و✧</div>
     </div>

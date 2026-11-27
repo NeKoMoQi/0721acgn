@@ -1,23 +1,34 @@
 <template>
-  <form class="page-jump" @submit.prevent="go">
-    <label><span>{{ label === '目标页码' ? `第 ${page} 页` : label }}</span>
-      <input v-model="input" :aria-label="label" inputmode="numeric" pattern="[0-9]+" :placeholder="String(page)" :disabled="busy" required>
-    </label>
-    <button type="submit" :disabled="busy">跳转</button>
+  <form class="page-jump" novalidate @submit.prevent="go">
+    <input
+      v-model="input"
+      :aria-label="label"
+      :aria-invalid="error ? 'true' : undefined"
+      :placeholder="placeholder"
+      :disabled="busy"
+      title="输入数字后按回车跳转"
+      inputmode="numeric"
+      enterkeyhint="go"
+      @input="error = ''"
+    />
     <span v-if="error" role="status">{{ error }}</span>
   </form>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-const props = withDefaults(defineProps<{ page: number; max?: number; busy?: boolean; label?: string }>(), { label: '目标页码' })
+const props = withDefaults(defineProps<{ page: number; max?: number; busy?: boolean; label?: string; placeholder?: string }>(), {
+  label: '目标页码',
+  placeholder: '跳页',
+})
 const emit = defineEmits<{ jump: [page: number] }>()
 const input = ref('')
 const error = ref('')
 watch(() => props.page, () => { input.value = ''; error.value = '' })
 function go() {
+  if (props.busy) return
   const target = Number(input.value)
-  if (!Number.isSafeInteger(target) || target < 1 || target > (props.max ?? 10000)) {
+  if (!/^[0-9]+$/.test(input.value.trim()) || !Number.isSafeInteger(target) || target < 1 || target > (props.max ?? 10000)) {
     error.value = props.max ? `请输入 1–${props.max} 之间的页码` : '请输入有效的页码'
     return
   }
@@ -27,8 +38,7 @@ function go() {
 </script>
 
 <style scoped>
-.page-jump, label { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; }
-input, button { min-height: 40px; padding: 3px 8px; border: 1px solid #a0bfb1; border-radius: 6px; background: #fff; color: #254b3a; }
-input { width: 4.5rem; }
+.page-jump { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; vertical-align: middle; }
+input { box-sizing: border-box; width: 4.25rem; min-height: 36px; padding: 4px 6px; border: 1px solid #a0bfb1; border-radius: 6px; background: #fff; color: #254b3a; font: inherit; font-size: .875rem; text-align: center; }
 span { font-size: .875rem; }
 </style>
