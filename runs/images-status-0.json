@@ -1,10 +1,10 @@
 {
-  "utc": "2026-11-26T03:00:20Z",
-  "ok": 7,
+  "utc": "2026-11-27T03:08:44Z",
+  "ok": 1,
   "fail": 0,
-  "mapped": 3853,
-  "seconds": 5.1,
-  "rate": 1.4,
+  "mapped": 3854,
+  "seconds": 6.9,
+  "rate": 0.1,
   "shard": "0",
-  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/45746018313"
+  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/45932386618"
 }
