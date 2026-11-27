@@ -1,14 +1,10 @@
 {
-  "utc": "2026-11-26T03:01:32Z",
-  "ok": 4,
-  "fail": 2,
-  "mapped": 4396,
-  "seconds": 78.3,
-  "rate": 0.1,
-  "errors_sample": [
-    "https://image.anitabi.cn/points/363172/mbzaufh_1795623999190.webp?plan=h360 :: TimeoutError",
-    "https://image.anitabi.cn/points/363172/mbz2i4i_1795623605815.webp?plan=h360 :: TimeoutError"
-  ],
+  "utc": "2026-11-27T03:08:55Z",
+  "ok": 3,
+  "fail": 0,
+  "mapped": 4399,
+  "seconds": 5.5,
+  "rate": 0.5,
   "shard": "5",
-  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/45746018313"
+  "run_url": "https://github.com/NeKoMoQi/0721acgn/actions/runs/45932386618"
 }
